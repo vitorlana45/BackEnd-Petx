@@ -1,4 +1,15 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-public class Animal {
+import lombok.*;
+
+@Getter
+public enum Animal {
+    cachorro("cachorro"),
+    gato ("gato");
+    private final String animal;
+
+    Animal(String animal) {
+        this.animal = animal;
+    }
+
 }
