@@ -3,6 +3,7 @@ package org.ong.pet.pex.backendpetx.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
@@ -11,50 +12,56 @@ import java.util.*;
 @Table(name = "usuario_db")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String userName;
+    @Column(unique = true, nullable = false)
+    private String email;
+    @Column(nullable = false)
     private String senha;
-    private Integer idade;
-    @OneToOne
-    private Endereco endereco;
-    private Integer telefone;
-    private Animal animal;
+    private UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        if (this.role.equals(UserRole.ADMIN)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if (this.role.equals(UserRole.USER)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        } else {
+            return List.of(); // Sem permissões para outras roles
+        }
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return this.senha;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 }
