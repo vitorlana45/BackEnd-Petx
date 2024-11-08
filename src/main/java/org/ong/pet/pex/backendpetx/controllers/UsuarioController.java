@@ -3,7 +3,7 @@ package org.ong.pet.pex.backendpetx.controllers;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
-import org.ong.pet.pex.backendpetx.service.impl.UsuarioService;
+import org.ong.pet.pex.backendpetx.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

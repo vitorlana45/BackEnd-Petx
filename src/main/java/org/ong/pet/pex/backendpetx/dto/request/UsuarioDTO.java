@@ -12,9 +12,9 @@ public record UsuarioDTO (
 
         @NotBlank(message = "Senha é obrigatória")
         @Length(min = 6, max = 50, message = "Senha deve ter entre 6 e 50 caracteres")
-        String senha
+        String password
 ){
     public UsuarioDTO (Usuario usuario){
-        this(usuario.getEmail(), usuario.getSenha());
+        this(usuario.getEmail(), usuario.getPassword());
     }
 }

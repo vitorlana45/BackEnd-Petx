@@ -8,14 +8,26 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "contato_db")
-public class Contato {
+@Table(name = "contato_tb")
+@EqualsAndHashCode
+public class Contact {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_contato")
     private Long id;
+
+    @Column(name = "cep")
     private String cep;
+
+    @Column(name = "cidade")
     private String cidade;
+
+    @Column(name = "bairro")
     private String bairro;
+
+    @Column(name = "rua")
     private String rua;
+
+    @Column(name = "numero_celular")
     private Integer numeroCelular;
 }

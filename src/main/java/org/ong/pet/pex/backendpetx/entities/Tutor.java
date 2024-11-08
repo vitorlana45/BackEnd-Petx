@@ -3,33 +3,30 @@ package org.ong.pet.pex.backendpetx.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.*;
+import java.util.Set;
 
-@Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Entity
 public class Tutor extends Usuario {
 
+    @Column(name = "idade")
     private Integer idade;
+
+    @Column(name = "telefone")
     private Integer telefone;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Animal> animal;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "tutor_animal_tb",
+            joinColumns = @JoinColumn(name = "tutor_id"),
+            inverseJoinColumns = @JoinColumn(name = "animal_id")
+    )
+    private Set<Animal> animais;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Contato contato;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tutor tutor = (Tutor) o;
-        return Objects.equals(getId(), tutor.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
+    @JoinColumn(name = "contato_id")
+    private Contact contato;
 }

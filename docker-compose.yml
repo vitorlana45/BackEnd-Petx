@@ -1,12 +1,11 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:latest
     container_name: ong-pet-container
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: ong_database
-    volumes:
-      - ./data:/var/lib/postgresql/data
+      POSTGRES_DB: ong_db
+

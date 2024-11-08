@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.service.impl;
+package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;

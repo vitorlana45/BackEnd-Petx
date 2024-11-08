@@ -4,7 +4,9 @@ import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.entities.*;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
+import org.ong.pet.pex.backendpetx.service.UsuarioService;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioJaCadastrado;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+
 
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -27,14 +30,17 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new UsuarioJaCadastrado("Usuário já cadastrado");
         }
 
-        Usuario usuario = new Usuario();
-        usuario.setEmail(usuarioDTO.email());
-        usuario.setSenha(usuarioDTO.senha());
-        usuario.setRole(UserRole.USER);
+        Usuario entidade = new Usuario();
+        entidade.setEmail(usuarioDTO.email());
 
-        usuario = usuarioRepository.save(usuario);
+        String encryptedPassword = new BCryptPasswordEncoder().encode(usuarioDTO.password());
 
-        return new RespostaCricaoUsuario(usuario.getEmail(), usuario.getRole());
+        entidade.setPassword(encryptedPassword);
+        entidade.setRole(UserRole.USER);
+
+        entidade = usuarioRepository.save(entidade);
+
+        return new RespostaCricaoUsuario(entidade.getEmail(), entidade.getRole());
     }
 
     @Override
