@@ -28,4 +28,5 @@ public class Animal {
     joinColumns = @JoinColumn(name = "animal_id"),
     inverseJoinColumns = @JoinColumn(name = "tutor_id"))
     private Set<Tutor> tutores;
+
 }
