@@ -4,7 +4,7 @@ import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-public record AuthLoginRequest(
+public record AuthLoginRequisicao(
 
         @Email(message = "deve ser um endereço de e-mail válido, verifique os dados novamente!")
         String email,

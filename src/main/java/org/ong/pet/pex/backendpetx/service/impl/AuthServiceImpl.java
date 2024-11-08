@@ -1,7 +1,8 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequest;
+import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.security.TokenService;
@@ -10,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 @Service
 public class AuthServiceImpl {
@@ -25,7 +28,7 @@ public class AuthServiceImpl {
     }
 
     @Transactional
-    public String validateLogin(@Valid AuthLoginRequest data) {
+    public AuthLoginResposta validateLogin(@Valid AuthLoginRequisicao data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         Authentication auth = this.authenticationManager.authenticate(usernamePassword);
 
@@ -33,6 +36,13 @@ public class AuthServiceImpl {
         Usuario usuario = (Usuario) auth.getPrincipal();
 
         // Gerando o token
-        return this.tokenService.generateToken(usuario);
+        String token = this.tokenService.gerarToken(usuario);
+
+        // Obtendo o tempo de expiração do token
+        Long expirationDate = this.tokenService.pegarExpiracaoDoToken(token);
+
+        // Retornando os dados com o token e o tempo de expiração
+        return new AuthLoginResposta(token, expirationDate);
     }
+
 }
