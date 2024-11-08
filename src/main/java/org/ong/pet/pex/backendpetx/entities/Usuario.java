@@ -1,6 +1,5 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

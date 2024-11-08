@@ -40,7 +40,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         entidade = usuarioRepository.save(entidade);
 
-        return new RespostaCricaoUsuario(entidade.getEmail(), entidade.getRole());
+        return new RespostaCricaoUsuario(entidade.getId(),entidade.getEmail(), entidade.getRole());
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ResourceExceptionHandler {
         error.setTimestamp(Instant.now());
         error.setStatus(statusValidationError.value());
         error.setError("Validation exception");
-        error.setMessage(e.getMessage());
+        error.setMessage("uma ou mais validações falharam");
         error.setPath(request.getRequestURI());
         // vai pegar os errors especificos na validação
         for (FieldError f : e.getBindingResult().getFieldErrors()) {

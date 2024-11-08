@@ -1,13 +1,47 @@
 package org.ong.pet.pex.backendpetx;
 
-import org.springframework.boot.SpringApplication;
+import org.ong.pet.pex.backendpetx.entities.*;
+import org.ong.pet.pex.backendpetx.enums.*;
+import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+
+import java.util.*;
 
 @SpringBootApplication
-public class BackEndPetxApplication {
+public class BackEndPetxApplication  implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackEndPetxApplication.class, args);
 	}
 
+	@Override
+	public void run(String... args) throws Exception {
+
+		List<Animal> list = new ArrayList<Animal>();
+
+
+		Animal an = new Animal();
+		// Atribuindo valores aos atributos do animal
+		an.setNome("Rex");
+		an.setIdade(5);
+		an.setRaca("Labrador");
+		an.setSexoEnum(SexoEnum.Macho);
+		an.setPorteEnum(PorteEnum.Grande);
+		an.setComportamentoEnum(ComportamentoEnum.Docil);
+		an.setEspecieEnum(EspecieEnum.Gato);
+
+
+		list.add(an);
+
+
+		// Exibindo os valores
+		System.out.println("Nome: " + an.getNome());
+		System.out.println("Idade: " + an.getIdade());
+		System.out.println("Raça: " + an.getRaca());
+		System.out.println("Sexo: " + an.getSexoEnum());
+		System.out.println("Porte: " + an.getPorteEnum());
+		System.out.println("Comportamento: " + an.getComportamentoEnum());
+		System.out.println("Espécie: " + an.getEspecieEnum());
+	}
 }
