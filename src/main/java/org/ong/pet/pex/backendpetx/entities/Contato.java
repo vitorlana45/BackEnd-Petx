@@ -4,18 +4,18 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "db_endereco")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Endereco {
+@Table(name = "contato_db")
+public class Contato {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String cep;
     private String cidade;
     private String bairro;
     private String rua;
+    private Integer numeroCelular;
 }

@@ -1,7 +1,8 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-Getter
+import lombok.Getter;
 
+@Getter
 public enum UserRole {
     ADMIN("ADMIN"),
     USER("USER");
