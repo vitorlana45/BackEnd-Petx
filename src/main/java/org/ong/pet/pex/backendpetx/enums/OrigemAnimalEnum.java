@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum OrigemAnimalEnum {
-    Guarda_Municipal("Guarda_Municipal"),
-    Abandono("Abandono"),
-    Resgate("Resgate");
+    GUARDA_MUNICIPAL("GUARDA_MUNICIPAL"),
+    ABANDONO("ABANDONO"),
+    RESGATE("RESGATE");
     private final String OrigemAnimal;
 
     OrigemAnimalEnum(String origemAnimal) {

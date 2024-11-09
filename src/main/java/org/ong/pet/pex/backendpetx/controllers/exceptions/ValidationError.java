@@ -2,10 +2,12 @@ package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import lombok.Getter;
 
+import java.io.Serial;
 import java.util.*;
 
 @Getter
 public class ValidationError extends StandardError {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private List<FieldMessage> errors = new ArrayList<>();

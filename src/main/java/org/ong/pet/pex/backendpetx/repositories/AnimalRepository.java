@@ -11,4 +11,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
     @Query("SELECT a FROM Animal a WHERE a.obituario.status = :status")
     List<Animal> procurarTodosAnimaisComVivosOuMortos(boolean status);
+
+    @Query("SELECT a FROM Animal a WHERE a.nome = :nome")
+    Animal findAnimalByNome(String nome);
+
 }

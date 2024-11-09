@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum EspecieEnum {
-    Gato("gato"),
-    Cachorro("cachorro");
+    GATO("GATO"),
+    CACHORRO("CACHORRO");
     private final String especie;
 
     EspecieEnum(String especie) {

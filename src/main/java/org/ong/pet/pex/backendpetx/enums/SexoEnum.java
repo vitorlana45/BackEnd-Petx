@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum SexoEnum {
-    Macho("macho"),
-    Femea("femea");
+    MACHO("MACHO"),
+    FEMEA("FEMEA");
 
     private final String sexo;
 

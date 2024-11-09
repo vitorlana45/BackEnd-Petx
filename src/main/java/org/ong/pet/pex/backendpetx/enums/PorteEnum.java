@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum PorteEnum {
-    Pequeno("pequeno"),
-    Medio("medio"),
-    Grande("grande");
+    PEQUENO("PEQUENO"),
+    MEDIO("MEDIO"),
+    GRANDE("GRANDE");
     private final String porte;
 
     PorteEnum(String porte) {

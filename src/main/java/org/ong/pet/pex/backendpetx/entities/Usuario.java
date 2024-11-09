@@ -30,14 +30,15 @@ public class Usuario implements UserDetails {
     @Column(name = "role")
     private UserRole role;
 
+    // pensando em rmeover isto
+//    @ManyToMany
+//    @JoinTable(
+//            name = "usuario_animal_tb",
+//            joinColumns = @JoinColumn(name = "usuario_id"),
+//            inverseJoinColumns = @JoinColumn(name = "animal_id")
+//    )
+//    private List<Animal> animaisAdotados;
 
-    @ManyToMany
-    @JoinTable(
-            name = "usuario_animal_tb",
-            joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "animal_id")
-    )
-    private List<Animal> animaisAdotados;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

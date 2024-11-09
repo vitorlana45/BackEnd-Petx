@@ -20,7 +20,7 @@ public class Animal {
     @Column(name = "id_animal")
     private Long id;
 
-    @Column(name = "nome")
+    @Column(name = "nome", unique = true)
     private String nome;
 
     @Column(name = "idade")
@@ -32,6 +32,10 @@ public class Animal {
     @Enumerated(EnumType.STRING)
     @Column(name = "sexo")
     private SexoEnum sexoEnum;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "origem")
+    private OrigemAnimalEnum origemEnum;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "porte")
@@ -49,10 +53,10 @@ public class Animal {
     @JoinTable(
             name = "animal_conjunto_adocao",
             joinColumns = @JoinColumn(name = "animal_id"),
-            inverseJoinColumns = @JoinColumn(name = "animal_obrigatorio_id")
+            inverseJoinColumns = @JoinColumn(name = "animal_conjunto_id")
     )
     @JsonManagedReference
-    private Set<Animal> animaisObrigatorios = new HashSet<>();
+    private Set<Animal> animalConjunto = new HashSet<>();
 
     @ManyToMany
     @JsonIgnore

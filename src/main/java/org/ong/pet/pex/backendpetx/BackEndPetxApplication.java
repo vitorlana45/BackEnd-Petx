@@ -30,10 +30,10 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 		an.setNome("Rex");
 		an.setIdade(5);
 		an.setRaca("Labrador");
-		an.setSexoEnum(SexoEnum.Macho);
-		an.setPorteEnum(PorteEnum.Grande);
-		an.setComportamentoEnum(ComportamentoEnum.Docil);
-		an.setEspecieEnum(EspecieEnum.Gato);
+		an.setSexoEnum(SexoEnum.MACHO);
+		an.setPorteEnum(PorteEnum.GRANDE);
+		an.setComportamentoEnum(ComportamentoEnum.DOCIL);
+		an.setEspecieEnum(EspecieEnum.GATO);
 
 
 		list.add(an);

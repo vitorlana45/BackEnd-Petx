@@ -1,0 +1,1 @@
+-- INSERT INTO usuario_tb (email, password, role) VALUES ('vitor@gmail.com', '$2a$10$X1.UGHrhwjGE5eS2Cezy4e2bZwwl15PA6VUeZkhwBd1RNPasBMia6','ADMIN');

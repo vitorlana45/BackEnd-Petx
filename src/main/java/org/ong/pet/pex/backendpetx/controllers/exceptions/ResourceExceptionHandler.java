@@ -21,7 +21,7 @@ public class ResourceExceptionHandler {
 
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
-        err.setError("Resource not found");
+        err.setError("Recurso nao encontrado");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
@@ -34,7 +34,7 @@ public class ResourceExceptionHandler {
         ValidationError error = new ValidationError();
         error.setTimestamp(Instant.now());
         error.setStatus(statusValidationError.value());
-        error.setError("Validation exception");
+        error.setError("Erro de validação");
         error.setMessage("uma ou mais validações falharam");
         error.setPath(request.getRequestURI());
         // vai pegar os errors especificos na validação
@@ -50,7 +50,19 @@ public class ResourceExceptionHandler {
 
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
-        err.setError("Resource not found");
+        err.setError("Recurso nao encontrado");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(AnimalJaCadastrado.class)
+    public ResponseEntity<StandardError> usuarioJaCadastrado(AnimalJaCadastrado e, HttpServletRequest request) {
+        status = HttpStatus.BAD_REQUEST;
+
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Recurso nao encontrado");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
