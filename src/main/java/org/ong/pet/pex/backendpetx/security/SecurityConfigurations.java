@@ -35,7 +35,13 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/inserir").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/recuperar-token").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/auth/recuperar-token").permitAll()
+                        // uso ENDPOINT DOS ADMINISTRADORES DA ONG
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/buscarId/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/buscar/{email}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/todos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/usuarios/deletar/{id}").hasRole("ADMIN")
+                        // uso ENDPOINT DOS USUÁRIOS ABAIXO
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

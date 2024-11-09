@@ -23,7 +23,7 @@ public class AuthController {
         return authService.validateLogin(authLoginRequisicao);
     }
 
-    @PostMapping("/recuperar-token")
+    @PutMapping("/recuperar-token")
     public ResponseEntity<Void> recoverToken(@RequestBody @Valid EmailDTO emailDTO) {
         authService.criarRecuperarToken(emailDTO);
         return ResponseEntity.noContent().build();

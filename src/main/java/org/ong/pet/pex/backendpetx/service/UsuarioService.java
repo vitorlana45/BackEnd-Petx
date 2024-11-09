@@ -10,8 +10,6 @@ public interface UsuarioService {
 
     RespostaCricaoUsuario inserirUsuario(UsuarioDTO usuarioDTO);
 
-    UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO);
-
     void deletarUsuario(Long id);
 
     RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id);

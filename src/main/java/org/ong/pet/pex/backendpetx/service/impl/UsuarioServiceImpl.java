@@ -50,13 +50,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
 
-    @Override
-    public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO) {
-        return null;
-    }
-
-
-
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void deletarUsuario(Long id) {
@@ -80,14 +73,14 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
 
-
+// FORMA PROVISORIA, VER DEPOIS QUAIS DADOS RETORNAR
     @Transactional(readOnly = true)
     @Override
     public  Map<String, String>  buscarTodosUsuarios() {
-        var a = usuarioRepository.findAll();
+        var list = usuarioRepository.findAll();
         Map<String, String> map = new HashMap<>();
 
-        for (Usuario usuario : a) {
+        for (Usuario usuario : list) {
             map.put(usuario.getEmail(), usuario.getRole().toString());
         }
         return map;
@@ -95,7 +88,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 
 
-
+    @Transactional(readOnly = true)
     @Override
     public RespostaBuscarUsuarioPadrao buscarUsuarioPorEmail(String email) {
 

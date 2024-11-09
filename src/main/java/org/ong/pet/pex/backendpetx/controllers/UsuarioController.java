@@ -6,11 +6,13 @@ import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 @Validated
 @RestController
@@ -23,6 +25,8 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+
+
     @PostMapping("/inserir")
     public ResponseEntity<RespostaCricaoUsuario> inserirUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
 
@@ -33,14 +37,17 @@ public class UsuarioController {
         return ResponseEntity.created(uri).body(usuarioCriado);
     }
 
-    @GetMapping("/buscar/{id}")
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/buscarId/{id}")
     public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorId(@PathVariable Long id) {
-
         RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorId(id);
-
         return ResponseEntity.ok(usuario);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/buscar/{email}")
     public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorEmail(@PathVariable(name = "email") String email) {
 
@@ -49,5 +56,18 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuario);
     }
 
+
+
+    @GetMapping("/buscar/Todos")
+    public ResponseEntity<Map<String, String>> buscarTodosUsuarios() {
+        return ResponseEntity.ok(usuarioService.buscarTodosUsuarios());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        usuarioService.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
