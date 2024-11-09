@@ -1,8 +1,10 @@
 package org.ong.pet.pex.backendpetx.controllers.auth;
 
-import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequisicao;
+import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.dto.request.*;
 import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
 import org.ong.pet.pex.backendpetx.service.impl.AuthServiceImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +21,12 @@ public class AuthController {
     @PostMapping("/login")
     public AuthLoginResposta login(@RequestBody AuthLoginRequisicao authLoginRequisicao) {
         return authService.validateLogin(authLoginRequisicao);
+    }
+
+    @PostMapping("/recuperar-token")
+    public ResponseEntity<Void> recoverToken(@RequestBody @Valid EmailDTO emailDTO) {
+        authService.criarRecuperarToken(emailDTO);
+        return ResponseEntity.noContent().build();
     }
 
 }

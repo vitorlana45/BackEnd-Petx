@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @Table(name = "contato_tb")
 @EqualsAndHashCode
-public class Contact {
+public class Contato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_contato")

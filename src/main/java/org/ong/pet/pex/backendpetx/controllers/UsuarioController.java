@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.dto.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
@@ -27,11 +28,26 @@ public class UsuarioController {
 
         RespostaCricaoUsuario usuarioCriado = usuarioService.inserirUsuario(usuarioDTO);
 
-        // Obter o ID do usuário recém-criado
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(usuarioCriado.id()).toUri();  // Usar o ID gerado
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioCriado.id()).toUri();
 
-        // Retornar a resposta com o código 201 e o URI
         return ResponseEntity.created(uri).body(usuarioCriado);
     }
+
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorId(@PathVariable Long id) {
+
+        RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorId(id);
+
+        return ResponseEntity.ok(usuario);
+    }
+
+    @GetMapping("/buscar/{email}")
+    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorEmail(@PathVariable(name = "email") String email) {
+
+        RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(email);
+
+        return ResponseEntity.ok().body(usuario);
+    }
+
+
 }

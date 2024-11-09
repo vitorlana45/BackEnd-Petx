@@ -28,5 +28,5 @@ public class Tutor extends Usuario {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "contato_id")
-    private Contact contato;
+    private Contato contato;
 }

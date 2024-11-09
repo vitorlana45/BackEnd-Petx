@@ -1,16 +1,18 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
+import org.ong.pet.pex.backendpetx.dto.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.entities.*;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
-import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioJaCadastrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -21,6 +23,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
+
+
 
     @Override
     @Transactional
@@ -43,28 +47,63 @@ public class UsuarioServiceImpl implements UsuarioService {
         return new RespostaCricaoUsuario(entidade.getId(),entidade.getEmail(), entidade.getRole());
     }
 
+
+
+
     @Override
     public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO) {
         return null;
     }
 
+
+
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void deletarUsuario(Long id) {
-
+        if (!usuarioRepository.existsById(id)) {
+            throw new UsuarioNaoEncontrado("Usuário não encontrado");
+        }
+        try {
+            usuarioRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("Falha de integridade referencial");
+        }
     }
 
+
+
+    @Transactional(readOnly = true)
     @Override
-    public UsuarioDTO buscarUsuarioPorId(Long id) {
-        return null;
+    public RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontrado("Usuário não encontrado"));
+        return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getEmail());
     }
 
+
+
+    @Transactional(readOnly = true)
     @Override
-    public List<UsuarioDTO> buscarTodosUsuarios() {
-        return List.of();
+    public  Map<String, String>  buscarTodosUsuarios() {
+        var a = usuarioRepository.findAll();
+        Map<String, String> map = new HashMap<>();
+
+        for (Usuario usuario : a) {
+            map.put(usuario.getEmail(), usuario.getRole().toString());
+        }
+        return map;
     }
 
+
+
+
     @Override
-    public UsuarioDTO buscarUsuarioPorEmail(String email) {
-        return null;
+    public RespostaBuscarUsuarioPadrao buscarUsuarioPorEmail(String email) {
+
+      Usuario usuario = usuarioRepository.findUsuarioByEmail(email);
+
+      if(usuario == null) {
+        throw new UsuarioNaoEncontrado("Usuário não encontrado");
+      }
+        return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getEmail());
     }
 }

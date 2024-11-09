@@ -1,14 +1,18 @@
 package org.ong.pet.pex.backendpetx;
 
+import jakarta.persistence.Cacheable;
 import org.ong.pet.pex.backendpetx.entities.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.*;
 
 @SpringBootApplication
+@EnableAsync
 public class BackEndPetxApplication  implements CommandLineRunner {
 
 	public static void main(String[] args) {
