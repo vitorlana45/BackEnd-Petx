@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 
-import java.time.Instant;
 import java.util.*;
 
 @Entity
@@ -49,25 +48,6 @@ public class Animal {
     @Enumerated(EnumType.STRING)
     @Column(name = "especie")
     private EspecieEnum especieEnum;
-
-    @Column(name = "criado_em", nullable = false)
-    private Instant criado_em;
-
-    @Column(name = "atualizado_em")
-    private Instant atualizado_em;
-
-    @PrePersist
-    public void prePersist() {
-        if (criado_em == null) {
-            criado_em = Instant.now();
-        }
-        atualizado_em = Instant.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        atualizado_em = Instant.now();
-    }
 
     @ManyToMany
     @JoinTable(

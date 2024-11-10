@@ -68,4 +68,16 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
+    @ExceptionHandler(AnimalNaoEncontrado.class)
+    public ResponseEntity<StandardError> usuarioJaCadastrado(AnimalNaoEncontrado e, HttpServletRequest request) {
+        status = HttpStatus.BAD_REQUEST;
+
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Recurso nao encontrado");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
 }
