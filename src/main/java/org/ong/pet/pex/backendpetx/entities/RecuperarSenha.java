@@ -3,7 +3,7 @@ package org.ong.pet.pex.backendpetx.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
+import java.time.*;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -23,6 +23,21 @@ public class RecuperarSenha {
     private String email;
     @Column(nullable = false)
     private Instant expiracaoToken;
+    @Column(updatable = false)
+    private LocalDateTime criadoEm;
+
+    private LocalDateTime atualizadoEm;
+
+    @PrePersist
+    protected void onCreate() {
+        criadoEm = LocalDateTime.now();
+        atualizadoEm = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        atualizadoEm = LocalDateTime.now();
+    }
 
     @Override
     public boolean equals(Object o) {

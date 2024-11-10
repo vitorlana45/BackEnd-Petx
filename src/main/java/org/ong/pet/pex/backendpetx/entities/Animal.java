@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -54,6 +55,22 @@ public class Animal {
 
     @Column(name = "esta_vivo")
     private boolean estaVivo;
+
+    @Column(updatable = false)
+    private LocalDateTime criadoEm;
+
+    private LocalDateTime atualizadoEm;
+
+    @PrePersist
+    protected void onCreate() {
+        criadoEm = LocalDateTime.now();
+        atualizadoEm = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        atualizadoEm = LocalDateTime.now();
+    }
 
     @ManyToMany
     @JoinTable(
