@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.*;
 
 @AllArgsConstructor
@@ -38,6 +39,26 @@ public class Usuario implements UserDetails {
 //            inverseJoinColumns = @JoinColumn(name = "animal_id")
 //    )
 //    private List<Animal> animaisAdotados;
+
+
+    @Column(name = "criado_em", nullable = false)
+    private Instant criado_em;
+
+    @Column(name = "atualizado_em")
+    private Instant atualizado_em;
+
+    @PrePersist
+    public void prePersist() {
+        if (criado_em == null) {
+            criado_em = Instant.now();
+        }
+        atualizado_em = Instant.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        atualizado_em = Instant.now();
+    }
 
 
     @Override

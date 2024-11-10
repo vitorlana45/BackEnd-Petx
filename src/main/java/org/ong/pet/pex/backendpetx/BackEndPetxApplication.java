@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import java.time.*;
 import java.util.*;
 
 @SpringBootApplication
@@ -38,6 +39,11 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 
 		list.add(an);
 
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println("localDateTime  " + now);
+
+		Instant is = Instant.now();
+		System.out.println("Instant  " + is);
 
 		// Exibindo os valores
 		System.out.println("Nome: " + an.getNome());
