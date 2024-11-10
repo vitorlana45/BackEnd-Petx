@@ -1,12 +1,32 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-import com.fasterxml.jackson.annotation.*;
-import jakarta.persistence.*;
-import lombok.*;
-import org.ong.pet.pex.backendpetx.enums.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
+import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "animal_tb")
@@ -14,7 +34,7 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Animal {
+public class Animal extends EntidadeBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_animal")
@@ -55,22 +75,6 @@ public class Animal {
 
     @Column(name = "esta_vivo")
     private boolean estaVivo;
-
-    @Column(updatable = false)
-    private LocalDateTime criadoEm;
-
-    private LocalDateTime atualizadoEm;
-
-    @PrePersist
-    protected void onCreate() {
-        criadoEm = LocalDateTime.now();
-        atualizadoEm = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        atualizadoEm = LocalDateTime.now();
-    }
 
     @ManyToMany
     @JoinTable(

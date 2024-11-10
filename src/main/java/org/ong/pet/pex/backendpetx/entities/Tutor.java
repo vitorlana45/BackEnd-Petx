@@ -1,7 +1,22 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -12,7 +27,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "tutor_tb")
-public class Tutor {
+public class Tutor extends EntidadeBase{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,16 +57,6 @@ public class Tutor {
 
     private LocalDateTime atualizadoEm;
 
-    @PrePersist
-    protected void onCreate() {
-        criadoEm = LocalDateTime.now();
-        atualizadoEm = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        atualizadoEm = LocalDateTime.now();
-    }
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(

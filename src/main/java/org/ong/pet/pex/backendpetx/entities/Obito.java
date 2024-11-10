@@ -1,13 +1,23 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
-import java.time.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "obito_tb")
-public class Obito {
+public class Obito extends EntidadeBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_obito")
@@ -28,16 +38,6 @@ public class Obito {
 
     private LocalDateTime atualizadoEm;
 
-    @PrePersist
-    protected void onCreate() {
-        criadoEm = LocalDateTime.now();
-        atualizadoEm = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        atualizadoEm = LocalDateTime.now();
-    }
 
     @Override
     public boolean equals(Object o) {

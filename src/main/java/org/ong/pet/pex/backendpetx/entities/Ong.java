@@ -8,30 +8,36 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "item_tb")
-public class Item extends EntidadeBase {
+@Table(name = "ong_tb")
+public class Ong extends EntidadeBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_item")
+    @Column(name = "id_ong")
     private Long id;
 
-    @Column(name = "descricao")
-    private String descricao;
 
-    @Column(name = "quantidade")
-    private int quantidade;
+
+    @Column(updatable = false)
+    private LocalDateTime criadoEm;
+
+    private LocalDateTime atualizadoEm;
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id);
+        Ong ong = (Ong) o;
+        return Objects.equals(id, ong.id);
     }
 
     @Override
