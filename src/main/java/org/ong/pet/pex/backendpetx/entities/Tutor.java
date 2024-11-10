@@ -3,6 +3,7 @@ package org.ong.pet.pex.backendpetx.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -17,6 +18,12 @@ public class Tutor extends Usuario {
 
     @Column(name = "telefone")
     private Integer telefone;
+
+    @Column(updatable = false)
+    private LocalDateTime criadoEm;
+
+    private LocalDateTime atualizadoEm;
+
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(

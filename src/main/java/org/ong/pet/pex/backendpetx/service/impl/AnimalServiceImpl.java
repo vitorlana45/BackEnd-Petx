@@ -1,11 +1,12 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.*;
+import org.ong.pet.pex.backendpetx.dto.response.*;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
-import org.ong.pet.pex.backendpetx.service.exceptions.AnimalJaCadastrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,7 +23,7 @@ public class AnimalServiceImpl implements AnimalService {
 
     // apenas funcionará quando todos os animais forem cadastrados pela primeira vez
     // vamos discutir e ver compensa manter esse metodo
-    public AnimalDTO cadastrarAnimalComConjunto(AnimalDTO animalDTO) {
+    public RespostaAnimalComConjuntoDTO cadastrarAnimalComConjunto(AnimalDTO animalDTO) {
         if (animalRepository.findAnimalByNome(animalDTO.nome()) != null) {
             throw new AnimalJaCadastrado("Animal com o nome: " + animalDTO.nome() + " já cadastrado");
         }
@@ -44,7 +45,7 @@ public class AnimalServiceImpl implements AnimalService {
 
         animalRepository.save(animal);
 
-        return animalDTO;
+        return converterParaRespostaAnimalComConjuntoDTO(animal);
     }
 
     @Override
@@ -66,6 +67,19 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public void declararObito(Long id) {
 
+    }
+
+    @Override
+    public RespostaAnimalSemConjunto animalSemConjunto(AnimalSemConjuntoDTO animalSemConjuntoDTO) {
+        return null;
+    }
+
+    @Override
+    public RespostaAnimalComConjuntoDTO buscarAnimalPorId(Long id) {
+
+    Animal entidade = animalRepository.findById(id).orElseThrow(() -> new AnimalNaoEncontrado("Animal com id: " + id + " não encontrado"));
+
+        return converterParaRespostaAnimalComConjuntoDTO(entidade);
     }
 
     private Animal converterParaAnimal(AnimalDTO animalDTO) {
@@ -101,4 +115,31 @@ public class AnimalServiceImpl implements AnimalService {
         return animalConjunto;
     }
 
+    private RespostaAnimalComConjuntoDTO converterParaRespostaAnimalComConjuntoDTO(Animal animal) {
+        return new RespostaAnimalComConjuntoDTO(
+                animal.getId(),
+                animal.getNome(),
+                animal.getIdade(),
+                animal.getRaca(),
+                animal.getSexoEnum().toString(),
+                animal.getOrigemEnum().toString(),
+                animal.getPorteEnum().toString(),
+                animal.getComportamentoEnum().toString(),
+                animal.getEspecieEnum().toString(),
+                animal.getAnimalConjunto().stream()
+                        .map(animalConjunto -> new RespostaAnimalComConjuntoDTO(
+                                animalConjunto.getId(),
+                                animalConjunto.getNome(),
+                                animalConjunto.getIdade(),
+                                animalConjunto.getRaca(),
+                                animalConjunto.getSexoEnum().toString(),
+                                animalConjunto.getOrigemEnum().toString(),
+                                animalConjunto.getPorteEnum().toString(),
+                                animalConjunto.getComportamentoEnum().toString(),
+                                animalConjunto.getEspecieEnum().toString(),
+                                null
+                        ))
+                        .collect(Collectors.toSet())
+        );
+    }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -49,7 +50,28 @@ public class Animal {
     @Column(name = "especie")
     private EspecieEnum especieEnum;
 
-    @ManyToMany
+    @ElementCollection
+    @CollectionTable(name = "animal_doencas", joinColumns = @JoinColumn(name = "animal_id"))
+    @Column(name = "doenca")
+    private Set<String> doencas;
+
+    @Column(updatable = false)
+    private LocalDateTime criadoEm;
+
+    private LocalDateTime atualizadoEm;
+
+    @PrePersist
+    protected void onCreate() {
+        criadoEm = LocalDateTime.now();
+        atualizadoEm = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        atualizadoEm = LocalDateTime.now();
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "animal_conjunto_adocao",
             joinColumns = @JoinColumn(name = "animal_id"),
@@ -67,6 +89,11 @@ public class Animal {
     )
     private Set<Tutor> tutores;
 
-     @OneToOne
-     private Obituario obituario;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "animal_obituarios",
+            joinColumns = @JoinColumn(name = "animal_id"),
+            inverseJoinColumns = @JoinColumn(name = "obituario_id")
+    )
+    private Set<Obituario> obituarios = new HashSet<>();
 }
