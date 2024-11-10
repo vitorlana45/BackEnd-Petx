@@ -49,13 +49,15 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
         if (this.role.equals(UserRole.ADMIN)) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_COLABORADOR"));
+        } else if (this.role.equals(UserRole.COLABORADOR)) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_COLABORADOR"));
         }
-        if (this.role == null || this.role.getRole().isEmpty() || this.role.getRole().isBlank()) {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        }
-        return List.of();
+        return authorities;
     }
 
     @Override

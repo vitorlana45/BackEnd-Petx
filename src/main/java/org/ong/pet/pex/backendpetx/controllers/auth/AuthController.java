@@ -19,8 +19,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthLoginResposta login(@RequestBody AuthLoginRequisicao authLoginRequisicao) {
-        return authService.validateLogin(authLoginRequisicao);
+    public ResponseEntity<AuthLoginResposta> login(@RequestBody AuthLoginRequisicao authLoginRequisicao) {
+        var token = authService.validarLogin(authLoginRequisicao);
+        return ResponseEntity.ok().body(token);
     }
 
     @PutMapping("/recuperar-token")

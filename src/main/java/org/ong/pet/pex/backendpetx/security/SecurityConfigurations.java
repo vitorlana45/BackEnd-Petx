@@ -41,7 +41,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/buscar/{email}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/todos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/deletar/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/animais/primeiro/cadastro/conjunto").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/animais/cadastrar").hasAnyRole("COLABORADOR","ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/animais/primeiro/cadastro/conjunto/**").hasAnyRole("COLABORADOR","ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/animais/buscar/**").hasAnyRole("COLABORADOR","ADMIN")
                         // uso ENDPOINT DOS USUÁRIOS ABAIXO
                         .anyRequest().authenticated()
                 )

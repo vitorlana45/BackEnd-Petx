@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional
-    public AuthLoginResposta validateLogin(@Valid AuthLoginRequisicao data) {
+    public AuthLoginResposta validarLogin(@Valid AuthLoginRequisicao data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         Authentication auth = this.authenticationManager.authenticate(usernamePassword);
 

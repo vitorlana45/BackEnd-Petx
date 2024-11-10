@@ -40,7 +40,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         String encryptedPassword = new BCryptPasswordEncoder().encode(usuarioDTO.password());
 
         entidade.setPassword(encryptedPassword);
-        entidade.setRole(UserRole.USER);
+        entidade.setRole(UserRole.COLABORADOR);
 
         entidade = usuarioRepository.save(entidade);
 

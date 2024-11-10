@@ -5,6 +5,7 @@ import org.ong.pet.pex.backendpetx.dto.request.*;
 import org.ong.pet.pex.backendpetx.dto.response.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +25,14 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('COLABORADOR')")
     @PostMapping("/primeiro/cadastro/conjunto")
     public ResponseEntity<RespostaAnimalComConjuntoDTO> cadastrarAnimal(@RequestBody @Valid AnimalDTO animalDTO) {
         RespostaAnimalComConjuntoDTO entidade = animalService.cadastrarAnimalComConjunto(animalDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/buscar/{id}").buildAndExpand(entidade.id()).toUri();
         return ResponseEntity.created(uri).body(entidade);
     }
-
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('COLABORADOR')")
     @PostMapping("/cadastrar")
     public ResponseEntity<RespostaAnimalSemConjunto> cadastrarAnimalSemConjunto(@RequestBody @Valid AnimalSemConjuntoDTO animalSemConjuntoDTO) {
         var entidade = animalService.animalSemConjunto(animalSemConjuntoDTO);
@@ -41,7 +40,7 @@ public class AnimalController {
         return ResponseEntity.created(uri).body(entidade);
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasRole('COLABORADOR')")
     @GetMapping("/buscar/{id}")
     public ResponseEntity<RespostaAnimalComConjuntoDTO> buscarAnimalPorId(@PathVariable final Long id) {
         var entidade = animalService.buscarAnimalPorId(id);

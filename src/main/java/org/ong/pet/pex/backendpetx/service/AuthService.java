@@ -8,7 +8,7 @@ import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
 
 public interface AuthService {
 
-    AuthLoginResposta validateLogin(@Valid AuthLoginRequisicao data) throws UsuarioNaoEncontrado;
+    AuthLoginResposta validarLogin(@Valid AuthLoginRequisicao data) throws UsuarioNaoEncontrado;
 
 
     void criarRecuperarToken(@Valid EmailDTO emailDTO) throws UsuarioNaoEncontrado;
