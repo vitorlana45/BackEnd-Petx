@@ -13,7 +13,6 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +48,13 @@ public class Animal {
     @Column(name = "especie")
     private EspecieEnum especieEnum;
 
+    @ElementCollection
+    @Column(name = "doencas")
+    private Set<String> doencas = new HashSet<>();
+
+    @Column(name = "esta_vivo")
+    private boolean estaVivo;
+
     @ManyToMany
     @JoinTable(
             name = "animal_conjunto_adocao",
@@ -67,6 +73,16 @@ public class Animal {
     )
     private Set<Tutor> tutores;
 
-     @OneToOne
-     private Obituario obituario;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Animal animal = (Animal) o;
+        return Objects.equals(id, animal.id) && Objects.equals(nome, animal.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome);
+    }
 }

@@ -6,8 +6,8 @@ import java.time.*;
 import java.util.*;
 
 @Entity
-@Table(name = "obituario_tb")
-public class Obituario {
+@Table(name = "obito_tb")
+public class Obito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_obito")
@@ -19,8 +19,9 @@ public class Obituario {
     @Column(name = "motivo_obito")
     private String motivoObito;
 
-    @ManyToMany(mappedBy = "obituarios")
-    private Set<Animal> animais = new HashSet<>();
+    @OneToOne
+    @JoinColumn(name = "id_animal", referencedColumnName = "id_animal")
+    private Animal animal;
 
     @Column(updatable = false)
     private LocalDateTime criadoEm;
@@ -38,4 +39,16 @@ public class Obituario {
         atualizadoEm = LocalDateTime.now();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Obito obito = (Obito) o;
+        return Objects.equals(id, obito.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

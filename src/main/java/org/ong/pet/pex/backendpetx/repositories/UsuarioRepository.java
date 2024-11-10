@@ -13,5 +13,4 @@ Usuario findUsuarioByEmail(@Param("email") String email);
 
     UserDetails findByEmail(String username);
 
-
 }
