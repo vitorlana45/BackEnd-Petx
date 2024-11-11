@@ -16,7 +16,6 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class EntidadeBase {
 
-    // Getters and setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
@@ -29,22 +28,14 @@ public abstract class EntidadeBase {
     private LocalDateTime atualizadoEm;
 
     @PrePersist
-    protected void onCreate() {
+    protected void criadoEm() {
         criadoEm = LocalDateTime.now();
         atualizadoEm = LocalDateTime.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
+    protected void atualizadoEm() {
         atualizadoEm = LocalDateTime.now();
-    }
-
-    public void setCriadoEm(LocalDateTime criadoEm) {
-        this.criadoEm = criadoEm;
-    }
-
-    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
-        this.atualizadoEm = atualizadoEm;
     }
 
     @Override

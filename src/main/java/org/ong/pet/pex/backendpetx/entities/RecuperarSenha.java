@@ -28,6 +28,4 @@ public class RecuperarSenha extends EntidadeBase {
     @Column(updatable = false)
     private LocalDateTime criadoEm;
 
-    private LocalDateTime atualizadoEm;
-
 }

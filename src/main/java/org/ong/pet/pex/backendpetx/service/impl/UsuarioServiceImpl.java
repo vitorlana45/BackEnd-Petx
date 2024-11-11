@@ -1,7 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import org.ong.pet.pex.backendpetx.dto.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
+import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.entities.UserRole;
 import org.ong.pet.pex.backendpetx.entities.Usuario;

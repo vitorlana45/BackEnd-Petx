@@ -1,8 +1,7 @@
 package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
-import org.ong.pet.pex.backendpetx.dto.request.AnimalSemConjuntoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalComConjuntoDTO;
+import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 
 import java.util.List;
@@ -12,16 +11,16 @@ public interface AnimalService {
 
     List<AnimalDTO> animaisCadastrados ();
 
-    RespostaAnimalComConjuntoDTO cadastrarAnimalComConjunto (AnimalDTO animalDTO);
+    AnimalGenericoResposta cadastrarAnimalComConjunto (AnimalDTO animalDTO);
 
-    AnimalDTO atualizarAnimal (Long id);
+    AnimalGenericoResposta atualizarAnimal (Long id, AnimalDTO animalSemConjuntoDTO);
 
     void deletarPorId (Long id);
 
     void declararObito (Long id);
 
-    RespostaAnimalSemConjunto animalSemConjunto (AnimalSemConjuntoDTO animalSemConjuntoDTO);
+    RespostaAnimalSemConjunto animalSemConjunto (AnimalDTO animalSemConjuntoDTO);
 
-    RespostaAnimalComConjuntoDTO buscarAnimalPorId(Long id);
+    AnimalGenericoResposta buscarAnimalPorId(Long id);
 
 }

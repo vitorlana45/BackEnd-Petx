@@ -1,40 +1,27 @@
 package org.ong.pet.pex.backendpetx.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 
-public record AnimalConjuntoDTO(
-        
-        @NotBlank(message = "O nome não pode estar em branco")
-        String nome,
+import java.util.Set;
 
-        @NotNull(message = "A idade é obrigatória")
-        @Min(value = 0, message = "A idade não pode ser negativa")
-        Integer idade,
 
-        @NotBlank(message = "A raça não pode estar em branco")
-        String raca,
+@Getter
+@Setter
+public class AnimalConjuntoDTO extends AnimalGenericoRequisicao {
 
-        @NotNull(message = "O sexo é obrigatório")
-        SexoEnum sexoEnum,
+    private Set<AnimalConjuntoDTO> animalConjunto;
+    private Long id;
 
-        @NotNull(message = "A origem é obrigatória")
-        OrigemAnimalEnum origemEnum, // Novo campo adicionado para origem
 
-        @NotNull(message = "O porte é obrigatório")
-        PorteEnum porteEnum,
+    public AnimalConjuntoDTO(Long id,String nome, Integer idade, String raca, SexoEnum sexo, OrigemAnimalEnum origem, PorteEnum porte, ComportamentoEnum comportamento, EspecieEnum especie, Set<String> doencas) {
+        super(nome, idade, raca, sexo, origem, porte, comportamento, especie, doencas);
+        this.id = id;
+    }
 
-        @NotNull(message = "O comportamento é obrigatório")
-        ComportamentoEnum comportamentoEnum,
-
-        @NotNull(message = "A espécie é obrigatória")
-        EspecieEnum especieEnum
-        
-        ) {
 }

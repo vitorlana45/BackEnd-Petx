@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.service.SecurityService;
+package org.ong.pet.pex.backendpetx.service.securityService;
 
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;

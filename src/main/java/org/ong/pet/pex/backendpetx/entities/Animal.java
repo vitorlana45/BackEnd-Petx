@@ -23,6 +23,7 @@ import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -93,4 +94,18 @@ public class Animal extends EntidadeBase {
     )
     private Set<Tutor> tutores;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Animal animal = (Animal) o;
+        return Objects.equals(nome, animal.nome) && Objects.equals(idade, animal.idade);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), nome, idade);
+    }
 }
