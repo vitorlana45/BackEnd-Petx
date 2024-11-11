@@ -9,6 +9,8 @@ import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.exceptions.AnimalJaCadastrado;
 import org.ong.pet.pex.backendpetx.service.exceptions.AnimalNaoEncontrado;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.Convers
 public class AnimalServiceImpl implements AnimalService {
 
     private final AnimalRepository animalRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
 
     public AnimalServiceImpl(AnimalRepository animalRepository) {
         this.animalRepository = animalRepository;
@@ -28,6 +31,9 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Transactional
     public AnimalGenericoResposta cadastrarAnimalComConjunto(AnimalDTO animalDTO) {
+
+        logger.info("Iniciando criação de um novo animal com nome: {}", animalDTO.getNome());
+
         if (animalRepository.findAnimalByNome(animalDTO.getNome()) != null) {
             throw new AnimalJaCadastrado("Animal com o nome: " + animalDTO.getNome() + " já cadastrado");
         }
@@ -36,13 +42,13 @@ public class AnimalServiceImpl implements AnimalService {
                 if (animalRepository.findAnimalByNome(conjunto.getNome()) != null) {
                     throw new AnimalJaCadastrado("Animal conjunto com o nome: " + conjunto.getNome() + " já cadastrado");
                 }
-                var a = conjunto.getAnimalConjunto();
             });
         }
         Animal animal = converterParaAnimal(animalDTO);
 
         if (animal.getAnimalConjunto() != null) {
             // vou salvar todos os conjuntos primieros
+            logger.info("Salvando animais do conjunto antes de salvar o animal Principal {}", animal.getAnimalConjunto());
           animalRepository.saveAll(animal.getAnimalConjunto());
         }
         animalRepository.save(animal);

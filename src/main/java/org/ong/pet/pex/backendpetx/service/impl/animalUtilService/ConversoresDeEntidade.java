@@ -4,6 +4,8 @@ import org.ong.pet.pex.backendpetx.dto.request.AnimalConjuntoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +13,12 @@ import java.util.stream.Collectors;
 
 public class ConversoresDeEntidade {
 
+    private static final Logger logger = LoggerFactory.getLogger(ConversoresDeEntidade.class);
+
     public static Animal converterParaAnimal(AnimalDTO animalDTO) {
+
+        logger.info("Iniciando a conversão para AnimalDTO");
+
         Animal animal = new Animal();
         animal.setNome(animalDTO.getNome());
         animal.setRaca(animalDTO.getRaca());
@@ -23,12 +30,12 @@ public class ConversoresDeEntidade {
         animal.setComportamentoEnum(animalDTO.getComportamento());
         animal.getDoencas().addAll(animalDTO.getDoencas());
 
-        // Inicializar o conjunto se necessário
+
         if (animal.getAnimalConjunto() == null) {
             animal.setAnimalConjunto(new HashSet<>());
         }
 
-        // Converter cada animal do conjunto
+
         if (animalDTO.getAnimalConjunto() != null) {
             for (AnimalConjuntoDTO conjuntoDTO : animalDTO.getAnimalConjunto()) {
                 Animal animalConjunto = converterAnimalConjuntoParaAnimal(conjuntoDTO);
@@ -58,6 +65,7 @@ public class ConversoresDeEntidade {
     }
 
     public static AnimalGenericoResposta converterParaRespostaAnimalComConjuntoDTO(Animal animal) {
+        logger.info("Iniciando a conversão para AnimalGenericoResposta para retornar ao cliente");
         return new AnimalGenericoResposta(
                 animal.getId(),
                 animal.getNome(),
@@ -72,24 +80,6 @@ public class ConversoresDeEntidade {
                 converterApenasAListasDosAnimaisConjunto(animal)
         );
     }
-
-
-    public static AnimalGenericoResposta converterParaRespostaAnimalSemConjunto(Animal animal) {
-        return new AnimalGenericoResposta(
-                animal.getId(),
-                animal.getNome(),
-                animal.getIdade(),
-                animal.getRaca(),
-                animal.getSexoEnum().toString(),
-                animal.getOrigemEnum().toString(),
-                animal.getPorteEnum().toString(),
-                animal.getComportamentoEnum().toString(),
-                animal.getEspecieEnum().toString(),
-                animal.getDoencas(),
-                null
-        );
-    }
-
 
     public static Set<AnimalGenericoResposta> converterApenasAListasDosAnimaisConjunto(Animal animal) {
         return animal.getAnimalConjunto().stream()
