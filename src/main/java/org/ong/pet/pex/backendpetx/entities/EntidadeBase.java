@@ -21,6 +21,7 @@ public class EntidadeBase {
         atualizadoEm = LocalDateTime.now();
     }
 
+
     @PreUpdate
     protected void updateEm() {
         atualizadoEm = LocalDateTime.now();
