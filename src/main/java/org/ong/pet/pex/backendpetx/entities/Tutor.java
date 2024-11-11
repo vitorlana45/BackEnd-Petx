@@ -2,6 +2,7 @@ package org.ong.pet.pex.backendpetx.entities;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,15 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -27,36 +27,23 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "tutor_tb")
-public class Tutor extends EntidadeBase{
+public class Tutor extends EntidadeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tutor_id")
     private Long id;
 
-    @Column(name = "idade")
-    private Integer idade;
-
     @Column(name = "telefone")
     private Integer telefone;
 
-    @Column(name = "cep")
-    private String cep;
+    @Embedded
+    @Column(name = "endereco")
+    private Endereco endereco;
 
-    @Column(name = "cidade")
-    private String cidade;
-
-    @Column(name = "bairro")
-    private String bairro;
-
-    @Column(name = "rua")
-    private String rua;
-
-    @Column(updatable = false)
-    private LocalDateTime criadoEm;
-
-    private LocalDateTime atualizadoEm;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_ong")
+    private Ong ong;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(

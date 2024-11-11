@@ -1,16 +1,19 @@
 package org.ong.pet.pex.backendpetx;
 
-import jakarta.persistence.Cacheable;
-import org.ong.pet.pex.backendpetx.entities.*;
-import org.ong.pet.pex.backendpetx.enums.*;
-import org.springframework.boot.*;
+import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
+import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.time.*;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 @EnableAsync
@@ -24,6 +27,7 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		List<Animal> list = new ArrayList<Animal>();
+
 
 
 		Animal an = new Animal();

@@ -4,7 +4,7 @@ import org.ong.pet.pex.backendpetx.dto.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 
-import java.util.*;
+import java.util.Map;
 
 public interface UsuarioService {
 

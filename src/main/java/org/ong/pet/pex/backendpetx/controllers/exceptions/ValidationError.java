@@ -3,7 +3,8 @@ package org.ong.pet.pex.backendpetx.controllers.exceptions;
 import lombok.Getter;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ValidationError extends StandardError {

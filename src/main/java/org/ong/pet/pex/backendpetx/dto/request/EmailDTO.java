@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public record EmailDTO(
         @Email(message = "Email inválido")

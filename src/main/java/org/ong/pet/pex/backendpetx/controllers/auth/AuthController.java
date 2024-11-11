@@ -1,11 +1,16 @@
 package org.ong.pet.pex.backendpetx.controllers.auth;
 
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.request.*;
+import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.EmailDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
 import org.ong.pet.pex.backendpetx.service.impl.AuthServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")

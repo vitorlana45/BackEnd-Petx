@@ -1,7 +1,13 @@
 package org.ong.pet.pex.backendpetx.dto.request;
 
-import jakarta.validation.constraints.*;
-import org.ong.pet.pex.backendpetx.enums.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
+import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 
 import java.util.Set;
 

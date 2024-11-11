@@ -1,6 +1,9 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Set;
 
 @Data

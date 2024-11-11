@@ -1,8 +1,10 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.io.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 
 @Getter

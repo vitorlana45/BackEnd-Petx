@@ -2,18 +2,20 @@ package org.ong.pet.pex.backendpetx.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
-
+import java.util.Set;
 @Getter
 @Setter
 @Entity
@@ -24,13 +26,21 @@ public class Ong extends EntidadeBase {
     @Column(name = "id_ong")
     private Long id;
 
+    @OneToMany(mappedBy = "ong")
+    private Set<Animal> animais;
 
+    @OneToMany(mappedBy = "ong")
+    private Set<Tutor> tutors;
 
-    @Column(updatable = false)
-    private LocalDateTime criadoEm;
+    @OneToMany(mappedBy = "ong")
+    private Set<Usuario> usuario;
 
-    private LocalDateTime atualizadoEm;
+    @OneToMany(mappedBy = "ong")
+    private List<Despesa> despesas;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estoque")
+    private Estoque estoque;
 
     @Override
     public boolean equals(Object o) {

@@ -1,12 +1,16 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.request.*;
+import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.EmailDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
-import org.ong.pet.pex.backendpetx.entities.*;
-import org.ong.pet.pex.backendpetx.repositories.*;
+import org.ong.pet.pex.backendpetx.entities.RecuperarSenha;
+import org.ong.pet.pex.backendpetx.entities.Usuario;
+import org.ong.pet.pex.backendpetx.repositories.RecuperarSenhaRepository;
+import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.security.TokenService;
-import org.ong.pet.pex.backendpetx.service.*;
+import org.ong.pet.pex.backendpetx.service.AuthService;
+import org.ong.pet.pex.backendpetx.service.EmailService;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {

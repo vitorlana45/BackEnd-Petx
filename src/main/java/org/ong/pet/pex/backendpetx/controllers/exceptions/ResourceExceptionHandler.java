@@ -1,11 +1,16 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.ong.pet.pex.backendpetx.service.exceptions.*;
-import org.springframework.http.*;
+import org.ong.pet.pex.backendpetx.service.exceptions.AnimalJaCadastrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.AnimalNaoEncontrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioJaCadastrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
 

@@ -4,11 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,10 +45,8 @@ public class Usuario extends EntidadeBase implements UserDetails {
     @Column(name = "role")
     private UserRole role;
 
-    @Column(updatable = false)
-    private LocalDateTime criadoEm;
-
-    private LocalDateTime atualizadoEm;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Ong ong;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

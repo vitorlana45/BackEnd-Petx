@@ -1,15 +1,24 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import org.ong.pet.pex.backendpetx.dto.request.*;
-import org.ong.pet.pex.backendpetx.dto.response.*;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalConjuntoDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalSemConjuntoDTO;
+import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalComConjuntoDTO;
+import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.enums.*;
+import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
+import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
-import org.ong.pet.pex.backendpetx.service.exceptions.*;
+import org.ong.pet.pex.backendpetx.service.exceptions.AnimalJaCadastrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.AnimalNaoEncontrado;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service

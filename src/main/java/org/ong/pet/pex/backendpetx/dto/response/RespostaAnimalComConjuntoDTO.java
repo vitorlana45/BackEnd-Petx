@@ -1,7 +1,5 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
-import lombok.*;
-
 import java.util.Set;
 public record RespostaAnimalComConjuntoDTO(
         Long id,

@@ -3,16 +3,20 @@ package org.ong.pet.pex.backendpetx.service.impl;
 import org.ong.pet.pex.backendpetx.dto.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
-import org.ong.pet.pex.backendpetx.entities.*;
+import org.ong.pet.pex.backendpetx.entities.UserRole;
+import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
-import org.ong.pet.pex.backendpetx.service.exceptions.*;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioJaCadastrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {

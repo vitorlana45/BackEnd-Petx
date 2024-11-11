@@ -1,13 +1,15 @@
 package org.ong.pet.pex.backendpetx.service.validation;
 
-import jakarta.validation.*;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.ong.pet.pex.backendpetx.controllers.exceptions.FieldMessage;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ValidadorDeInsercaoDeUsuario implements ConstraintValidator<InserirUsuarioValido, UsuarioDTO> {
 
