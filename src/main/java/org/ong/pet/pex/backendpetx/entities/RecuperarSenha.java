@@ -2,9 +2,6 @@ package org.ong.pet.pex.backendpetx.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +10,6 @@ import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,9 +19,6 @@ import java.util.Objects;
 @Table(name = "recuperar_senha_tb")
 public class RecuperarSenha extends EntidadeBase {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @Column(nullable = false)
     private String token;
     @Column(nullable = false)
@@ -37,17 +30,4 @@ public class RecuperarSenha extends EntidadeBase {
 
     private LocalDateTime atualizadoEm;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RecuperarSenha that = (RecuperarSenha) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

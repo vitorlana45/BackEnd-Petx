@@ -3,9 +3,6 @@ package org.ong.pet.pex.backendpetx.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -16,7 +13,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -25,10 +21,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "cadastro_despesas")
 public class Despesa extends EntidadeBase {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, name = "motivo")
     private String motivo;
@@ -61,16 +53,4 @@ public class Despesa extends EntidadeBase {
     @ManyToOne(fetch = FetchType.EAGER)
     private Ong ong;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Despesa despesa = (Despesa) o;
-        return Objects.equals(id, despesa.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 }

@@ -7,9 +7,6 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -26,7 +23,6 @@ import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -36,10 +32,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class Animal extends EntidadeBase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_animal")
-    private Long id;
 
     @Column(name = "nome", unique = true)
     private String nome;
@@ -101,16 +93,4 @@ public class Animal extends EntidadeBase {
     )
     private Set<Tutor> tutores;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Animal animal = (Animal) o;
-        return Objects.equals(id, animal.id) && Objects.equals(nome, animal.nome);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nome);
-    }
 }
