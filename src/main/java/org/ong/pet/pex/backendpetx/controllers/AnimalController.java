@@ -8,6 +8,7 @@ import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +58,13 @@ public class AnimalController {
     public ResponseEntity<AnimalGenericoResposta> atualizarAnimal(@PathVariable final Long id, @RequestBody @Valid AnimalDTO animalSemConjuntoDTO) {
         AnimalGenericoResposta entidade = animalService.atualizarAnimal(id, animalSemConjuntoDTO);
         return ResponseEntity.ok().body(entidade);
+    }
+
+    @PreAuthorize("hasRole('COLABORADOR')")
+    @DeleteMapping("deletar/{id}")
+    public ResponseEntity<Void> deletarAnimal(@PathVariable final Long id) {
+        animalService.deletarPorId(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

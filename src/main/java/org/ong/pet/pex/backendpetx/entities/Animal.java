@@ -2,6 +2,8 @@ package org.ong.pet.pex.backendpetx.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -64,19 +66,19 @@ public class Animal extends EntidadeBase {
     private EspecieEnum especieEnum;
 
     @ElementCollection
-    @Column(name = "doencas")
+    @CollectionTable(name = "animal_doencas", joinColumns = @JoinColumn(name = "animal_id"))
+    @Column(name = "doenca")
     private Set<String> doencas = new HashSet<>();
 
     @Column(name = "esta_vivo")
     private boolean estaVivo;
-
 
     @ManyToOne
     @JoinColumn(name = "id_ong")
     private Ong ong;
 
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "animal_conjunto_adocao",
             joinColumns = @JoinColumn(name = "animal_id"),
@@ -84,6 +86,7 @@ public class Animal extends EntidadeBase {
     )
     @JsonManagedReference
     private Set<Animal> animalConjunto = new HashSet<>();
+
 
     @ManyToMany
     @JsonIgnore
