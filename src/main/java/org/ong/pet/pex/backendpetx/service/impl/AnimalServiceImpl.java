@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.ConversoresDeEntidade.converterParaAnimal;
 import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.ConversoresDeEntidade.converterParaRespostaAnimalComConjuntoDTO;
@@ -45,13 +47,14 @@ public class AnimalServiceImpl implements AnimalService {
             });
         }
         Animal animal = converterParaAnimal(animalDTO);
+         animal.getAnimalConjunto().addAll(new HashSet<>());
+
+        animalRepository.save(animal);
 
         if (animal.getAnimalConjunto() != null) {
-            // vou salvar todos os conjuntos primieros
             logger.info("Salvando animais do conjunto antes de salvar o animal Principal {}", animal.getAnimalConjunto());
-          animalRepository.saveAll(animal.getAnimalConjunto());
+            animalRepository.saveAll(animal.getAnimalConjunto());
         }
-        animalRepository.save(animal);
         return converterParaRespostaAnimalComConjuntoDTO(animal);
     }
 

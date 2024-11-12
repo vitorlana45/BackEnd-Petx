@@ -50,5 +50,8 @@ public class AnimalGenericoRequisicao {
     @UniqueElements(message = "Doença repetida")
     private Set<String> doencas;
 
+    @NotNull(message = "O status de vida é obrigatório")
+    private boolean estaVivo;
+
 
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 public class RespostaAnimalSemConjunto extends AnimalGenericoResposta {
 
     public RespostaAnimalSemConjunto(Long id, String nome, Integer idade, String raca, String sexo, String origem,
-                                     String porte, String comportamento, String especie, Set<String> doencas, Set<AnimalGenericoResposta> animalConjunto) {
-        super(id, nome, idade, raca, sexo, origem, porte, comportamento, especie, doencas, animalConjunto);
+                                     String porte, String comportamento, String especie, Set<String> doencas, boolean estaVivo,Set<AnimalGenericoResposta> animalConjunto) {
+        super(id, nome, idade, raca, sexo, origem, porte, comportamento, especie, doencas, estaVivo, animalConjunto);
     }
 }

@@ -23,6 +23,7 @@ public class AnimalGenericoResposta {
     private String comportamento;
     private String especie;
     private Set<String> doencas;
-    private Set<AnimalGenericoResposta> ann;
+    private boolean estaVivo;
+    private Set<AnimalGenericoResposta> animaisConjunto;
 
 }

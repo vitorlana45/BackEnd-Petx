@@ -29,6 +29,7 @@ public class ConversoresDeEntidade {
         animal.setOrigemEnum(animalDTO.getOrigem());
         animal.setComportamentoEnum(animalDTO.getComportamento());
         animal.getDoencas().addAll(animalDTO.getDoencas());
+        animal.setEstaVivo(animalDTO.isEstaVivo());
 
 
         if (animal.getAnimalConjunto() == null) {
@@ -57,6 +58,7 @@ public class ConversoresDeEntidade {
         animalConjunto.setOrigemEnum(conjuntoDTO.getOrigem());
         animalConjunto.setComportamentoEnum(conjuntoDTO.getComportamento());
         animalConjunto.getDoencas().addAll(conjuntoDTO.getDoencas());
+        animalConjunto.setEstaVivo(conjuntoDTO.isEstaVivo());
 
         // Inicializar o conjunto vazio para evitar NullPointerException
         animalConjunto.setAnimalConjunto(new HashSet<>());
@@ -77,6 +79,7 @@ public class ConversoresDeEntidade {
                 animal.getComportamentoEnum().toString(),
                 animal.getEspecieEnum().toString(),
                 animal.getDoencas(),
+                animal.isEstaVivo(),
                 converterApenasAListasDosAnimaisConjunto(animal)
         );
     }
@@ -94,6 +97,7 @@ public class ConversoresDeEntidade {
                         animalConjunto.getComportamentoEnum().toString(),
                         animalConjunto.getEspecieEnum().toString(),
                         animalConjunto.getDoencas(),
+                        animalConjunto.isEstaVivo(),
                         null
                 ))
                 .collect(Collectors.toSet());
