@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx;
 
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
@@ -28,6 +29,8 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 
 		List<Animal> list = new ArrayList<Animal>();
 
+
+		Ong ong = new Ong();
 
 
 		Animal an = new Animal();

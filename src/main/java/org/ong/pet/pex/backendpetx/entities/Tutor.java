@@ -26,6 +26,9 @@ import java.util.Set;
 @Table(name = "tutor_tb")
 public class Tutor extends EntidadeBase {
 
+    @Column(name = "nome")
+    private String nome;
+
     @Column(name = "telefone")
     private Integer telefone;
 

@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "ong_tb")
 public class Ong extends EntidadeBase {
 
-    @OneToMany(mappedBy = "ong", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ong", fetch = FetchType.EAGER)
     private Set<Animal> animais;
 
     @OneToMany(mappedBy = "ong", fetch = FetchType.LAZY)
