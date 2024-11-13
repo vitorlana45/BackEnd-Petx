@@ -1,8 +1,8 @@
 package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface AnimalService {
 
     void declararObito (Long id);
 
-    RespostaAnimalSemConjunto animalSemConjunto (AnimalDTO animalSemConjuntoDTO);
+    AnimalGenericoResposta cadastrarAnimalSolo (AnimalGenericoRequisicao animalGenericoRequisicao);
 
     AnimalGenericoResposta buscarAnimalPorId(Long id);
 

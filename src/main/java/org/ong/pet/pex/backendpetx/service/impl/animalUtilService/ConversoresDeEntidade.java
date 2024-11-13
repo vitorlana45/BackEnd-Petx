@@ -2,6 +2,7 @@ package org.ong.pet.pex.backendpetx.service.impl.animalUtilService;
 
 import org.ong.pet.pex.backendpetx.dto.request.AnimalConjuntoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.slf4j.Logger;
@@ -23,13 +24,6 @@ public class ConversoresDeEntidade {
         animal.setNome(animalDTO.getNome());
         animal.setRaca(animalDTO.getRaca());
         animal.setIdade(animalDTO.getIdade());
-        animal.setEspecieEnum(animalDTO.getEspecie());
-        animal.setPorteEnum(animalDTO.getPorte());
-        animal.setSexoEnum(animalDTO.getSexo());
-        animal.setOrigemEnum(animalDTO.getOrigem());
-        animal.setComportamentoEnum(animalDTO.getComportamento());
-        animal.getDoencas().addAll(animalDTO.getDoencas());
-        animal.setEstaVivo(animalDTO.isEstaVivo());
 
 
         if (animal.getAnimalConjunto() == null) {
@@ -70,6 +64,7 @@ public class ConversoresDeEntidade {
         logger.info("Iniciando a conversão para AnimalGenericoResposta para retornar ao cliente");
         return new AnimalGenericoResposta(
                 animal.getId(),
+                animal.getChipId(),
                 animal.getNome(),
                 animal.getIdade(),
                 animal.getRaca(),
@@ -88,6 +83,7 @@ public class ConversoresDeEntidade {
         return animal.getAnimalConjunto().stream()
                 .map(animalConjunto -> new AnimalGenericoResposta(
                         animalConjunto.getId(),
+                        animalConjunto.getChipId(),
                         animalConjunto.getNome(),
                         animalConjunto.getIdade(),
                         animalConjunto.getRaca(),
@@ -107,6 +103,22 @@ public class ConversoresDeEntidade {
         return animais.stream()
                 .map(ConversoresDeEntidade::converterParaRespostaAnimalComConjuntoDTO)
                 .collect(Collectors.toSet());
+    }
+
+    public static Animal converterParaAnimalSemConjunto(Animal animal, AnimalGenericoRequisicao animalGenericoRequisicao){
+        animal.setChipId(animalGenericoRequisicao.getChipId());
+        animal.setNome(animalGenericoRequisicao.getNome());
+        animal.setIdade(animalGenericoRequisicao.getIdade());
+        animal.setRaca(animalGenericoRequisicao.getRaca());
+        animal.setEspecieEnum(animalGenericoRequisicao.getEspecie());
+        animal.setPorteEnum(animalGenericoRequisicao.getPorte());
+        animal.setSexoEnum(animalGenericoRequisicao.getSexo());
+        animal.setOrigemEnum(animalGenericoRequisicao.getOrigem());
+        animal.setComportamentoEnum(animalGenericoRequisicao.getComportamento());
+        animal.getDoencas().addAll(animalGenericoRequisicao.getDoencas());
+        animal.setEstaVivo(true);
+        return animal;
+
     }
 
 }

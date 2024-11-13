@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ComportamentoEnum {
+
     AGRESSIVO("AGRESSIVO"),
     DOCIL("DOCIL");
     private final String comportamento;

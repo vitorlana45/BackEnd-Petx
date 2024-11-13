@@ -14,6 +14,7 @@ import java.util.Set;
 public class AnimalGenericoResposta {
 
     private Long id;
+    private String chipId;
     private String nome;
     private Integer idade;
     private String raca;

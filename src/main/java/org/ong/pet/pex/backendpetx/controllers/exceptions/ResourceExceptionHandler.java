@@ -1,8 +1,10 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.service.exceptions.AnimalJaCadastrado;
 import org.ong.pet.pex.backendpetx.service.exceptions.AnimalNaoEncontrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.OngNaoEncontrada;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioJaCadastrado;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
 import org.springframework.http.HttpStatus;
@@ -80,6 +82,18 @@ public class ResourceExceptionHandler {
         err.setTimestamp(Instant.now());
         err.setStatus(status.value());
         err.setError("Recurso nao encontrado");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(OngNaoEncontrada.class)
+    public ResponseEntity<StandardError> usuarioJaCadastrado(OngNaoEncontrada e, HttpServletRequest request) {
+        status = HttpStatus.BAD_REQUEST;
+
+        err.setTimestamp(Instant.now());
+        err.setStatus(status.value());
+        err.setError("Ong Não encontrada");
         err.setMessage(e.getMessage());
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);

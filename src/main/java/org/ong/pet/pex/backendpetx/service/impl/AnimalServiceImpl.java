@@ -4,13 +4,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
+import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.exceptions.AnimalJaCadastrado;
 import org.ong.pet.pex.backendpetx.service.exceptions.AnimalNaoEncontrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.OngNaoEncontrada;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.ConversoresDeEntidade.converterParaAnimal;
+import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.ConversoresDeEntidade.converterParaAnimalSemConjunto;
 import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.ConversoresDeEntidade.converterParaRespostaAnimalComConjuntoDTO;
 
 @Service
@@ -27,13 +31,15 @@ import static org.ong.pet.pex.backendpetx.service.impl.animalUtilService.Convers
 public class AnimalServiceImpl implements AnimalService {
 
     private final AnimalRepository animalRepository;
+    private final OngRepository ongReposiroy;
     private static final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public AnimalServiceImpl(AnimalRepository animalRepository) {
+    public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongReposiroy) {
         this.animalRepository = animalRepository;
+        this.ongReposiroy = ongReposiroy;
     }
 
     @Transactional
@@ -142,9 +148,21 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public RespostaAnimalSemConjunto animalSemConjunto(AnimalDTO animalSemConjuntoDTO) {
-        return null;
+    @Transactional
+    public AnimalGenericoResposta cadastrarAnimalSolo(AnimalGenericoRequisicao animalGenericoRequisicao) {
+
+        if(animalRepository.existsAnimalByChipId(animalGenericoRequisicao.getChipId()))
+            throw new AnimalJaCadastrado("Animal com o CHIP: " + animalGenericoRequisicao.getChipId() + " já cadastrado");
+
+        Animal newAnimal = new Animal();
+        converterParaAnimalSemConjunto(newAnimal, animalGenericoRequisicao);
+
+        Ong ong = ongReposiroy.findById(1L).orElseThrow(() -> new OngNaoEncontrada("Ong não encontrada!, Se nescessario entrar em contato com o Suporte."));
+        newAnimal.setOng(ong);
+
+        newAnimal = animalRepository.save(newAnimal);
+
+        return converterParaRespostaAnimalComConjuntoDTO(newAnimal);
     }
 
     @Override

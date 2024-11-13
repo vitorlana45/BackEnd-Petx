@@ -3,7 +3,6 @@ package org.ong.pet.pex.backendpetx.controllers;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,10 +37,10 @@ public class AnimalController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/buscar/{id}").buildAndExpand(entidade.getId()).toUri();
         return ResponseEntity.created(uri).body(entidade);
     }
-    @PreAuthorize("hasRole('COLABORADOR')")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
     @PostMapping("/cadastrar")
-    public ResponseEntity<RespostaAnimalSemConjunto> cadastrarAnimalSemConjunto(@RequestBody @Valid AnimalDTO animalSemConjuntoDTO) {
-        var entidade = animalService.animalSemConjunto(animalSemConjuntoDTO);
+    public ResponseEntity<AnimalGenericoResposta> cadastrarAnimalSemConjunto(@RequestBody @Valid AnimalDTO animalSemConjuntoDTO) {
+        var entidade = animalService.cadastrarAnimalSolo(animalSemConjuntoDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/buscar/{id}").buildAndExpand(entidade.getId()).toUri();
         return ResponseEntity.created(uri).body(entidade);
     }

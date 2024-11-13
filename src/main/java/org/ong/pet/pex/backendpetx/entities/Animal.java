@@ -36,11 +36,10 @@ import java.util.Set;
 @Setter
 public class Animal extends EntidadeBase {
 
-
     @Column(unique = true)
-    private String idChip;
+    private String chipId;
 
-    @Column(name = "nome", unique = true)
+    @Column(name = "nome")
     private String nome;
 
     @Column(name = "idade")

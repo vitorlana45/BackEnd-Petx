@@ -22,12 +22,15 @@ import java.util.Set;
 @NoArgsConstructor
 public class AnimalGenericoRequisicao {
 
+    @NotBlank(message = "O chipId não pode estar em branco e nem nulo")
+    private String chipId;
+
     @NotBlank(message = "O nome não pode estar em branco")
     private String nome;
 
     @NotNull(message = "A idade é obrigatória")
     @Min(value = 0, message = "A idade não pode ser negativa")
-    private Integer idade;
+    private int idade;
 
     @NotBlank(message = "A raça não pode estar em branco")
     private String raca;
