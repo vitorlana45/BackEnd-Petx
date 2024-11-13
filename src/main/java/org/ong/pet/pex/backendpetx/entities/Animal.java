@@ -36,6 +36,10 @@ import java.util.Set;
 @Setter
 public class Animal extends EntidadeBase {
 
+
+    @Column(unique = true)
+    private String idChip;
+
     @Column(name = "nome", unique = true)
     private String nome;
 
@@ -88,7 +92,7 @@ public class Animal extends EntidadeBase {
     private Set<Animal> animalConjunto = new HashSet<>();
 
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     @JoinTable(
             name = "animal_tutores",

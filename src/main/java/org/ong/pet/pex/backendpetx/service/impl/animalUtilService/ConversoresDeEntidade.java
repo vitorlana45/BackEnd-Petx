@@ -102,4 +102,11 @@ public class ConversoresDeEntidade {
                 ))
                 .collect(Collectors.toSet());
     }
+
+    public static Set<AnimalGenericoResposta> converterParaListaDeAnimaisComConjuntoDTO(Set<Animal> animais) {
+        return animais.stream()
+                .map(ConversoresDeEntidade::converterParaRespostaAnimalComConjuntoDTO)
+                .collect(Collectors.toSet());
+    }
+
 }
