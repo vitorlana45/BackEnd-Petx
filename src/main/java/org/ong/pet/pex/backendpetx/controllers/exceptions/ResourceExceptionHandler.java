@@ -64,7 +64,7 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(AnimalJaCadastrado.class)
-    public ResponseEntity<StandardError> usuarioJaCadastrado(AnimalJaCadastrado e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> AnimalJaCadastrado(AnimalJaCadastrado e, HttpServletRequest request) {
         status = HttpStatus.BAD_REQUEST;
 
         err.setTimestamp(Instant.now());
@@ -76,7 +76,7 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(AnimalNaoEncontrado.class)
-    public ResponseEntity<StandardError> usuarioJaCadastrado(AnimalNaoEncontrado e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> AnimalNaoEncontrado(AnimalNaoEncontrado e, HttpServletRequest request) {
         status = HttpStatus.BAD_REQUEST;
 
         err.setTimestamp(Instant.now());

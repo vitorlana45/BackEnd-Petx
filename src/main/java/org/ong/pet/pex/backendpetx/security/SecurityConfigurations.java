@@ -43,13 +43,15 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/todos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/deletar/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/animais/cadastrar").hasAnyRole("ADMIN", "COLABORADOR")
+                        .requestMatchers(HttpMethod.GET, "/api/animais/buscar/chip/{chip}").hasAnyRole("ADMIN", "COLABORADOR")
                         // uso ENDPOINT DOS COLABORADOR ABAIXO
-                        .requestMatchers(HttpMethod.GET, "/api/animais/buscar/**").hasAnyRole("COLABORADOR","ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/animais/primeiro/cadastro/conjunto/**").hasAnyRole("COLABORADOR","ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/animais/buscarId/{id}").hasAnyRole("COLABORADOR", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/animais/adicionar/conjuncao/**").hasAnyRole("COLABORADOR","ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/animais/cadastrar").hasAnyRole("COLABORADOR","ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/animais/atualizar/**").hasAnyRole("COLABORADOR","ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/animais/deletar/{id}").hasRole("COLABORADOR")
-
+                        .requestMatchers(HttpMethod.GET, "/api/animais/adicionar/conjunto/**").hasAnyRole("ADMIN","COLABORADOR")
+                        .requestMatchers(HttpMethod.GET, "/api/animais/listar/**").hasAnyRole("ADMIN","COLABORADOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

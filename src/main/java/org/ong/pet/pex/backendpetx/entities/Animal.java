@@ -1,10 +1,11 @@
 package org.ong.pet.pex.backendpetx.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ColumnResult;
+import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,11 +14,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedNativeQuery;
+import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.ong.pet.pex.backendpetx.entities.dtos.AnimalRelacionamentoDTO;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
@@ -28,12 +32,14 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "animal_tb")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+
 public class Animal extends EntidadeBase {
 
     @Column(unique = true)
@@ -68,7 +74,7 @@ public class Animal extends EntidadeBase {
     @Column(name = "especie")
     private EspecieEnum especieEnum;
 
-    @ElementCollection
+    @ElementCollection()
     @CollectionTable(name = "animal_doencas", joinColumns = @JoinColumn(name = "animal_id"))
     @Column(name = "doenca")
     private Set<String> doencas = new HashSet<>();
@@ -76,19 +82,9 @@ public class Animal extends EntidadeBase {
     @Column(name = "esta_vivo")
     private boolean estaVivo;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL,   CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_ong")
     private Ong ong;
-
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "animal_conjunto_adocao",
-            joinColumns = @JoinColumn(name = "animal_id"),
-            inverseJoinColumns = @JoinColumn(name = "animal_conjunto_id")
-    )
-    @JsonManagedReference
-    private Set<Animal> animalConjunto = new HashSet<>();
 
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

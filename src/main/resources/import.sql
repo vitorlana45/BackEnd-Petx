@@ -1,9 +1,11 @@
 
 INSERT INTO ong_tb (id, atualizado_em, criado_em) VALUES (1, NOW(), NOW());
 
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo) VALUES (true,16,NOW(),NOW(),1,'DOCIL','CACHORRO','FRIDS','RESGATE','PEQUENO','Poodle','FEMEA');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','REX','ABANDONO','MEDIO','LABRADOR','MACHO');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','SPEED','ABANDONO','GRANDE','LABRADOR','MACHO');
+INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,16,NOW(),NOW(),1,'DOCIL','CACHORRO','FRIDS','RESGATE','PEQUENO','Poodle','FEMEA','q');
+INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','REX','ABANDONO','MEDIO','LABRADOR','MACHO','w');
+INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo, chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','SPEED','ABANDONO','GRANDE','LABRADOR','MACHO', 't');
+INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','ASDF','ABANDONO','MEDIO','LABRADOR','MACHO','e');
+INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','JORFE','ABANDONO','MEDIO','LABRADOR','MACHO','r');
 
 
 -- senha dos usuarios é 1234567, use quando for mandar requisição
@@ -15,10 +17,11 @@ INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro
 INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3');
 
 
+
 INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 1);
 INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 2);
 INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (3, 1);
 
 insert into  animal_tutores (animal_id, tutor_id) values (1, 1);
 insert into  animal_tutores (animal_id, tutor_id) values (1, 2);
-insert into  animal_tutores (animal_id, tutor_id) values (3, 1);
+insert into  animal_tutores (animal_id, tutor_id) values (1, 3);

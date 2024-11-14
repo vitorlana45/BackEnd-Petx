@@ -1,16 +1,20 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class AnimalGenericoResposta {
 
     private Long id;
@@ -25,6 +29,5 @@ public class AnimalGenericoResposta {
     private String especie;
     private Set<String> doencas;
     private boolean estaVivo;
-    private Set<AnimalGenericoResposta> animaisConjunto;
-
+    private List<AnimalGenericoResposta> lsAnimaisConjunto = new ArrayList<>();
 }

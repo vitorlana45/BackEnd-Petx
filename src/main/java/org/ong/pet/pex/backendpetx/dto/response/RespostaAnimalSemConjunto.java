@@ -1,6 +1,6 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
-import java.util.List;
+import java.util.Set;
 
 public record RespostaAnimalSemConjunto (
          Long id,
@@ -13,7 +13,7 @@ public record RespostaAnimalSemConjunto (
          String porte,
          String comportamento,
          String especie,
-         List<String> doencas,
+         Set<String> doencas,
          boolean estaVivo
 
 
