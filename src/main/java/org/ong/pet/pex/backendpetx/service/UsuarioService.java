@@ -1,9 +1,11 @@
 package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
+import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarTodosUsuarios;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UsuarioService {
@@ -14,7 +16,7 @@ public interface UsuarioService {
 
     RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id);
 
-    Map<String, String> buscarTodosUsuarios();
+    List<RespostaBuscarTodosUsuarios> buscarTodosUsuarios();
 
     RespostaBuscarUsuarioPadrao buscarUsuarioPorEmail(String email);
 

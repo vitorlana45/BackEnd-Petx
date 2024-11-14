@@ -2,6 +2,7 @@ package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
+import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarTodosUsuarios;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Map;
+import java.util.List;
 
 @Validated
 @RestController
@@ -32,7 +33,6 @@ public class UsuarioController {
     }
 
 
-
     @PostMapping("/inserir")
     public ResponseEntity<RespostaCricaoUsuario> inserirUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
 
@@ -42,7 +42,6 @@ public class UsuarioController {
 
         return ResponseEntity.created(uri).body(usuarioCriado);
     }
-
 
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
@@ -63,9 +62,9 @@ public class UsuarioController {
     }
 
 
-
-    @GetMapping("/buscar/Todos")
-    public ResponseEntity<Map<String, String>> buscarTodosUsuarios() {
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @GetMapping("/buscar/todos")
+    public ResponseEntity<List<RespostaBuscarTodosUsuarios>> buscarTodosUsuarios() {
         return ResponseEntity.ok(usuarioService.buscarTodosUsuarios());
     }
 

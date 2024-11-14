@@ -45,12 +45,11 @@ public class AnimalController {
         chips.put("principal", principal);
         chips.put("animal1", animal1);
 
-        if(animal2 != null) chips.put("animal2", animal2);
+        if (animal2 != null) chips.put("animal2", animal2);
 
         animalService.adicionarAdocaoConjuntaEmAnimal(chips);
         return ResponseEntity.noContent().build();
     }
-
 
 
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
@@ -62,14 +61,12 @@ public class AnimalController {
     }
 
 
-
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/buscarId/{id}")
     public ResponseEntity<AnimalGenericoResposta> buscarAnimalPorId(@PathVariable final Long id) {
         AnimalGenericoResposta entidade = animalService.buscarAnimalPorId(id);
         return ResponseEntity.ok().body(entidade);
     }
-
 
 
     @GetMapping("/buscar/chip/{chip}")
@@ -79,14 +76,12 @@ public class AnimalController {
     }
 
 
-
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<AnimalGenericoResposta> atualizarAnimal(@PathVariable final Long id, @RequestBody @Valid final AnimalDTO animalSemConjuntoDTO) {
         AnimalGenericoResposta entidade = animalService.atualizarAnimal(id, animalSemConjuntoDTO);
         return ResponseEntity.ok().body(entidade);
     }
-
 
 
     @PreAuthorize("hasRole('COLABORADOR')")
@@ -110,6 +105,5 @@ public class AnimalController {
         animalService.declararObito(obiturario);
         return ResponseEntity.noContent().build();
     }
-
 
 }

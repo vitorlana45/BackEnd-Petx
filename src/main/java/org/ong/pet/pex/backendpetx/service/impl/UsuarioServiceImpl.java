@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
+import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarTodosUsuarios;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 import org.ong.pet.pex.backendpetx.entities.UserRole;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -79,14 +81,11 @@ public class UsuarioServiceImpl implements UsuarioService {
 // FORMA PROVISORIA, VER DEPOIS QUAIS DADOS RETORNAR
     @Transactional(readOnly = true)
     @Override
-    public  Map<String, String>  buscarTodosUsuarios() {
+    public List<RespostaBuscarTodosUsuarios> buscarTodosUsuarios() {
         var list = usuarioRepository.findAll();
-        Map<String, String> map = new HashMap<>();
 
-        for (Usuario usuario : list) {
-            map.put(usuario.getEmail(), usuario.getRole().toString());
-        }
-        return map;
+        return  list.stream().map(usuario -> new RespostaBuscarTodosUsuarios
+                (usuario.getEmail(), usuario.getRole().toString())).toList();
     }
 
 
