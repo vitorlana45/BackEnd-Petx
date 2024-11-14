@@ -33,4 +33,4 @@ COPY --from=build /app/target/backEndPetx-0.0.1-SNAPSHOT.jar /app/app.jar
 WORKDIR /app
 
 # Define the command to run the application with the "prod" profile
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dserver.port=${PORT}", "-jar", "app.jar"]
