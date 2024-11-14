@@ -11,9 +11,11 @@ import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.security.TokenService;
 import org.ong.pet.pex.backendpetx.service.AuthService;
 import org.ong.pet.pex.backendpetx.service.EmailService;
-import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.animalException.PetXException;
+import org.ong.pet.pex.backendpetx.service.exceptions.usuarioException.UsuarioException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -50,14 +52,27 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthLoginResposta validarLogin(@Valid AuthLoginRequisicao data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
-        Authentication auth = this.authenticationManager.authenticate(usernamePassword);
 
+        Authentication auth;
+
+        try {
+            System.out.println("antes");
+            auth = this.authenticationManager.authenticate(usernamePassword);
+        } catch (RuntimeException ex) {
+            throw new UsuarioException("Credenciais inválidas. Verifique o e-mail e senha informados.");
+        }
+
+        // Verifica se o usuário foi autenticado
         Usuario usuario = (Usuario) auth.getPrincipal();
+        if (usuario == null) {
+            UsuarioException.usuarioErroFazerLogin("Error: Verifique suas credenciais");
+        }
 
+        // Gera o token e sua data de expiração
         String token = this.tokenService.gerarToken(usuario);
-
         Long expirationDate = this.tokenService.pegarExpiracaoDoToken(token);
 
+        // Retorna a resposta de login
         return new AuthLoginResposta(token, expirationDate);
     }
 
@@ -67,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
 
         Usuario usuario = this.usuarioRepository.findUsuarioByEmail(emailDTO.email());
         if(usuario == null){
-            throw new UsuarioNaoEncontrado("Email não encontrado");
+            throw UsuarioException.usuarioJaCadastrado(emailDTO.email());
         }
         RecuperarSenha entidade = new RecuperarSenha();
         entidade.setEmail(emailDTO.email());

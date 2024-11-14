@@ -5,10 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "obito_tb")
 public class Obito extends EntidadeBase {
@@ -20,12 +27,8 @@ public class Obito extends EntidadeBase {
     private String motivoObito;
 
     @OneToOne
-    @JoinColumn(name = "id", referencedColumnName = "id_animal")
+    @JoinColumn(name = "id", referencedColumnName = "id")
     private Animal animal;
 
-    @Column(updatable = false)
-    private LocalDateTime criadoEm;
-
-    private LocalDateTime atualizadoEm;
 
 }

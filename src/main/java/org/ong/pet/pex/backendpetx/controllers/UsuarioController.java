@@ -45,7 +45,7 @@ public class UsuarioController {
 
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/buscarId/{id}")
     public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorId(@PathVariable Long id) {
         RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorId(id);
@@ -53,7 +53,7 @@ public class UsuarioController {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/buscar/{email}")
     public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorEmail(@PathVariable(name = "email") String email) {
 

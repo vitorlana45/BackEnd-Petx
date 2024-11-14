@@ -7,8 +7,7 @@ import org.ong.pet.pex.backendpetx.entities.UserRole;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
-import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioJaCadastrado;
-import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioNaoEncontrado;
+import org.ong.pet.pex.backendpetx.service.exceptions.usuarioException.UsuarioException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public RespostaCricaoUsuario inserirUsuario(UsuarioDTO usuarioDTO) {
 
         if (usuarioRepository.findByEmail(usuarioDTO.email()) != null) {
-            throw new UsuarioJaCadastrado("Usuário já cadastrado");
+           UsuarioException.usuarioJaCadastrado(usuarioDTO.email());
         }
 
         Usuario entidade = new Usuario();
@@ -58,7 +57,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public void deletarUsuario(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new UsuarioNaoEncontrado("Usuário não encontrado");
+            throw UsuarioException.usuarioNaoEncontrado(id.toString());
         }
         try {
             usuarioRepository.deleteById(id);
@@ -72,7 +71,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     @Override
     public RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id) {
-        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontrado("Usuário não encontrado"));
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> UsuarioException.usuarioNaoEncontrado(id.toString()));
         return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getEmail());
     }
 
@@ -99,7 +98,7 @@ public class UsuarioServiceImpl implements UsuarioService {
       Usuario usuario = usuarioRepository.findUsuarioByEmail(email);
 
       if(usuario == null) {
-        throw new UsuarioNaoEncontrado("Usuário não encontrado");
+        throw UsuarioException.usuarioNaoEncontrado(email);
       }
         return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getEmail());
     }

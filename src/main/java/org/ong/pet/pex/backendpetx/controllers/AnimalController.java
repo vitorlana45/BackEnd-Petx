@@ -2,6 +2,7 @@ package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
@@ -101,6 +102,13 @@ public class AnimalController {
     public ResponseEntity<List<RespostaAnimalSemConjunto>> listarAnimaisCadastrados() {
         List<RespostaAnimalSemConjunto> lista = animalService.listaAnimaisCadastrados();
         return ResponseEntity.ok().body(lista);
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @PostMapping("/obito")
+    public ResponseEntity<Void> declararObito(@RequestBody @Valid final AnimalObituarioResquisicao obiturario) {
+        animalService.declararObito(obiturario);
+        return ResponseEntity.noContent().build();
     }
 
 

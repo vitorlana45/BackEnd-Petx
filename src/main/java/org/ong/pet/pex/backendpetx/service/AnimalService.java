@@ -2,6 +2,7 @@ package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 
@@ -19,7 +20,7 @@ public interface AnimalService {
 
     void deletarPorId (Long id);
 
-    void declararObito (Long id);
+    void declararObito (AnimalObituarioResquisicao obiturario);
 
     AnimalGenericoResposta cadastrarAnimalSolo (AnimalGenericoRequisicao animalGenericoRequisicao);
 

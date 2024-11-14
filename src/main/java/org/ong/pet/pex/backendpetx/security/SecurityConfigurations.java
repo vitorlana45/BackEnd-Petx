@@ -38,7 +38,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/auth/recuperar-token").permitAll()
                         // uso ENDPOINT DOS ADMINISTRADORES DA ONG
-                        .requestMatchers(HttpMethod.GET, "/api/usuarios/buscarId/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios/buscarId/{id}").hasAnyRole("COLABORADOR","ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/buscar/{email}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios/todos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/deletar/{id}").hasRole("ADMIN")
@@ -52,6 +52,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/api/animais/deletar/{id}").hasRole("COLABORADOR")
                         .requestMatchers(HttpMethod.GET, "/api/animais/adicionar/conjunto/**").hasAnyRole("ADMIN","COLABORADOR")
                         .requestMatchers(HttpMethod.GET, "/api/animais/listar/**").hasAnyRole("ADMIN","COLABORADOR")
+                        .requestMatchers(HttpMethod.POST, "/api/animais/obito").hasAnyRole("ADMIN","COLABORADOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
