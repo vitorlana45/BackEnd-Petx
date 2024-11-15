@@ -28,6 +28,7 @@ public class TutorServiceImpl implements TutorService {
     private final TutorRepository tutorRepository;
     private final AnimalRepository animalRepository;
 
+
     public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository) {
         this.tutorRepository = tutorRepository;
         this.animalRepository = animalRepository;
@@ -55,7 +56,16 @@ public class TutorServiceImpl implements TutorService {
             pet.getTutores().add(tutor);
             return tutorRepository.save(tutor); // Salvar tutor com relação atualizada
         }).orElseGet(() -> {
-            Tutor novoTutor = Tutor.builder().cpf(cadastrarTutorRequisicao.cpf()).nome(cadastrarTutorRequisicao.nome()).telefone(cadastrarTutorRequisicao.telefone()).idade(cadastrarTutorRequisicao.idade()).endereco(Endereco.builder().cidade(cadastrarTutorRequisicao.cidade()).bairro(cadastrarTutorRequisicao.bairro()).rua(cadastrarTutorRequisicao.rua()).cep(cadastrarTutorRequisicao.cep()).build()).ong(pet.getOng()).animais(Set.of(pet)).build();
+            Tutor novoTutor = Tutor.builder().cpf(cadastrarTutorRequisicao.cpf())
+                    .nome(cadastrarTutorRequisicao.nome())
+                    .telefone(cadastrarTutorRequisicao.telefone())
+                    .idade(cadastrarTutorRequisicao.idade())
+                    .endereco(Endereco.builder()
+                            .cidade(cadastrarTutorRequisicao.cidade())
+                            .bairro(cadastrarTutorRequisicao.bairro())
+                            .rua(cadastrarTutorRequisicao.rua())
+                            .cep(cadastrarTutorRequisicao.cep())
+                            .build()).ong(pet.getOng()).animais(Set.of(pet)).build();
             pet.getTutores().add(novoTutor);
             return tutorRepository.save(novoTutor);
         });
@@ -74,7 +84,17 @@ public class TutorServiceImpl implements TutorService {
         List<TutorDTOResponse> listContendoTutoresRepetidos = new ArrayList<>();
 
         tutorRepository.findAll().forEach(tutor -> {
-            listContendoTutoresRepetidos.add(TutorDTOResponse.builder().cpf(tutor.getCpf()).nome(tutor.getNome()).idade(tutor.getIdade()).cep(tutor.getEndereco().getCep()).telefone(tutor.getTelefone()).cidade(tutor.getEndereco().getCidade()).bairro(tutor.getEndereco().getBairro()).rua(tutor.getEndereco().getRua()).chipAnimal(tutor.getAnimais().stream().map(Animal::getChipId).collect(Collectors.toSet())).build());
+            listContendoTutoresRepetidos.add(TutorDTOResponse.builder()
+                    .cpf(tutor.getCpf())
+                    .nome(tutor.getNome())
+                    .idade(tutor.getIdade())
+                    .cep(tutor.getEndereco()
+                            .getCep())
+                    .telefone(tutor.getTelefone())
+                    .cidade(tutor.getEndereco().getCidade())
+                    .bairro(tutor.getEndereco().getBairro())
+                    .rua(tutor.getEndereco().getRua())
+                    .chipAnimal(tutor.getAnimais().stream().map(Animal::getChipId).collect(Collectors.toSet())).build());
         });
 
         if (listContendoTutoresRepetidos.isEmpty()) TutorException.naoHaTutoresCadastrados();
@@ -82,6 +102,13 @@ public class TutorServiceImpl implements TutorService {
         return new HashSet<>(listContendoTutoresRepetidos);
     }
 
+    @Transactional
+    public void deletarTutorPorCpf(String cpf) {
+        var existeTutor = tutorRepository.findTutorByCpf(cpf).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpf));
+        existeTutor.setOng(null);
+        existeTutor.getAnimais().forEach(animal -> animal.getTutores().remove(existeTutor));
+        tutorRepository.deleteById(existeTutor.getId());
+    }
 
     @Transactional
     public String atualizarDadosTutor(String cpfAntigo, AtualizarTutorRequisicao att) {
@@ -99,11 +126,6 @@ public class TutorServiceImpl implements TutorService {
         tutor.getAnimais().stream().filter(animalTutor -> Objects.equals(animalTutor.getChipId(), animal.getChipId())).findAny().ifPresent(animalTutor -> {
             throw TutorException.jaExiste("Este Animal já pertence a este tutor", "CPF", tutor.getCpf());
         });
-    }
-
-    @Transactional
-    public void deletarTutorPorCpf(String cpf) {
-        // Method implementation
     }
 
 

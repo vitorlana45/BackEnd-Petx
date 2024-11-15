@@ -17,7 +17,7 @@ INSERT INTO usuario_tb (email, senha, role,atualizado_em, criado_em, ong_id) VAL
 -- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua, bairro, cidade,cpf) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', 'abcwe','São Paulo','123456789');
 --
 
-INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,cpf, idade) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', '2',98);
+INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,cpf, idade) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', '064.123.090-71',98);
 
 
 
