@@ -53,6 +53,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/animais/adicionar/conjunto/**").hasAnyRole("ADMIN", "COLABORADOR")
                         .requestMatchers(HttpMethod.GET, "/api/animais/listar/**").hasAnyRole("ADMIN", "COLABORADOR")
                         .requestMatchers(HttpMethod.POST, "/api/animais/obito").hasAnyRole("ADMIN", "COLABORADOR")
+                        .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "COLABORADOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

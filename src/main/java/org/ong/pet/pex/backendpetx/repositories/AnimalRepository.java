@@ -26,7 +26,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     @Query("SELECT a FROM Animal a WHERE a.chipId = :chipId")
     Animal getReferenceByChipId(String chipId);
 
-
     @Query(nativeQuery = true , value = """
             SELECT * FROM animal_doencas ad
             WHERE ad.animal_id = :id
@@ -36,7 +35,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     @EntityGraph(attributePaths = {"tutores", "doencas", "ong"})
     Optional<Animal> findAnimalById(Long id);
 
-
+    @Query("SELECT a FROM Animal a WHERE a.chipId = :chipId AND a.estaVivo = :estaVivo")
+    Optional<Animal> findAnimalByChipIdAndEstaVivo(String chipId, boolean estaVivo);
 
 
 }

@@ -18,10 +18,10 @@ INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro
 
 
 
-INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 1);
-INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 2);
-INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (3, 1);
-
-insert into  animal_tutores (animal_id, tutor_id) values (1, 1);
-insert into  animal_tutores (animal_id, tutor_id) values (1, 2);
-insert into  animal_tutores (animal_id, tutor_id) values (1, 3);
+-- INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 1);
+-- INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 2);
+-- INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (3, 1);
+--
+-- insert into  animal_tutores (animal_id, tutor_id) values (1, 1);
+-- insert into  animal_tutores (animal_id, tutor_id) values (1, 2);
+-- insert into  animal_tutores (animal_id, tutor_id) values (1, 3);

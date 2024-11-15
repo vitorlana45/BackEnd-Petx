@@ -11,12 +11,15 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -24,6 +27,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "tutor_tb")
 public class Tutor extends EntidadeBase {
 
@@ -34,7 +38,10 @@ public class Tutor extends EntidadeBase {
     private String cpf;
 
     @Column(name = "telefone")
-    private Integer telefone;
+    private String telefone;
+
+    @Column(name = "idade")
+    private Integer idade;
 
     @Embedded
     private Endereco endereco;
@@ -50,4 +57,17 @@ public class Tutor extends EntidadeBase {
             inverseJoinColumns = @JoinColumn(name = "animal_id"))
     private Set<Animal> animais;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tutor tutor = (Tutor) o;
+        return Objects.equals(cpf, tutor.cpf);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), cpf);
+    }
 }

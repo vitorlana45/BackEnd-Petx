@@ -26,7 +26,7 @@ public class TutorException extends RuntimeException {
 
     // Métodos estáticos para diferentes tipos de exceções
     public static TutorException recursoNaoEncontrado(String nomeRecurso, Object identificador) {
-        return new TutorException(String.format("%s com ID '%s' não encontrado", nomeRecurso, identificador), HttpStatus.NOT_FOUND);
+        return new TutorException(String.format("%s com identificador '%s' não encontrado", nomeRecurso, identificador), HttpStatus.NOT_FOUND);
     }
 
     public static TutorException jaExiste(String nomeRecurso, String campoErro, Object identificador) {
@@ -52,4 +52,9 @@ public class TutorException extends RuntimeException {
     public static TutorException permissaoNegada() {
         return new TutorException("Permissão negada para realizar esta operação.", HttpStatus.FORBIDDEN);
     }
+
+    public static TutorException cpfNaoPodeSerVazioOuNulo() {
+        return new TutorException("Cpf não pode estar em branco ou nulo", HttpStatus.BAD_REQUEST);
+    }
+
 }

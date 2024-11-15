@@ -1,16 +1,21 @@
 package org.ong.pet.pex.backendpetx.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public record CadastrarTutorRequisicao(
 
-        @NotNull(message = "O campo cpf é obrigatório")
+        @NotBlank(message = "O campo cpf é obrigatório")
         String cpf,
-        String Nome,
-        String idade,
+        String nome,
+        Integer idade,
+        String telefone,
         String cidade,
         String bairro,
         String rua,
+        @NotBlank(message = "É preciso informar o Chip do animal")
         String chipAnimal
+
 ) {
 }
