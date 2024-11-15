@@ -56,6 +56,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "COLABORADOR")
                         .requestMatchers(HttpMethod.GET).hasAnyRole("/api/tutor/todos","ADMIN", "COLABORADOR")
                         .requestMatchers(HttpMethod.GET).hasAnyRole("/api/tutor/{cpf}","ADMIN", "COLABORADOR")
+                        .requestMatchers(HttpMethod.PUT).hasAnyRole("/api/tutor/**","ADMIN", "COLABORADOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

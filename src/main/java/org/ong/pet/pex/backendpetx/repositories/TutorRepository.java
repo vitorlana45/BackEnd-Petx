@@ -18,4 +18,5 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 
     Optional<Tutor> findTutorByCpf(String cpf);
 
+    boolean existsByCpf(String cpf);
 }
