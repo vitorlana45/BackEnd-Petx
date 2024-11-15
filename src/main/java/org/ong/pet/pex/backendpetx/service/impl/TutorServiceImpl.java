@@ -1,8 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResponse;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Tutor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
@@ -15,9 +14,13 @@ import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TutorServiceImpl implements TutorService {
@@ -59,6 +62,7 @@ public class TutorServiceImpl implements TutorService {
                             .cidade(cadastrarTutorRequisicao.cidade())
                             .bairro(cadastrarTutorRequisicao.bairro())
                             .rua(cadastrarTutorRequisicao.rua())
+                            .cep(cadastrarTutorRequisicao.cep())
                             .build())
                     .ong(pet.getOng())
                     .animais(Set.of(pet))
@@ -73,18 +77,46 @@ public class TutorServiceImpl implements TutorService {
 
     }
 
-    public void buscarTodosTutores() {
-        // Method implementation
+    @Transactional(readOnly = true)
+    public Set<TutorDTOResponse> buscarTodosTutores() {
+
+        List<TutorDTOResponse> listContendoTutoresRepetidos = new ArrayList<>();
+
+        tutorRepository.findAll().forEach(tutor -> {
+            listContendoTutoresRepetidos.add(TutorDTOResponse.builder()
+                    .cpf(tutor.getCpf())
+                    .nome(tutor.getNome())
+                    .idade(tutor.getIdade())
+                    .cep(tutor.getEndereco().getCep())
+                    .telefone(tutor.getTelefone())
+                    .cidade(tutor.getEndereco().getCidade())
+                    .bairro(tutor.getEndereco().getBairro())
+                    .rua(tutor.getEndereco().getRua())
+                    .chipAnimal(tutor.getAnimais().stream()
+                            .map(Animal::getChipId)
+                            .collect(Collectors.toSet()))
+                    .build()
+            );
+        });
+
+        if(listContendoTutoresRepetidos.isEmpty())
+            TutorException.naoHaTutoresCadastrados();
+
+
+        return new HashSet<>(listContendoTutoresRepetidos);
     }
 
-    public void buscarTutorPorCpf(String cpf) {
-        // Method implementation
+    @Transactional(readOnly = true)
+    public TutorDTOResponse buscarTutorPorCpf(String cpf) {
+     return converterParaTutorDTO(tutorRepository.findTutorByCpf(cpf).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpf)));
     }
 
+    @Transactional
     public void atualizarDadosTutor(String cpf, CadastrarTutorRequisicao cadastrarTutorRequisicao) {
         // Method implementation
     }
 
+    @Transactional
     public void deletarTutorPorCpf(String cpf) {
         // Method implementation
     }
@@ -97,4 +129,19 @@ public class TutorServiceImpl implements TutorService {
                     throw TutorException.jaExiste("Este Animal já pertence a este tutor", "CPF", tutor.getCpf());
                 });
     }
+
+    private TutorDTOResponse converterParaTutorDTO (Tutor tutor) {
+        return new TutorDTOResponse(
+                tutor.getCpf(),
+                tutor.getNome(),
+                tutor.getEndereco().getCep(),
+                tutor.getIdade(),
+                tutor.getTelefone(),
+                tutor.getEndereco().getCidade(),
+                tutor.getEndereco().getBairro(),
+                tutor.getEndereco().getRua(),
+                tutor.getAnimais().stream().map(Animal::getChipId).collect(Collectors.toSet())
+        );
+    }
+
 }

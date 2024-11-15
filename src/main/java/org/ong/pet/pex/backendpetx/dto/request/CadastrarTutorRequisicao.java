@@ -9,6 +9,8 @@ public record CadastrarTutorRequisicao(
         @NotBlank(message = "O campo cpf é obrigatório")
         String cpf,
         String nome,
+        @NotBlank(message = "O campo cep é obrigatório")
+        String cep,
         Integer idade,
         String telefone,
         String cidade,

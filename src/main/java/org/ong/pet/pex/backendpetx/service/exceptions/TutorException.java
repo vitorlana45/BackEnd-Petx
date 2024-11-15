@@ -26,35 +26,38 @@ public class TutorException extends RuntimeException {
 
     // Métodos estáticos para diferentes tipos de exceções
     public static TutorException recursoNaoEncontrado(String nomeRecurso, Object identificador) {
-        return new TutorException(String.format("%s com identificador '%s' não encontrado", nomeRecurso, identificador), HttpStatus.NOT_FOUND);
+        throw new TutorException(String.format("%s com identificador '%s' não encontrado", nomeRecurso, identificador), HttpStatus.NOT_FOUND);
     }
 
     public static TutorException jaExiste(String nomeRecurso, String campoErro, Object identificador) {
-        return new TutorException(String.format("%s com %s '%s' já existe", nomeRecurso, campoErro, identificador), HttpStatus.CONFLICT);
+        throw new TutorException(String.format("%s com %s '%s' já existe", nomeRecurso, campoErro, identificador), HttpStatus.CONFLICT);
     }
 
     public static TutorException dadosInvalidos(Map<String, String> erros) {
-        return new TutorException("Dados inválidos", erros);
+        throw new TutorException("Dados inválidos", erros);
     }
 
     public static TutorException tutorNaoEncontrado(String identificador) {
-        return new TutorException(String.format("Tutor com identificador '%s' não encontrado", identificador), HttpStatus.NOT_FOUND);
+        throw new TutorException(String.format("Tutor com identificador '%s' não encontrado", identificador), HttpStatus.NOT_FOUND);
     }
 
     public static TutorException tutorJaCadastrado(String identificador) {
-        return new TutorException(String.format("Tutor com identificador '%s' já está cadastrado", identificador), HttpStatus.CONFLICT);
+        throw new TutorException(String.format("Tutor com identificador '%s' já está cadastrado", identificador), HttpStatus.CONFLICT);
     }
 
     public static TutorException tutorInativo(String identificador) {
-        return new TutorException(String.format("Tutor com identificador '%s' está inativo no sistema", identificador), HttpStatus.GONE);
+        throw new TutorException(String.format("Tutor com identificador '%s' está inativo no sistema", identificador), HttpStatus.GONE);
     }
 
     public static TutorException permissaoNegada() {
-        return new TutorException("Permissão negada para realizar esta operação.", HttpStatus.FORBIDDEN);
+        throw new TutorException("Permissão negada para realizar esta operação.", HttpStatus.FORBIDDEN);
     }
 
     public static TutorException cpfNaoPodeSerVazioOuNulo() {
-        return new TutorException("Cpf não pode estar em branco ou nulo", HttpStatus.BAD_REQUEST);
+        throw new TutorException("Cpf não pode estar em branco ou nulo", HttpStatus.BAD_REQUEST);
     }
 
+    public static Exception naoHaTutoresCadastrados() {
+        throw new TutorException("Não há tutores cadastrados!", HttpStatus.BAD_REQUEST);
+    }
 }

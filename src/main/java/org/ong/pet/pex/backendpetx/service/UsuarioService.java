@@ -6,7 +6,6 @@ import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UsuarioService {
 

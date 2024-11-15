@@ -62,7 +62,7 @@ public class ResourceExceptionHandler {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(tx.getStatus().value());
-        error.setError("Acesso Negado");
+        error.setError("Recurso Não Encontrado");
         error.setMessage(tx.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(tx.getStatus().value()).body(error);
