@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.br.CPF;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
 
 import java.util.Set;
@@ -28,12 +29,14 @@ public class Tutor extends EntidadeBase {
 
     @Column(name = "nome")
     private String nome;
+//    @CPF
+    @Column(name = "cpf", unique = true)
+    private String cpf;
 
     @Column(name = "telefone")
     private Integer telefone;
 
     @Embedded
-    @Column(name = "endereco")
     private Endereco endereco;
 
     @ManyToOne(fetch = FetchType.EAGER)

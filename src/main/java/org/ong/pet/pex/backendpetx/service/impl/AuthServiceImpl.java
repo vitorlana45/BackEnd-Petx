@@ -11,11 +11,9 @@ import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.security.TokenService;
 import org.ong.pet.pex.backendpetx.service.AuthService;
 import org.ong.pet.pex.backendpetx.service.EmailService;
-import org.ong.pet.pex.backendpetx.service.exceptions.animalException.PetXException;
-import org.ong.pet.pex.backendpetx.service.exceptions.usuarioException.UsuarioException;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -53,13 +51,13 @@ public class AuthServiceImpl implements AuthService {
     public AuthLoginResposta validarLogin(@Valid AuthLoginRequisicao data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 
-        Authentication auth;
+        Authentication auth = null;
 
         try {
             System.out.println("antes");
             auth = this.authenticationManager.authenticate(usernamePassword);
         } catch (RuntimeException ex) {
-            throw new UsuarioException("Credenciais inválidas. Verifique o e-mail e senha informados.");
+            UsuarioException.usuarioErroFazerLogin("Credenciais inválidas. Verifique o e-mail e senha informados.");
         }
 
         // Verifica se o usuário foi autenticado

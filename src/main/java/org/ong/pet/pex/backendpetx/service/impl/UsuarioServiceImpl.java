@@ -8,16 +8,14 @@ import org.ong.pet.pex.backendpetx.entities.UserRole;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
-import org.ong.pet.pex.backendpetx.service.exceptions.usuarioException.UsuarioException;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
