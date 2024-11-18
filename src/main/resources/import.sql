@@ -4,8 +4,13 @@ INSERT INTO ong_tb (id, atualizado_em, criado_em) VALUES (1, NOW(), NOW());
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,16,NOW(),NOW(),1,'DOCIL','CACHORRO','FRIDS','RESGATE','PEQUENO','Poodle','FEMEA','q');
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','REX','ABANDONO','MEDIO','LABRADOR','MACHO','w');
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo, chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','SPEED','ABANDONO','GRANDE','LABRADOR','MACHO', 't');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','ASDF','ABANDONO','MEDIO','LABRADOR','MACHO','e');
+INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','ASDF','ABANDONO','GRANDE','LABRADOR','MACHO','e');
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','JORFE','ABANDONO','MEDIO','LABRADOR','MACHO','r');
+
+INSERT INTO animal_doencas (animal_id, doenca) VALUES (1, 'CINOMOSE');
+INSERT INTO animal_doencas (animal_id, doenca) VALUES (1, 'RAIVA');
+INSERT INTO animal_doencas (animal_id, doenca) VALUES (2, 'CINOMOSE');
+INSERT INTO animal_doencas (animal_id, doenca) VALUES (2, 'RAIVA');
 
 
 -- senha dos usuarios é 1234567, use quando for mandar requisição
@@ -20,7 +25,13 @@ INSERT INTO usuario_tb (email, senha, role,atualizado_em, criado_em, ong_id) VAL
 INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,cpf, idade) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', '064.123.090-71',98);
 
 
-
+-- INSERT INTO  estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '40kg',0);
+-- INSERT INTO  estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '30g', 0);
+-- INSERT INTO  estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '45kg',1);
+-- INSERT INTO  estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '12kg',1);
+-- INSERT INTO  estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '76g', 1);
+-- INSERT INTO estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade, especie) VALUES (NOW(), NOW(), 1, 'Ração', '2kg', 0);
+-- INSERT INTO estoque_tb (atualizado_em, criado_em, id_ong, nome , quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '22kg', 0);
 
 -- INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 1);
 -- INSERT INTO tutor_animal_tb (animal_id, tutor_id) VALUES (1, 2);
