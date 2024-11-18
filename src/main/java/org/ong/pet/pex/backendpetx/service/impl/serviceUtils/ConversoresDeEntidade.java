@@ -1,6 +1,5 @@
-package org.ong.pet.pex.backendpetx.service.impl.animalUtilService;
+package org.ong.pet.pex.backendpetx.service.impl.serviceUtils;
 
-import org.ong.pet.pex.backendpetx.dto.request.AnimalConjuntoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
@@ -15,22 +14,6 @@ import java.util.stream.Collectors;
 public class ConversoresDeEntidade {
 
     private static final Logger logger = LoggerFactory.getLogger(ConversoresDeEntidade.class);
-
-    private static Animal converterAnimalConjuntoParaAnimal(AnimalConjuntoDTO conjuntoDTO) {
-        Animal animalConjunto = new Animal();
-        animalConjunto.setNome(conjuntoDTO.getNome());
-        animalConjunto.setRaca(conjuntoDTO.getRaca() != null ? conjuntoDTO.getRaca().toUpperCase() : null);
-        animalConjunto.setIdade(conjuntoDTO.getIdade());
-        animalConjunto.setEspecieEnum(conjuntoDTO.getEspecie());
-        animalConjunto.setPorteEnum(conjuntoDTO.getPorte());
-        animalConjunto.setSexoEnum(conjuntoDTO.getSexo());
-        animalConjunto.setOrigemEnum(conjuntoDTO.getOrigem());
-        animalConjunto.setComportamentoEnum(conjuntoDTO.getComportamento());
-        animalConjunto.getDoencas().addAll(conjuntoDTO.getDoencas());
-        animalConjunto.setEstaVivo(conjuntoDTO.isEstaVivo());
-
-        return animalConjunto;
-    }
 
     public static AnimalGenericoResposta converterParaRespostaAnimalComConjuntoDTO(Animal animal) {
         logger.info("Iniciando a conversão para AnimalGenericoResposta para retornar ao cliente");
