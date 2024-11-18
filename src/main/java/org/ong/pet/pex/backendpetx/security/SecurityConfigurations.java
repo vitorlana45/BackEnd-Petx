@@ -34,7 +34,6 @@ public class SecurityConfigurations {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/health}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/inserir").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/auth/recuperar-token").permitAll()
@@ -61,6 +60,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE).hasAnyRole("/api/tutor/{cpf}","ADMIN", "COLABORADOR")
                         .requestMatchers(HttpMethod.POST).hasAnyRole("/api/estoque","ADMIN", "COLABORADOR")
                         .requestMatchers(HttpMethod.GET).hasAnyRole("/api/estoque","ADMIN", "COLABORADOR")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/health/status").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
