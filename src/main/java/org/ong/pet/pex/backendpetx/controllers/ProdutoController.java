@@ -1,13 +1,14 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
+import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
 import org.ong.pet.pex.backendpetx.entities.Produto;
-import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.ong.pet.pex.backendpetx.service.ProdutoService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,43 +16,67 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("/api/produtos")
 public class ProdutoController {
-    @Autowired
-    private ProdutoRepository produtoRepository;
 
+    private final ProdutoService produtoService;
+
+
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public Produto cadastrarProduto(@RequestBody Produto produto) {
-        return produtoRepository.save(produto);
+    public ResponseEntity<Void> criarProduto(@RequestBody ProdutoDTO produto) {
+            produtoService.cadastrarProduto(produto);
+        return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping
-    public List<Produto> listarProdutos() {
-        return produtoRepository.findAll();
+    public ResponseEntity<List<ProdutoDTO>> listarProdutos() {
+        return ResponseEntity.ok(produtoService.listarProdutos());
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping("/{id}")
-    public Produto buscarProdutoPorId(@PathVariable Long id) {
-        return produtoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable(value = "id") Long id) {
+        return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
     }
 
-    @PutMapping("/{id}")
-    public Produto atualizarProduto(@PathVariable Long id, @RequestBody Produto produtoAtualizado) {
-        Produto produtoExistente = produtoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-        
-        produtoExistente.setNome(produtoAtualizado.getNome());
-        produtoExistente.setQuantidade(produtoAtualizado.getQuantidade());
-        
-        return produtoRepository.save(produtoExistente);
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
+    @PostMapping("/{id}")
+    public ResponseEntity<ProdutoDTO> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody @Valid ProdutoDTO produtoAtualizado) {
+        return ResponseEntity.ok(produtoService.atualizarProduto(id, produtoAtualizado));
     }
 
-    @DeleteMapping("/{id}")
-    public void excluirProduto(@PathVariable Long id) {
-        Produto produto = produtoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-        
-        produtoRepository.delete(produto);
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

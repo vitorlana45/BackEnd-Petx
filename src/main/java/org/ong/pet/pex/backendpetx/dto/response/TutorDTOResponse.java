@@ -1,10 +1,7 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 
 import java.util.Set;
 

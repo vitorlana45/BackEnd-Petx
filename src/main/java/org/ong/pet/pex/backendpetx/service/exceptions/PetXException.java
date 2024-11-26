@@ -52,4 +52,8 @@ public class PetXException extends RuntimeException {
     public static PetXException animalJaFalecido(String chip) {
         return new PetXException(String.format("Animal com chip '%s' já consta como falecido", chip), HttpStatus.GONE);
     }
+
+    public static PetXException produtoNaoEncontrado(String id) {
+        return new PetXException(String.format("Produto com nome '%s' não encontrado", id), HttpStatus.NOT_FOUND);
+    }
 }
