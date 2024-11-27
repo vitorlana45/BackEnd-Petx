@@ -2,10 +2,12 @@ package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Produto;
 import org.ong.pet.pex.backendpetx.service.ProdutoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +39,7 @@ public class ProdutoController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping
-    public ResponseEntity<List<ProdutoDTO>> listarProdutos() {
+    public ResponseEntity<List<ProdutoDTOResposta>> listarProdutos() {
         return ResponseEntity.ok(produtoService.listarProdutos());
     }
 
@@ -50,10 +52,16 @@ public class ProdutoController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PostMapping("/{id}")
-    public ResponseEntity<ProdutoDTO> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody @Valid ProdutoDTO produtoAtualizado) {
+    public ResponseEntity<ProdutoDTOResposta> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody @Valid ProdutoDTO produtoAtualizado) {
         return ResponseEntity.ok(produtoService.atualizarProduto(id, produtoAtualizado));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProduto(@PathVariable(value = "id") Long id) {
+        produtoService.deletarProduto(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 

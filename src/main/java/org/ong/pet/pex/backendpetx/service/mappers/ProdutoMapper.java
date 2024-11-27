@@ -3,6 +3,7 @@ package org.ong.pet.pex.backendpetx.service.mappers;
 import lombok.AllArgsConstructor;
 import org.ong.pet.pex.backendpetx.dto.request.InfoProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Estoque;
 import org.ong.pet.pex.backendpetx.entities.Produto;
 import org.springframework.stereotype.Component;
@@ -39,23 +40,26 @@ public class ProdutoMapper {
         return produto;
     }
 
-    public ProdutoDTO mapearParaDto(final Produto entity) {
+    public ProdutoDTOResposta mapearParaDto(final Produto entity) {
         // Converter atributos do produto para lista de InfoProdutoDTO
         List<InfoProdutoDTO> metaData = entity.getAtributos().entrySet().stream()
                 .map(entry -> new InfoProdutoDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
-        return ProdutoDTO.builder()
-                .nome(entity.getNome())
-                .descricao(entity.getDescricao())
-                .quantidade(entity.getQuantidade())
-                .unidadeDeMedida(entity.getUnidadeDeMedida())
-                .tipoProduto(entity.getTipoProduto())
-                .atributosDinamicos(metaData)
+        return ProdutoDTOResposta.builder()
+                .id(entity.getId())
+                .produtoDTO(ProdutoDTO.builder()
+                        .tipoProduto(entity.getTipoProduto())
+                        .nome(entity.getNome())
+                        .descricao(entity.getDescricao())
+                        .quantidade(entity.getQuantidade())
+                        .unidadeDeMedida(entity.getUnidadeDeMedida())
+                        .atributosDinamicos(metaData)
+                        .build())
                 .build();
     }
 
-    public List<ProdutoDTO> mapearParaDto(final List<Produto> produtos) {
+    public List<ProdutoDTOResposta> mapearParaDto(final List<Produto> produtos) {
         return produtos.stream()
                 .map(this::mapearParaDto)
                 .collect(Collectors.toList());

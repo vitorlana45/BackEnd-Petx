@@ -1,10 +1,13 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.ong.pet.pex.backendpetx.dto.request.InfoProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Estoque;
 import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.entities.Produto;
+import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
 import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
@@ -27,21 +30,27 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     private final static Long ONG = 1L;
 
+    // TODO: Implementar validação de campos dinâmicos futuramente
+    private void validarCamposDinamicos(TipoProduto tipoProduto, List<InfoProdutoDTO> x) {
+
+//        entrar em intendimento sobre quais campos terão depois validar os campos dinamicos ex:
+//        if (tipoProduto == TipoProduto.MEDICAMENTO){
+//            if (x.chave().equals("dosagem") && x.valor().equals(""))
+//                else throw PetXException.campoObrigatorio("dosagem");
+//        if (tipoProduto == TipoProduto.RACAO)
+
+    }
+
     @Transactional
     public Long cadastrarProduto(ProdutoDTO dto) {
+//        ver requisitos ainda
+//        validarCamposDinamicos(dto.tipoProduto(), dto.atributosDinamicos());
+
         var ong = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada);
 
-//        var estoque = estoqueRepository.findOngId(ong.getId())
-//                .orElse(this.criarEstoque(ong));
-//        if (dto.tipoProduto() == TipoProduto.MEDICAMENTO){
-//            dto.metaData().stream().filter(
-//                    info -> {
-//                        info.type() == "data_vencimento";
-//                    }
-//            );
-//        }
+        if (ong.getEstoque() == null) this.criarEstoque(ong);
 
-        if(ong.getEstoque() == null) {
+        if (ong.getEstoque() == null) {
             ong = criarEstoque(ong);
         }
 
@@ -54,7 +63,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProdutoDTO> listarProdutos() {
+    public List<ProdutoDTOResposta> listarProdutos() {
         var produtos = produtoRepository.findAll();
         return produtoMapper.mapearParaDto(produtos);
     }
@@ -68,27 +77,31 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 
     @Override
-    public ProdutoDTO atualizarProduto(Long id, ProdutoDTO dto) {
+    public ProdutoDTOResposta atualizarProduto(Long id, ProdutoDTO dto) {
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
 
-//        var tipoProduto = ProdutoUpdateUtils.retornaInstanciaProduto(dto);
-//
-//        System.out.println(tipoProduto);
-//
-//        var v = produtoRepository.save(produtoExistente);
-        return null;
+        if (dto.nome() != null) produtoExistente.setNome(dto.nome());
+        if (dto.descricao() != null) produtoExistente.setDescricao(dto.descricao());
+        if (dto.quantidade() != null) produtoExistente.setQuantidade(dto.quantidade());
+        if (dto.unidadeDeMedida() != null) produtoExistente.setUnidadeDeMedida(dto.unidadeDeMedida());
+        if (dto.tipoProduto() != null) produtoExistente.setTipoProduto(dto.tipoProduto());
+        if (dto.atributosDinamicos() != null) {
+            dto.atributosDinamicos().forEach(info -> produtoExistente.adicionarAtributo(info.chave(), info.valor()));
+        }
+        Produto produtoAtualizado = produtoRepository.save(produtoExistente);
+        return produtoMapper.mapearParaDto(produtoAtualizado);
     }
 
-
-
     @Override
-    public void excluirProduto(Long id) {
+    @Transactional
+    public void deletarProduto(Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
 
         produtoRepository.delete(produto);
     }
+
 
     private Ong criarEstoque(final Ong ong) {
         Estoque estoque = new Estoque();
