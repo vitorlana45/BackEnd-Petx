@@ -19,10 +19,9 @@ public class EstoqueController {
     }
 
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-    @PostMapping
-    public void cadastrarDespesa(@RequestBody @Valid CadastrarEstoqueRequisicao cadastrarEstoqueRequisicao) {
-        estoqueService.salvarEstoque(cadastrarEstoqueRequisicao);
+    @GetMapping("/quantidade-racao")
+    public ResponseEntity<RacaoDisponivelResposta> calcularQuantidadeDeRacaoDias() {
+        return ResponseEntity.ok().body(estoqueService.calcularQuantidadeRacao());
     }
 
     @GetMapping()
