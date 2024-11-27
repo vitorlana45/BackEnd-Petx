@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.ong.pet.pex.backendpetx.service.impl.serviceUtils.ConversoresDeEntidade.converterParaRespostaAnimalComConjuntoDTO;
+import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaRespostaAnimalComConjuntoDTO;
 
 @Component
 public class AnimalUtils {

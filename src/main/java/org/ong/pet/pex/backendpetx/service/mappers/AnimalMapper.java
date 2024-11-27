@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.service.impl.serviceUtils;
+package org.ong.pet.pex.backendpetx.service.mappers;
 
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ConversoresDeEntidade {
+public class AnimalMapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConversoresDeEntidade.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnimalMapper.class);
 
     public static AnimalGenericoResposta converterParaRespostaAnimalComConjuntoDTO(Animal animal) {
         logger.info("Iniciando a conversão para AnimalGenericoResposta para retornar ao cliente");
@@ -37,7 +37,7 @@ public class ConversoresDeEntidade {
 
     public static Set<AnimalGenericoResposta> converterParaListaDeAnimaisComConjuntoDTO(List<Animal> animais) {
         return animais.stream()
-                .map(ConversoresDeEntidade::converterParaRespostaAnimalComConjuntoDTO)
+                .map(AnimalMapper::converterParaRespostaAnimalComConjuntoDTO)
                 .collect(Collectors.toSet());
     }
 

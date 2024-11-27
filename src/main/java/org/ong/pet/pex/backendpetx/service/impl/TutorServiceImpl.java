@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.ong.pet.pex.backendpetx.service.impl.serviceUtils.ConversoresDeEntidade.converterParaListaDeAnimaisComConjuntoDTO;
+import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO;
 
 @Service
 public class TutorServiceImpl implements TutorService {
