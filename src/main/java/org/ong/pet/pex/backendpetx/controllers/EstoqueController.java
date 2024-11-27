@@ -1,13 +1,10 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
-import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.request.CadastrarEstoqueRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.ListarEstoqueResponse;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +26,8 @@ public class EstoqueController {
     }
 
     @GetMapping()
-    public RacaoDisponivelResposta calcularQuantidadeDeRacaoDias() {
-        return estoqueService.calcularQuantidadeRacao();
+    public ResponseEntity<ListarEstoqueResponse> listarEstoque() {
+        return ResponseEntity.ok().body(estoqueService.listarEstoque());
     }
-
 
 }

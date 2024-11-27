@@ -1,6 +1,7 @@
 
 INSERT INTO ong_tb (id, atualizado_em, criado_em) VALUES (1, NOW(), NOW());
-INSERT INTO estoque_tb (id_ong, criado_em, atualizado_em) VALUES (1, NOW(), NOW());
+INSERT INTO estoque_tb (ong_id, criado_em, atualizado_em) VALUES (1, NOW(), NOW());
+
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,16,NOW(),NOW(),1,'DOCIL','CACHORRO','FRIDS','RESGATE','PEQUENO','Poodle','FEMEA','q');
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','REX','ABANDONO','MEDIO','LABRADOR','MACHO','w');
 INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo, chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','SPEED','ABANDONO','GRANDE','LABRADOR','MACHO', 't');

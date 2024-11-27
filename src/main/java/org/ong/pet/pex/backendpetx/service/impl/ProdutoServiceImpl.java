@@ -42,7 +42,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     }
 
     @Transactional
-    public Long cadastrarProduto(ProdutoDTO dto) {
+    public Long cadastrarProduto(final ProdutoDTO dto) {
 //        ver requisitos ainda
 //        validarCamposDinamicos(dto.tipoProduto(), dto.atributosDinamicos());
 
@@ -64,14 +64,14 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Override
     @Transactional(readOnly = true)
     public List<ProdutoDTOResposta> listarProdutos() {
-        var produtos = produtoRepository.findAll();
-        return produtoMapper.mapearParaDto(produtos);
+        var listaProdutos = produtoRepository.findAll();
+        return produtoMapper.mapearListaProdutoParaDto(listaProdutos);
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public ProdutoDTOResposta buscarProdutoPorId(Long id) {
+    public ProdutoDTOResposta buscarProdutoPorId(final Long id) {
 
         var produto = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
@@ -82,7 +82,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     @Transactional
-    public ProdutoDTOResposta atualizarProduto(Long id, ProdutoDTO dto) {
+    public ProdutoDTOResposta atualizarProduto(final Long id, final ProdutoDTO dto) {
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
 
@@ -100,7 +100,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     @Transactional
-    public void deletarProduto(Long id) {
+    public void deletarProduto(final Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
 

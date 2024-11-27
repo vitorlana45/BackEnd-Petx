@@ -1,5 +1,6 @@
 package org.ong.pet.pex.backendpetx.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -27,6 +28,7 @@ public class Estoque extends EntidadeBase {
     private List<Produto> produto = new ArrayList<>();
 
     @OneToOne
+    @JsonIgnore
     private Ong ong;
 
 }

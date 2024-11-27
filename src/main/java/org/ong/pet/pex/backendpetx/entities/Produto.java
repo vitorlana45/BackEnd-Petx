@@ -1,5 +1,6 @@
 package org.ong.pet.pex.backendpetx.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -49,6 +50,7 @@ public class Produto extends EntidadeBase {
     private Map<String, String> atributos = new HashMap<>();
 
     @ManyToOne
+    @JsonIgnore
     private Estoque estoque;
 
     public void adicionarAtributo(String chave, String valor) {
