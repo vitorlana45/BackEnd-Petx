@@ -59,7 +59,7 @@ public class ProdutoMapper {
                 .build();
     }
 
-    public List<ProdutoDTOResposta> mapearParaDto(final List<Produto> produtos) {
+    public List<ProdutoDTOResposta> mapearListaProdutoParaDto(final List<Produto> produtos) {
         return produtos.stream()
                 .map(this::mapearParaDto)
                 .collect(Collectors.toList());
