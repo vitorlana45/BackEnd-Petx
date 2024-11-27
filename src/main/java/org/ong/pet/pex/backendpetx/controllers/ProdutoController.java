@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -21,16 +22,17 @@ public class ProdutoController {
 
     private final ProdutoService produtoService;
 
-
     public ProdutoController(ProdutoService produtoService) {
         this.produtoService = produtoService;
     }
 
+
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> criarProduto(@RequestBody ProdutoDTO produto) {
-            produtoService.cadastrarProduto(produto);
-        return ResponseEntity.noContent().build();
+        Long id = produtoService.cadastrarProduto(produto);
+        URI location = URI.create("/api/produtos/" + id);
+        return ResponseEntity.created(location).build();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")

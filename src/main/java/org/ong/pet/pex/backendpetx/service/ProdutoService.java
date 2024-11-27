@@ -6,7 +6,7 @@ import org.ong.pet.pex.backendpetx.entities.Produto;
 import java.util.List;
 
 public interface ProdutoService {
-    void cadastrarProduto(ProdutoDTO produtoDTO);
+    Long cadastrarProduto(ProdutoDTO produtoDTO);
     List<ProdutoDTO> listarProdutos();
     Produto buscarProdutoPorId(Long id);
     ProdutoDTO atualizarProduto(Long id, ProdutoDTO produtoAtualizado);

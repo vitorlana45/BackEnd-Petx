@@ -1,7 +1,5 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import lombok.AllArgsConstructor;
 import org.ong.pet.pex.backendpetx.dto.request.InfoProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
@@ -15,36 +13,51 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class ProdutoMapper {
-    private final Gson gson = new Gson();
 
-    public Produto mapearParaEntidade(final ProdutoDTO dto, final Estoque estoque){
-        var json = gson.toJson(dto.metaData());
-
-        return Produto.builder()
+    public Produto mapearParaEntidade(final ProdutoDTO dto, final Estoque estoque) {
+        // Criar o produto com os campos básicos
+        Produto produto = Produto.builder()
                 .nome(dto.nome())
                 .descricao(dto.descricao())
                 .quantidade(dto.quantidade())
                 .unidadeDeMedida(dto.unidadeDeMedida())
                 .tipoProduto(dto.tipoProduto())
                 .estoque(estoque)
-                .metaData(json)
+                .atributos(dto.atributosDinamicos().stream()
+                        .collect(Collectors.toMap(InfoProdutoDTO::chave, InfoProdutoDTO::valor))
+                )
                 .build();
+
+
+        // Adicionar metadados como atributos dinâmicos
+        if (dto.atributosDinamicos() != null) {
+            dto.atributosDinamicos().forEach(info ->
+                    produto.adicionarAtributo(info.chave(), info.valor())
+            );
+        }
+
+        return produto;
     }
 
-    public ProdutoDTO mapearParaDto(final Produto entity){
-        var listType = new TypeToken<List<InfoProdutoDTO>>() {}.getType();
-        List<InfoProdutoDTO> metaData = gson.fromJson(entity.getMetaData(), listType);
+    public ProdutoDTO mapearParaDto(final Produto entity) {
+        // Converter atributos do produto para lista de InfoProdutoDTO
+        List<InfoProdutoDTO> metaData = entity.getAtributos().entrySet().stream()
+                .map(entry -> new InfoProdutoDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+
         return ProdutoDTO.builder()
                 .nome(entity.getNome())
                 .descricao(entity.getDescricao())
                 .quantidade(entity.getQuantidade())
                 .unidadeDeMedida(entity.getUnidadeDeMedida())
                 .tipoProduto(entity.getTipoProduto())
-                .metaData(metaData)
+                .atributosDinamicos(metaData)
                 .build();
     }
 
-    public List<ProdutoDTO> meparParaDto(final List<Produto> produtos){
-        return produtos.stream().map(this::mapearParaDto).collect(Collectors.toList());
+    public List<ProdutoDTO> mapearParaDto(final List<Produto> produtos) {
+        return produtos.stream()
+                .map(this::mapearParaDto)
+                .collect(Collectors.toList());
     }
 }

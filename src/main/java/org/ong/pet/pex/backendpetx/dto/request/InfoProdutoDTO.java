@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record InfoProdutoDTO(
-        String type,
-        String value
+        String chave,
+        String valor
 ) {
 }

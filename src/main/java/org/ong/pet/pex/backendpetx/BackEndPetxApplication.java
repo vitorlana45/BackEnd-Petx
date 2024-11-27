@@ -35,13 +35,13 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 
 		Animal an = new Animal();
 		// Atribuindo valores aos atributos do animal
-		an.setNome("Rex");
-		an.setIdade(5);
-		an.setRaca("Labrador");
-		an.setSexoEnum(SexoEnum.MACHO);
-		an.setPorteEnum(PorteEnum.GRANDE);
+		an.setNome("Fridis");
+		an.setIdade(16);
+		an.setRaca("Poodle");
+		an.setSexoEnum(SexoEnum.FEMEA);
+		an.setPorteEnum(PorteEnum.PEQUENO);
 		an.setComportamentoEnum(ComportamentoEnum.DOCIL);
-		an.setEspecieEnum(EspecieEnum.GATO);
+		an.setEspecieEnum(EspecieEnum.CACHORRO);
 
 
 		list.add(an);

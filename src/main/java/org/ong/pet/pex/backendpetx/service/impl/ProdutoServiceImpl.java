@@ -28,15 +28,11 @@ public class ProdutoServiceImpl implements ProdutoService {
     private final static Long ONG = 1L;
 
     @Transactional
-    public void cadastrarProduto(ProdutoDTO dto) {
-        Ong ong = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada);
+    public Long cadastrarProduto(ProdutoDTO dto) {
+        var ong = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada);
+
 //        var estoque = estoqueRepository.findOngId(ong.getId())
 //                .orElse(this.criarEstoque(ong));
-
-        if(ong.getEstoque() == null){
-            criarEstoque(ong);
-        }
-
 //        if (dto.tipoProduto() == TipoProduto.MEDICAMENTO){
 //            dto.metaData().stream().filter(
 //                    info -> {
@@ -45,15 +41,22 @@ public class ProdutoServiceImpl implements ProdutoService {
 //            );
 //        }
 
+        if(ong.getEstoque() == null) {
+            ong = criarEstoque(ong);
+        }
+
         var produto = produtoMapper.mapearParaEntidade(dto, ong.getEstoque());
-        produtoRepository.save(produto);
+        ong.getEstoque().getProduto().add(produto);
+        produto = produtoRepository.save(produto);
+        ongRepository.save(ong);
+        return produto.getId();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ProdutoDTO> listarProdutos() {
         var produtos = produtoRepository.findAll();
-        return produtoMapper.meparParaDto(produtos);
+        return produtoMapper.mapearParaDto(produtos);
     }
 
 
