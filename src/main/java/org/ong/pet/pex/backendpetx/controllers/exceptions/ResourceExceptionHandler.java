@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
@@ -66,5 +67,16 @@ public class ResourceExceptionHandler {
         error.setMessage(tx.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(tx.getStatus().value()).body(error);
+    }
+
+    @ExceptionHandler(EstoqueException.class)
+    public ResponseEntity<StandardError> manipularTutorException(EstoqueException ex, HttpServletRequest request) {
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(ex.getStatus().value());
+        error.setError("Recurso Não Encontrado");
+        error.setMessage(ex.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(ex.getStatus().value()).body(error);
     }
 }
