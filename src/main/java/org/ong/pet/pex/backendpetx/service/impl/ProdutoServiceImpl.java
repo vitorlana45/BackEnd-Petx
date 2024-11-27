@@ -70,13 +70,18 @@ public class ProdutoServiceImpl implements ProdutoService {
 
 
     @Override
-    public Produto buscarProdutoPorId(Long id) {
-        return produtoRepository.findById(id)
+    @Transactional(readOnly = true)
+    public ProdutoDTOResposta buscarProdutoPorId(Long id) {
+
+        var produto = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
+
+        return produtoMapper.mapearParaDto(produto);
     }
 
 
     @Override
+    @Transactional
     public ProdutoDTOResposta atualizarProduto(Long id, ProdutoDTO dto) {
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));

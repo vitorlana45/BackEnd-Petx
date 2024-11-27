@@ -47,7 +47,7 @@ public class ProdutoController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscarProdutoPorId(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<ProdutoDTOResposta> buscarProdutoPorId(@PathVariable(value = "id") Long id) {
         return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
     }
 
