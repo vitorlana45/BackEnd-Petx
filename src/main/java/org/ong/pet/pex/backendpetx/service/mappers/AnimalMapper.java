@@ -1,16 +1,20 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
+import lombok.AllArgsConstructor;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
+@AllArgsConstructor
 public class AnimalMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(AnimalMapper.class);
@@ -73,5 +77,40 @@ public class AnimalMapper {
                 animal.getStatusEnum().toString()
 
         );
+    }
+
+    public AnimalGenericoResposta mapeiaAnimalEListaParaRetorno  (Animal animal, List<Animal> lsAnimais) {
+        var lsAnmaisConjunto = lsAnimais.stream()
+                .map(x -> AnimalGenericoResposta.builder()
+                        .id(x.getId())
+                        .chipId(x.getChipId())
+                        .nome(x.getNome())
+                        .maturidade(x.getMaturidadeEnum().getMaturidade())
+                        .raca(x.getRaca())
+                        .sexo(x.getSexoEnum().getSexo())
+                        .origem(x.getOrigemEnum().getOrigemAnimal())
+                        .porte(x.getPorteEnum().getPorte())
+                        .comportamento(x.getComportamentoEnum().getComportamento())
+                        .especie(x.getEspecieEnum().getEspecie())
+                        .doencas(x.getDoencas())
+                        .status(x.getStatusEnum().getStatus())
+                        .build())
+                .collect(Collectors.toList());
+
+        return AnimalGenericoResposta.builder()
+                .id(animal.getId())
+                .chipId(animal.getChipId())
+                .nome(animal.getNome())
+                .maturidade(animal.getMaturidadeEnum().getMaturidade())
+                .raca(animal.getRaca())
+                .sexo(animal.getSexoEnum().getSexo())
+                .origem(animal.getOrigemEnum().getOrigemAnimal())
+                .porte(animal.getPorteEnum().getPorte())
+                .comportamento(animal.getComportamentoEnum().getComportamento())
+                .doencas(animal.getDoencas())
+                .especie(animal.getEspecieEnum().getEspecie())
+                .status(animal.getStatusEnum().getStatus())
+                .lsAnimaisConjunto(lsAnmaisConjunto)
+                .build();
     }
 }
