@@ -47,8 +47,8 @@ public class ProdutoMapper {
                 .collect(Collectors.toList());
 
         return ProdutoDTOResposta.builder()
-                .id(entity.getId())
-                .produtoDTO(ProdutoDTO.builder()
+                .produtoId(entity.getId())
+                .produto(ProdutoDTO.builder()
                         .tipoProduto(entity.getTipoProduto())
                         .nome(entity.getNome())
                         .descricao(entity.getDescricao())

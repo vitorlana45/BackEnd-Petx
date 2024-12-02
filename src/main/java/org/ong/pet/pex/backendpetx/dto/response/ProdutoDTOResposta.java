@@ -6,8 +6,8 @@ import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
 
 @Builder
 public record ProdutoDTOResposta (
-        Long id,
-        ProdutoDTO produtoDTO
+        Long produtoId,
+        ProdutoDTO produto
 ) {
 
 }

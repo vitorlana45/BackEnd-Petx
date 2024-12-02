@@ -3,7 +3,6 @@ package org.ong.pet.pex.backendpetx.controllers;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
-import org.ong.pet.pex.backendpetx.entities.Produto;
 import org.ong.pet.pex.backendpetx.service.ProdutoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,7 +31,7 @@ public class ProdutoController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Void> criarProduto(@RequestBody ProdutoDTO produto) {
+    public ResponseEntity<Void> criarProduto(@RequestBody @Valid ProdutoDTO produto) {
         Long id = produtoService.cadastrarProduto(produto);
         URI location = URI.create("/api/produtos/" + id);
         return ResponseEntity.created(location).build();
