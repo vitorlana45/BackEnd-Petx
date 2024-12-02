@@ -1,12 +1,15 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
+import lombok.Builder;
+
 import java.util.Set;
 
+@Builder
 public record RespostaAnimalSemConjunto (
          Long id,
          String chipId,
          String nome,
-         int idade,
+         String maturidade,
          String raca,
          String sexo,
          String origem,
@@ -14,7 +17,7 @@ public record RespostaAnimalSemConjunto (
          String comportamento,
          String especie,
          Set<String> doencas,
-         boolean estaVivo
+         String status
 
 
 ){

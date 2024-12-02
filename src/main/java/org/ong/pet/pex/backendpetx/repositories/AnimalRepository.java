@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.repositories;
 
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,8 +36,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     @EntityGraph(attributePaths = {"tutores", "doencas", "ong"})
     Optional<Animal> findAnimalById(Long id);
 
-    @Query("SELECT a FROM Animal a WHERE a.chipId = :chipId AND a.estaVivo = :estaVivo")
-    Optional<Animal> findAnimalByChipIdAndEstaVivo(String chipId, boolean estaVivo);
+    @Query("SELECT a FROM Animal a WHERE a.chipId = :chipId AND a.statusEnum = :status")
+    Optional<Animal> findAnimalByChipIdAndStatus(String chipId, StatusEnum status);
 
 
 }

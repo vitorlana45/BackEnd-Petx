@@ -35,12 +35,11 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
-
-    @GetMapping("/adicionar/conjunto/{principal}/{animal1}/{animal2}")
-    public ResponseEntity<Void> adicionarAdocaoConjuntaEmAnimal(@PathVariable(name = "principal") String principal,
-                                                                @PathVariable(name = "animal1") String animal1,
-                                                                @PathVariable(required = false) String animal2) {
-
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
+    @GetMapping("/conjunto/{principal}/{animal1}/{animal2}")
+    public ResponseEntity<Void> adicionarAdocaoConjuntaEmAnimal(@PathVariable(name = "principal") final String principal,
+                                                                @PathVariable(name = "animal1") final String animal1,
+                                                                @PathVariable(required = false) final String animal2) {
         Map<String, String> chips = new HashMap<>();
         chips.put("principal", principal);
         chips.put("animal1", animal1);
@@ -51,46 +50,41 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
-
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
-    @PostMapping("/cadastrar")
+    @PostMapping()
     public ResponseEntity<AnimalGenericoResposta> cadastrarAnimalSemConjunto(@RequestBody @Valid final AnimalDTO animalSemConjuntoDTO) {
         var entidade = animalService.cadastrarAnimalSolo(animalSemConjuntoDTO);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/buscar/{id}").buildAndExpand(entidade.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(entidade.getId()).toUri();
         return ResponseEntity.created(uri).body(entidade);
     }
 
-
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping("/buscarId/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AnimalGenericoResposta> buscarAnimalPorId(@PathVariable final Long id) {
         AnimalGenericoResposta entidade = animalService.buscarAnimalPorId(id);
         return ResponseEntity.ok().body(entidade);
     }
 
-
-    @GetMapping("/buscar/chip/{chip}")
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @GetMapping("/chip/{chip}")
     public ResponseEntity<AnimalGenericoResposta> buscarAnimalPorChip(@PathVariable final String chip) {
         AnimalGenericoResposta entidade = animalService.buscarAnimalPorChip(chip);
         return ResponseEntity.ok().body(entidade);
     }
 
-
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
-    @PutMapping("/atualizar/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<AnimalGenericoResposta> atualizarAnimal(@PathVariable final Long id, @RequestBody @Valid final AnimalDTO animalSemConjuntoDTO) {
         AnimalGenericoResposta entidade = animalService.atualizarAnimal(id, animalSemConjuntoDTO);
         return ResponseEntity.ok().body(entidade);
     }
 
-
-    @PreAuthorize("hasRole('COLABORADOR')")
-    @DeleteMapping("deletar/{id}")
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarAnimal(@PathVariable final Long id) {
         animalService.deletarPorId(id);
         return ResponseEntity.noContent().build();
     }
-
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/listar")
@@ -105,5 +99,4 @@ public class AnimalController {
         animalService.declararObito(obiturario);
         return ResponseEntity.noContent().build();
     }
-
 }

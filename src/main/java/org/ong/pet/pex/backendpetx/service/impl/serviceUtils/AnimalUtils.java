@@ -75,7 +75,7 @@ public class AnimalUtils {
                         .id(x.getId())
                         .chipId(x.getChipId())
                         .nome(x.getNome())
-                        .idade(x.getIdade())
+                        .maturidade(x.getMaturidadeEnum().getMaturidade())
                         .raca(x.getRaca())
                         .sexo(x.getSexoEnum().getSexo())
                         .origem(x.getOrigemEnum().getOrigemAnimal())
@@ -83,7 +83,7 @@ public class AnimalUtils {
                         .comportamento(x.getComportamentoEnum().getComportamento())
                         .especie(x.getEspecieEnum().getEspecie())
                         .doencas(x.getDoencas())
-                        .estaVivo(x.isEstaVivo())
+                        .status(x.getStatusEnum().getStatus())
                         .build())
                 .collect(Collectors.toList());
 
@@ -91,7 +91,7 @@ public class AnimalUtils {
                 .id(animal.getId())
                 .chipId(animal.getChipId())
                 .nome(animal.getNome())
-                .idade(animal.getIdade())
+                .maturidade(animal.getMaturidadeEnum().getMaturidade())
                 .raca(animal.getRaca())
                 .sexo(animal.getSexoEnum().getSexo())
                 .origem(animal.getOrigemEnum().getOrigemAnimal())
@@ -99,7 +99,7 @@ public class AnimalUtils {
                 .comportamento(animal.getComportamentoEnum().getComportamento())
                 .doencas(animal.getDoencas())
                 .especie(animal.getEspecieEnum().getEspecie())
-                .estaVivo(animal.isEstaVivo())
+                .status(animal.getStatusEnum().getStatus())
                 .lsAnimaisConjunto(lsAnmaisConjunto)
                 .build();
     }

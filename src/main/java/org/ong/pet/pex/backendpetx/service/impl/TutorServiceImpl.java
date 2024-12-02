@@ -7,6 +7,7 @@ import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResponse;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Tutor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
+import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.TutorRepository;
 import org.ong.pet.pex.backendpetx.service.TutorService;
@@ -70,7 +71,7 @@ public class TutorServiceImpl implements TutorService {
             throw TutorException.cpfNaoPodeSerVazioOuNulo();
         }
 
-        Animal pet = animalRepository.findAnimalByChipIdAndEstaVivo(cadastrarTutorRequisicao.chipAnimal(), true).orElseThrow(() -> PetXException.animalJaFalecido(cadastrarTutorRequisicao.chipAnimal()));
+        Animal pet = animalRepository.findAnimalByChipIdAndStatus(cadastrarTutorRequisicao.chipAnimal(), StatusEnum.FALECIDO).orElseThrow(() -> PetXException.animalJaFalecido(cadastrarTutorRequisicao.chipAnimal()));
 
         Optional<Tutor> encontrarTutor = tutorRepository.findTutorByCpf(cadastrarTutorRequisicao.cpf());
 

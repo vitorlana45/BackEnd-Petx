@@ -19,9 +19,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
+import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -42,15 +44,16 @@ public class Animal extends EntidadeBase {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "idade")
-    private Integer idade;
-
     @Column(name = "raca")
     private String raca;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sexo")
     private SexoEnum sexoEnum;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name= "maturidade")
+    private MaturidadeEnum maturidadeEnum;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "origem")
@@ -73,8 +76,9 @@ public class Animal extends EntidadeBase {
     @Column(name = "doenca")
     private Set<String> doencas = new HashSet<>();
 
-    @Column(name = "esta_vivo")
-    private boolean estaVivo;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private StatusEnum statusEnum;
 
     @ManyToOne(cascade = {CascadeType.ALL,   CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_ong")
@@ -90,18 +94,18 @@ public class Animal extends EntidadeBase {
     )
     private Set<Tutor> tutores;
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Animal animal = (Animal) o;
-        return Objects.equals(nome, animal.nome) && Objects.equals(idade, animal.idade);
+        return Objects.equals(chipId, animal.chipId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), nome, idade);
+        return Objects.hash(super.hashCode(), chipId);
     }
+
+
 }

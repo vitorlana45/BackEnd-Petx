@@ -2,11 +2,11 @@
 INSERT INTO ong_tb (id, atualizado_em, criado_em) VALUES (1, NOW(), NOW());
 INSERT INTO estoque_tb (ong_id, criado_em, atualizado_em) VALUES (1, NOW(), NOW());
 
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,16,NOW(),NOW(),1,'DOCIL','CACHORRO','FRIDS','RESGATE','PEQUENO','Poodle','FEMEA','q');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','REX','ABANDONO','MEDIO','LABRADOR','MACHO','w');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo, chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','SPEED','ABANDONO','GRANDE','LABRADOR','MACHO', 't');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','ASDF','ABANDONO','GRANDE','LABRADOR','MACHO','e');
-INSERT INTO animal_tb (esta_vivo,idade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES (true,5,NOW(),NOW(),1,'DOCIL','CACHORRO','JORFE','ABANDONO','MEDIO','LABRADOR','MACHO','r');
+INSERT INTO animal_tb (status,maturidade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES ('DOENTE','IDOSO',NOW(),NOW(),1,'DOCIL','CACHORRO','FRIDS','RESGATE','PEQUENO','Poodle','FEMEA','q');
+INSERT INTO animal_tb (status,maturidade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES ('SAUDAVEL','FILHOTE',NOW(),NOW(),1,'DOCIL','CACHORRO','REX','ABANDONO','MEDIO','LABRADOR','MACHO','w');
+INSERT INTO animal_tb (status,maturidade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo, chip_id) VALUES ('ADOTADO','ADULTO',NOW(),NOW(),1,'DOCIL','CACHORRO','SPEED','ABANDONO','GRANDE','LABRADOR','MACHO', 't');
+INSERT INTO animal_tb (status,maturidade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES ('FALECIDO','IDOSO',NOW(),NOW(),1,'DOCIL','CACHORRO','JORFE','ABANDONO','MEDIO','LABRADOR','MACHO','r');
+INSERT INTO animal_tb (status,maturidade,atualizado_em,criado_em,id_ong, comportamento,especie,nome,origem,porte,raca,sexo,chip_id) VALUES ('SAUDAVEL','IDOSO',NOW(),NOW(),1,'AGRESSIVO','GATO','PARK','GUARDA_MUNICIPAL','PEQUENO','indefinido','FEMEA','y');
 
 INSERT INTO animal_doencas (animal_id, doenca) VALUES (1, 'CINOMOSE');
 INSERT INTO animal_doencas (animal_id, doenca) VALUES (1, 'RAIVA');

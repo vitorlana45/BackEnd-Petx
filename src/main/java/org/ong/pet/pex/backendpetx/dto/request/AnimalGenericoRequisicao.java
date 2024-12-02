@@ -1,6 +1,5 @@
 package org.ong.pet.pex.backendpetx.dto.request;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,9 +9,11 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
+import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 
 import java.util.Set;
 
@@ -28,12 +29,11 @@ public class AnimalGenericoRequisicao {
     @NotBlank(message = "O nome não pode estar em branco")
     private String nome;
 
-    @NotNull(message = "A idade é obrigatória")
-    @Min(value = 0, message = "A idade não pode ser negativa")
-    private int idade;
-
     @NotBlank(message = "A raça não pode estar em branco")
     private String raca;
+
+    @NotNull(message = "A maturidade e obrigatória")
+    private MaturidadeEnum maturidade;
 
     @NotNull(message = "O sexo é obrigatório")
     private SexoEnum sexo;
@@ -54,7 +54,7 @@ public class AnimalGenericoRequisicao {
     private Set<String> doencas;
 
     @NotNull(message = "O status de vida é obrigatório")
-    private boolean estaVivo;
+    private StatusEnum status;
 
 
 }

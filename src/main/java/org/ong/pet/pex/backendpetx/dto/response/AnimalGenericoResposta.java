@@ -20,14 +20,14 @@ public class AnimalGenericoResposta {
     private Long id;
     private String chipId;
     private String nome;
-    private Integer idade;
     private String raca;
+    private String maturidade;
     private String sexo;
     private String origem;
     private String porte;
     private String comportamento;
     private String especie;
     private Set<String> doencas;
-    private boolean estaVivo;
+    private String status;
     private List<AnimalGenericoResposta> lsAnimaisConjunto = new ArrayList<>();
 }

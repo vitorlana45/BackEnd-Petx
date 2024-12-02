@@ -21,7 +21,7 @@ public class AnimalMapper {
                 .id(animal.getId())
                 .chipId(animal.getChipId())
                 .nome(animal.getNome())
-                .idade(animal.getIdade())
+                .maturidade(animal.getMaturidadeEnum().toString())
                 .raca(animal.getRaca())
                 .sexo(animal.getSexoEnum().toString())
                 .origem(animal.getOrigemEnum().toString())
@@ -29,7 +29,7 @@ public class AnimalMapper {
                 .comportamento(animal.getComportamentoEnum().toString())
                 .especie(animal.getEspecieEnum().toString())
                 .doencas(animal.getDoencas())
-                .estaVivo(animal.isEstaVivo())
+                .status(animal.getStatusEnum().toString())
                 .lsAnimaisConjunto(null)
                 .build();
 
@@ -44,7 +44,7 @@ public class AnimalMapper {
     public static Animal converterParaAnimalSemConjunto(Animal animal, AnimalGenericoRequisicao animalGenericoRequisicao) {
         animal.setChipId(animalGenericoRequisicao.getChipId());
         animal.setNome(animalGenericoRequisicao.getNome());
-        animal.setIdade(animalGenericoRequisicao.getIdade());
+        animal.setMaturidadeEnum(animalGenericoRequisicao.getMaturidade());
         animal.setRaca(animalGenericoRequisicao.getRaca());
         animal.setEspecieEnum(animalGenericoRequisicao.getEspecie());
         animal.setPorteEnum(animalGenericoRequisicao.getPorte());
@@ -52,7 +52,7 @@ public class AnimalMapper {
         animal.setOrigemEnum(animalGenericoRequisicao.getOrigem());
         animal.setComportamentoEnum(animalGenericoRequisicao.getComportamento());
         animal.getDoencas().addAll(animalGenericoRequisicao.getDoencas());
-        animal.setEstaVivo(true);
+        animal.setStatusEnum(animalGenericoRequisicao.getStatus());
         return animal;
 
     }
@@ -62,7 +62,7 @@ public class AnimalMapper {
                 animal.getId(),
                 animal.getChipId(),
                 animal.getNome(),
-                animal.getIdade(),
+                animal.getMaturidadeEnum().toString(),
                 animal.getRaca(),
                 animal.getSexoEnum().toString(),
                 animal.getOrigemEnum().toString(),
@@ -70,7 +70,7 @@ public class AnimalMapper {
                 animal.getComportamentoEnum().toString(),
                 animal.getEspecieEnum().toString(),
                 animal.getDoencas(),
-                animal.isEstaVivo()
+                animal.getStatusEnum().toString()
 
         );
     }
