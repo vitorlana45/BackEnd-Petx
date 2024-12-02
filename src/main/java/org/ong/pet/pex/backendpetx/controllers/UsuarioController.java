@@ -33,7 +33,7 @@ public class UsuarioController {
     }
 
 
-    @PostMapping("/inserir")
+    @PostMapping("/registrar")
     public ResponseEntity<RespostaCricaoUsuario> inserirUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
 
         RespostaCricaoUsuario usuarioCriado = usuarioService.inserirUsuario(usuarioDTO);

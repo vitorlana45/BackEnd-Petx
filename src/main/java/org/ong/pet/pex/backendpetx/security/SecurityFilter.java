@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
+import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,16 +31,31 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         var token = this.recuperarToken(request);
         if (token != null) {
             var email = tokenService.validarToken(token);
             Usuario user = userRepository.findUsuarioByEmail(email);
 
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\": \"Usuário não encontrado, verifique suas credenciais!\"}");
+                return;
+            }
+
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else if (!verificarRotasLivres(request.getRequestURI())) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\": \"Token não informado!\"}");
+            return;
         }
+
         filterChain.doFilter(request, response);
     }
+
 
 
     private String recuperarToken(HttpServletRequest request) {
@@ -47,5 +63,16 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
         return authHeader.replace("Bearer ", "");
     }
+
+    private boolean verificarRotasLivres(String uri) {
+        final String LOGIN_URL = "/api/auth/login";
+        final String RECOVER_URL = "/api/auth/recuperar-token";
+        final String REGISTRAR_USER_URL = "/api/usuarios/registrar";
+
+        return uri.startsWith(LOGIN_URL) ||
+               uri.startsWith(RECOVER_URL) ||
+               uri.startsWith(REGISTRAR_USER_URL);
+    }
+
 
 }

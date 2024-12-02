@@ -34,7 +34,7 @@ public class SecurityConfigurations {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers(HttpMethod.POST, "/api/usuarios/inserir").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/usuarios/registrar").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/api/auth/recuperar-token").permitAll()
                                 // uso ENDPOINT DOS ADMINISTRADORES DA ONG
@@ -64,6 +64,7 @@ public class SecurityConfigurations {
                                 .requestMatchers("/api/produtos/**").hasAnyRole("ADMIN", "COLABORADOR")
                                 .requestMatchers("/api/produtos").hasAnyRole("ADMIN", "COLABORADOR")
                                 .requestMatchers("/api/produtos/{id}").hasAnyRole("ADMIN", "COLABORADOR")
+                                .requestMatchers("/api/estoque/**").hasAnyRole("ADMIN", "COLABORADOR")
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/health/status").permitAll()
                                 .anyRequest().authenticated()
                 )
