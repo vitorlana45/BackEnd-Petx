@@ -4,6 +4,7 @@ import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.springframework.boot.CommandLineRunner;
@@ -36,7 +37,7 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 		Animal an = new Animal();
 		// Atribuindo valores aos atributos do animal
 		an.setNome("Fridis");
-		an.setIdade(16);
+		an.setMaturidadeEnum(MaturidadeEnum.valueOf("IDOSO"));
 		an.setRaca("Poodle");
 		an.setSexoEnum(SexoEnum.FEMEA);
 		an.setPorteEnum(PorteEnum.PEQUENO);
@@ -54,7 +55,7 @@ public class BackEndPetxApplication  implements CommandLineRunner {
 
 		// Exibindo os valores
 		System.out.println("Nome: " + an.getNome());
-		System.out.println("Idade: " + an.getIdade());
+		System.out.println("Idade: " + an.getMaturidadeEnum());
 		System.out.println("Raça: " + an.getRaca());
 		System.out.println("Sexo: " + an.getSexoEnum());
 		System.out.println("Porte: " + an.getPorteEnum());
