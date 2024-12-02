@@ -10,7 +10,6 @@ import org.ong.pet.pex.backendpetx.repositories.RecuperarSenhaRepository;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.security.TokenService;
 import org.ong.pet.pex.backendpetx.service.AuthService;
-import org.ong.pet.pex.backendpetx.service.EmailService;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,13 +37,13 @@ public class AuthServiceImpl implements AuthService {
     private final EmailService emailService;
 
 
-    public AuthServiceImpl(TokenService tokenService, UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager, RecuperarSenhaRepository recuperarSenhaRepository, EmailService emailService, EmailService emailService1) {
+    public AuthServiceImpl(TokenService tokenService, UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager, RecuperarSenhaRepository recuperarSenhaRepository, EmailService emailService) {
         this.tokenService = tokenService;
         this.usuarioRepository = usuarioRepository;
         this.authenticationManager = authenticationManager;
 
         this.recuperarSenhaRepository = recuperarSenhaRepository;
-        this.emailService = emailService1;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -80,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
 
         Usuario usuario = this.usuarioRepository.findUsuarioByEmail(emailDTO.email());
         if(usuario == null){
-            throw UsuarioException.usuarioJaCadastrado(emailDTO.email());
+            throw UsuarioException.usuarioNaoEncontrado(emailDTO.email());
         }
         RecuperarSenha entidade = new RecuperarSenha();
         entidade.setEmail(emailDTO.email());
