@@ -1,12 +1,12 @@
 package org.ong.pet.pex.backendpetx.security;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
-import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +24,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final UsuarioRepository userRepository;
 
     @Autowired
-    public SecurityFilter(TokenService tokenService, UsuarioRepository userRepository) {
+    public SecurityFilter(TokenService tokenService,UsuarioRepository userRepository) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
     }
