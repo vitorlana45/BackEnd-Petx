@@ -31,4 +31,8 @@ public class EstoqueException extends RuntimeException {
     public static EstoqueException estoqueNaoContemProdutosCadastrados() {
        return new EstoqueException("Estoque não contem produtos cadastrados", HttpStatus.NOT_FOUND);
     }
+
+    public static EstoqueException produtoNaoEncontrado(String tipoProduto) {
+        return new EstoqueException(String.format("Produto com o nome '%s'",tipoProduto), HttpStatus.NOT_FOUND);
+    }
 }

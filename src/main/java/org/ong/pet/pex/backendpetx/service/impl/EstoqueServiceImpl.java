@@ -1,5 +1,6 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
+import org.ong.pet.pex.backendpetx.dto.response.EstoqueResponseDTO;
 import org.ong.pet.pex.backendpetx.dto.response.ListarEstoqueResponse;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,8 +44,15 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     @Override
     @Transactional(readOnly = true)
-    public Estoque pegarEstoquePorId() {
-        return null;
+    public EstoqueResponseDTO pegarEstoquePorId(final Long id) {
+        return estoqueRepository.findById(id)
+                .map(estoque -> new EstoqueResponseDTO(
+                        estoque.getId(),
+                        estoque.getCriadoEm().toString(),
+                        estoque.getAtualizadoEm().toString(),
+                        produtoMapper.mapearListaProdutoParaDto(estoque.getProduto())
+                ))
+                .orElseThrow(EstoqueException::estoqueNaoEncontrado);
     }
 
     @Transactional(readOnly = true)
@@ -101,20 +110,14 @@ public class EstoqueServiceImpl implements EstoqueService {
                                     (porteCounts[1] * racaoMedio) +
                                     (porteCounts[2] * racaoGrande);
 
-
         double diasDisponiveis = consumoDiarioTotal > 0 ? quantidadeRacaoTotalEmGramas / consumoDiarioTotal : 0;
         String diasDisponiveisFormatado = String.format("%.0f", diasDisponiveis);
         logger.info("calculando os dias disponíveis: {} dias",diasDisponiveisFormatado);
-
 
         // Log dos resultados
         logger.info("Quantidade total de ração no estoque (em g): {}", quantidadeRacaoTotalEmGramas);
         logger.info("Consumo diário total (em g): {}", consumoDiarioTotal);
         logger.info("Dias de ração disponíveis: {}", diasDisponiveis);
-
-        System.out.println("Quantidade de ração (em gramas): " + quantidadeRacaoTotalEmGramas);
-        System.out.println("Consumo diário total (em gramas): " + consumoDiarioTotal);
-        System.out.println("Dias de ração disponíveis: " + diasDisponiveis);
 
         return new RacaoDisponivelResposta(quantidadeRacaoTotalEmGramas, consumoDiarioTotal, diasDisponiveisFormatado);
     }
@@ -129,6 +132,41 @@ public class EstoqueServiceImpl implements EstoqueService {
         }
 
         return  ListarEstoqueResponse.builder()
+                .id(estoque.getId())
+                .craidoEm(estoque.getCriadoEm())
+                .atualizadoEm(estoque.getAtualizadoEm())
+                .produtos(produtoMapper.mapearListaProdutoParaDto(estoque.getProduto()))
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ListarEstoqueResponse listarEstoquePorTipoProduto(String tipoProduto) {
+
+        Enum<TipoProduto> tipo;
+        try {
+            tipo = TipoProduto.valueOf(tipoProduto);
+        } catch (IllegalArgumentException e) {
+            throw PetXException.produtoNaoEncontrado(tipoProduto);
+        }
+
+        var estoque = estoqueRepository.findEstoqueByOngId(ONG).orElseThrow(PetXException::ongNaoEncontrada);
+
+        if(tipo == TipoProduto.RACAO) {
+            estoque.getProduto().removeIf(produto -> produto.getTipoProduto() != TipoProduto.RACAO);
+            return converterListaDeProduto(estoque.getProduto(), estoque);
+        }
+
+        if(tipo == TipoProduto.MEDICAMENTO) {
+            estoque.getProduto().removeIf(produto -> produto.getTipoProduto() != TipoProduto.MEDICAMENTO);
+            return converterListaDeProduto(estoque.getProduto(), estoque);
+        }
+
+        return ListarEstoqueResponse.builder().build();
+    }
+
+    private ListarEstoqueResponse converterListaDeProduto(List<Produto> produtos, Estoque estoque) {
+        return ListarEstoqueResponse.builder()
                 .id(estoque.getId())
                 .craidoEm(estoque.getCriadoEm())
                 .atualizadoEm(estoque.getAtualizadoEm())
