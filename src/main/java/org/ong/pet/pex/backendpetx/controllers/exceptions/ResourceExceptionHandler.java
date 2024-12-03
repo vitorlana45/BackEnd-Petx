@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.ong.pet.pex.backendpetx.service.exceptions.EnumException;
 import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
@@ -16,7 +17,6 @@ import java.time.Instant;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
-
 
     @ExceptionHandler(PetXException.class)
     public ResponseEntity<StandardError> manipularPetXException(PetXException pe, HttpServletRequest request) {
@@ -70,7 +70,7 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(EstoqueException.class)
-    public ResponseEntity<StandardError> manipularTutorException(EstoqueException ex, HttpServletRequest request) {
+    public ResponseEntity<StandardError> manipularEstoqueException(EstoqueException ex, HttpServletRequest request) {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(ex.getStatus().value());
@@ -78,5 +78,20 @@ public class ResourceExceptionHandler {
         error.setMessage(ex.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(ex.getStatus().value()).body(error);
+    }
+
+    @ExceptionHandler(EnumException.class)
+    public ResponseEntity<ValidationError> manipularEnumException(EnumException ex, HttpServletRequest request) {
+        ValidationError error = new ValidationError();
+        HttpStatus status = ex.getStatus();
+        error.setTimestamp(Instant.now());
+        error.setStatus(status.value());
+        error.setError("Validation Error");
+        error.setMessage("Erro de validação nos campos");
+        error.setPath(request.getRequestURI());
+
+        error.addError(ex.getCampoErro(), ex.getMessage());
+
+        return ResponseEntity.status(status.value()).body(error);
     }
 }
