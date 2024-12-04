@@ -103,8 +103,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Transactional
     public void deletarProduto(final Long id) {
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
-
+                .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
         produtoRepository.delete(produto);
     }
 
