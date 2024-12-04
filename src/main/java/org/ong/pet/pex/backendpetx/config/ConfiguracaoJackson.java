@@ -1,5 +1,6 @@
 package org.ong.pet.pex.backendpetx.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -31,6 +32,7 @@ public class ConfiguracaoJackson {
 
         // Configura a forma de serialização/deserialização de datas
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         // Configuração genérica para enums
         SimpleModule enumModule = new SimpleModule();
