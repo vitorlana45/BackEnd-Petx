@@ -85,7 +85,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     @Transactional
     public ProdutoDTOResposta atualizarProduto(final Long id, final ProdutoDTO dto) {
         Produto produtoExistente = produtoRepository.findById(id)
-                .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
+                .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
 
         if (dto.nome() != null) produtoExistente.setNome(dto.nome());
         if (dto.descricao() != null) produtoExistente.setDescricao(dto.descricao());

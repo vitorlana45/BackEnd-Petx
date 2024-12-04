@@ -8,6 +8,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -71,7 +72,7 @@ public class Animal extends EntidadeBase {
     @Column(name = "especie")
     private EspecieEnum especieEnum;
 
-    @ElementCollection()
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "animal_doencas", joinColumns = @JoinColumn(name = "animal_id"))
     @Column(name = "doenca")
     private Set<String> doencas = new HashSet<>();

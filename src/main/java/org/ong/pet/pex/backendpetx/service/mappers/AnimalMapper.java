@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class AnimalMapper {
 
     public static AnimalGenericoResposta converterParaRespostaAnimalComConjuntoDTO(Animal animal) {
         logger.info("Iniciando a conversão para AnimalGenericoResposta para retornar ao cliente");
-        return AnimalGenericoResposta.builder()
+        var resposta = AnimalGenericoResposta.builder()
                 .id(animal.getId())
                 .chipId(animal.getChipId())
                 .nome(animal.getNome())
@@ -36,6 +37,12 @@ public class AnimalMapper {
                 .status(animal.getStatusEnum().toString())
                 .lsAnimaisConjunto(null)
                 .build();
+
+        if (animal.getDoencas() != null) {
+            resposta.setDoencas(new HashSet<>(animal.getDoencas()));
+        }
+
+        return resposta;
 
     }
 
