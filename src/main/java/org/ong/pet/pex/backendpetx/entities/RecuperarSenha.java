@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +24,5 @@ public class RecuperarSenha extends EntidadeBase {
     private String email;
     @Column(nullable = false)
     private Instant expiracaoToken;
-    @Column(updatable = false)
-    private LocalDateTime criadoEm;
 
 }
