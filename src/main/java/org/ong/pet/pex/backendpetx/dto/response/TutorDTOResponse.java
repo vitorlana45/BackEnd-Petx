@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Builder
 public record TutorDTOResponse(
+        Long id,
         String cpf,
         String nome,
         @NotBlank(message = "O campo cpf é obrigatório")

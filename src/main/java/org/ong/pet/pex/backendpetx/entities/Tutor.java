@@ -5,6 +5,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -20,14 +23,20 @@ import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
 import java.util.Objects;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "tutor_tb")
+
 public class Tutor extends EntidadeBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Column(name = "nome")
     private String nome;
@@ -57,15 +66,13 @@ public class Tutor extends EntidadeBase {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         Tutor tutor = (Tutor) o;
-        return Objects.equals(cpf, tutor.cpf);
+        return Objects.equals(id, tutor.id) && Objects.equals(cpf, tutor.cpf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), cpf);
+        return Objects.hash(id, cpf);
     }
 }

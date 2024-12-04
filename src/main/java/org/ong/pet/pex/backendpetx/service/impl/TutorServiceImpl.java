@@ -45,6 +45,7 @@ public class TutorServiceImpl implements TutorService {
                 .collect(Collectors.toSet());
 
         return TutorDTOResponse.builder()
+                .id(tutor.getId())
                 .cpf(tutor.getCpf())
                 .nome(tutor.getNome())
                 .cep(tutor.getEndereco().getCep())
@@ -75,6 +76,7 @@ public class TutorServiceImpl implements TutorService {
             return tutorRepository.save(tutor);
         }).orElseGet(() -> {
             Tutor novoTutor = Tutor.builder()
+                    .idade(cadastrarTutorRequisicao.idade())
                     .cpf(cadastrarTutorRequisicao.cpf())
                     .nome(cadastrarTutorRequisicao.nome())
                     .telefone(cadastrarTutorRequisicao.telefone())

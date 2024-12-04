@@ -7,6 +7,9 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
@@ -21,6 +24,7 @@ import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +34,11 @@ import java.util.Map;
 @Entity
 @Table(name = "produto")
 public class Produto extends EntidadeBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     private String nome;
 
@@ -60,4 +69,17 @@ public class Produto extends EntidadeBase {
     public String obterAtributo(String chave) {
         return atributos.get(chave);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Produto produto = (Produto) o;
+        return Objects.equals(id, produto.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
 }
