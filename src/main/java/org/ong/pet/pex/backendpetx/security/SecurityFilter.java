@@ -23,7 +23,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private final UsuarioRepository userRepository;
 
     @Autowired
-    public SecurityFilter(TokenService tokenService,UsuarioRepository userRepository) {
+    public SecurityFilter(TokenService tokenService, UsuarioRepository userRepository) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
     }
@@ -56,7 +56,6 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
 
-
     private String recuperarToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
@@ -67,10 +66,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         final String LOGIN_URL = "/api/auth/login";
         final String RECOVER_URL = "/api/auth/recuperar-token";
         final String REGISTRAR_USER_URL = "/api/usuarios/registrar";
+        final String NOVA_SENHA_URL = "/api/auth/nova-senha";
 
         return uri.startsWith(LOGIN_URL) ||
                uri.startsWith(RECOVER_URL) ||
-               uri.startsWith(REGISTRAR_USER_URL);
+               uri.startsWith(REGISTRAR_USER_URL) ||
+               uri.startsWith(NOVA_SENHA_URL);
+
     }
 
 

@@ -36,7 +36,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                                 .requestMatchers(HttpMethod.POST, "/api/usuarios/registrar").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                                .requestMatchers(HttpMethod.PUT, "/api/auth/recuperar-token").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/auth/recuperar-token").permitAll()
+                                .requestMatchers(HttpMethod.PUT, "/api/auth/nova-senha").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**", "/swagger-resources/**", "/health/status").permitAll()
                         // todas as rotas Autenticadas
                         .anyRequest().authenticated()
