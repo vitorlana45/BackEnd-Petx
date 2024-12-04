@@ -42,10 +42,6 @@ public class UsuarioException extends RuntimeException {
         throw new UsuarioException(String.format("Usuário com chip '%s' já está cadastrado", identificador), HttpStatus.CONFLICT);
     }
 
-    public static UsuarioException ongNaoEncontrada() {
-        throw new UsuarioException("Organização não encontrada. Entre em contato com o suporte.", HttpStatus.NOT_FOUND);
-    }
-
     public static void usuarioErroFazerLogin(String mensagemErro) {
         throw new UsuarioException(mensagemErro, HttpStatus.UNAUTHORIZED);
     }

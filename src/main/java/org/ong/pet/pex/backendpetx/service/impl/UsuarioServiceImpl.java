@@ -10,7 +10,7 @@ import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +21,13 @@ import java.util.List;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-
 
 
     @Override
@@ -40,17 +41,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario entidade = new Usuario();
         entidade.setEmail(usuarioDTO.email());
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(usuarioDTO.password());
-
-        entidade.setPassword(encryptedPassword);
+        entidade.setPassword(passwordEncoder.encode(usuarioDTO.password()));
         entidade.setRole(UserRole.COLABORADOR);
 
         entidade = usuarioRepository.save(entidade);
 
         return new RespostaCricaoUsuario(entidade.getId(),entidade.getEmail(), entidade.getRole());
     }
-
-
 
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -65,8 +62,6 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new DataIntegrityViolationException("Falha de integridade referencial");
         }
     }
-
-
 
     @Transactional(readOnly = true)
     @Override

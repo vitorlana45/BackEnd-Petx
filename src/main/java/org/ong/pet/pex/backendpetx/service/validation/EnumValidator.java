@@ -28,7 +28,6 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
 
         // Valida se o valor é nulo
         if (valor == null) {
-            var v = Arrays.asList(enumClass.getEnumConstants());
             logger.info("Valor do enum é nulo.");
             list.add(new FieldMessage(null, "O valor não pode ser nulo."));
         } else {

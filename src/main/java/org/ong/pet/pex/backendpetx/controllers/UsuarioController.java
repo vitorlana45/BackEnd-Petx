@@ -34,19 +34,17 @@ public class UsuarioController {
 
 
     @PostMapping("/registrar")
-    public ResponseEntity<RespostaCricaoUsuario> inserirUsuario(@RequestBody @Valid UsuarioDTO usuarioDTO) {
+    public ResponseEntity<RespostaCricaoUsuario> inserirUsuario(@RequestBody @Valid final UsuarioDTO usuarioDTO) {
 
         RespostaCricaoUsuario usuarioCriado = usuarioService.inserirUsuario(usuarioDTO);
-
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioCriado.id()).toUri();
-
         return ResponseEntity.created(uri).body(usuarioCriado);
     }
 
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping("/buscarId/{id}")
-    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorId(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorId(@PathVariable final Long id) {
         RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorId(id);
         return ResponseEntity.ok(usuario);
     }
@@ -54,7 +52,7 @@ public class UsuarioController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/buscar/{email}")
-    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorEmail(@PathVariable(name = "email") String email) {
+    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorEmail(@PathVariable(name = "email") final String email) {
 
         RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(email);
 
@@ -63,14 +61,14 @@ public class UsuarioController {
 
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping("/buscar/todos")
+    @GetMapping("/listar")
     public ResponseEntity<List<RespostaBuscarTodosUsuarios>> buscarTodosUsuarios() {
         return ResponseEntity.ok(usuarioService.buscarTodosUsuarios());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable final Long id) {
         usuarioService.deletarUsuario(id);
         return ResponseEntity.noContent().build();
     }
