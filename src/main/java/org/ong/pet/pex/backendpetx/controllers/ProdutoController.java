@@ -50,9 +50,12 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
     }
 
+    // arrumar bug
+    // tenho que procurar pela chave primeiro, se nao conter a chave retorno um erro pois o campo o dado nao existe e assim
+    //deixo de criar novos dados
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PatchMapping("/{id}")
-    public ResponseEntity<ProdutoDTOResposta> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody @Valid ProdutoDTO produtoAtualizado) {
+    public ResponseEntity<ProdutoDTOResposta> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody  ProdutoDTO produtoAtualizado) {
         return ResponseEntity.ok(produtoService.atualizarProduto(id, produtoAtualizado));
     }
 

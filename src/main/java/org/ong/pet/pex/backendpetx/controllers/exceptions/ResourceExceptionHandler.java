@@ -6,6 +6,7 @@ import org.ong.pet.pex.backendpetx.service.exceptions.DespesaException;
 import org.ong.pet.pex.backendpetx.service.exceptions.EnumException;
 import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
+import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.http.HttpStatus;
@@ -111,6 +112,17 @@ public class ResourceExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<StandardError> manipularAuthException(AuthException ex, HttpServletRequest request) {
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setError("Recurso Não Encontrado");
+        error.setMessage(ex.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ProdutoException.class)
+    public ResponseEntity<StandardError> manipularProdutoException(ProdutoException ex, HttpServletRequest request) {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(HttpStatus.BAD_REQUEST.value());

@@ -13,6 +13,7 @@ import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.ProdutoService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
+import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
 import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,7 +75,7 @@ public class ProdutoServiceImpl implements ProdutoService {
     public ProdutoDTOResposta buscarProdutoPorId(final Long id) {
 
         var produto = produtoRepository.findById(id)
-                .orElseThrow(() -> PetXException.produtoNaoEncontrado(id.toString()));
+                .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
 
         return produtoMapper.mapearParaDto(produto);
     }
