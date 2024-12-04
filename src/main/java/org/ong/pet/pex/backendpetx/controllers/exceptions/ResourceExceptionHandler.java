@@ -1,6 +1,8 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.ong.pet.pex.backendpetx.service.exceptions.AuthException;
+import org.ong.pet.pex.backendpetx.service.exceptions.DespesaException;
 import org.ong.pet.pex.backendpetx.service.exceptions.EnumException;
 import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
@@ -24,7 +26,7 @@ public class ResourceExceptionHandler {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(pe.getStatus().value());
-        error.setError("Invalid Request");
+        error.setError("Requisição Inválida");
         error.setMessage(pe.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(error);
@@ -35,7 +37,7 @@ public class ResourceExceptionHandler {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setStatus(ex.getStatus().value());
-        error.setError("Acesso Negado");
+        error.setError("Recurso Não Encontrado");
         error.setMessage(ex.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(ex.getStatus()).body(error);
@@ -46,7 +48,7 @@ public class ResourceExceptionHandler {
         ValidationError error = new ValidationError();
         error.setTimestamp(Instant.now());
         error.setStatus(ex.getStatusCode().value());
-        error.setError("Validation Error");
+        error.setError("Erro de Validação");
         error.setMessage("Erro de validação nos campos");
         error.setPath(request.getRequestURI());
 
@@ -86,12 +88,35 @@ public class ResourceExceptionHandler {
         HttpStatus status = ex.getStatus();
         error.setTimestamp(Instant.now());
         error.setStatus(status.value());
-        error.setError("Validation Error");
+        error.setError("Erro de Validação");
         error.setMessage("Erro de validação nos campos");
         error.setPath(request.getRequestURI());
 
         error.addError(ex.getCampoErro(), ex.getMessage());
 
         return ResponseEntity.status(status.value()).body(error);
+    }
+
+    @ExceptionHandler(DespesaException.class)
+    public ResponseEntity<StandardError> manipularEstoqueException(DespesaException ex, HttpServletRequest request) {
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(ex.getStatus().value());
+        error.setError("Recurso Não Encontrado");
+        error.setMessage(ex.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(ex.getStatus().value()).body(error);
+    }
+
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<StandardError> manipularAuthException(AuthException ex, HttpServletRequest request) {
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setError("Recurso Não Encontrado");
+        error.setMessage(ex.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
