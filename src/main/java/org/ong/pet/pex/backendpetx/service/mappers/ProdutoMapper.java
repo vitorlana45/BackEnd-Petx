@@ -17,7 +17,7 @@ public class ProdutoMapper {
 
     public Produto mapearParaEntidade(final ProdutoDTO dto, final Estoque estoque) {
         // Criar o produto com os campos básicos
-        Produto produto = Produto.builder()
+       return Produto.builder()
                 .nome(dto.nome())
                 .descricao(dto.descricao())
                 .quantidade(dto.quantidade())
@@ -28,16 +28,6 @@ public class ProdutoMapper {
                         .collect(Collectors.toMap(InfoProdutoDTO::chave, InfoProdutoDTO::valor))
                 )
                 .build();
-
-
-        // Adicionar metadados como atributos dinâmicos
-        if (dto.atributosDinamicos() != null) {
-            dto.atributosDinamicos().forEach(info ->
-                    produto.adicionarAtributo(info.chave(), info.valor())
-            );
-        }
-
-        return produto;
     }
 
     public ProdutoDTOResposta mapearParaDto(final Produto entity) {
