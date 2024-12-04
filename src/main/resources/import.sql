@@ -21,8 +21,8 @@ INSERT INTO usuario_tb (email, senha, role,atualizado_em, criado_em, ong_id) VAL
 -- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,bairro, cidade,cpf) VALUES ('John', 77777777, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 1', 'abcwe','São Paulo','123456789');
 -- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,bairro, cidade,cpf) VALUES ('Jorge', 88888888, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 2', 'abcwe','São Paulo','987654321');
 -- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua, bairro, cidade,cpf) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', 'abcwe','São Paulo','123456789');
-
-INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,cpf, idade) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', '064.123.090-71',98);
+--
+-- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,cpf, idade) VALUES ('Steve', 999999999, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 3', '064.123.090-71',98);
 
 
 -- INSERT INTO  estoque_tb (atualizado_em, criado_em, id_ong, nome, quantidade,especie) VALUES (NOW(), NOW(), 1, 'Ração', '40kg',0);
