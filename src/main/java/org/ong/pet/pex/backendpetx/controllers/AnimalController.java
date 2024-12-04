@@ -2,6 +2,7 @@ package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
@@ -74,7 +75,7 @@ public class AnimalController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<AnimalGenericoResposta> atualizarAnimal(@PathVariable final Long id, @RequestBody @Valid final AnimalDTO animalSemConjuntoDTO) {
+    public ResponseEntity<AnimalGenericoResposta> atualizarAnimal(@PathVariable final Long id, @RequestBody @Valid final AnimalGenericoRequisicao animalSemConjuntoDTO) {
         AnimalGenericoResposta entidade = animalService.atualizarAnimal(id, animalSemConjuntoDTO);
         return ResponseEntity.ok().body(entidade);
     }

@@ -18,6 +18,12 @@ public class PetXException extends RuntimeException {
         this.status = status;
     }
 
+    public PetXException(String mensagem) {
+        super(mensagem);
+        this.erros = new HashMap<>();
+        this.status = HttpStatus.BAD_REQUEST;
+    }
+
     public PetXException(String mensagem, Map<String, String> erros) {
         super(mensagem);
         this.erros = erros;

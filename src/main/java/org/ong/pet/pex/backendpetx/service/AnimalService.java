@@ -16,7 +16,7 @@ public interface AnimalService {
 
     void adicionarAdocaoConjuntaEmAnimal (Map<String,String> chips);
 
-    AnimalGenericoResposta atualizarAnimal (Long id, AnimalDTO animalSemConjuntoDTO);
+    AnimalGenericoResposta atualizarAnimal (Long id, AnimalGenericoRequisicao animalSemConjuntoDTO);
 
     void deletarPorId (Long id);
 
