@@ -1,6 +1,5 @@
 package org.ong.pet.pex.backendpetx.service;
 
-import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;

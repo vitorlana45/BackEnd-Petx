@@ -1,3 +1,4 @@
+// AnimalUtils.java
 package org.ong.pet.pex.backendpetx.service.impl.serviceUtils;
 
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
@@ -17,7 +18,6 @@ import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converter
 @Component
 public class AnimalUtils {
 
-    // Dependências como repositórios
     private final AnimalRepository animalRepository;
     private final AnimalConjuntoRepository animalConjuntoRepository;
 
@@ -38,7 +38,7 @@ public class AnimalUtils {
 
 
     @Transactional(readOnly = true)
-    public AnimalGenericoResposta buscarAnimalPorIdComConjunto(Long id) {
+    public AnimalGenericoResposta buscarAnimalPorIdComConjuntoResposta(Long id) {
         // ** Recupera o animal pelo id ** //
         List<Animal> lsAnimais = new ArrayList<>();
         var animal = animalRepository.findById(id).orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString()));
