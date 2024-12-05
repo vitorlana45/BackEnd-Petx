@@ -22,7 +22,11 @@ public class ProdutoException extends RuntimeException {
     this.status = HttpStatus.BAD_REQUEST; // Default para erros de validação
   }
 
-  public static PetXException produtoNaoEncontrado(String id) {
-    return new PetXException(String.format("produto com o identificador '%s' não encontrado", id), HttpStatus.NOT_FOUND);
+  public static ProdutoException produtoNaoEncontrado(String id) {
+    return new ProdutoException(String.format("produto com o identificador '%s' não encontrado", id), HttpStatus.NOT_FOUND);
+  }
+
+  public static ProdutoException campoObrigatorio (String id) {
+    return new ProdutoException(String.format("produto com o identificador '%s' não encontrado", id), HttpStatus.NOT_FOUND);
   }
 }

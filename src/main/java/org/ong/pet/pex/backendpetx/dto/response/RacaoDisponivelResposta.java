@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record RacaoDisponivelResposta(
-        long quantidadeRacaoEmGramas,
+        double quantidadeRacaoEmGramas,
         double consumoDiraio,
         String racaoDias
 ) {

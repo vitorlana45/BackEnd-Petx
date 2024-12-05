@@ -21,7 +21,7 @@ public record ProdutoDTO(
         String descricao,
 
         @NotNull(message = "Preço do produto não pode ser nulo")
-        Long quantidade,
+        Double quantidade,
 
         @NotNull(message = "Preço do produto não pode ser nulo")
         UnidadeDeMedidaEnum unidadeDeMedida,

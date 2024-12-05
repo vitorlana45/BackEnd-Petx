@@ -91,19 +91,19 @@ public class EstoqueServiceImpl implements EstoqueService {
         var pegarEstoque = ong.getEstoque();
 
         logger.info("filtrando todos os produtos de ração por QUILO");
-        long quantidadeRacaoKg = pegarEstoque.getProduto().stream()
+        double quantidadeRacaoKg = pegarEstoque.getProduto().stream()
                 .filter(x -> x.getTipoProduto() == TipoProduto.RACAO && x.getUnidadeDeMedida() == UnidadeDeMedidaEnum.QUILO)
-                .mapToLong(Produto::getQuantidade)
+                .mapToDouble(Produto::getQuantidade)
                 .sum();
 
         logger.info("filtrando todos os produtos de ração por LITRO");
-        long quantidadeRacaoLitro = pegarEstoque.getProduto().stream()
+        double quantidadeRacaoLitro = pegarEstoque.getProduto().stream()
                 .filter(x -> x.getTipoProduto() == TipoProduto.RACAO && x.getUnidadeDeMedida() == UnidadeDeMedidaEnum.LITRO)
-                .mapToLong(Produto::getQuantidade)
+                .mapToDouble(Produto::getQuantidade)
                 .sum();
 
         logger.info("calculando a quantidade total de ração em gramas");
-        long quantidadeRacaoTotalEmGramas = (quantidadeRacaoKg * 1000) + (quantidadeRacaoLitro * 1000); // 1kg = 1000g
+        double quantidadeRacaoTotalEmGramas = (quantidadeRacaoKg * 1000) + (quantidadeRacaoLitro * 1000); // 1kg = 1000g
 
         logger.info("calculando o consumo diário total");
         double consumoDiarioTotal = (porteCounts[0] * racaoPequeno) +

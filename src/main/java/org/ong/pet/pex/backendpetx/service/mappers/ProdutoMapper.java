@@ -24,7 +24,7 @@ public class ProdutoMapper {
                 .unidadeDeMedida(dto.unidadeDeMedida())
                 .tipoProduto(dto.tipoProduto())
                 .estoque(estoque)
-                .atributos(dto.atributosDinamicos().stream()
+                .atributosEspecificos(dto.atributosDinamicos().stream()
                         .collect(Collectors.toMap(InfoProdutoDTO::chave, InfoProdutoDTO::valor))
                 )
                 .build();
@@ -32,7 +32,7 @@ public class ProdutoMapper {
 
     public ProdutoDTOResposta mapearParaDto(final Produto entity) {
         // Converter atributos do produto para lista de InfoProdutoDTO
-        List<InfoProdutoDTO> metaData = entity.getAtributos().entrySet().stream()
+        List<InfoProdutoDTO> metaData = entity.getAtributosEspecificos().entrySet().stream()
                 .map(entry -> new InfoProdutoDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 

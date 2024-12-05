@@ -31,25 +31,29 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     private final static Long ONG = 1L;
 
-    // TODO: Implementar validação de campos dinâmicos futuramente
-    private void validarCamposDinamicos(TipoProduto tipoProduto, List<InfoProdutoDTO> x) {
+    private void validarCamposDinamicos(TipoProduto tipoProduto, List<InfoProdutoDTO> atributosDinamicos) {
+        if (tipoProduto == TipoProduto.MEDICAMENTO) {
+            for (InfoProdutoDTO atributo : atributosDinamicos) {
+                if ("dosagem".equals(atributo.chave()) && (atributo.valor() == null || atributo.valor().isEmpty())) {
+                    throw ProdutoException.campoObrigatorio("dosagem");
+                }
+            }
+        }
 
-//        entrar em intendimento sobre quais campos terão depois validar os campos dinamicos ex:
-//        if (tipoProduto == TipoProduto.MEDICAMENTO){
-//            if (x.chave().equals("dosagem") && x.valor().equals(""))
-//                else throw PetXException.campoObrigatorio("dosagem");
-//        if (tipoProduto == TipoProduto.RACAO)
-
+        if (tipoProduto == TipoProduto.RACAO) {
+            for (InfoProdutoDTO atributo : atributosDinamicos) {
+                if ("validade".equals(atributo.chave()) && (atributo.valor() == null || atributo.valor().isEmpty())) {
+                    throw ProdutoException.campoObrigatorio("validade");
+                }
+            }
+        }
     }
 
     @Transactional
     public Long cadastrarProduto(final ProdutoDTO dto) {
-//        ver requisitos ainda
-//        validarCamposDinamicos(dto.tipoProduto(), dto.atributosDinamicos());
+        validarCamposDinamicos(dto.tipoProduto(), dto.atributosDinamicos());
 
         var ong = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada);
-
-        if (ong.getEstoque() == null) this.criarEstoque(ong);
 
         if (ong.getEstoque() == null) {
             ong = criarEstoque(ong);
@@ -69,17 +73,13 @@ public class ProdutoServiceImpl implements ProdutoService {
         return produtoMapper.mapearListaProdutoParaDto(listaProdutos);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public ProdutoDTOResposta buscarProdutoPorId(final Long id) {
-
         var produto = produtoRepository.findById(id)
                 .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
-
         return produtoMapper.mapearParaDto(produto);
     }
-
 
     @Override
     @Transactional
@@ -107,7 +107,6 @@ public class ProdutoServiceImpl implements ProdutoService {
         produtoRepository.delete(produto);
     }
 
-
     private Ong criarEstoque(final Ong ong) {
         Estoque estoque = new Estoque();
         estoque.setOng(ong);
@@ -115,5 +114,4 @@ public class ProdutoServiceImpl implements ProdutoService {
         ong.setEstoque(savedEstoque);
         return ongRepository.save(ong);
     }
-
 }

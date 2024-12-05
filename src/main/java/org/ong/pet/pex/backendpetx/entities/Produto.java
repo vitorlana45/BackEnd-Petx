@@ -22,52 +22,50 @@ import lombok.Setter;
 import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "produto")
-public class Produto extends EntidadeBase {
-
+public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
     private String descricao;
 
-    private Long quantidade;
+    @Column(nullable = false)
+    private Double quantidade;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UnidadeDeMedidaEnum unidadeDeMedida;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoProduto tipoProduto;
 
+    // Atributos específicos armazenados como chave-valor
     @ElementCollection
     @CollectionTable(name = "produto_atributos", joinColumns = @JoinColumn(name = "produto_id"))
-    @MapKeyColumn(name = "atributo_nome")
+    @MapKeyColumn(name = "atributo_chave")
     @Column(name = "atributo_valor")
-    private Map<String, String> atributos = new HashMap<>();
+    private Map<String, String> atributosEspecificos;
 
     @ManyToOne
     @JsonIgnore
     private Estoque estoque;
 
     public void adicionarAtributo(String chave, String valor) {
-        atributos.put(chave, valor);
-    }
-
-    public String obterAtributo(String chave) {
-        return atributos.get(chave);
+        atributosEspecificos.put(chave, valor);
     }
 
     @Override
@@ -81,5 +79,4 @@ public class Produto extends EntidadeBase {
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
 }
