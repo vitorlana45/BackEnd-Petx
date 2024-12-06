@@ -15,6 +15,7 @@ import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
 import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
+import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
 import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +148,7 @@ public class EstoqueServiceImpl implements EstoqueService {
         try {
             tipo = TipoProduto.valueOf(tipoProduto);
         } catch (IllegalArgumentException e) {
-            throw PetXException.produtoNaoEncontrado(tipoProduto);
+            throw ProdutoException.produtoNaoEncontrado(tipoProduto);
         }
 
         var estoque = estoqueRepository.findEstoqueByOngId(ONG).orElseThrow(PetXException::ongNaoEncontrada);

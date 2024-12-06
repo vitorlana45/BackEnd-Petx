@@ -6,5 +6,7 @@ import lombok.Getter;
 public enum UnidadeDeMedidaEnum {
     QUILO,
     LITRO,
-    UNIDADE
+    UNIDADE,
+    CAIXA,
+    ML
 }

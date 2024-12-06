@@ -24,7 +24,7 @@ public class ProdutoMapper {
                 .unidadeDeMedida(dto.unidadeDeMedida())
                 .tipoProduto(dto.tipoProduto())
                 .estoque(estoque)
-                .atributosEspecificos(dto.atributosDinamicos().stream()
+                .atributosEspecificos(dto.atributosEspecificos().stream()
                         .collect(Collectors.toMap(InfoProdutoDTO::chave, InfoProdutoDTO::valor))
                 )
                 .build();
@@ -37,15 +37,13 @@ public class ProdutoMapper {
                 .collect(Collectors.toList());
 
         return ProdutoDTOResposta.builder()
-                .produtoId(entity.getId())
-                .produto(ProdutoDTO.builder()
+                        .produtoId(entity.getId())
                         .tipoProduto(entity.getTipoProduto())
                         .nome(entity.getNome())
                         .descricao(entity.getDescricao())
                         .quantidade(entity.getQuantidade())
                         .unidadeDeMedida(entity.getUnidadeDeMedida())
-                        .atributosDinamicos(metaData)
-                        .build())
+                        .atrubutosEspecificos(metaData)
                 .build();
     }
 

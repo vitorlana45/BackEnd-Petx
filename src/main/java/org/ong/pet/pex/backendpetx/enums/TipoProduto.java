@@ -7,5 +7,5 @@ public enum TipoProduto {
     RACAO,
     MEDICAMENTO,
     LIMPEZA,
-    VACINA
+    UTENSILIOS,
 }

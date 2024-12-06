@@ -18,6 +18,7 @@ import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -31,27 +32,8 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     private final static Long ONG = 1L;
 
-    private void validarCamposDinamicos(TipoProduto tipoProduto, List<InfoProdutoDTO> atributosDinamicos) {
-        if (tipoProduto == TipoProduto.MEDICAMENTO) {
-            for (InfoProdutoDTO atributo : atributosDinamicos) {
-                if ("dosagem".equals(atributo.chave()) && (atributo.valor() == null || atributo.valor().isEmpty())) {
-                    throw ProdutoException.campoObrigatorio("dosagem");
-                }
-            }
-        }
-
-        if (tipoProduto == TipoProduto.RACAO) {
-            for (InfoProdutoDTO atributo : atributosDinamicos) {
-                if ("validade".equals(atributo.chave()) && (atributo.valor() == null || atributo.valor().isEmpty())) {
-                    throw ProdutoException.campoObrigatorio("validade");
-                }
-            }
-        }
-    }
-
     @Transactional
     public Long cadastrarProduto(final ProdutoDTO dto) {
-        validarCamposDinamicos(dto.tipoProduto(), dto.atributosDinamicos());
 
         var ong = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada);
 
@@ -92,8 +74,12 @@ public class ProdutoServiceImpl implements ProdutoService {
         if (dto.quantidade() != null) produtoExistente.setQuantidade(dto.quantidade());
         if (dto.unidadeDeMedida() != null) produtoExistente.setUnidadeDeMedida(dto.unidadeDeMedida());
         if (dto.tipoProduto() != null) produtoExistente.setTipoProduto(dto.tipoProduto());
-        if (dto.atributosDinamicos() != null) {
-            dto.atributosDinamicos().forEach(info -> produtoExistente.adicionarAtributo(info.chave(), info.valor()));
+        if (dto.atributosEspecificos() != null) {
+            dto.atributosEspecificos().forEach(produto -> {
+               validarCamposDinamicos(dto.tipoProduto(), dto.atributosEspecificos());
+                produtoExistente.adicionarAtributo(produto.chave(), produto.valor());
+
+            });
         }
         Produto produtoAtualizado = produtoRepository.save(produtoExistente);
         return produtoMapper.mapearParaDto(produtoAtualizado);
@@ -105,6 +91,25 @@ public class ProdutoServiceImpl implements ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
         produtoRepository.delete(produto);
+    }
+
+    public void validarCamposDinamicos(TipoProduto tipoProduto, List<InfoProdutoDTO> atributosDinamicos) {
+
+       List<InfoProdutoDTO> atributosNormalizadosList = atributosDinamicos.stream()
+               .map(item -> new InfoProdutoDTO(item.chave().toUpperCase(), item.valor().toUpperCase())).toList();
+
+
+        List<String> portesRacaoAceitos = List.of("pequeno", "medio", "grande");
+        List<String> camposDeRacaoEMedicamentoAceitos = List.of("LOTE", "VALIDADE", "PORTE");
+
+            if (tipoProduto == TipoProduto.MEDICAMENTO || tipoProduto == TipoProduto.RACAO) {
+                atributosNormalizadosList.forEach(atributo -> {
+                    if (!camposDeRacaoEMedicamentoAceitos.contains(atributo.chave())) {
+                        throw ProdutoException.campoNaoAceito(atributo.chave(), Arrays.toString(camposDeRacaoEMedicamentoAceitos.toArray()));
+                    }
+                });
+            }
+
     }
 
     private Ong criarEstoque(final Ong ong) {

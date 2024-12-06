@@ -25,6 +25,6 @@ public record ProdutoDTO(
         @NotNull(message = "Preço do produto não pode ser nulo")
         UnidadeDeMedidaEnum unidadeDeMedida,
 
-        List<InfoProdutoDTO> atrubutosEspecificos
+        List<InfoProdutoDTO> atributosEspecificos
 ) {
 }

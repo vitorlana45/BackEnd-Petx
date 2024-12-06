@@ -3,6 +3,7 @@ package org.ong.pet.pex.backendpetx.service.exceptions;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProdutoException extends RuntimeException {
@@ -28,5 +29,13 @@ public class ProdutoException extends RuntimeException {
 
   public static ProdutoException campoObrigatorio (String id) {
     return new ProdutoException(String.format("produto com o identificador '%s' não encontrado", id), HttpStatus.NOT_FOUND);
+  }
+
+  public static ProdutoException porteInvalido (String id) {
+    return new ProdutoException(String.format("produto com o porte '%s' não é valido", id), HttpStatus.NOT_FOUND);
+  }
+
+  public static ProdutoException campoNaoAceito (String id, String camposAceitos) {
+    return new ProdutoException(String.format("este campo '%s' não é aceito os campos aceitos são: '%s'", id, camposAceitos), HttpStatus.NOT_FOUND);
   }
 }
