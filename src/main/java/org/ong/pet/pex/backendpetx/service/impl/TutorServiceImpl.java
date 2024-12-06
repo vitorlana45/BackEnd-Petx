@@ -100,13 +100,13 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Transactional
-    public void deletarTutor(String cpf) {
-        tutorRepository.findTutorByCpf(cpf).ifPresentOrElse(tutor -> {
+    public void deletarTutorPorId(Long id) {
+        tutorRepository.findById(id).ifPresentOrElse(tutor -> {
             tutor.setOng(null);
             tutor.getAnimais().forEach(animal -> animal.getTutores().remove(tutor));
             tutorRepository.deleteById(tutor.getId());
         }, () -> {
-            throw TutorException.tutorNaoEncontrado(cpf);
+            throw TutorException.tutorNaoEncontrado(id.toString());
         });
     }
 

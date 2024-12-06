@@ -18,4 +18,5 @@ public interface TutorService {
 
     void deletarTutorPorCpf(String cpf);
 
+    void deletarTutorPorId(Long id);
 }

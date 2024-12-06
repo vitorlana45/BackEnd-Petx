@@ -66,6 +66,12 @@ public class TutorController {
         tutorService.deletarTutorPorCpf(cpf);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<Void> buscarTutorPorId(@PathVariable(name = "id") Long id) {
+        tutorService.deletarTutorPorId(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 
