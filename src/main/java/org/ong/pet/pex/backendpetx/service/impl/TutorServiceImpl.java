@@ -9,6 +9,7 @@ import org.ong.pet.pex.backendpetx.entities.Tutor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.TutorRepository;
+import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
@@ -30,11 +31,13 @@ public class TutorServiceImpl implements TutorService {
     private final TutorRepository tutorRepository;
     private final AnimalRepository animalRepository;
     private final AnimalUtils animalUtils;
+    private final UsuarioRepository usuarioRepository;
 
-    public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository, AnimalUtils animalUtils) {
+    public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository, AnimalUtils animalUtils, UsuarioRepository usuarioRepository) {
         this.tutorRepository = tutorRepository;
         this.animalRepository = animalRepository;
         this.animalUtils = animalUtils;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Transactional(readOnly = true)
@@ -143,14 +146,15 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Transactional
-    public String atualizarDadosTutor(String cpfAntigo, AtualizarTutorRequisicao att) {
-        Tutor verificandoTutorExiste = tutorRepository.findTutorByCpf(cpfAntigo).orElseThrow(() -> TutorException.tutorNaoEncontrado(att.cpf()));
+    public String atualizarDadosTutor(String cpfUrl, AtualizarTutorRequisicao att) {
+        Tutor verificandoTutorExiste = tutorRepository.findTutorByCpf(cpfUrl).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpfUrl));
 
-        if (tutorRepository.existsByCpf(att.cpf()))
-            throw TutorException.jaExiste("ja existe um tutor com este", "CPF", att.cpf());
-
-        if(att.cpf() != null && !att.cpf().isEmpty()) {
-            verificandoTutorExiste.setCpf(att.cpf());
+        if (!cpfUrl.equals(att.cpf())) {
+            if (tutorRepository.findTutorByCpf(att.cpf()).isPresent())
+                throw TutorException.jaExiste("ja existe um tutor com este", "CPF", att.cpf());
+            else {
+                verificandoTutorExiste.setCpf(att.cpf());
+            }
         }
 
         if(att.nome() != null && !att.nome().isEmpty()) {
