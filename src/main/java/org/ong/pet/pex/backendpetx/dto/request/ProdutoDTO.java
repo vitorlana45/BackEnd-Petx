@@ -11,7 +11,6 @@ import java.util.List;
 @Builder
 public record ProdutoDTO(
 
-
         @NotNull(message = "Tipo do produto não pode ser nulo")
         TipoProduto tipoProduto,
 
@@ -26,6 +25,6 @@ public record ProdutoDTO(
         @NotNull(message = "Preço do produto não pode ser nulo")
         UnidadeDeMedidaEnum unidadeDeMedida,
 
-        List<InfoProdutoDTO> atributosDinamicos
+        List<InfoProdutoDTO> atrubutosEspecificos
 ) {
 }
