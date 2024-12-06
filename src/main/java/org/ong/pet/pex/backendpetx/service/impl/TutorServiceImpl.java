@@ -149,6 +149,24 @@ public class TutorServiceImpl implements TutorService {
         if (tutorRepository.existsByCpf(att.cpf()))
             throw TutorException.jaExiste("ja existe um tutor com este", "CPF", att.cpf());
 
+        if(att.cpf() != null && !att.cpf().isEmpty()) {
+            verificandoTutorExiste.setCpf(att.cpf());
+        }
+
+        if(att.nome() != null && !att.nome().isEmpty()) {
+            verificandoTutorExiste.setNome(att.nome());
+        }
+
+        if(att.telefone() != null && !att.telefone().isEmpty()) {
+            verificandoTutorExiste.setTelefone(att.telefone());
+        }
+
+        if(att.idade() != null) verificandoTutorExiste.setIdade(att.idade());
+        if(att.cidade() != null && !att.cidade().isEmpty()) verificandoTutorExiste.getEndereco().setCidade(att.cidade());
+        if(att.bairro() != null && !att.bairro().isEmpty()) verificandoTutorExiste.getEndereco().setBairro(att.bairro());
+        if(att.rua() != null && !att.rua().isEmpty()) verificandoTutorExiste.getEndereco().setRua(att.rua());
+        if(att.cep() != null && !att.cep().isEmpty()) verificandoTutorExiste.getEndereco().setCep(att.cep());
+
         var entidadeSalva = tutorRepository.saveAndFlush(converterTutorDTOParaEntidade(verificandoTutorExiste, att));
         return entidadeSalva.getCpf();
     }

@@ -30,7 +30,7 @@ public class TutorException extends RuntimeException {
     }
 
     public static TutorException jaExiste(String nomeRecurso, String campoErro, Object identificador) {
-        throw new TutorException(String.format("%s com %s '%s' já existe", nomeRecurso, campoErro, identificador), HttpStatus.CONFLICT);
+        throw new TutorException(String.format("%s %s '%s'", nomeRecurso, campoErro, identificador), HttpStatus.CONFLICT);
     }
 
     public static TutorException dadosInvalidos(Map<String, String> erros) {
