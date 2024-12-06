@@ -114,6 +114,7 @@ public class TutorServiceImpl implements TutorService {
         tutorRepository.findAll().forEach(tutor -> {
             var listAnimals = new ArrayList<>(tutor.getAnimais());
             listContendoTutoresRepetidos.add(TutorDTOResponse.builder()
+                    .id(tutor.getId())
                     .cpf(tutor.getCpf())
                     .nome(tutor.getNome())
                     .idade(tutor.getIdade())

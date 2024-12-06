@@ -3,7 +3,6 @@ package org.ong.pet.pex.backendpetx.service.exceptions;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProdutoException extends RuntimeException {
