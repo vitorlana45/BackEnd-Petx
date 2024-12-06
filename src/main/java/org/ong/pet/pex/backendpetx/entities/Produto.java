@@ -32,7 +32,7 @@ import java.util.Objects;
 @Builder
 @Entity
 @Table(name = "produto")
-public class Produto {
+public class Produto extends EntidadeBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
