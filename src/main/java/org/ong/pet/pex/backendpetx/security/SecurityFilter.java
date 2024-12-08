@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
+import org.ong.pet.pex.backendpetx.service.exceptions.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,9 +35,9 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recuperarToken(request);
         if (token != null) {
             var email = tokenService.validarToken(token);
-            Usuario user = userRepository.findUsuarioByEmail(email);
+            Usuario user = (Usuario) userRepository.findByEmail(email);
 
-            if (user == null) {
+            if (user == null ) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"message\": \"Usuário não encontrado, verifique suas credenciais!\"}");

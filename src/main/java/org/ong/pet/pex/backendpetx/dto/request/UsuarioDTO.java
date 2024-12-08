@@ -11,6 +11,9 @@ import org.ong.pet.pex.backendpetx.service.validation.InserirUsuarioValido;
 @InserirUsuarioValido
 public record UsuarioDTO(
 
+        @NotBlank(message = "Nome é obrigatório")
+        String name,
+
         @Email(message = "O campo email deve ser um email válido")
         @NotBlank(message = "Email é obrigatório")
         @Length(min = 3, max = 320, message = "Email deve ter entre 3 e 320 caracteres")
@@ -21,6 +24,6 @@ public record UsuarioDTO(
         String password
 ) {
     public UsuarioDTO(Usuario usuario) {
-        this(usuario.getEmail(), usuario.getPassword());
+        this(usuario.getNome(), usuario.getEmail(), usuario.getPassword());
     }
 }

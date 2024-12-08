@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -35,6 +37,9 @@ public class Usuario extends EntidadeBase implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
+
+    @Column(name = "nome")
+    private String nome;
 
     @Column(unique = true, nullable = false, name = "email")
     private String email;

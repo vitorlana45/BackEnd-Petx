@@ -40,13 +40,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         Usuario entidade = new Usuario();
         entidade.setEmail(usuarioDTO.email());
+        entidade.setNome(usuarioDTO.name());
 
         entidade.setPassword(passwordEncoder.encode(usuarioDTO.password()));
         entidade.setRole(UserRole.COLABORADOR);
 
         entidade = usuarioRepository.save(entidade);
 
-        return new RespostaCricaoUsuario(entidade.getId(),entidade.getEmail(), entidade.getRole());
+        return new RespostaCricaoUsuario(entidade.getId(),entidade.getNome(), entidade.getEmail(), entidade.getRole());
     }
 
 
@@ -67,7 +68,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> UsuarioException.usuarioNaoEncontrado(id.toString()));
-        return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getEmail());
+        return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getRole().toString());
     }
 
 
@@ -78,7 +79,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         var list = usuarioRepository.findAll();
 
         return  list.stream().map(usuario -> new RespostaBuscarTodosUsuarios
-                (usuario.getEmail(), usuario.getRole().toString())).toList();
+                (usuario.getId(), usuario.getNome(),usuario.getEmail(), usuario.getRole().toString())).toList();
     }
 
 
@@ -87,11 +88,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public RespostaBuscarUsuarioPadrao buscarUsuarioPorEmail(String email) {
 
-      Usuario usuario = usuarioRepository.findUsuarioByEmail(email);
+      Usuario usuario = usuarioRepository.findUsuarioByEmail(email).orElseThrow(() -> UsuarioException.usuarioNaoEncontrado(email));
 
-      if(usuario == null) {
-        throw UsuarioException.usuarioNaoEncontrado(email);
-      }
-        return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getEmail());
+        return new RespostaBuscarUsuarioPadrao(usuario.getId(),usuario.getNome(), usuario.getEmail(), usuario.getRole().toString());
     }
 }

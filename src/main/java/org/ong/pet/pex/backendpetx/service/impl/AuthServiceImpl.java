@@ -83,10 +83,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void criarRecuperarToken(@Valid EmailDTO emailDTO) {
 
-        Usuario usuario = this.usuarioRepository.findUsuarioByEmail(emailDTO.email());
-        if(usuario == null){
-            throw UsuarioException.usuarioNaoEncontrado(emailDTO.email());
-        }
+        Usuario usuario = this.usuarioRepository.findUsuarioByEmail(emailDTO.email()).orElseThrow(() -> new AuthException("Usuário não encontrado"));
 
         RecuperarSenha entidade = new RecuperarSenha();
         entidade.setEmail(emailDTO.email());
@@ -110,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthException("Token de recuperação de senha inválido");
         }
 
-        Usuario usuario = usuarioRepository.findUsuarioByEmail(resultado.getFirst().getEmail());
+        Usuario usuario = usuarioRepository.findUsuarioByEmail(resultado.getFirst().getEmail()).orElseThrow(() -> new AuthException("Usuário não encontrado"));
         usuario.setPassword(passwordEncoder.encode(dto.password()));
         usuarioRepository.save(usuario);
 
