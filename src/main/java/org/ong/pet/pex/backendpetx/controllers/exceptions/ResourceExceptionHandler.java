@@ -9,6 +9,8 @@ import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
+import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -130,5 +132,58 @@ public class ResourceExceptionHandler {
         error.setMessage(ex.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // essa exceção é lançada quando ocorre um erro de conversão de um parâmetro o campo pode estar certo mas se o valor estiver errado é ela que pega e trata o erro
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<StandardError> manipularErroConversao(ConversionFailedException ex, HttpServletRequest request) {
+
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setError("Erro de Conversão");
+        error.setPath(request.getRequestURI());
+
+        // Tenta capturar o tipo do campo que falhou na conversão
+        String errorMessage = "Falha de conversão no parâmetro.";
+
+        // Verifica se há uma causa mais específica e tenta obter o nome do campo
+        Throwable cause = ex.getCause();
+        if (cause instanceof IllegalArgumentException) {
+            // O erro de conversão geralmente contém detalhes na causa original
+            errorMessage = cause.getMessage();
+        }
+
+        // Obter o TypeDescriptor do parâmetro que falhou
+        TypeDescriptor targetType = ex.getTargetType();
+
+        // Verifica se o tipo de destino é um Enum
+        if (targetType.getObjectType().isEnum()) {
+            // Obter os valores aceitos para o Enum
+            String acceptedValues = getAcceptedEnumValues(targetType.getObjectType());
+            errorMessage = "Erro ao converter Enum os valores aceitos para " + targetType.getObjectType().getSimpleName() + " são: " + acceptedValues;
+        } else {
+            errorMessage = " Tipo de parâmetro não enum.";
+        }
+
+        error.setMessage(errorMessage);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // Metodo para obter os valores aceitos de um Enum
+    private String getAcceptedEnumValues(Class<?> enumClass) {
+        if (enumClass.isEnum()) {
+            Object[] enumValues = enumClass.getEnumConstants();
+            StringBuilder acceptedValues = new StringBuilder();
+            for (Object enumValue : enumValues) {
+                acceptedValues.append(enumValue.toString()).append(", ");
+            }
+            if (!acceptedValues.isEmpty()) {
+                acceptedValues.setLength(acceptedValues.length() - 2); // Remove a última vírgula
+            }
+            return acceptedValues.toString();
+        }
+        return "Nenhum valor aceito encontrado para o tipo fornecido.";
     }
 }

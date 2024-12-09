@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
-import org.ong.pet.pex.backendpetx.service.exceptions.AuthException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -23,7 +21,6 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private final UsuarioRepository userRepository;
 
-    @Autowired
     public SecurityFilter(TokenService tokenService, UsuarioRepository userRepository) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;

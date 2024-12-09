@@ -15,8 +15,8 @@ INSERT INTO animal_doencas (animal_id, doenca) VALUES (2, 'RAIVA');
 
 
 -- senha dos usuarios é 1234567, use quando for mandar requisição
-INSERT INTO usuario_tb (email, senha, role,atualizado_em, criado_em, ong_id) VALUES ('admin@gmail.com', '$2a$10$X1.UGHrhwjGE5eS2Cezy4e2bZwwl15PA6VUeZkhwBd1RNPasBMia6','ADMIN',NOW(), NOW(),1) ;
-INSERT INTO usuario_tb (email, senha, role,atualizado_em, criado_em, ong_id) VALUES ('colab@gmail.com', '$2a$10$X1.UGHrhwjGE5eS2Cezy4e2bZwwl15PA6VUeZkhwBd1RNPasBMia6','COLABORADOR',NOW(), NOW(),1 );
+INSERT INTO usuario_tb (nome, email, senha, role,atualizado_em, criado_em, ong_id) VALUES ('admin','admin@gmail.com', '$2a$10$X1.UGHrhwjGE5eS2Cezy4e2bZwwl15PA6VUeZkhwBd1RNPasBMia6','ADMIN',NOW(), NOW(),1) ;
+INSERT INTO usuario_tb (nome, email, senha, role,atualizado_em, criado_em, ong_id) VALUES ('colab', 'colab@gmail.com', '$2a$10$X1.UGHrhwjGE5eS2Cezy4e2bZwwl15PA6VUeZkhwBd1RNPasBMia6','COLABORADOR',NOW(), NOW(),1 );
 
 -- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,bairro, cidade,cpf) VALUES ('John', 77777777, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 1', 'abcwe','São Paulo','123456789');
 -- INSERT INTO tutor_tb (nome, telefone, criado_em, atualizado_em,cep,cidade,bairro,id_ong, rua,bairro, cidade,cpf) VALUES ('Jorge', 88888888, NOW(), NOW(), '12345678', 'São Paulo', 'Vila Mariana', 1, 'Rua 2', 'abcwe','São Paulo','987654321');

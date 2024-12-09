@@ -5,8 +5,17 @@ import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
+import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
+import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
+import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
+import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
+import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -99,5 +109,27 @@ public class AnimalController {
     public ResponseEntity<Void> declararObito(@RequestBody @Valid final AnimalObituarioResquisicao obiturario) {
         animalService.declararObito(obiturario);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @GetMapping("/filtro")
+    public ResponseEntity<Page<AnimalPaginadoResposta>> listarAnimais(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "especie", required = false) EspecieEnum especie,
+            @RequestParam(value = "porte", required = false) PorteEnum porte,
+            @RequestParam(value = "raca", required = false) String raca,
+            @RequestParam(value = "status", required = false) StatusEnum status,
+            @RequestParam(value = "doenca", required = false) String doenca,
+            @RequestParam(value = "comportamento", required = false) ComportamentoEnum comportamento,
+            @RequestParam(value = "maturidade", required = false) MaturidadeEnum maturidade,
+            @RequestParam(value = "origem", required = false) OrigemAnimalEnum origem,
+            Pageable pageable
+    ) {
+        Page<AnimalPaginadoResposta> animais = animalService.paginarAnimais(
+                nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, pageable
+        );
+
+        return ResponseEntity.ok().body(animais);
     }
 }

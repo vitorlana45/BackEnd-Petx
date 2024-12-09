@@ -89,7 +89,7 @@ public class Animal extends EntidadeBase {
     @Column(name = "status")
     private StatusEnum statusEnum;
 
-    @ManyToOne(cascade = {CascadeType.ALL,   CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_ong")
     private Ong ong;
 
@@ -115,6 +115,4 @@ public class Animal extends EntidadeBase {
     public int hashCode() {
         return Objects.hash(super.hashCode(), chipId);
     }
-
-
 }
