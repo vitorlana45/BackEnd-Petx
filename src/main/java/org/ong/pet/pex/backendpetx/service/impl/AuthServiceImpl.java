@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         Long expirationDate = this.tokenService.pegarExpiracaoDoToken(token);
 
         // Retorna a resposta de login
-        return new AuthLoginResposta(token, expirationDate);
+        return new AuthLoginResposta(usuario.getNome(), token, expirationDate);
     }
 
 
