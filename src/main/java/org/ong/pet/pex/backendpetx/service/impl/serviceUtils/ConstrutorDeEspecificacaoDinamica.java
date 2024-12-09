@@ -1,5 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl.serviceUtils;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -65,6 +67,28 @@ public class ConstrutorDeEspecificacaoDinamica<T> {
     }
 
 
+public ConstrutorDeEspecificacaoDinamica<T> adicionarFiltroArrayDoencas(
+        String nomeAtributo,
+        String valor
+) {
+    if (StringUtils.hasText(valor)) {
+        especificacao = especificacao.and((raiz, consulta, criteriosConstrutor) -> {
+            String valorNormalizado = valor.toLowerCase().trim();
+
+            // usando o Join para acessar a lista de doencas do animal
+            Join<Object, String> join = raiz.join(nomeAtributo);
+            // o predicado é criado para verificar se a lista de doencas contém a doença
+            Predicate predicate = criteriosConstrutor.like(
+                    criteriosConstrutor.lower(join),
+                    "%" + valorNormalizado + "%"
+            );
+
+            return predicate;
+        });
+    }
+    // o this significa que vou retornar o próprio objeto ConstrutorDeEspecificacaoDinamica
+    return this;
+}
     // Metodo final para obter a especificação construída
     public Specification<T> build() {
         return especificacao;  // Retorna a especificação construída com todos os filtros aplicados
