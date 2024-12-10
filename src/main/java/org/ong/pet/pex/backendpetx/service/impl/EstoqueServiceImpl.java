@@ -102,16 +102,15 @@ public class EstoqueServiceImpl implements EstoqueService {
                                     (porteCounts[1] * racaoMedio) +
                                     (porteCounts[2] * racaoGrande);
 
-        double diasDisponiveis = consumoDiarioTotal > 0 ? quantidadeRacaoTotalEmGramas / consumoDiarioTotal : 0;
-        String diasDisponiveisFormatado = String.format("%.0f", diasDisponiveis);
-        logger.info("calculando os dias disponíveis: {} dias", diasDisponiveisFormatado);
+        int diasDisponiveis = consumoDiarioTotal > 0 ? (int) (quantidadeRacaoTotalEmGramas / consumoDiarioTotal) : 0;
+        logger.info("calculando os dias disponíveis: {} dias", diasDisponiveis);
 
         // Log dos resultados
         logger.info("Quantidade total de ração no estoque (em g): {}", quantidadeRacaoTotalEmGramas);
         logger.info("Consumo diário total (em g): {}", consumoDiarioTotal);
         logger.info("Dias de ração disponíveis: {}", diasDisponiveis);
 
-        return new RacaoDisponivelResposta(quantidadeRacaoTotalEmGramas, consumoDiarioTotal, diasDisponiveisFormatado);
+        return new RacaoDisponivelResposta(quantidadeRacaoTotalEmGramas, consumoDiarioTotal, diasDisponiveis);
     }
 
     @Override

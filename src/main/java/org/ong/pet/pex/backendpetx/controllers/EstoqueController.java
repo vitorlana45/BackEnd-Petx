@@ -25,15 +25,15 @@ public class EstoqueController {
     }
 
 
-
-    @GetMapping("/quantidade")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
+    @GetMapping("/racao")
     public ResponseEntity<RacaoDisponivelResposta> calcularQuantidadeDeRacaoDias() {
         return ResponseEntity.ok().body(estoqueService.calcularQuantidadeRacao());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-    @GetMapping("/filtro")
-    public ResponseEntity<Page<ProdutoDTOResposta>> listarProdutos(
+    @GetMapping()
+    public ResponseEntity<Page<ProdutoDTOResposta>> paginarProdutos(
             @RequestParam(value = "tipo", required = false) TipoProduto tipoProduto,
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "quantidade", required = false) Double quantidade,

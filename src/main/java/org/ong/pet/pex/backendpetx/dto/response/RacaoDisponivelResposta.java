@@ -6,6 +6,6 @@ import lombok.Builder;
 public record RacaoDisponivelResposta(
         double quantidadeRacaoEmGramas,
         double consumoDiario,
-        String racaoDias
+        int racaoDias
 ) {
 }
