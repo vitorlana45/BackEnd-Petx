@@ -126,6 +126,4 @@ public class AnimalController {
         return ResponseEntity.ok().body(animais);
     }
 
-    //TODO: adicionar endpoint de adicionar consumo em gramas por porte animal
-
 }
