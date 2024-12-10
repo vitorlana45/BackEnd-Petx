@@ -6,12 +6,12 @@ import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Validated
@@ -98,13 +97,6 @@ public class AnimalController {
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping("/listar")
-    public ResponseEntity<List<RespostaAnimalSemConjunto>> listarAnimaisCadastrados() {
-        List<RespostaAnimalSemConjunto> lista = animalService.listaAnimaisCadastrados();
-        return ResponseEntity.ok().body(lista);
-    }
-
-    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping("/obito")
     public ResponseEntity<Void> declararObito(@RequestBody @Valid final AnimalObituarioResquisicao obiturario) {
         animalService.declararObito(obiturario);
@@ -112,10 +104,9 @@ public class AnimalController {
     }
 
 
-    //TODO: ADICONAR FILTRO DE SEXO ANIMAL
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping("/filtro")
-    public ResponseEntity<Page<AnimalPaginadoResposta>> listarAnimais(
+    @GetMapping()
+    public ResponseEntity<Page<AnimalPaginadoResposta>> paginarAnimais(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "especie", required = false) EspecieEnum especie,
             @RequestParam(value = "porte", required = false) PorteEnum porte,
@@ -125,12 +116,16 @@ public class AnimalController {
             @RequestParam(value = "comportamento", required = false) ComportamentoEnum comportamento,
             @RequestParam(value = "maturidade", required = false) MaturidadeEnum maturidade,
             @RequestParam(value = "origem", required = false) OrigemAnimalEnum origem,
+            @RequestParam(value = "sexo", required = false) SexoEnum sexo,
             Pageable pageable
     ) {
         Page<AnimalPaginadoResposta> animais = animalService.paginarAnimais(
-                nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, pageable
+                nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
         );
 
         return ResponseEntity.ok().body(animais);
     }
+
+    //TODO: adicionar endpoint de adicionar consumo em gramas por porte animal
+
 }

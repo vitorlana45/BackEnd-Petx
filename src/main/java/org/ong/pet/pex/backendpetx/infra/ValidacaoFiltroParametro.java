@@ -39,6 +39,7 @@ public class ValidacaoFiltroParametro implements Filter {
             "doenca",
             "comportamento",
             "origem",
+            "sexo",
             "page",
             "size",
             "sort"
@@ -79,7 +80,7 @@ public class ValidacaoFiltroParametro implements Filter {
         chain.doFilter(request, response);
     }
 
-    private void validarParametros(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+    private void validarParametros(HttpServletRequest httpRequest, HttpServletResponse httpResponse){
         // Obtém os parâmetros da URL
         Map<String, String[]> parameterMap = httpRequest.getParameterMap();
         List<String> invalidParameters = new ArrayList<>();

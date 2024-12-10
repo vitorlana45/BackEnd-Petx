@@ -10,6 +10,7 @@ import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,14 +37,7 @@ public interface AnimalService {
 
     AnimalGenericoResposta buscarAnimalPorChip(String chip);
 
-    Page<AnimalPaginadoResposta> paginarAnimais(String nome,
-                                                String raca,
-                                                EspecieEnum especie,
-                                                PorteEnum porte,
-                                                StatusEnum status,
-                                                String doenca,
-                                                ComportamentoEnum comportamento,
-                                                MaturidadeEnum maturidade,
-                                                OrigemAnimalEnum origem,
-                                                Pageable pageable);
+    Page<AnimalPaginadoResposta> paginarAnimais(String nome, String raca, EspecieEnum especie, PorteEnum porte, StatusEnum status,
+                                                String doenca, ComportamentoEnum comportamento, MaturidadeEnum maturidade,
+                                                OrigemAnimalEnum origem, SexoEnum sexo, Pageable pageable);
 }
