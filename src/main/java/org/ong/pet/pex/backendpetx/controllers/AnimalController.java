@@ -112,6 +112,7 @@ public class AnimalController {
     }
 
 
+    //TODO: ADICONAR FILTRO DE SEXO ANIMAL
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/filtro")
     public ResponseEntity<Page<AnimalPaginadoResposta>> listarAnimais(

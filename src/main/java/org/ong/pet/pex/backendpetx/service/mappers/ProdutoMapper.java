@@ -6,6 +6,7 @@ import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Estoque;
 import org.ong.pet.pex.backendpetx.entities.Produto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class ProdutoMapper {
                 .build();
     }
 
-    public List<ProdutoDTOResposta> mapearListaProdutoParaDto(final List<Produto> produtos) {
+    public List<ProdutoDTOResposta> mapearListaProdutoParaDto(final Page<Produto> produtos) {
         return produtos.stream()
                 .map(this::mapearParaDto)
                 .collect(Collectors.toList());

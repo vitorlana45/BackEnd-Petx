@@ -35,7 +35,7 @@ public class Estoque extends EntidadeBase {
     private Long id;
 
     @OneToMany(mappedBy = "estoque", cascade = CascadeType.ALL)
-    private List<Produto> produto = new ArrayList<>();
+    private List<Produto> produtos = new ArrayList<>();
 
     @OneToOne
     @JsonIgnore

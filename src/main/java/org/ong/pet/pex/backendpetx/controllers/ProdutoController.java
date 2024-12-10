@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -38,21 +37,12 @@ public class ProdutoController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-    @GetMapping
-    public ResponseEntity<List<ProdutoDTOResposta>> listarProdutos() {
-        return ResponseEntity.ok(produtoService.listarProdutos());
-    }
-
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoDTOResposta> buscarProdutoPorId(@PathVariable(value = "id") Long id) {
         return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
     }
 
-    // arrumar bug
-    // tenho que procurar pela chave primeiro, se nao conter a chave retorno um erro pois o campo o dado nao existe e assim
-    //deixo de criar novos dados
+  //TODO: Implementar validação de campos dinâmicos, ainda exige mais informações
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PatchMapping("/{id}")
     public ResponseEntity<ProdutoDTOResposta> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody  ProdutoDTO produtoAtualizado) {

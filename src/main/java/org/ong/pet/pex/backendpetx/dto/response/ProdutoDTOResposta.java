@@ -1,11 +1,8 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.ong.pet.pex.backendpetx.dto.request.InfoProdutoDTO;
-import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
 import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 

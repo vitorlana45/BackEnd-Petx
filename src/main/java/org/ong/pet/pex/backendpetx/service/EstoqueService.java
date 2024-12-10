@@ -1,13 +1,15 @@
 package org.ong.pet.pex.backendpetx.service;
 
-import org.ong.pet.pex.backendpetx.dto.response.EstoqueResponseDTO;
-import org.ong.pet.pex.backendpetx.dto.response.ListarEstoqueResponse;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
+import org.ong.pet.pex.backendpetx.enums.TipoProduto;
+import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EstoqueService {
 
-    EstoqueResponseDTO pegarEstoquePorId(final Long id);
     RacaoDisponivelResposta calcularQuantidadeRacao();
-    ListarEstoqueResponse listarEstoque();
-    ListarEstoqueResponse listarEstoquePorTipoProduto(String tipoProduto);
+    Page<ProdutoDTOResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome, Double quantidade, UnidadeDeMedidaEnum medida, String chave, String valor, Pageable pageable);
+
 }

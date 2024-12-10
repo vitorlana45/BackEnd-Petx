@@ -1,10 +1,8 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import org.ong.pet.pex.backendpetx.dto.response.EstoqueResponseDTO;
-import org.ong.pet.pex.backendpetx.dto.response.ListarEstoqueResponse;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.entities.Estoque;
 import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.entities.Produto;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
@@ -12,13 +10,17 @@ import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
 import org.ong.pet.pex.backendpetx.repositories.OngRepository;
+import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
-import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
-import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
-import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
+import org.ong.pet.pex.backendpetx.service.impl.especificacao.ConstrutorDeEspecificacaoProduto;
+import org.ong.pet.pex.backendpetx.service.mappers.EstoqueMapper;
 import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,28 +34,17 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
     private final OngRepository ongRepository;
+    private final ProdutoRepository produtoRepository;
+    private final static Long ONG = 1L;
+    private final EstoqueMapper estoqueMapper;
     private final ProdutoMapper produtoMapper;
 
-    private final static Long ONG = 1L;
-
-    public EstoqueServiceImpl(EstoqueRepository estoqueRepository, OngRepository ongRepository, ProdutoMapper produtoMapper) {
+    public EstoqueServiceImpl(EstoqueRepository estoqueRepository, OngRepository ongRepository, ProdutoRepository produtoRepository, EstoqueMapper estoqueMapper, ProdutoMapper produtoMapper) {
         this.estoqueRepository = estoqueRepository;
         this.ongRepository = ongRepository;
+        this.produtoRepository = produtoRepository;
+        this.estoqueMapper = estoqueMapper;
         this.produtoMapper = produtoMapper;
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public EstoqueResponseDTO pegarEstoquePorId(final Long id) {
-        return estoqueRepository.findById(id)
-                .map(estoque -> new EstoqueResponseDTO(
-                        estoque.getId(),
-                        estoque.getCriadoEm().toString(),
-                        estoque.getAtualizadoEm().toString(),
-                        produtoMapper.mapearListaProdutoParaDto(estoque.getProduto())
-                ))
-                .orElseThrow(EstoqueException::estoqueNaoEncontrado);
     }
 
     @Transactional(readOnly = true)
@@ -92,13 +83,13 @@ public class EstoqueServiceImpl implements EstoqueService {
         var pegarEstoque = ong.getEstoque();
 
         logger.info("filtrando todos os produtos de ração por QUILO");
-        double quantidadeRacaoKg = pegarEstoque.getProduto().stream()
+        double quantidadeRacaoKg = pegarEstoque.getProdutos().stream()
                 .filter(x -> x.getTipoProduto() == TipoProduto.RACAO && x.getUnidadeDeMedida() == UnidadeDeMedidaEnum.QUILO)
                 .mapToDouble(Produto::getQuantidade)
                 .sum();
 
         logger.info("filtrando todos os produtos de ração por LITRO");
-        double quantidadeRacaoLitro = pegarEstoque.getProduto().stream()
+        double quantidadeRacaoLitro = pegarEstoque.getProdutos().stream()
                 .filter(x -> x.getTipoProduto() == TipoProduto.RACAO && x.getUnidadeDeMedida() == UnidadeDeMedidaEnum.LITRO)
                 .mapToDouble(Produto::getQuantidade)
                 .sum();
@@ -113,7 +104,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         double diasDisponiveis = consumoDiarioTotal > 0 ? quantidadeRacaoTotalEmGramas / consumoDiarioTotal : 0;
         String diasDisponiveisFormatado = String.format("%.0f", diasDisponiveis);
-        logger.info("calculando os dias disponíveis: {} dias",diasDisponiveisFormatado);
+        logger.info("calculando os dias disponíveis: {} dias", diasDisponiveisFormatado);
 
         // Log dos resultados
         logger.info("Quantidade total de ração no estoque (em g): {}", quantidadeRacaoTotalEmGramas);
@@ -125,53 +116,22 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     @Override
     @Transactional(readOnly = true)
-    public ListarEstoqueResponse listarEstoque() {
+    public Page<ProdutoDTOResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome,
+                                                          Double quantidade, UnidadeDeMedidaEnum medida,
+                                                          String chave, String valor,
+                                                          Pageable pageable) {
 
-        var estoque = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada).getEstoque();
-        if(estoque.getProduto().isEmpty()) {
-             throw EstoqueException.estoqueNaoContemProdutosCadastrados();
-        }
-
-        return  ListarEstoqueResponse.builder()
-                .id(estoque.getId())
-                .craidoEm(estoque.getCriadoEm())
-                .atualizadoEm(estoque.getAtualizadoEm())
-                .produtos(produtoMapper.mapearListaProdutoParaDto(estoque.getProduto()))
+        Specification<Produto> especificacaoProduto = new ConstrutorDeEspecificacaoProduto()
+                .adicionarFiltroPorAtributosEspecificos(chave, valor)
+                .adicionarFiltroEnum("tipoProduto", tipoProduto)
+                .adicionarFiltroStringExata("nome", nome)
                 .build();
+
+        Page<Produto> listaProdutos = produtoRepository.findAll(especificacaoProduto, pageable);
+
+        List<ProdutoDTOResposta> listaProdutosDto = produtoMapper.mapearListaProdutoParaDto(listaProdutos);
+
+        return new PageImpl<>(listaProdutosDto, pageable, listaProdutos.getTotalElements());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ListarEstoqueResponse listarEstoquePorTipoProduto(String tipoProduto) {
-
-        Enum<TipoProduto> tipo;
-        try {
-            tipo = TipoProduto.valueOf(tipoProduto);
-        } catch (IllegalArgumentException e) {
-            throw ProdutoException.produtoNaoEncontrado(tipoProduto);
-        }
-
-        var estoque = estoqueRepository.findEstoqueByOngId(ONG).orElseThrow(PetXException::ongNaoEncontrada);
-
-        if(tipo == TipoProduto.RACAO) {
-            estoque.getProduto().removeIf(produto -> produto.getTipoProduto() != TipoProduto.RACAO);
-            return converterListaDeProduto(estoque.getProduto(), estoque);
-        }
-
-        if(tipo == TipoProduto.MEDICAMENTO) {
-            estoque.getProduto().removeIf(produto -> produto.getTipoProduto() != TipoProduto.MEDICAMENTO);
-            return converterListaDeProduto(estoque.getProduto(), estoque);
-        }
-
-        return ListarEstoqueResponse.builder().build();
-    }
-
-    private ListarEstoqueResponse converterListaDeProduto(List<Produto> produtos, Estoque estoque) {
-        return ListarEstoqueResponse.builder()
-                .id(estoque.getId())
-                .craidoEm(estoque.getCriadoEm())
-                .atualizadoEm(estoque.getAtualizadoEm())
-                .produtos(produtoMapper.mapearListaProdutoParaDto(estoque.getProduto()))
-                .build();
-    }
 }

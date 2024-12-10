@@ -42,18 +42,12 @@ public class ProdutoServiceImpl implements ProdutoService {
         }
 
         var produto = produtoMapper.mapearParaEntidade(dto, ong.getEstoque());
-        ong.getEstoque().getProduto().add(produto);
+        ong.getEstoque().getProdutos().add(produto);
         produto = produtoRepository.save(produto);
         ongRepository.save(ong);
         return produto.getId();
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProdutoDTOResposta> listarProdutos() {
-        var listaProdutos = produtoRepository.findAll();
-        return produtoMapper.mapearListaProdutoParaDto(listaProdutos);
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -76,7 +70,7 @@ public class ProdutoServiceImpl implements ProdutoService {
         if (dto.tipoProduto() != null) produtoExistente.setTipoProduto(dto.tipoProduto());
         if (dto.atributosEspecificos() != null) {
             dto.atributosEspecificos().forEach(produto -> {
-               validarCamposDinamicos(dto.tipoProduto(), dto.atributosEspecificos());
+                validarCamposDinamicos(dto.tipoProduto(), dto.atributosEspecificos());
                 produtoExistente.adicionarAtributo(produto.chave(), produto.valor());
 
             });
@@ -95,20 +89,20 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     public void validarCamposDinamicos(TipoProduto tipoProduto, List<InfoProdutoDTO> atributosDinamicos) {
 
-       List<InfoProdutoDTO> atributosNormalizadosList = atributosDinamicos.stream()
-               .map(item -> new InfoProdutoDTO(item.chave().toUpperCase(), item.valor().toUpperCase())).toList();
+        List<InfoProdutoDTO> atributosNormalizadosList = atributosDinamicos.stream()
+                .map(item -> new InfoProdutoDTO(item.chave().toUpperCase(), item.valor().toUpperCase())).toList();
 
 
         List<String> portesRacaoAceitos = List.of("pequeno", "medio", "grande");
         List<String> camposDeRacaoEMedicamentoAceitos = List.of("LOTE", "VALIDADE", "PORTE");
 
-            if (tipoProduto == TipoProduto.MEDICAMENTO || tipoProduto == TipoProduto.RACAO) {
-                atributosNormalizadosList.forEach(atributo -> {
-                    if (!camposDeRacaoEMedicamentoAceitos.contains(atributo.chave())) {
-                        throw ProdutoException.campoNaoAceito(atributo.chave(), Arrays.toString(camposDeRacaoEMedicamentoAceitos.toArray()));
-                    }
-                });
-            }
+        if (tipoProduto == TipoProduto.MEDICAMENTO || tipoProduto == TipoProduto.RACAO) {
+            atributosNormalizadosList.forEach(atributo -> {
+                if (!camposDeRacaoEMedicamentoAceitos.contains(atributo.chave())) {
+                    throw ProdutoException.campoNaoAceito(atributo.chave(), Arrays.toString(camposDeRacaoEMedicamentoAceitos.toArray()));
+                }
+            });
+        }
 
     }
 
