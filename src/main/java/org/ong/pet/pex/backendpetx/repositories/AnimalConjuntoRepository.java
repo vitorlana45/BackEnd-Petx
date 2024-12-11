@@ -14,6 +14,9 @@ public interface AnimalConjuntoRepository  extends JpaRepository<AnimalConjunto,
     @Query("select a from AnimalConjunto a where (a.animalPrincipal.id = ?1) or (a.animalRelacionamento.id = ?1)")
     List<AnimalConjunto> findByAnimalPrincipalIdOrAnimalRelacionamentoId(Long animalPrincipalId);
 
+    @Query("select a from AnimalConjunto a where (a.animalPrincipal.chipId = ?1) or (a.animalRelacionamento.chipId = ?1)")
+    List<AnimalConjunto> findByAnimalPrincipalIdOrAnimalRelacionamentoChipId(String animalPrincipalChipId);
+
     Optional<AnimalConjunto> findByAnimalRelacionamentoId(Long animalRelacionamentoId);
 
 

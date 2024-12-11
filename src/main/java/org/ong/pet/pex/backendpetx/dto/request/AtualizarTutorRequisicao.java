@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Validated
 public record AtualizarTutorRequisicao(
 
@@ -17,6 +19,7 @@ public record AtualizarTutorRequisicao(
         String telefone,
         String cidade,
         String bairro,
-        String rua
+        String rua,
+        List<String> chipsAnimais
 ) {
 }

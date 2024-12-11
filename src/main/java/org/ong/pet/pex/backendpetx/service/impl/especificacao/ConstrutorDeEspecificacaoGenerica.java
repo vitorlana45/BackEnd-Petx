@@ -1,4 +1,3 @@
-// ConstrutorDeEspecificacaoDinamica.java
 package org.ong.pet.pex.backendpetx.service.impl.especificacao;
 
 import lombok.Getter;

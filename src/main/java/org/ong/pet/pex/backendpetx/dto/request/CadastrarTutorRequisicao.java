@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Validated
 public record CadastrarTutorRequisicao(
 
@@ -18,8 +20,7 @@ public record CadastrarTutorRequisicao(
         String cidade,
         String bairro,
         String rua,
-        @NotBlank(message = "É preciso informar o Chip do animal")
-        String chipAnimal
+        List<String> animalChips
 
 ) {
 }

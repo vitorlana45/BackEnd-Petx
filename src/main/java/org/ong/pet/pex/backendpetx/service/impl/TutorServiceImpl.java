@@ -10,7 +10,6 @@ import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
 import org.ong.pet.pex.backendpetx.repositories.AnimalConjuntoRepository;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.TutorRepository;
-import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
@@ -19,8 +18,8 @@ import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -32,17 +31,15 @@ public class TutorServiceImpl implements TutorService {
     private final TutorRepository tutorRepository;
     private final AnimalRepository animalRepository;
     private final AnimalUtils animalUtils;
-    private final UsuarioRepository usuarioRepository;
     private final AnimalConjuntoRepository animalConjuntoRepository;
     private final AnimalMapper animalMapper;
 
-    public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository, AnimalUtils animalUtils, UsuarioRepository usuarioRepository, AnimalConjuntoRepository animalConjuntoRepository, AnimalMapper animalMapper, AnimalMapper animalMapper1) {
+    public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository, AnimalUtils animalUtils, AnimalConjuntoRepository animalConjuntoRepository, AnimalMapper animalMapper) {
         this.tutorRepository = tutorRepository;
         this.animalRepository = animalRepository;
         this.animalUtils = animalUtils;
-        this.usuarioRepository = usuarioRepository;
         this.animalConjuntoRepository = animalConjuntoRepository;
-        this.animalMapper = animalMapper1;
+        this.animalMapper = animalMapper;
     }
 
     @Transactional(readOnly = true)
@@ -71,36 +68,34 @@ public class TutorServiceImpl implements TutorService {
             throw TutorException.cpfNaoPodeSerVazioOuNulo();
         }
 
-        // Busca o animal principal pelo chip
-        Animal pet = animalRepository.findAnimalByChipId(cadastrarTutorRequisicao.chipAnimal())
-                .orElseThrow(() -> PetXException.animalNaoEncontrado(cadastrarTutorRequisicao.chipAnimal()));
+        // Verifica se todos os animais da lista de chips existem
+        List<Animal> pets = cadastrarTutorRequisicao.animalChips().stream()
+                .map(chip -> animalRepository.findAnimalByChipId(chip)
+                        .orElseThrow(() -> PetXException.animalNaoEncontrado(chip)))
+                .toList();
 
-        // Busca todos os animais associados ao animal principal
-        Set<Animal> animais = animalUtils.buscarAnimalPorIdComConjuntoEntidade(pet.getId());
-
-        // me retornou todos associados ao principal que me mandou mas nao me retornou o principal
-        if(animais != null && !animais.isEmpty()) {
-            animais.add(pet);
-        } else {
-            animais = new HashSet<>();
-            animais.add(pet);
-        }
+        // Busca os animais e suas associações
+        Set<Animal> animais = new HashSet<>(pets);
+        pets.forEach(animal -> {
+            var conjuntoAnimais = animalConjuntoRepository.findByAnimalPrincipalIdOrAnimalRelacionamentoId(animal.getId());
+            conjuntoAnimais.forEach(animalConjunto -> {
+                Animal animalRelacionado = animalRepository.findById(animalConjunto.getAnimalRelacionamento().getId())
+                        .orElseThrow(() -> PetXException.animalNaoEncontrado(animalConjunto.getAnimalRelacionamento().getId().toString()));
+                animais.add(animalRelacionado);
+            });
+        });
 
         Optional<Tutor> encontrarTutor = tutorRepository.findTutorByCpf(cadastrarTutorRequisicao.cpf());
 
-        Set<Animal> animaisFinal = new HashSet<>(animais);
-
         Tutor tutorRecipiente = encontrarTutor.map(tutor -> {
-            // Verifica se o tutor já tem algum dos animais
-            animaisFinal.forEach(animal -> verificarSeTutorJaTemEsteAnimal(animal, tutor));
 
-            // Adiciona os animais ao tutor e o tutor ao animal
-            tutor.getAnimais().addAll(animaisFinal);
-            animaisFinal.forEach(animal -> animal.getTutores().add(tutor));
+            animais.forEach(animal -> verificarSeTutorJaTemEsteAnimal(animal, tutor));
 
-            // Salva o tutor e os animais
+            tutor.getAnimais().addAll(animais);
+            animais.forEach(animal -> animal.getTutores().add(tutor));
+
             tutorRepository.save(tutor);
-            animalRepository.saveAllAndFlush(animaisFinal); // Salva todos os animais associados
+            animalRepository.saveAllAndFlush(animais);
 
             return tutor;
         }).orElseGet(() -> {
@@ -116,13 +111,13 @@ public class TutorServiceImpl implements TutorService {
                             .rua(cadastrarTutorRequisicao.rua())
                             .cep(cadastrarTutorRequisicao.cep())
                             .build())
-                    .ong(pet.getOng())
-                    .animais(animaisFinal) // Garante que estamos passando uma lista sem duplicados
+                    .ong(pets.getFirst().getOng())
+                    .animais(animais)
                     .build();
 
             // Adiciona o tutor aos animais
-            animaisFinal.forEach(animal -> animal.getTutores().add(novoTutor));
-            novoTutor.getAnimais().addAll(animaisFinal);
+            animais.forEach(animal -> animal.getTutores().add(novoTutor));
+            novoTutor.getAnimais().addAll(animais);
 
             // Salva o novo tutor
             tutorRepository.save(novoTutor);
@@ -145,7 +140,7 @@ public class TutorServiceImpl implements TutorService {
         });
     }
 
-    //TODO: remover o animalRetido
+
     @Transactional(readOnly = true)
     public Set<TutorDTOResponse> buscarTodosTutores() {
         Set<TutorDTOResponse> listContendoTutoresRepetidos = new HashSet<>();
@@ -164,11 +159,10 @@ public class TutorServiceImpl implements TutorService {
                             .porte(String.valueOf(animal.getPorteEnum()))
                             .comportamento(String.valueOf(animal.getComportamentoEnum()))
                             .especie(String.valueOf(animal.getEspecieEnum()))
-                            .doencas(animal.getDoencas())  // Assumindo que animal.getDoencas() é um List<String>
+                            .doencas(animal.getDoencas())
                             .status(animal.getStatusEnum().getStatus())
                             .build())
                     .collect(Collectors.toSet());
-
 
             listContendoTutoresRepetidos.add(TutorDTOResponse.builder()
                     .id(tutor.getId())
@@ -180,7 +174,7 @@ public class TutorServiceImpl implements TutorService {
                     .cidade(tutor.getEndereco().getCidade())
                     .bairro(tutor.getEndereco().getBairro())
                     .rua(tutor.getEndereco().getRua())
-                    .listaDeAnimais(listaDeAnimais)  // A lista de animais única
+                    .listaDeAnimais(listaDeAnimais)
                     .build());
         });
 
@@ -188,9 +182,8 @@ public class TutorServiceImpl implements TutorService {
             TutorException.naoHaTutoresCadastrados();
         }
 
-        return listContendoTutoresRepetidos;
+        return new HashSet<>(listContendoTutoresRepetidos);
     }
-
 
     @Transactional
     public void deletarTutorPorCpf(String cpf) {
@@ -202,34 +195,60 @@ public class TutorServiceImpl implements TutorService {
 
     @Transactional
     public String atualizarDadosTutor(String cpfUrl, AtualizarTutorRequisicao att) {
-        Tutor verificandoTutorExiste = tutorRepository.findTutorByCpf(cpfUrl).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpfUrl));
+        Tutor tutor = tutorRepository.findTutorByCpf(cpfUrl)
+                .orElseThrow(() -> TutorException.tutorNaoEncontrado(cpfUrl));
 
+        validarAtualizacaoCpf(cpfUrl, att, tutor);
+        atualizarCamposPessoais(att, tutor);
+        atualizarEndereco(att, tutor);
+        atualizarAnimaisAssociados(att, tutor);
+
+        tutorRepository.saveAndFlush(tutor);
+        return tutor.getCpf();
+    }
+
+    private void validarAtualizacaoCpf(String cpfUrl, AtualizarTutorRequisicao att, Tutor tutor) {
         if (!cpfUrl.equals(att.cpf())) {
-            if (tutorRepository.findTutorByCpf(att.cpf()).isPresent())
+            if (tutorRepository.findTutorByCpf(att.cpf()).isPresent()) {
                 throw TutorException.jaExiste("ja existe um tutor com este", "CPF", att.cpf());
-            else {
-                verificandoTutorExiste.setCpf(att.cpf());
             }
+            tutor.setCpf(att.cpf());
         }
+    }
 
-        if (att.nome() != null && !att.nome().isEmpty()) {
-            verificandoTutorExiste.setNome(att.nome());
-        }
+    private void atualizarCamposPessoais(AtualizarTutorRequisicao att, Tutor tutor) {
+        if (campoAtivo(att.nome())) tutor.setNome(att.nome());
+        if (campoAtivo(att.telefone())) tutor.setTelefone(att.telefone());
+        if (att.idade() != null) tutor.setIdade(att.idade());
+    }
 
-        if (att.telefone() != null && !att.telefone().isEmpty()) {
-            verificandoTutorExiste.setTelefone(att.telefone());
-        }
+    private void atualizarEndereco(AtualizarTutorRequisicao att, Tutor tutor) {
+        if (campoAtivo(att.cidade())) tutor.getEndereco().setCidade(att.cidade());
+        if (campoAtivo(att.bairro())) tutor.getEndereco().setBairro(att.bairro());
+        if (campoAtivo(att.rua())) tutor.getEndereco().setRua(att.rua());
+        if (campoAtivo(att.cep())) tutor.getEndereco().setCep(att.cep());
+    }
 
-        if (att.idade() != null) verificandoTutorExiste.setIdade(att.idade());
-        if (att.cidade() != null && !att.cidade().isEmpty())
-            verificandoTutorExiste.getEndereco().setCidade(att.cidade());
-        if (att.bairro() != null && !att.bairro().isEmpty())
-            verificandoTutorExiste.getEndereco().setBairro(att.bairro());
-        if (att.rua() != null && !att.rua().isEmpty()) verificandoTutorExiste.getEndereco().setRua(att.rua());
-        if (att.cep() != null && !att.cep().isEmpty()) verificandoTutorExiste.getEndereco().setCep(att.cep());
+    private void atualizarAnimaisAssociados(AtualizarTutorRequisicao att, Tutor tutor) {
+        if (att.chipsAnimais() == null || att.chipsAnimais().isEmpty()) return;
 
-        var entidadeSalva = tutorRepository.saveAndFlush(converterTutorDTOParaEntidade(verificandoTutorExiste, att));
-        return entidadeSalva.getCpf();
+        Set<Animal> animaisAtualizados = att.chipsAnimais().stream()
+                .map(chip -> animalRepository.findAnimalByChipId(chip)
+                        .orElseThrow(() -> PetXException.animalNaoEncontrado(chip)))
+                .collect(Collectors.toSet());
+
+        animaisAtualizados.forEach(animal -> verificarSeTutorJaTemEsteAnimal(animal, tutor));
+
+        tutor.getAnimais().forEach(animal -> animal.getTutores().remove(tutor));
+        tutor.getAnimais().clear();
+        tutor.getAnimais().addAll(animaisAtualizados);
+        animaisAtualizados.forEach(animal -> animal.getTutores().add(tutor));
+
+        animalRepository.saveAll(animaisAtualizados);
+    }
+
+    private boolean campoAtivo(String campo) {
+        return campo != null && !campo.isEmpty();
     }
 
     private void verificarSeTutorJaTemEsteAnimal(Animal animal, Tutor tutor) {
