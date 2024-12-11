@@ -1,11 +1,6 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +12,20 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "animal_conjunto_tb")
-public class AnimalConjunto  {
+public class AnimalConjunto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "animal_conjunto_id")
     private Long animalConjuntoId;
-    private Long animalPrincipalId;
-    private Long animalRelacionamentoId;
 
+    // Relacionamento com o animal principal
+    @ManyToOne
+    @JoinColumn(name = "animal_principal_id", referencedColumnName = "id", nullable = false)
+    private Animal animalPrincipal;
+
+    // Relacionamento com o animal associado
+    @ManyToOne
+    @JoinColumn(name = "animal_relacionamento_id", referencedColumnName = "id", nullable = false)
+    private Animal animalRelacionamento;
 }

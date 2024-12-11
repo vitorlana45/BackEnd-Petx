@@ -1,8 +1,8 @@
-// AnimalUtils.java
 package org.ong.pet.pex.backendpetx.service.impl.serviceUtils;
 
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entities.AnimalConjunto;
 import org.ong.pet.pex.backendpetx.repositories.AnimalConjuntoRepository;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
@@ -26,9 +26,7 @@ public class AnimalUtils {
         this.animalConjuntoRepository = animalConjuntoRepository;
     }
 
-
-
-    public List<Animal> buscarAnimaisPorId(List<Long> ids){
+    public List<Animal> buscarAnimaisPorId(List<Long> ids) {
         List<Animal> animais = new ArrayList<>();
         for (Long id : ids) {
             animais.add(animalRepository.findAnimalById(id).orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString())));
@@ -36,41 +34,51 @@ public class AnimalUtils {
         return animais;
     }
 
-
     @Transactional(readOnly = true)
     public AnimalGenericoResposta buscarAnimalPorIdComConjuntoResposta(Long id) {
         // ** Recupera o animal pelo id ** //
         List<Animal> lsAnimais = new ArrayList<>();
-        var animal = animalRepository.findById(id).orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString()));
+        var animal = animalRepository.findById(id)
+                .orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString()));
 
         // ** Recupera o conjunto do animal ** //
         var optConjuntoAnimal = animalConjuntoRepository.findByAnimalPrincipalIdOrAnimalRelacionamentoId(animal.getId());
 
-        // ** Recupera os animais atrelado ao principal ** //
+        // ** Recupera os animais atrelados ao principal ** //
         if (!optConjuntoAnimal.isEmpty()) {
             // ** Recupera o id do animal principal ** //
-            var idAnimalPrincipal = optConjuntoAnimal.getFirst().getAnimalPrincipalId();
+            var idAnimalPrincipal = optConjuntoAnimal.getFirst().getAnimalPrincipal().getId();
+
             // ** Recupera o conjunto de animais atrelados ao principal ** //
             var lsConjuntoAnimais = animalConjuntoRepository.findByAnimalPrincipalId(idAnimalPrincipal);
+
             // ** Adiciona o animal principal a lista de retorno ** //
-            lsAnimais.add(animalRepository.findById(idAnimalPrincipal).orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString())));
+            lsAnimais.add(animalRepository.findById(idAnimalPrincipal)
+                    .orElseThrow(() -> PetXException.animalNaoEncontrado(idAnimalPrincipal.toString())));
+
             // ** Adiciona os demais animais do conjunto a lista de retorno ** //
             lsConjuntoAnimais.forEach(animalConjunto -> {
-                lsAnimais.add(animalRepository.findById(animalConjunto.getAnimalRelacionamentoId()).orElseThrow(() ->  PetXException.animalNaoEncontrado(id.toString())));
+                lsAnimais.add(animalRepository.findById(animalConjunto.getAnimalRelacionamento().getId())
+                        .orElseThrow(() -> PetXException.animalNaoEncontrado(animalConjunto.getAnimalRelacionamento().getId().toString())));
             });
+
             // ** Remove o id do animal consultado do retorno de conjunto ** //
             lsAnimais.removeIf(it -> it.getId().equals(id));
         }
 
-        if(optConjuntoAnimal.isEmpty()) {
-            return converterParaRespostaAnimalComConjuntoDTO(animalRepository.findById(animal.getId()).orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString())));
+        if (optConjuntoAnimal.isEmpty()) {
+            return converterParaRespostaAnimalComConjuntoDTO(
+                    animalRepository.findById(animal.getId())
+                            .orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString()))
+            );
         }
 
         return mapeiaParaRetorno(animal, lsAnimais);
     }
-
     private AnimalGenericoResposta mapeiaParaRetorno(Animal animal, List<Animal> lsAnimais) {
-        var lsAnmaisConjunto = lsAnimais.stream()
+        // Mapeia a lista de animais relacionados (sem incluir o animal principal)
+        var lsAnimaisConjunto = lsAnimais.stream()
+                .filter(x -> !x.getId().equals(animal.getId())) // Garante que o animal principal não seja adicionado
                 .map(x -> AnimalGenericoResposta.builder()
                         .id(x.getId())
                         .chipId(x.getChipId())
@@ -87,6 +95,7 @@ public class AnimalUtils {
                         .build())
                 .collect(Collectors.toList());
 
+        // Construa a resposta para o animal principal
         return AnimalGenericoResposta.builder()
                 .id(animal.getId())
                 .chipId(animal.getChipId())
@@ -100,7 +109,7 @@ public class AnimalUtils {
                 .doencas(animal.getDoencas())
                 .especie(animal.getEspecieEnum().getEspecie())
                 .status(animal.getStatusEnum().getStatus())
-                .lsAnimaisConjunto(lsAnmaisConjunto)
+                .lsAnimaisConjunto(lsAnimaisConjunto)  // A lista de animais relacionados
                 .build();
     }
 }
