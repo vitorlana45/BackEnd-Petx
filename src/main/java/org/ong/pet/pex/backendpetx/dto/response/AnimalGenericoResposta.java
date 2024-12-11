@@ -29,5 +29,5 @@ public class AnimalGenericoResposta {
     private String especie;
     private Set<String> doencas;
     private String status;
-    private List<AnimalGenericoResposta> lsAnimaisConjunto = new ArrayList<>();
+    private List<AnimalGenericoResposta> listaAnimaisConjunto = new ArrayList<>();
 }

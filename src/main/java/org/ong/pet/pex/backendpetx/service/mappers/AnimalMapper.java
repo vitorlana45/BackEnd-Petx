@@ -35,7 +35,7 @@ public class AnimalMapper {
                 .especie(animal.getEspecieEnum().toString())
                 .doencas(animal.getDoencas())
                 .status(animal.getStatusEnum().toString())
-                .lsAnimaisConjunto(null)
+                .listaAnimaisConjunto(null)
                 .build();
 
         if (animal.getDoencas() != null) {
@@ -117,7 +117,7 @@ public class AnimalMapper {
                 .doencas(animal.getDoencas())
                 .especie(animal.getEspecieEnum().getEspecie())
                 .status(animal.getStatusEnum().getStatus())
-                .lsAnimaisConjunto(lsAnmaisConjunto)
+                .listaAnimaisConjunto(lsAnmaisConjunto)
                 .build();
     }
 }
