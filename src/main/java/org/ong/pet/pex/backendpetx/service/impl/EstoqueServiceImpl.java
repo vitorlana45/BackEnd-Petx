@@ -3,11 +3,13 @@ package org.ong.pet.pex.backendpetx.service.impl;
 import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entities.ConsumoAlimento;
 import org.ong.pet.pex.backendpetx.entities.Ong;
 import org.ong.pet.pex.backendpetx.entities.Produto;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
+import org.ong.pet.pex.backendpetx.repositories.ConsumoAlimentoRepository;
 import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
 import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
@@ -24,7 +26,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -38,45 +42,40 @@ public class EstoqueServiceImpl implements EstoqueService {
     private final static Long ONG = 1L;
     private final EstoqueMapper estoqueMapper;
     private final ProdutoMapper produtoMapper;
+    private final ConsumoAlimentoRepository consumoAlimentoRepository;
 
-    public EstoqueServiceImpl(EstoqueRepository estoqueRepository, OngRepository ongRepository, ProdutoRepository produtoRepository, EstoqueMapper estoqueMapper, ProdutoMapper produtoMapper) {
+    public EstoqueServiceImpl(EstoqueRepository estoqueRepository, OngRepository ongRepository, ProdutoRepository produtoRepository, EstoqueMapper estoqueMapper, ProdutoMapper produtoMapper, ConsumoAlimentoRepository consumoAlimentoRepository) {
         this.estoqueRepository = estoqueRepository;
         this.ongRepository = ongRepository;
         this.produtoRepository = produtoRepository;
         this.estoqueMapper = estoqueMapper;
         this.produtoMapper = produtoMapper;
+        this.consumoAlimentoRepository = consumoAlimentoRepository;
     }
 
     @Transactional(readOnly = true)
     @Override
     public RacaoDisponivelResposta calcularQuantidadeRacao() {
 
-        // Definição dos portes
-        Enum<PorteEnum> portePequeno = PorteEnum.PEQUENO;
-        Enum<PorteEnum> porteMedio = PorteEnum.MEDIO;
-        Enum<PorteEnum> porteGrande = PorteEnum.GRANDE;
+        Map<PorteEnum, Double> consumoDiarioPorPorte = new HashMap<>();
 
-        // Consumo diário por animal de cada porte em gramas
-        int racaoPequeno = 100;  // 100g por dia
-        int racaoMedio = 250;    // 250g por dia
-        int racaoGrande = 350;   // 350g por dia
+        List<ConsumoAlimento> todosConsumos = consumoAlimentoRepository.findAll();
+
+        todosConsumos.forEach(consumo -> {
+            PorteEnum porte = consumo.getPorte();
+            Double consumoDiario = consumo.getConsumoDiario();
+            consumoDiarioPorPorte.put(porte, consumoDiario);
+        });
 
         // Obter os animais da ONG
         Ong ong = ongRepository.findById(ONG).orElseThrow();
         Set<Animal> animais = ong.getAnimais();
 
-        // Contagem de animais por porte usando array
-        int[] porteCounts = new int[3];
-
-        logger.info("inciando contagem de animais por porte");
+        // Contagem de animais por porte
+        Map<PorteEnum, Integer> porteContagem = new HashMap<>();
         animais.forEach(animal -> {
-            if (animal.getPorteEnum().equals(portePequeno)) {
-                porteCounts[0]++;
-            } else if (animal.getPorteEnum().equals(porteMedio)) {
-                porteCounts[1]++;
-            } else if (animal.getPorteEnum().equals(porteGrande)) {
-                porteCounts[2]++;
-            }
+            PorteEnum porte = animal.getPorteEnum();
+            porteContagem.put(porte, porteContagem.getOrDefault(porte, 0) + 1);
         });
 
         logger.info("buscando pelo estoque com base na ONG");
@@ -95,12 +94,12 @@ public class EstoqueServiceImpl implements EstoqueService {
                 .sum();
 
         logger.info("calculando a quantidade total de ração em gramas");
-        double quantidadeRacaoTotalEmGramas = (quantidadeRacaoKg * 1000) + (quantidadeRacaoLitro * 1000); // 1kg = 1000g
+        double quantidadeRacaoTotalEmGramas = (quantidadeRacaoKg * 1000) + quantidadeRacaoLitro; // 1kg = 1000g, 1L = 1L
 
         logger.info("calculando o consumo diário total");
-        double consumoDiarioTotal = (porteCounts[0] * racaoPequeno) +
-                                    (porteCounts[1] * racaoMedio) +
-                                    (porteCounts[2] * racaoGrande);
+        double consumoDiarioTotal = porteContagem.entrySet().stream()
+                .mapToDouble(entry -> consumoDiarioPorPorte.getOrDefault(entry.getKey(), 0.0) * entry.getValue())
+                .sum();
 
         int diasDisponiveis = consumoDiarioTotal > 0 ? (int) (quantidadeRacaoTotalEmGramas / consumoDiarioTotal) : 0;
         logger.info("calculando os dias disponíveis: {} dias", diasDisponiveis);
@@ -112,6 +111,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         return new RacaoDisponivelResposta(quantidadeRacaoTotalEmGramas, consumoDiarioTotal, diasDisponiveis);
     }
+
 
     @Override
     @Transactional(readOnly = true)
