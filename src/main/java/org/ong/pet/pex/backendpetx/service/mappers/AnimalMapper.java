@@ -46,7 +46,7 @@ public class AnimalMapper {
 
     }
 
-    public static Set<AnimalGenericoResposta> converterParaListaDeAnimaisComConjuntoDTO(List<Animal> animais) {
+    public static Set<AnimalGenericoResposta> converterParaListaDeAnimaisComConjuntoDTO(Set<Animal> animais) {
         return animais.stream()
                 .map(AnimalMapper::converterParaRespostaAnimalComConjuntoDTO)
                 .collect(Collectors.toSet());

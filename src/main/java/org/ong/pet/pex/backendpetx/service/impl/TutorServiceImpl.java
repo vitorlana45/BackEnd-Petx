@@ -7,13 +7,6 @@ import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResponse;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Tutor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
-import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
-import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
-import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
-import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
-import org.ong.pet.pex.backendpetx.enums.PorteEnum;
-import org.ong.pet.pex.backendpetx.enums.SexoEnum;
-import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalConjuntoRepository;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.TutorRepository;
@@ -22,12 +15,12 @@ import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
 import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.AnimalUtils;
+import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -41,21 +34,21 @@ public class TutorServiceImpl implements TutorService {
     private final AnimalUtils animalUtils;
     private final UsuarioRepository usuarioRepository;
     private final AnimalConjuntoRepository animalConjuntoRepository;
+    private final AnimalMapper animalMapper;
 
-    public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository, AnimalUtils animalUtils, UsuarioRepository usuarioRepository, AnimalConjuntoRepository animalConjuntoRepository) {
+    public TutorServiceImpl(TutorRepository tutorRepository, AnimalRepository animalRepository, AnimalUtils animalUtils, UsuarioRepository usuarioRepository, AnimalConjuntoRepository animalConjuntoRepository, AnimalMapper animalMapper, AnimalMapper animalMapper1) {
         this.tutorRepository = tutorRepository;
         this.animalRepository = animalRepository;
         this.animalUtils = animalUtils;
         this.usuarioRepository = usuarioRepository;
         this.animalConjuntoRepository = animalConjuntoRepository;
+        this.animalMapper = animalMapper1;
     }
 
     @Transactional(readOnly = true)
     public TutorDTOResponse buscarTutorPorCpf(String cpf) {
         var tutor = tutorRepository.findTutorByCpf(cpf).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpf));
-        Set<AnimalGenericoResposta> todosOsAnimals = tutor.getAnimais().stream()
-                .map(animal -> animalUtils.buscarAnimalPorIdComConjuntoResposta(animal.getId()))
-                .collect(Collectors.toSet());
+        var animais = AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO(tutor.getAnimais());
 
         return TutorDTOResponse.builder()
                 .id(tutor.getId())
@@ -67,7 +60,7 @@ public class TutorServiceImpl implements TutorService {
                 .cidade(tutor.getEndereco().getCidade())
                 .bairro(tutor.getEndereco().getBairro())
                 .rua(tutor.getEndereco().getRua())
-                .listaDeAnimais(todosOsAnimals)
+                .listaDeAnimais(animais)
                 .build();
     }
 
