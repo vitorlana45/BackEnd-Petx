@@ -6,13 +6,15 @@ import lombok.Builder;
 import java.util.Set;
 
 @Builder
-public record TutorDTOResponse(
+public record TutorDTOResposta(
+
         Long id,
         String cpf,
         String nome,
         @NotBlank(message = "O campo cpf é obrigatório")
         String cep,
         int idade,
+        String estado,
         String telefone,
         String cidade,
         String bairro,

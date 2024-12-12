@@ -10,6 +10,6 @@ import org.springframework.data.domain.Pageable;
 public interface EstoqueService {
 
     RacaoDisponivelResposta calcularQuantidadeRacao();
-    Page<ProdutoDTOResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome, Double quantidade, UnidadeDeMedidaEnum medida, String chave, String valor, Pageable pageable);
+    Page<ProdutoDTOResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome, Double quantidade, UnidadeDeMedidaEnum medida, String chave, Pageable pageable);
 
 }

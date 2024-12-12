@@ -2,8 +2,7 @@ package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResponse;
+import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Tutor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
@@ -15,6 +14,9 @@ import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
 import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.AnimalUtils;
 import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,11 +45,11 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Transactional(readOnly = true)
-    public TutorDTOResponse buscarTutorPorCpf(String cpf) {
+    public TutorDTOResposta buscarTutorPorCpf(String cpf) {
         var tutor = tutorRepository.findTutorByCpf(cpf).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpf));
         var animais = AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO(tutor.getAnimais());
 
-        return TutorDTOResponse.builder()
+        return TutorDTOResposta.builder()
                 .id(tutor.getId())
                 .cpf(tutor.getCpf())
                 .nome(tutor.getNome())
@@ -56,6 +58,7 @@ public class TutorServiceImpl implements TutorService {
                 .telefone(tutor.getTelefone())
                 .cidade(tutor.getEndereco().getCidade())
                 .bairro(tutor.getEndereco().getBairro())
+                .estado(tutor.getEndereco().getEstado())
                 .rua(tutor.getEndereco().getRua())
                 .listaDeAnimais(animais)
                 .build();
@@ -110,6 +113,7 @@ public class TutorServiceImpl implements TutorService {
                             .bairro(cadastrarTutorRequisicao.bairro())
                             .rua(cadastrarTutorRequisicao.rua())
                             .cep(cadastrarTutorRequisicao.cep())
+                            .estado(cadastrarTutorRequisicao.estado())
                             .build())
                     .ong(pets.getFirst().getOng())
                     .animais(animais)
@@ -141,48 +145,68 @@ public class TutorServiceImpl implements TutorService {
     }
 
 
-    @Transactional(readOnly = true)
-    public Set<TutorDTOResponse> buscarTodosTutores() {
-        Set<TutorDTOResponse> listContendoTutoresRepetidos = new HashSet<>();
 
-        tutorRepository.findAll().forEach(tutor -> {
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<TutorDTOResposta> paginarTutor(String nome, String cpf, String cidade, String bairro,
+//                                               String rua, String telefone, String cep, Pageable pageable) {
+//
+////        // Construção da Specification usando o builder dinâmico
+////        Specification<Tutor> especificacao = new ConstrutorDeEspecificacaoTutor()
+////                .adicionarFiltroStringIniciais("nome", nome)
+////                .adicionarFiltroStringIniciais("cpf", cpf)
+////                .adicionarFiltroStringIniciais("endereco.cidade", cidade)
+////                .adicionarFiltroStringIniciais("endereco.bairro", bairro)
+////                .adicionarFiltroStringIniciais("endereco.rua", rua)
+////                .build();
+////
+////        // Consulta paginada no repositório
+////        Page<Tutor> page = tutorRepository.findAll(especificacao, pageable);
+//
+//        // Mapeamento dos resultados para DTOs
+//
+////        var dtos = page.stream()
+////                .map(tutor -> TutorDTOResposta.builder()
+////                        .id(tutor.getId())
+////                        .cpf(tutor.getCpf())
+////                        .nome(tutor.getNome())
+////                        .idade(tutor.getIdade())
+////                        .cep(tutor.getEndereco().getCep())
+////                        .telefone(tutor.getTelefone())
+////                        .cidade(tutor.getEndereco().getCidade())
+////                        .bairro(tutor.getEndereco().getBairro())
+////                        .estado(tutor.getEndereco().getEstado())
+////                        .rua(tutor.getEndereco().getRua())
+////                        .listaDeAnimais(AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO(tutor.getAnimais()))
+////                        .build())
+////                .collect(Collectors.toList());
+//
+//        var dados = tutorRepository.findAll(pageable);
+//
+//        // Retorno da página final com os DTOs
+//        return new PageImpl<>(null, pageable, null);
+//
+//
+//    }
 
-            Set<AnimalGenericoResposta> listaDeAnimais = tutor.getAnimais().stream()
-                    .map(animal -> AnimalGenericoResposta.builder()
-                            .id(animal.getId())
-                            .chipId(animal.getChipId())
-                            .nome(animal.getNome())
-                            .raca(animal.getRaca())
-                            .maturidade(String.valueOf(animal.getMaturidadeEnum()))
-                            .sexo(String.valueOf(animal.getSexoEnum()))
-                            .origem(String.valueOf(animal.getOrigemEnum()))
-                            .porte(String.valueOf(animal.getPorteEnum()))
-                            .comportamento(String.valueOf(animal.getComportamentoEnum()))
-                            .especie(String.valueOf(animal.getEspecieEnum()))
-                            .doencas(animal.getDoencas())
-                            .status(animal.getStatusEnum().getStatus())
-                            .build())
-                    .collect(Collectors.toSet());
+    @Override
+    public Page<TutorDTOResposta> findAllTutorPaginacao(String nome, String cep, String cidade, String estado, Integer idade, Pageable pageable) {
 
-            listContendoTutoresRepetidos.add(TutorDTOResponse.builder()
-                    .id(tutor.getId())
-                    .cpf(tutor.getCpf())
-                    .nome(tutor.getNome())
-                    .idade(tutor.getIdade())
-                    .cep(tutor.getEndereco().getCep())
-                    .telefone(tutor.getTelefone())
-                    .cidade(tutor.getEndereco().getCidade())
-                    .bairro(tutor.getEndereco().getBairro())
-                    .rua(tutor.getEndereco().getRua())
-                    .listaDeAnimais(listaDeAnimais)
-                    .build());
-        });
+        var tutores = tutorRepository.findAllTutorPorFiltro(nome, cep, cidade, estado, idade, pageable);
 
-        if (listContendoTutoresRepetidos.isEmpty()) {
-            TutorException.naoHaTutoresCadastrados();
-        }
-
-        return new HashSet<>(listContendoTutoresRepetidos);
+        return new PageImpl<>(tutores.stream().map(tutor -> TutorDTOResposta.builder()
+                .id(tutor.getId())
+                .cpf(tutor.getCpf())
+                .nome(tutor.getNome())
+                .idade(tutor.getIdade())
+                .cep(tutor.getEndereco().getCep())
+                .telefone(tutor.getTelefone())
+                .cidade(tutor.getEndereco().getCidade())
+                .bairro(tutor.getEndereco().getBairro())
+                .estado(tutor.getEndereco().getEstado())
+                .rua(tutor.getEndereco().getRua())
+                .listaDeAnimais(AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO(tutor.getAnimais()))
+                .build()).collect(Collectors.toList()), pageable,tutores.getTotalElements());
     }
 
     @Transactional
@@ -227,6 +251,7 @@ public class TutorServiceImpl implements TutorService {
         if (campoAtivo(att.bairro())) tutor.getEndereco().setBairro(att.bairro());
         if (campoAtivo(att.rua())) tutor.getEndereco().setRua(att.rua());
         if (campoAtivo(att.cep())) tutor.getEndereco().setCep(att.cep());
+        if (campoAtivo(att.estado())) tutor.getEndereco().setEstado(att.estado());
     }
 
     private void atualizarAnimaisAssociados(AtualizarTutorRequisicao att, Tutor tutor) {
@@ -260,17 +285,4 @@ public class TutorServiceImpl implements TutorService {
                 });
     }
 
-    private Tutor converterTutorDTOParaEntidade(Tutor tutor, AtualizarTutorRequisicao att) {
-        tutor.setCpf(att.cpf());
-        tutor.setNome(att.nome());
-        tutor.setTelefone(att.telefone());
-        tutor.setIdade(att.idade());
-        tutor.setEndereco(Endereco.builder()
-                .cidade(att.cidade())
-                .bairro(att.bairro())
-                .rua(att.rua())
-                .cep(att.cep())
-                .build());
-        return tutor;
-    }
 }

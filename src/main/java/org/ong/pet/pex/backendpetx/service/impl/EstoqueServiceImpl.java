@@ -14,7 +14,6 @@ import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
 import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
-import org.ong.pet.pex.backendpetx.service.impl.especificacao.ConstrutorDeEspecificacaoProduto;
 import org.ong.pet.pex.backendpetx.service.mappers.EstoqueMapper;
 import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,16 +115,12 @@ public class EstoqueServiceImpl implements EstoqueService {
     @Transactional(readOnly = true)
     public Page<ProdutoDTOResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome,
                                                           Double quantidade, UnidadeDeMedidaEnum medida,
-                                                          String chave, String valor,
+                                                          String chave,
                                                           Pageable pageable) {
 
-        Specification<Produto> especificacaoProduto = new ConstrutorDeEspecificacaoProduto()
-                .adicionarFiltroPorAtributosEspecificos(chave, valor)
-                .adicionarFiltroEnum("tipoProduto", tipoProduto)
-                .adicionarFiltroStringExata("nome", nome)
-                .build();
+        var listaProdutos = produtoRepository.findAllProdutos(tipoProduto != null ? tipoProduto.name() : null,
+                nome, quantidade, medida != null ? medida.name() : null, pageable);
 
-        Page<Produto> listaProdutos = produtoRepository.findAll(especificacaoProduto, pageable);
 
         List<ProdutoDTOResposta> listaProdutosDto = produtoMapper.mapearListaProdutoParaDto(listaProdutos);
 

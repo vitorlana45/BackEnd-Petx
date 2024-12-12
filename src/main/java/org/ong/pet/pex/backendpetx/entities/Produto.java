@@ -37,20 +37,21 @@ public class Produto extends EntidadeBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "nome")
     private String nome;
 
+    @Column(nullable = false, name = "descricao")
     private String descricao;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "quantidade")
     private Double quantidade;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "unidade_de_medida")
     private UnidadeDeMedidaEnum unidadeDeMedida;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "tipo_produto")
     private TipoProduto tipoProduto;
 
     // Atributos específicos armazenados como chave-valor

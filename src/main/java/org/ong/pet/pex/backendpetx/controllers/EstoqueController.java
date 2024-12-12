@@ -39,10 +39,9 @@ public class EstoqueController {
             @RequestParam(value = "quantidade", required = false) Double quantidade,
             @RequestParam(value = "medida", required = false) UnidadeDeMedidaEnum medida,
             @RequestParam(value = "chave", required = false) String chave,
-            @RequestParam(value = "valor", required = false) String valor,
             Pageable pageable) {
 
-        return ResponseEntity.ok(estoqueService.paginarProdutoEstoque(tipoProduto, nome, quantidade, medida, chave, valor,pageable));
+        return ResponseEntity.ok(estoqueService.paginarProdutoEstoque(tipoProduto, nome, quantidade, medida, chave,pageable));
     }
 
 }

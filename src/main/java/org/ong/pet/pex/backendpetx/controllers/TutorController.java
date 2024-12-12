@@ -3,8 +3,11 @@ package org.ong.pet.pex.backendpetx.controllers;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResponse;
+import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
 import org.ong.pet.pex.backendpetx.service.TutorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/tutor")
@@ -41,14 +44,21 @@ public class TutorController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-    @GetMapping("/todos")
-    public ResponseEntity<Set<TutorDTOResponse>> buscarTodosTutores() {
-        return ResponseEntity.ok(tutorService.buscarTodosTutores());
+    @GetMapping
+    public ResponseEntity<Page<TutorDTOResposta>> paginarTutor(
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "cep", required = false) String cep,
+            @RequestParam(value = "cidade", required = false) String cidade,
+            @RequestParam(value = "estado", required = false) String estado,
+            @RequestParam(value = "idade", required = false) Integer idade,
+            @PageableDefault(size = 10) Pageable pageable) {
+
+        return ResponseEntity.ok(tutorService.findAllTutorPaginacao(nome, cep, cidade, estado, idade, pageable));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping("/{cpf}")
-    public ResponseEntity<TutorDTOResponse> buscarTutorPorCpf(@PathVariable(name = "cpf") String cpf) {
+    public ResponseEntity<TutorDTOResposta> buscarTutorPorCpf(@PathVariable(name = "cpf") String cpf) {
         return ResponseEntity.ok(tutorService.buscarTutorPorCpf(cpf));
     }
 

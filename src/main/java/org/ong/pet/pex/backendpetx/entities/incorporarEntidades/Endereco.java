@@ -29,4 +29,7 @@ public class Endereco {
     @Column(name = "cep")
     private String cep;
 
+    @Column(name = "estado")
+    private String estado;
+
 }

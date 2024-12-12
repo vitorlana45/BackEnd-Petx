@@ -19,6 +19,7 @@ public record AtualizarTutorRequisicao(
         String telefone,
         String cidade,
         String bairro,
+        String estado,
         String rua,
         List<String> chipsAnimais
 ) {

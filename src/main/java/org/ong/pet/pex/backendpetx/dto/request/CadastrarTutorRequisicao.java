@@ -18,6 +18,7 @@ public record CadastrarTutorRequisicao(
         Integer idade,
         String telefone,
         String cidade,
+        String estado,
         String bairro,
         String rua,
         List<String> animalChips
