@@ -93,11 +93,11 @@ public class DespesaServiceImpl implements DespesaService {
 
         if (dto.descricao() != null) entidade.setDescricao(dto.descricao());
         if (dto.valor() != null) entidade.setValor(dto.valor());
-        if (dto.categoria() != null) entidade.setCategoria(CategoriaDespesaEnum.valueOf(dto.categoria()));
-        if (dto.formaPagamento() != null) entidade.setFormaPagamento(FormaPagamentoEnum.valueOf(dto.formaPagamento()));
+        if (dto.categoria() != null) entidade.setCategoria(dto.categoria());
+        if (dto.formaPagamento() != null) entidade.setFormaPagamento(dto.formaPagamento());
         if (dto.dataPrevistaPagamento() != null) entidade.setDataPrevistaPagamento(dto.dataPrevistaPagamento());
         if (dto.dataPagamento() != null) entidade.setDataPagamento(dto.dataPagamento());
-        if (dto.statusDespesa() != null) entidade.setStatusDespesa(StatusDespesaEnum.valueOf(dto.statusDespesa()));
+        if (dto.statusDespesa() != null) entidade.setStatusDespesa(dto.statusDespesa());
 
         return despesaMapper.mapearParaDTO(entidade);
     }

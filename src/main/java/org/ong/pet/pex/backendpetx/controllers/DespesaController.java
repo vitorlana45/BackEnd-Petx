@@ -71,7 +71,7 @@ public class DespesaController {
     }
 
 
-    @PatchMapping("/atualizar/{id}")
+    @PatchMapping("/{id}")
     ResponseEntity<DespesaDTORespota> atualizarDespesaDinamicamente(@PathVariable(value = "id") final Long id,
                                                        @RequestBody final DespesaRequisicaoDinamicaDTO dto) {
         return ResponseEntity.ok().body(despesaService.atualizarDespesaDinamicamente(id, dto));
