@@ -37,6 +37,7 @@ public class Despesa extends EntidadeBase {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "categoria_despesa")
     private CategoriaDespesaEnum categoria;
 
@@ -49,6 +50,7 @@ public class Despesa extends EntidadeBase {
     @Column(name = "data_prevista_pagamento")
     private LocalDate dataPrevistaPagamento;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "forma_pagamento")
     private FormaPagamentoEnum formaPagamento;
 

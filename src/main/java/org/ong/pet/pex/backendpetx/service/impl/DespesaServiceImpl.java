@@ -12,11 +12,17 @@ import org.ong.pet.pex.backendpetx.repositories.DespesaRepository;
 import org.ong.pet.pex.backendpetx.service.DespesaService;
 import org.ong.pet.pex.backendpetx.service.exceptions.DespesaException;
 import org.ong.pet.pex.backendpetx.service.mappers.DespesaMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+
 
 @Service
 public class DespesaServiceImpl implements DespesaService {
@@ -56,22 +62,28 @@ public class DespesaServiceImpl implements DespesaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ListarDespesaResposta> listarDespesa() {
-        return despesaMapper.mapearListaParaDTO(despesaRepository.findAll());
-    }
+    public Page<ListarDespesaResposta> paginarDespesa(String descricao,
+                                                      CategoriaDespesaEnum categoria,
+                                                      StatusDespesaEnum status,
+                                                      FormaPagamentoEnum formaPagamento,
+                                                      LocalDate dataPagamento,
+                                                      LocalDate dataPrevistaPagamento,
+                                                      BigDecimal valor,
+                                                      Pageable pageable) {
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ListarDespesaResposta> listarDespesaFiltrada(final String filtro) {
-        try {
-            CategoriaDespesaEnum categoria = CategoriaDespesaEnum.valueOf(filtro.toUpperCase());
-            var lista = despesaMapper.mapearListaParaDTO(despesaRepository.listarDespesaFiltrada(categoria));
-            return lista.stream()
-                    .filter(despesa -> despesa.categoria().equals(categoria)).toList();
+        Page<Despesa> despesas = despesaRepository.findAllDespesa(
+                descricao,
+                valor,
+                dataPrevistaPagamento,
+                categoria != null ? categoria.name() : null,
+                formaPagamento != null ? formaPagamento.name() : null,
+                dataPagamento,
+                status != null ? status.name() : null,
+                pageable
+        );
 
-        } catch (IllegalArgumentException ex) {
-            throw DespesaException.filtroDespesaInvalido(filtro);
-        }
+        List<ListarDespesaResposta> dtos = despesaMapper.mapearListaParaDTO(despesas.getContent());
+        return new PageImpl<>(dtos, pageable, despesas.getTotalElements());
     }
 
     @Override
