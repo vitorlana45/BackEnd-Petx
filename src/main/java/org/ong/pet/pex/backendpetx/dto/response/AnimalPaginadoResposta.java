@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,5 +24,5 @@ public class AnimalPaginadoResposta {
     private String especie;
     private Set<String> doencas;
     private String status;
-    private List<AnimalPaginadoResposta> lsAnimaisConjunto = new ArrayList<>();
+    private List<AnimalPaginadoResposta> listaAnimaisConjunto;
 }

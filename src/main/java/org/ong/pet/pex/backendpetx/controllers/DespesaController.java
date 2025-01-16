@@ -12,6 +12,7 @@ import org.ong.pet.pex.backendpetx.service.DespesaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,17 +36,20 @@ public class DespesaController {
         this.despesaService = despesaService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PostMapping
     ResponseEntity<DespesaDTORespota> cadastrarDespesa(@RequestBody @Valid final DespesaRequisicaoDTO dto) {
         return ResponseEntity.ok().body(despesaService.cadastrarDespesa(dto));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deletarDespesa(@PathVariable(value = "id") final Long id) {
         despesaService.deletarDespesa(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping()
     ResponseEntity<Page<ListarDespesaResposta>> paginarDespesa(
             @RequestParam(value = "descricao", required = false) final String descricao,
@@ -70,13 +74,14 @@ public class DespesaController {
         return ResponseEntity.ok().body(result);
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PatchMapping("/{id}")
     ResponseEntity<DespesaDTORespota> atualizarDespesaDinamicamente(@PathVariable(value = "id") final Long id,
                                                        @RequestBody final DespesaRequisicaoDinamicaDTO dto) {
         return ResponseEntity.ok().body(despesaService.atualizarDespesaDinamicamente(id, dto));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PostMapping("/{id}")
     ResponseEntity<DespesaDTORespota> atualizarDespesa(@PathVariable(value = "id") final Long id, @RequestBody @Valid final DespesaRequisicaoDTO dto) {
         return ResponseEntity.ok().body(despesaService.atualizarDespesa(id, dto));
