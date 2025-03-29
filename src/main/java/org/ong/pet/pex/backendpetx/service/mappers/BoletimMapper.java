@@ -3,7 +3,6 @@ package org.ong.pet.pex.backendpetx.service.mappers;
 
 import lombok.AllArgsConstructor;
 import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
-import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Boletim;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class BoletimMapper {
-
-    private final AnimalMapper animalMapper;
 
     public BoletimDTOResposta converteParaDTO(Boletim entidade) {
         return BoletimDTOResposta.builder()
@@ -42,13 +39,11 @@ public class BoletimMapper {
                         .sexo(entidade.getAnimal().getSexoEnum().toString())
                         .origem(entidade.getAnimal().getOrigemEnum().toString())
                         .porte(entidade.getAnimal().getPorteEnum().toString())
-                        .comportamento(entidade.getAnimal().getComportamentoEnum().toString())
+                        .comportamento(entidade.getAnimal().getComportamento())
                         .especie(entidade.getAnimal().getEspecieEnum().toString())
                         .doencas(entidade.getAnimal().getDoencas())
                         .status(entidade.getAnimal().getStatusEnum().toString())
-                        .maezinhaComFilhotes(new MaezinhaComFilhotesDTO(
-                                entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeFemeas(),
-                                entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeMachos()))
+                        .maezinhaComFilhotes(AnimalMapper.converteMaezinhaParaDTO(entidade.getMaezinhaComFilhotes()))
                         .build()
                 )
                 .build();
@@ -74,8 +69,5 @@ public class BoletimMapper {
                 .animal(AnimalMapper.converterParaAnimal(dto.getAnimal()))
                 .build();
     }
-
-
-
 
 }

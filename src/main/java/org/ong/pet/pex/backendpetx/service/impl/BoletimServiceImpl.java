@@ -4,6 +4,7 @@ import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Boletim;
+import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.BoletimRepository;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
@@ -29,6 +30,14 @@ public class BoletimServiceImpl implements BoletimService {
 
     public BoletimDTOResposta createBoletim(BoletimDTORequisicao boletimDTO) {
 
+        if( boletimDTO.getAnimal().isAnimalEMaezinha() && !boletimDTO.getAnimal().getSexo().equals(SexoEnum.FEMEA))
+            throw new PetXException("Animal não pode ser maezinha se não for fêmea");
+
+        if(!boletimDTO.getAnimal().isAnimalEMaezinha() && boletimDTO.getAnimal().getMaezinhaComFilhotes() != null)
+            throw new PetXException("Animal não pode ter filhotes se não for maezinha");
+
+        System.out.println("BoletimDTO: " + boletimDTO);
+
         Boletim boletim = boletimMapper.converteParaEntidade(boletimDTO);
 
         if (boletimDTO.getAnimal() == null)
@@ -39,7 +48,7 @@ public class BoletimServiceImpl implements BoletimService {
         boletim.setAnimal(newAnimal);
         // Save Boletim entity
         boletim = boletimRepository.save(boletim);
-        return boletimMapper.converteParaDTO(boletim);;
+        return boletimMapper.converteParaDTO(boletim);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
 import lombok.Builder;
-
+import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import java.util.Set;
 
 @Builder
@@ -17,7 +17,11 @@ public record RespostaAnimalSemConjunto (
          String comportamento,
          String especie,
          Set<String> doencas,
-         String status
+         String status,
+         String destino,
+         String corPelagem,
+         MaezinhaComFilhotesDTO maezinhaComFilhotes
+
 
 
 ){

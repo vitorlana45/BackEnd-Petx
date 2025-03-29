@@ -1,8 +1,8 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
 import lombok.AllArgsConstructor;
-import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.entities.Animal;
@@ -33,10 +33,11 @@ public class AnimalMapper {
                 .sexo(animal.getSexoEnum().toString())
                 .origem(animal.getOrigemEnum().toString())
                 .porte(animal.getPorteEnum().toString())
-                .comportamento(animal.getComportamentoEnum().toString())
+                .comportamento(animal.getComportamento())
                 .especie(animal.getEspecieEnum().toString())
                 .doencas(animal.getDoencas())
                 .status(animal.getStatusEnum().toString())
+                .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
                 .listaAnimaisConjunto(null)
                 .build();
 
@@ -63,29 +64,32 @@ public class AnimalMapper {
         animal.setPorteEnum(animalGenericoRequisicao.getPorte());
         animal.setSexoEnum(animalGenericoRequisicao.getSexo());
         animal.setOrigemEnum(animalGenericoRequisicao.getOrigem());
-        animal.setComportamentoEnum(animalGenericoRequisicao.getComportamento());
+        animal.setComportamento(animalGenericoRequisicao.getComportamento());
         animal.getDoencas().addAll(animalGenericoRequisicao.getDoencas());
         animal.setStatusEnum(animalGenericoRequisicao.getStatus());
+        animal.setCorPelagem(animalGenericoRequisicao.getCorPelagem());
+        animal.setMaezinhaComFilhotes(converteMaezinhaParaEntidade(animalGenericoRequisicao.getMaezinhaComFilhotes()));
         return animal;
 
     }
 
     public static RespostaAnimalSemConjunto converterParaAnimalSemConjunto(Animal animal) {
-        return new RespostaAnimalSemConjunto(
-                animal.getId(),
-                animal.getChipId(),
-                animal.getNome(),
-                animal.getMaturidadeEnum().toString(),
-                animal.getRaca(),
-                animal.getSexoEnum().toString(),
-                animal.getOrigemEnum().toString(),
-                animal.getPorteEnum().toString(),
-                animal.getComportamentoEnum().toString(),
-                animal.getEspecieEnum().toString(),
-                animal.getDoencas(),
-                animal.getStatusEnum().toString()
-
-        );
+        return RespostaAnimalSemConjunto.builder()
+                .id(animal.getId())
+                .chipId(animal.getChipId())
+                .nome(animal.getNome())
+                .maturidade(animal.getMaturidadeEnum().toString())
+                .raca(animal.getRaca())
+                .sexo(animal.getSexoEnum().toString())
+                .origem(animal.getOrigemEnum().toString())
+                .porte(animal.getPorteEnum().toString())
+                .comportamento(animal.getComportamento())
+                .especie(animal.getEspecieEnum().toString())
+                .doencas(animal.getDoencas())
+                .status(animal.getStatusEnum().toString())
+                .corPelagem(animal.getCorPelagem())
+                .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
+                .build();
     }
 
     public AnimalGenericoResposta mapeiaAnimalEListaParaRetorno  (Animal animal, List<Animal> lsAnimais) {
@@ -99,9 +103,10 @@ public class AnimalMapper {
                         .sexo(x.getSexoEnum().getSexo())
                         .origem(x.getOrigemEnum().getOrigemAnimal())
                         .porte(x.getPorteEnum().getPorte())
-                        .comportamento(x.getComportamentoEnum().getComportamento())
+                        .comportamento(x.getComportamento())
                         .especie(x.getEspecieEnum().getEspecie())
                         .doencas(x.getDoencas())
+                        .maezinhaComFilhotes(converteMaezinhaParaDTO(x.getMaezinhaComFilhotes()))
                         .status(x.getStatusEnum().getStatus())
                         .build())
                 .collect(Collectors.toList());
@@ -115,8 +120,9 @@ public class AnimalMapper {
                 .sexo(animal.getSexoEnum().getSexo())
                 .origem(animal.getOrigemEnum().getOrigemAnimal())
                 .porte(animal.getPorteEnum().getPorte())
-                .comportamento(animal.getComportamentoEnum().getComportamento())
+                .comportamento(animal.getComportamento())
                 .doencas(animal.getDoencas())
+                .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
                 .especie(animal.getEspecieEnum().getEspecie())
                 .status(animal.getStatusEnum().getStatus())
                 .listaAnimaisConjunto(lsAnmaisConjunto)
@@ -132,16 +138,34 @@ public class AnimalMapper {
                 .sexoEnum(dto.getSexo())
                 .origemEnum(dto.getOrigem())
                 .porteEnum(dto.getPorte())
-                .comportamentoEnum(dto.getComportamento())
+                .comportamento(dto.getComportamento())
                 .especieEnum(dto.getEspecie())
                 .doencas(dto.getDoencas())
-                .maezinhaComFilhotes(new MaezinhaComFilhotes(
-                        dto.getMaezinhaComFilhotesDTO().getQuantidadeMacho(),
-                        dto.getMaezinhaComFilhotesDTO().getQuantidadeFemea()
-                ))
                 .condicaoAnimal(dto.getCondicaoAnimal())
-                .doencas(dto.getDoencas())
                 .statusEnum(dto.getStatus())
+                .corPelagem(dto.getCorPelagem())
+                .maezinhaComFilhotes(converteMaezinhaParaEntidade(dto.getMaezinhaComFilhotes())
+                )
                 .build();
+    }
+
+    public static MaezinhaComFilhotesDTO converteMaezinhaParaDTO (MaezinhaComFilhotes maezinhaComFilhotes) {
+        if (maezinhaComFilhotes != null) {
+            return new MaezinhaComFilhotesDTO(
+                    maezinhaComFilhotes.getQuantidadeFemeas(),
+                    maezinhaComFilhotes.getQuantidadeMachos()
+            );
+        }
+        return null;
+    }
+
+    public static MaezinhaComFilhotes converteMaezinhaParaEntidade (MaezinhaComFilhotesDTO maezinhaComFilhotesDTO) {
+        if (maezinhaComFilhotesDTO != null) {
+            return new MaezinhaComFilhotes(
+                    maezinhaComFilhotesDTO.getQuantidadeFemea(),
+                    maezinhaComFilhotesDTO.getQuantidadeMacho()
+            );
+        }
+        return null;
     }
 }

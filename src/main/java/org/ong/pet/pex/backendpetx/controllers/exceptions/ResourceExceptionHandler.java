@@ -1,15 +1,7 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.ong.pet.pex.backendpetx.service.exceptions.AuthException;
-import org.ong.pet.pex.backendpetx.service.exceptions.ConsumoAlimentoException;
-import org.ong.pet.pex.backendpetx.service.exceptions.DespesaException;
-import org.ong.pet.pex.backendpetx.service.exceptions.EnumException;
-import org.ong.pet.pex.backendpetx.service.exceptions.EstoqueException;
-import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
-import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
-import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
-import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
+import org.ong.pet.pex.backendpetx.service.exceptions.*;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpStatus;

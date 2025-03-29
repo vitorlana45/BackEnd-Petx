@@ -2,7 +2,6 @@ package org.ong.pet.pex.backendpetx;
 
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Ong;
-import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
@@ -46,7 +45,7 @@ public class BackEndPetxApplication implements CommandLineRunner {
 			an.setRaca("Poodle");
 			an.setSexoEnum(SexoEnum.FEMEA);
 			an.setPorteEnum(PorteEnum.PEQUENO);
-			an.setComportamentoEnum(ComportamentoEnum.DOCIL);
+			an.setComportamento("Docil");
 			an.setEspecieEnum(EspecieEnum.CACHORRO);
 			an.setOng(ong); // Associar o animal à ONG
 
@@ -55,7 +54,7 @@ public class BackEndPetxApplication implements CommandLineRunner {
 			System.out.println("raca: " + an.getRaca());
 			System.out.println("sexo: " + an.getSexoEnum());
 			System.out.println("porte: " + an.getPorteEnum());
-			System.out.println("comportamento: " + an.getComportamentoEnum());
+			System.out.println("comportamento: " + an.getComportamento());
 			System.out.println("especie: " + an.getEspecieEnum());
 			System.out.println("Tutor: Vitor Lana");
 

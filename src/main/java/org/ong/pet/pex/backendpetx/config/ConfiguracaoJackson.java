@@ -5,18 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
-import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
-import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
-import org.ong.pet.pex.backendpetx.enums.FormaPagamentoEnum;
-import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
-import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
-import org.ong.pet.pex.backendpetx.enums.PorteEnum;
-import org.ong.pet.pex.backendpetx.enums.SexoEnum;
-import org.ong.pet.pex.backendpetx.enums.StatusDespesaEnum;
-import org.ong.pet.pex.backendpetx.enums.StatusEnum;
-import org.ong.pet.pex.backendpetx.enums.TipoProduto;
-import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
+import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.DesserializadorEnumGenerico;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +28,6 @@ public class ConfiguracaoJackson {
         registerEnumDeserializer(enumModule, CategoriaDespesaEnum.class);
         registerEnumDeserializer(enumModule, FormaPagamentoEnum.class);
         registerEnumDeserializer(enumModule, EspecieEnum.class);
-        registerEnumDeserializer(enumModule, ComportamentoEnum.class);
         registerEnumDeserializer(enumModule, MaturidadeEnum.class);
         registerEnumDeserializer(enumModule, OrigemAnimalEnum.class);
         registerEnumDeserializer(enumModule, SexoEnum.class);
@@ -48,6 +36,7 @@ public class ConfiguracaoJackson {
         registerEnumDeserializer(enumModule, StatusEnum.class);
         registerEnumDeserializer(enumModule, TipoProduto.class);
         registerEnumDeserializer(enumModule, UnidadeDeMedidaEnum.class);
+        registerEnumDeserializer(enumModule, Destino.class);
 
         mapper.registerModule(enumModule);
 

@@ -1,11 +1,8 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
+import org.ong.pet.pex.backendpetx.enums.Destino;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +23,7 @@ public class AnimalGenericoResposta {
     private String sexo;
     private String origem;
     private String porte;
+    private Destino destino;
     private String comportamento;
     private String especie;
     private Set<String> doencas;

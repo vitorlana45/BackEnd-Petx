@@ -1,36 +1,19 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
-import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
-import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
-import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
-import org.ong.pet.pex.backendpetx.enums.PorteEnum;
-import org.ong.pet.pex.backendpetx.enums.SexoEnum;
-import org.ong.pet.pex.backendpetx.enums.StatusEnum;
+import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,7 +88,7 @@ public class AnimalController {
             @RequestParam(value = "raca", required = false) String raca,
             @RequestParam(value = "status", required = false) StatusEnum status,
             @RequestParam(value = "doenca", required = false) String doenca,
-            @RequestParam(value = "comportamento", required = false) ComportamentoEnum comportamento,
+            @RequestParam(value = "comportamento", required = false) String comportamento,
             @RequestParam(value = "maturidade", required = false) MaturidadeEnum maturidade,
             @RequestParam(value = "origem", required = false) OrigemAnimalEnum origem,
             @RequestParam(value = "sexo", required = false) SexoEnum sexo,

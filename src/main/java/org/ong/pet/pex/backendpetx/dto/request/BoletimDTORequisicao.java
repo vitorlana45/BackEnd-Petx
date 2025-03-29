@@ -1,10 +1,12 @@
 package org.ong.pet.pex.backendpetx.dto.request;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor

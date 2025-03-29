@@ -1,14 +1,15 @@
 package org.ong.pet.pex.backendpetx.entities;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-
 import jakarta.persistence.*;
-import lombok.*;
-import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.MaezinhaComFilhotes;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "boletins")

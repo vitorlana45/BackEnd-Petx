@@ -13,4 +13,5 @@ public class MaezinhaComFilhotesDTO {
 
     private Integer quantidadeMacho;
     private Integer quantidadeFemea;
+
 }

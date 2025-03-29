@@ -3,13 +3,7 @@ package org.ong.pet.pex.backendpetx.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
-import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
-import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
-import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
-import org.ong.pet.pex.backendpetx.enums.PorteEnum;
-import org.ong.pet.pex.backendpetx.enums.SexoEnum;
-import org.ong.pet.pex.backendpetx.enums.StatusEnum;
+import org.ong.pet.pex.backendpetx.enums.*;
 
 import java.util.Set;
 
@@ -20,9 +14,7 @@ import java.util.Set;
 @Builder
 public class AnimalGenericoRequisicao {
 
-
     private String chipId;
-
     private String nome;
 
     @NotBlank(message = "A raça não pode estar em branco")
@@ -40,20 +32,22 @@ public class AnimalGenericoRequisicao {
     @NotNull(message = "O porte é obrigatório")
     private PorteEnum porte;
 
-    @NotNull(message = "O comportamento é obrigatório")
-    private ComportamentoEnum comportamento;
+    private Destino destino;
+
+    private String comportamento;
+
+    private String corPelagem;
 
     @NotNull(message = "A espécie é obrigatória")
     private EspecieEnum especie;
 
     private Set<String> doencas;
+    private boolean animalEMaezinha;
 
-    private MaezinhaComFilhotesDTO maezinhaComFilhotesDTO;
+    private MaezinhaComFilhotesDTO maezinhaComFilhotes;
 
     private String condicaoAnimal;
 
     @NotNull(message = "O status de vida é obrigatório")
     private StatusEnum status;
-
-
 }

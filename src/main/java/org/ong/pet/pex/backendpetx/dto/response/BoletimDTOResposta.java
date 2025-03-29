@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
-import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
-import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 
