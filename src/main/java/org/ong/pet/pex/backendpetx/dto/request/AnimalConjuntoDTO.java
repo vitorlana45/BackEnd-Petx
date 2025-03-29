@@ -21,8 +21,8 @@ public class AnimalConjuntoDTO extends AnimalGenericoRequisicao {
     private Long id;
 
 
-    public AnimalConjuntoDTO(String chipId, Long id, String nome, MaturidadeEnum maturidade, String raca, SexoEnum sexo, OrigemAnimalEnum origem, PorteEnum porte, ComportamentoEnum comportamento, EspecieEnum especie, Set<String> doencas, StatusEnum statusEnum) {
-        super(chipId, nome, raca ,maturidade, sexo, origem, porte, comportamento, especie, doencas, statusEnum);
+    public AnimalConjuntoDTO(String chipId, Long id, String nome, MaturidadeEnum maturidade, String raca, SexoEnum sexo, OrigemAnimalEnum origem, PorteEnum porte, ComportamentoEnum comportamento, EspecieEnum especie, Set<String> doencas, MaezinhaComFilhotesDTO maezinhaComFilhotesDTO, StatusEnum statusEnum) {
+        super(chipId, nome, raca ,maturidade, sexo, origem, porte, comportamento, especie, doencas, maezinhaComFilhotesDTO, statusEnum);
         this.id = id;
     }
 

@@ -60,14 +60,6 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
-    @PostMapping()
-    public ResponseEntity<AnimalGenericoResposta> cadastrarAnimalSemConjunto(@RequestBody @Valid final AnimalDTO animalSemConjuntoDTO) {
-        var entidade = animalService.cadastrarAnimalSolo(animalSemConjuntoDTO);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(entidade.getId()).toUri();
-        return ResponseEntity.created(uri).body(entidade);
-    }
-
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<AnimalGenericoResposta> buscarAnimalPorId(@PathVariable final Long id) {

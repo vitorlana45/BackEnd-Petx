@@ -1,10 +1,12 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
 import lombok.AllArgsConstructor;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.MaezinhaComFilhotes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -118,6 +120,28 @@ public class AnimalMapper {
                 .especie(animal.getEspecieEnum().getEspecie())
                 .status(animal.getStatusEnum().getStatus())
                 .listaAnimaisConjunto(lsAnmaisConjunto)
+                .build();
+    }
+
+    public static Animal converterParaAnimal(AnimalGenericoRequisicao dto) {
+        return Animal.builder()
+                .chipId(dto.getChipId())
+                .nome(dto.getNome())
+                .raca(dto.getRaca())
+                .maturidadeEnum(dto.getMaturidade())
+                .sexoEnum(dto.getSexo())
+                .origemEnum(dto.getOrigem())
+                .porteEnum(dto.getPorte())
+                .comportamentoEnum(dto.getComportamento())
+                .especieEnum(dto.getEspecie())
+                .doencas(dto.getDoencas())
+                .maezinhaComFilhotes(new MaezinhaComFilhotes(
+                        dto.getMaezinhaComFilhotesDTO().getQuantidadeMacho(),
+                        dto.getMaezinhaComFilhotesDTO().getQuantidadeFemea()
+                ))
+                .condicaoAnimal(dto.getCondicaoAnimal())
+                .doencas(dto.getDoencas())
+                .statusEnum(dto.getStatus())
                 .build();
     }
 }

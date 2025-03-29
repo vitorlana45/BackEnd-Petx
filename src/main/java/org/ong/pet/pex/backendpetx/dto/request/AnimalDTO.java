@@ -13,4 +13,5 @@ public class AnimalDTO extends AnimalGenericoRequisicao {
 
         private Set<AnimalConjuntoDTO> animalConjunto;
 
+
 }

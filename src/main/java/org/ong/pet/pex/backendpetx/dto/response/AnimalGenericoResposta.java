@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +30,6 @@ public class AnimalGenericoResposta {
     private String especie;
     private Set<String> doencas;
     private String status;
+    private MaezinhaComFilhotesDTO maezinhaComFilhotes;
     private List<AnimalGenericoResposta> listaAnimaisConjunto = new ArrayList<>();
 }

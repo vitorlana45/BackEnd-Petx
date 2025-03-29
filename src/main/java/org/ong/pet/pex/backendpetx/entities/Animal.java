@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.MaezinhaComFilhotes;
 import org.ong.pet.pex.backendpetx.enums.ComportamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
 import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
@@ -89,6 +90,11 @@ public class Animal extends EntidadeBase {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusEnum statusEnum;
+
+    @Column(name = "condicao_animal")
+    private String condicaoAnimal;
+
+    private MaezinhaComFilhotes maezinhaComFilhotes;
 
     @ManyToOne(cascade = {CascadeType.ALL, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_ong")
