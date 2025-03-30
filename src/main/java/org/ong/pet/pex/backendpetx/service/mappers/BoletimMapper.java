@@ -8,6 +8,9 @@ import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Boletim;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @AllArgsConstructor
 public class BoletimMapper {
@@ -43,12 +46,11 @@ public class BoletimMapper {
                         .especie(entidade.getAnimal().getEspecieEnum().toString())
                         .doencas(entidade.getAnimal().getDoencas())
                         .status(entidade.getAnimal().getStatusEnum().toString())
-                        .maezinhaComFilhotes(AnimalMapper.converteMaezinhaParaDTO(entidade.getMaezinhaComFilhotes()))
+                        .maezinhaComFilhotes(AnimalMapper.converteMaezinhaParaDTO(entidade.getAnimal().getMaezinhaComFilhotes()))
                         .build()
                 )
                 .build();
     }
-
 
     public Boletim converteParaEntidade(BoletimDTORequisicao dto) {
         return Boletim.builder()
@@ -66,8 +68,12 @@ public class BoletimMapper {
                 .observacaoClinica(dto.getObservacaoClinica())
                 .municipio(dto.getMunicipio())
                 .destino(dto.getDestino())
-                .animal(AnimalMapper.converterParaAnimal(dto.getAnimal()))
                 .build();
     }
 
+    public List<BoletimDTOResposta> converteParaDTO(List<Boletim> boletins) {
+        return boletins.stream()
+                .map(this::converteParaDTO)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,23 +1,21 @@
 package org.ong.pet.pex.backendpetx.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.MaezinhaComFilhotes;
+import lombok.*;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
-@Table(name = "boletins")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Boletim {
+@Getter
+@Setter
+@Table(name = "boletins")
+public class Boletim extends EntidadeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +27,7 @@ public class Boletim {
 
     private String motivoRecolhimento;
 
+    @Enumerated(EnumType.STRING)
     private OrigemAnimalEnum origem;
 
     private String nomeDenuncianteOuTutor;
@@ -49,15 +48,27 @@ public class Boletim {
 
     private String estado;
 
+    @Enumerated(EnumType.STRING)
     private Destino destino;
 
-    private MaezinhaComFilhotes maezinhaComFilhotes;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "animal_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "animal_id")
     private Animal animal;
 
     @ManyToOne
-    @JoinColumn(name = "ong_id")
+    @JoinColumn(name = "ong_id"
+    )
     private Ong ong;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Boletim boletim = (Boletim) o;
+        return Objects.equals(id, boletim.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

@@ -28,6 +28,9 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
+//    TODO: AJustar a associação de animais, referencia conjunto trocar para FORMATO ID
+//    TODO: Ajustar o mapper de retorno da busca por id dos animais
+
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
     @GetMapping("/conjunto/{principal}/{animal1}/{animal2}")
     public ResponseEntity<Void> adicionarAdocaoConjuntaEmAnimal(@PathVariable(name = "principal") final String principal,

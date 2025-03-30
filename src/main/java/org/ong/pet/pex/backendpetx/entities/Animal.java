@@ -77,6 +77,9 @@ public class Animal extends EntidadeBase {
     @JoinColumn(name = "id_ong")
     private Ong ong;
 
+    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "id_boletim")
+    private Boletim boletim;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore

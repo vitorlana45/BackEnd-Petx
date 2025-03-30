@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -33,8 +34,8 @@ public class Ong extends EntidadeBase {
     @OneToOne(mappedBy = "ong")
     private Estoque estoque;
 
-    @OneToMany
-    private List<Boletim> boletims;
+    @OneToMany(mappedBy = "ong", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Boletim> boletins;
 
     @Override
     public boolean equals(Object o) {

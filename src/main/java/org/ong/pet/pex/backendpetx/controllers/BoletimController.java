@@ -2,12 +2,18 @@ package org.ong.pet.pex.backendpetx.controllers;
 
 import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
+import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/boletim")
@@ -36,10 +42,32 @@ public class BoletimController {
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
-    @PutMapping("/{id}")
+    @PatchMapping   ("/{id}")
     public ResponseEntity<BoletimDTOResposta> updateBoletim(@PathVariable Long id, @RequestBody BoletimDTORequisicao dto) {
         BoletimDTOResposta updated = boletimService.updateBoletim(id, dto);
         return ResponseEntity.ok(updated);
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
+    @GetMapping
+    public ResponseEntity<Page<BoletimDTOResposta>> findAllBoletins(
+            @RequestParam(required = false) Long numeroOcorrencia,
+            @RequestParam(required = false) Destino destino,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataFim,
+            Pageable pageable
+    ) {
+        System.out.println("numeroOcorrencia: " + numeroOcorrencia);
+//        System.out.println("dataAtendimento: " + dataAtendimento);
+        System.out.println("pageable: " + pageable);
+
+        Page<BoletimDTOResposta> boletins = boletimService.findAllBoletins(
+                numeroOcorrencia,
+//                dataInicio,
+//                dataFim,
+                destino,
+                pageable);
+        return ResponseEntity.ok(boletins);
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
