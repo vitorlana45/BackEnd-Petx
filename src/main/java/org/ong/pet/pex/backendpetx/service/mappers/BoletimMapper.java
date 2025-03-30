@@ -1,8 +1,8 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
-
 import lombok.AllArgsConstructor;
 import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Boletim;
@@ -15,7 +15,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BoletimMapper {
 
+    private final AnimalMapper animalMapper;
+
     public BoletimDTOResposta converteParaDTO(Boletim entidade) {
+        new AnimalGenericoResposta();
         return BoletimDTOResposta.builder()
                 .id(entidade.getId())
                 .bairro(entidade.getBairro())
@@ -34,8 +37,7 @@ public class BoletimMapper {
                 .dataAtendimento(entidade.getDataAtendimento())
                 .destino(entidade.getDestino())
                 .animal(AnimalGenericoResposta.builder()
-                        .id(entidade.getAnimal().getId())
-                        .chipId(entidade.getAnimal().getChipId())
+                        .id(entidade.getId())
                         .nome(entidade.getAnimal().getNome())
                         .maturidade(entidade.getAnimal().getMaturidadeEnum().toString())
                         .raca(entidade.getAnimal().getRaca())
@@ -46,9 +48,12 @@ public class BoletimMapper {
                         .especie(entidade.getAnimal().getEspecieEnum().toString())
                         .doencas(entidade.getAnimal().getDoencas())
                         .status(entidade.getAnimal().getStatusEnum().toString())
-                        .maezinhaComFilhotes(AnimalMapper.converteMaezinhaParaDTO(entidade.getAnimal().getMaezinhaComFilhotes()))
-                        .build()
-                )
+                        .maezinhaComFilhotes(MaezinhaComFilhotesDTO.builder()
+                                .quantidadeFemea(entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeFemeas())
+                                .quantidadeMacho(entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeMachos())
+                                .build())
+
+                        .build())
                 .build();
     }
 

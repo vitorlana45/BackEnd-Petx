@@ -37,6 +37,8 @@ public class AnimalMapper {
                 .especie(animal.getEspecieEnum().toString())
                 .doencas(animal.getDoencas())
                 .status(animal.getStatusEnum().toString())
+                .condicaoAnimal(animal.getCondicaoAnimal())
+                .corPelagem(animal.getCorPelagem())
                 .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
                 .listaAnimaisConjunto(null)
                 .build();
@@ -145,6 +147,30 @@ public class AnimalMapper {
                 .statusEnum(dto.getStatus())
                 .corPelagem(dto.getCorPelagem())
                 .maezinhaComFilhotes(converteMaezinhaParaEntidade(dto.getMaezinhaComFilhotes())
+                )
+                .build();
+    }
+
+    public static AnimalGenericoResposta converterParaAnimalGenericoResposta(Animal an) {
+        return AnimalGenericoResposta.builder()
+                .chipId(an.getChipId())
+                .nome(an.getNome())
+                .raca(an.getRaca())
+                .maturidade(an.getMaturidadeEnum().getMaturidade())
+                .sexo(an.getSexoEnum().getSexo())
+                .origem(an.getOrigemEnum().getOrigemAnimal())
+                .porte(an.getPorteEnum().getPorte())
+                .comportamento(an.getComportamento())
+                .especie(an.getEspecieEnum().getEspecie())
+                .doencas(an.getDoencas())
+                .condicaoAnimal(an.getCondicaoAnimal())
+                .status(String.valueOf(an.getStatusEnum()))
+                .corPelagem(an.getCorPelagem())
+                .maezinhaComFilhotes(
+                        new MaezinhaComFilhotesDTO(
+                            an.getMaezinhaComFilhotes().getQuantidadeFemeas(),
+                            an.getMaezinhaComFilhotes().getQuantidadeMachos()
+                        )
                 )
                 .build();
     }

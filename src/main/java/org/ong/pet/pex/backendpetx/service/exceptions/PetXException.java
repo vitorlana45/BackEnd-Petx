@@ -24,31 +24,18 @@ public class PetXException extends RuntimeException {
         this.status = HttpStatus.BAD_REQUEST;
     }
 
-    public PetXException(String mensagem, Map<String, String> erros) {
-        super(mensagem);
-        this.erros = erros;
-        this.status = HttpStatus.BAD_REQUEST; // Default para erros de validação
-    }
-
     // Métodos estáticos ajustados para usar o novo construtor com status
     public static PetXException recursoNaoEncontrado(String nomeRecurso, Object identificador) {
         return new PetXException(String.format("%s com ID '%s' não encontrado", nomeRecurso, identificador), HttpStatus.NOT_FOUND);
     }
 
-    public static PetXException jaExiste(String nomeRecurso, String campoErro, Object identificador) {
-        return new PetXException(String.format("%s com %s '%s' já existe", nomeRecurso, campoErro, identificador), HttpStatus.CONFLICT);
-    }
-
-    public static PetXException dadosInvalidos(Map<String, String> erros) {
-        return new PetXException("Dados inválidos", erros);
-    }
 
     public static PetXException animalNaoEncontrado(String chip) {
         return new PetXException(String.format("Animal com identificador '%s' não encontrado", chip), HttpStatus.NOT_FOUND);
     }
 
-    public static PetXException animalJaCadastrado(String chip) {
-        return new PetXException(String.format("Animal com chip '%s' já está cadastrado", chip), HttpStatus.CONFLICT);
+    public static PetXException animalJaCadastrado(String id) {
+        return new PetXException(String.format("%s", id), HttpStatus.CONFLICT);
     }
 
     public static PetXException ongNaoEncontrada() {

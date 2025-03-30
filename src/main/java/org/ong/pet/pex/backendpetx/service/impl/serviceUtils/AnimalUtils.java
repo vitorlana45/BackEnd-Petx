@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converteMaezinhaParaDTO;
 import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaRespostaAnimalComConjuntoDTO;
 
 @Component
@@ -133,6 +134,9 @@ private AnimalGenericoResposta mapeiaParaRetorno(Animal animal, List<Animal> lsA
                     .especie(x.getEspecieEnum().getEspecie())
                     .doencas(x.getDoencas())
                     .status(x.getStatusEnum().getStatus())
+                    .corPelagem(x.getCorPelagem())
+                    .condicaoAnimal(x.getCondicaoAnimal())
+                    .maezinhaComFilhotes(converteMaezinhaParaDTO(x.getMaezinhaComFilhotes()))
                     .build())
             .collect(Collectors.toList());
 
@@ -150,6 +154,9 @@ private AnimalGenericoResposta mapeiaParaRetorno(Animal animal, List<Animal> lsA
             .doencas(animal.getDoencas())
             .especie(animal.getEspecieEnum().getEspecie())
             .status(animal.getStatusEnum().getStatus())
+            .corPelagem(animal.getCorPelagem())
+            .condicaoAnimal(animal.getCondicaoAnimal())
+            .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
             .listaAnimaisConjunto(lsAnimaisConjunto)  // A lista de animais relacionados
             .build();
 }

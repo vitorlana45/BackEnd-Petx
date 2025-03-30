@@ -33,16 +33,16 @@ public class AnimalController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR', 'ADMIN')")
     @GetMapping("/conjunto/{principal}/{animal1}/{animal2}")
-    public ResponseEntity<Void> adicionarAdocaoConjuntaEmAnimal(@PathVariable(name = "principal") final String principal,
-                                                                @PathVariable(name = "animal1") final String animal1,
-                                                                @PathVariable(required = false) final String animal2) {
-        Map<String, String> chips = new HashMap<>();
-        chips.put("principal", principal);
-        chips.put("animal1", animal1);
+    public ResponseEntity<Void> adicionarAdocaoConjuntaEmAnimal(@PathVariable(name = "principal") final Long principal,
+                                                                @PathVariable(name = "animal1") final Long animal1,
+                                                                @PathVariable(required = false) final Long animal2) {
+        Map<String, Long> ids = new HashMap<>();
+        ids.put("principal", principal);
+        ids.put("animal1", animal1);
 
-        if (animal2 != null) chips.put("animal2", animal2);
+        if (animal2 != null) ids.put("animal2", animal2);
 
-        animalService.adicionarAdocaoConjuntaEmAnimal(chips);
+        animalService.adicionarAdocaoConjuntaEmAnimal(ids);
         return ResponseEntity.noContent().build();
     }
 

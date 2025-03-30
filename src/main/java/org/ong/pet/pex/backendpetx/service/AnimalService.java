@@ -14,18 +14,13 @@ import java.util.Map;
 
 public interface AnimalService {
 
-
-    List<RespostaAnimalSemConjunto> listaAnimaisCadastrados ();
-
-    void adicionarAdocaoConjuntaEmAnimal (Map<String,String> chips);
+    void adicionarAdocaoConjuntaEmAnimal (Map<String,Long> ids);
 
     AnimalGenericoResposta atualizarAnimal (Long id, AnimalGenericoRequisicao animalSemConjuntoDTO);
 
     void deletarPorId (Long id);
 
     void declararObito (AnimalObituarioResquisicao obiturario);
-
-    AnimalGenericoResposta cadastrarAnimalSolo (AnimalGenericoRequisicao animalGenericoRequisicao);
 
     AnimalGenericoResposta buscarAnimalPorId(Long id);
 
