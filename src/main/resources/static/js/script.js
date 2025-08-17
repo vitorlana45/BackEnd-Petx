@@ -11,12 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeThemeSystem() {
     console.log("Inicializando sistema de temas...");
     const htmlEl = document.documentElement;
-    const toggleBtn = document.getElementById('theme-toggle');
-    
-    if (toggleBtn) {
-        console.log("Botão de tema encontrado:", toggleBtn);
-    } else {
-        console.log("AVISO: Botão de tema não encontrado!");
+    const toggleBtns = document.querySelectorAll('.theme-toggle');
+
+    if (toggleBtns.length === 0) {
+        console.log("AVISO: Botões de tema não encontrados!");
     }
 
     // Detecta preferências
@@ -26,37 +24,21 @@ function initializeThemeSystem() {
     // Tema inicial (prioridade: storage > prefers-color-scheme > 'light')
     const initial = fromStorage || (prefersDark ? 'dark' : 'light');
     setTheme(initial);
-
-    // Atualiza UI do botão
     updateToggleUI(initial);
 
-    // Listener de clique
-    if (toggleBtn) {
-        console.log("Adicionando event listener ao botão de tema");
-        
-        // Remover qualquer listener anterior para evitar duplicação
-        toggleBtn.removeEventListener('click', handleThemeToggle);
-        
-        // Adicionar novo listener
-        toggleBtn.addEventListener('click', handleThemeToggle);
-    }
+    // Listener de clique para todos os botões
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', event => {
+            event.preventDefault();
+            const current = htmlEl.getAttribute('data-theme') || 'light';
+            const next = current === 'light' ? 'dark' : 'light';
+            setTheme(next);
+            updateToggleUI(next);
 
-    function handleThemeToggle(event) {
-        console.log("Botão de tema clicado!");
-        event.preventDefault();
-        
-        const current = htmlEl.getAttribute('data-theme') || 'light';
-        const next = current === 'light' ? 'dark' : 'light';
-        
-        console.log(`Mudando tema de ${current} para ${next}`);
-        
-        setTheme(next);
-        updateToggleUI(next);
-
-        // Feedback visual
-        toggleBtn.classList.add('theme-toggle-active');
-        setTimeout(() => toggleBtn.classList.remove('theme-toggle-active'), 300);
-    }
+            btn.classList.add('theme-toggle-active');
+            setTimeout(() => btn.classList.remove('theme-toggle-active'), 300);
+        });
+    });
 
     function setTheme(theme) {
         console.log(`Definindo tema: ${theme}`);
@@ -72,19 +54,17 @@ function initializeThemeSystem() {
     }
 
     function updateToggleUI(theme) {
-        if (!toggleBtn) return;
-        console.log(`Atualizando UI do botão para tema: ${theme}`);
-
-        const icon = toggleBtn.querySelector('i');
-        if (icon) {
-            // Remover classes antigas
-            icon.classList.remove('fa-sun', 'fa-moon');
-            // Adicionar classe nova
-            icon.classList.add(theme === 'dark' ? 'fa-sun' : 'fa-moon');
-            console.log(`Ícone atualizado: ${icon.className}`);
-        } else {
-            console.log("AVISO: Ícone não encontrado dentro do botão!");
-        }
+        toggleBtns.forEach(btn => {
+            const icon = btn.querySelector('i');
+            const text = btn.querySelector('.theme-text');
+            if (icon) {
+                icon.classList.remove('fa-sun', 'fa-moon');
+                icon.classList.add(theme === 'dark' ? 'fa-sun' : 'fa-moon');
+            }
+            if (text) {
+                text.textContent = theme === 'dark' ? 'Light' : 'Dark';
+            }
+        });
     }
 }
 
