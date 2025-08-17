@@ -1,173 +1,308 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
 <head>
-    <title>Dashboard - PetX</title>
+    <title>Dashboard - ONG PetX</title>
 </head>
 <body>
 <section>
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Dashboard</h2>
-                <div class="d-flex align-items-center">
-                    <span class="me-3">Bem-vindo, <strong th:text="${username}">Usuário</strong>!</span>
+    <!-- Cabeçalho da página -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Dashboard</h2>
+            <p class="text-muted mb-0">Bem-vindo ao sistema de gestão da ONG PetX</p>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="dropdown">
+                <button class="btn btn-outline-primary btn-icon dropdown-toggle" type="button" id="reportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    <span>Relatórios</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="reportDropdown">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-paw me-2"></i>Relatório de Animais</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user-friends me-2"></i>Relatório de Adotantes</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-hands-helping me-2"></i>Relatório de Resgates</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerta de notificação (se existir) -->
+    <div th:if="${notification}" th:replace="~{fragmentos/componentes :: alert-card('Bem-vindo à ONG PetX!', 'Este é o sistema de gestão da ONG PetX, dedicado ao resgate, tratamento e adoção responsável de animais.', 'primary', 'info-circle')}"></div>
+
+    <!-- Cards de estatísticas -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div th:replace="~{fragmentos/componentes :: stat-card('paw', ${totalAnimais}, 'Animais Resgatados', 'primary')}"></div>
+        </div>
+        <div class="col-md-3">
+            <div th:replace="~{fragmentos/componentes :: stat-card('user-friends', ${totalTutores}, 'Adotantes', 'success')}"></div>
+        </div>
+        <div class="col-md-3">
+            <div th:replace="~{fragmentos/componentes :: stat-card('home', ${totalConsultas ?: '0'}, 'Adoções', 'info')}"></div>
+        </div>
+        <div class="col-md-3">
+            <div th:replace="~{fragmentos/componentes :: stat-card('box', ${totalConsumo}, 'Consumo (kg)', 'warning')}"></div>
+        </div>
+    </div>
+
+    <!-- Conteúdo principal em duas colunas -->
+    <div class="row g-4">
+        <!-- Coluna da esquerda - Acesso rápido e Atividade Recente -->
+        <div class="col-lg-8">
+            <!-- Acesso Rápido -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">Acesso Rápido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div th:replace="~{fragmentos/componentes :: action-card('Cadastrar Animal', 'Adicione um novo animal resgatado', '/animais/novo', 'paw')}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div th:replace="~{fragmentos/componentes :: action-card('Novo Adotante', 'Cadastre um novo adotante', '/tutores/novo', 'user-plus')}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div th:replace="~{fragmentos/componentes :: action-card('Registrar Resgate', 'Registre um novo resgate', '/boletins/novo', 'hands-helping')}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div th:replace="~{fragmentos/componentes :: action-card('Doações', 'Gerenciar doações recebidas', '/doacoes', 'gift')}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div th:replace="~{fragmentos/componentes :: action-card('Voluntários', 'Gerenciar voluntários', '/voluntarios', 'users')}"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div th:replace="~{fragmentos/componentes :: action-card('Relatórios', 'Visualizar relatórios e análises', '/relatorios', 'chart-bar')}"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Cards de estatísticas -->
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Pets Cadastrados</h5>
-                            <h2 class="text-primary" th:text="${totalAnimais}"></h2>
-                        </div>
-                    </div>
+            <!-- Atividades Recentes -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Atividades Recentes</h5>
+                    <button class="btn btn-sm btn-link">Ver tudo</button>
                 </div>
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Consumo Alimento KG</h5>
-                            <h2 class="text-success" th:text="${totalConsumo}"></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Tutores</h5>
-                            <h2 class="text-info" th:text="${totalTutores}"></h2>
-                        </div>
-                    </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item py-3 px-4 d-flex align-items-center border-start border-5 border-primary border-opacity-25">
+                            <div class="avatar-circle bg-primary-subtle text-primary me-3">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Novo animal resgatado</h6>
+                                    <small class="text-muted">Há 2 horas</small>
+                                </div>
+                                <p class="mb-0 text-muted">O animal "Rex" foi resgatado e cadastrado no sistema</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item py-3 px-4 d-flex align-items-center border-start border-5 border-success border-opacity-25">
+                            <div class="avatar-circle bg-success-subtle text-success me-3">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Novo adotante cadastrado</h6>
+                                    <small class="text-muted">Há 3 horas</small>
+                                </div>
+                                <p class="mb-0 text-muted">O adotante "Maria Silva" foi cadastrado</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item py-3 px-4 d-flex align-items-center border-start border-5 border-info border-opacity-25">
+                            <div class="avatar-circle bg-info-subtle text-info me-3">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Adoção realizada</h6>
+                                    <small class="text-muted">Há 5 horas</small>
+                                </div>
+                                <p class="mb-0 text-muted">O animal "Luna" foi adotado por "João Santos"</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item py-3 px-4 d-flex align-items-center border-start border-5 border-warning border-opacity-25">
+                            <div class="avatar-circle bg-warning-subtle text-warning me-3">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">Doação recebida</h6>
+                                    <small class="text-muted">Há 1 dia</small>
+                                </div>
+                                <p class="mb-0 text-muted">Nova doação de ração recebida (5kg)</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
+        </div>
 
-            <!-- Acesso rápido -->
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Acesso Rápido</h5>
-                        </div>
-                        <div class="card-body py-3">
-                            <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-2">
-                                <!-- Pets -->
-                                <div class="col">
-                                    <a href="/animais" class="text-decoration-none">
-                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
-                                            <div class="d-flex justify-content-center mb-1">
-                                                <div class="rounded-circle bg-primary-gradient p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                                    <i class="fa-solid fa-paw" style="font-size: 46px;"></i>
-                                                </div>
-                                            </div>
-                                            <h6 class="mb-0 fs-6">Pets</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Gerenciar animais</small>
-                                        </div>
-                                    </a>
+        <!-- Coluna da direita - Pets Recentes e Próximas Consultas -->
+        <div class="col-lg-4">
+            <!-- Próximas Consultas -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Próximas Consultas</h5>
+                    <button class="btn btn-sm btn-link">Ver agenda</button>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item py-3 px-4 border-0">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="avatar-circle bg-primary-subtle text-primary me-2">
+                                    <i class="fas fa-calendar-day"></i>
                                 </div>
-                                <!-- Tutores -->
-                                <div class="col">
-                                    <a href="/tutores" class="text-decoration-none">
-                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
-                                            <div class="d-flex justify-content-center mb-1">
-                                                <div class="rounded-circle bg-success p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                                    <i class="fas fa-user-friends text-white"></i>
-                                                </div>
-                                            </div>
-                                            <h6 class="mb-0 fs-6">Tutores</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Cadastro e consulta</small>
-                                        </div>
-                                    </a>
+                                <div class="fw-semibold">Hoje</div>
+                                <div class="badge bg-primary ms-2">2 consultas</div>
+                            </div>
+                            <div class="ps-4 ms-2 border-start">
+                                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                    <span class="me-2">14:00</span>
+                                    <span class="fw-medium">Bella</span>
+                                    <span class="ms-auto badge badge-dog">Cachorro</span>
                                 </div>
-                                
-                                <!-- Consultas -->
-                                <div class="col">
-                                    <a href="/consultas" class="text-decoration-none">
-                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
-                                            <div class="d-flex justify-content-center mb-1">
-                                                <div class="rounded-circle bg-info p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                                    <i class="fas fa-calendar-alt text-white"></i>
-                                                </div>
-                                            </div>
-                                            <h6 class="mb-0 fs-6">Consultas</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Agenda médica</small>
-                                        </div>
-                                    </a>
-                                </div>                                <!-- Medicamentos -->
-                                <div class="col">
-                                    <a href="/medicamentos" class="text-decoration-none">
-                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
-                                            <div class="d-flex justify-content-center mb-1">
-                                                <div class="rounded-circle bg-warning p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                                    <i class="fas fa-pills text-white"></i>
-                                                </div>
-                                            </div>
-                                            <h6 class="mb-0 fs-6">Medicamentos</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Estoque</small>
-                                        </div>
-                                    </a>
-                                </div>
-                                
-                                <!-- Vacinas -->
-                                <div class="col">
-                                    <a href="/vacinas" class="text-decoration-none">
-                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
-                                            <div class="d-flex justify-content-center mb-1">
-                                                <div class="rounded-circle bg-danger p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                                    <i class="fas fa-syringe text-white"></i>
-                                                </div>
-                                            </div>
-                                            <h6 class="mb-0 fs-6">Vacinas</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Vacinação</small>
-                                        </div>
-                                    </a>
-                                </div>
-                                
-                                <!-- Relatórios -->
-                                <div class="col">
-                                    <a href="/relatorios" class="text-decoration-none">
-                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
-                                            <div class="d-flex justify-content-center mb-1">
-                                                <div class="rounded-circle bg-secondary p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                                    <i class="fas fa-chart-bar text-white"></i>
-                                                </div>
-                                            </div>
-                                            <h6 class="mb-0 fs-6">Relatórios</h6>
-                                            <small class="text-muted" style="font-size: 0.7rem;">Análise</small>
-                                        </div>
-                                    </a>
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">16:30</span>
+                                    <span class="fw-medium">Mia</span>
+                                    <span class="ms-auto badge badge-cat">Gato</span>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                        <li class="list-group-item py-3 px-4 border-0">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="avatar-circle bg-success-subtle text-success me-2">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="fw-semibold">Amanhã</div>
+                                <div class="badge bg-success ms-2">3 consultas</div>
+                            </div>
+                            <div class="ps-4 ms-2 border-start">
+                                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                    <span class="me-2">09:00</span>
+                                    <span class="fw-medium">Max</span>
+                                    <span class="ms-auto badge badge-dog">Cachorro</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                    <span class="me-2">11:15</span>
+                                    <span class="fw-medium">Nina</span>
+                                    <span class="ms-auto badge badge-cat">Gato</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">15:45</span>
+                                    <span class="fw-medium">Thor</span>
+                                    <span class="ms-auto badge badge-dog">Cachorro</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Atividades Recentes</h5>
+            </div>
+
+            <!-- Pets Recentes -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Pets Recentes</h5>
+                    <a href="/animais" class="btn btn-sm btn-link">Ver todos</a>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Lista simulada de pets, em produção seria dinâmica com dados reais -->
+                    <div class="pet-recent-item p-3 border-bottom d-flex align-items-center">
+                        <div class="pet-avatar me-3 bg-dog-subtle">
+                            <i class="fas fa-dog"></i>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Pet "Rex" cadastrado</span>
-                                    <small class="text-muted">2h atrás</small>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Consulta agendada</span>
-                                    <small class="text-muted">4h atrás</small>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Tutor "Maria" atualizado</span>
-                                    <small class="text-muted">1 dia atrás</small>
-                                </li>
-                            </ul>
+                        <div>
+                            <h6 class="mb-0 fw-semibold">Rex</h6>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-dog me-1">Cachorro</span>
+                                <small class="text-muted">Labrador, 2 anos</small>
+                            </div>
                         </div>
+                        <a href="#" class="btn btn-sm btn-link ms-auto">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                    <div class="pet-recent-item p-3 border-bottom d-flex align-items-center">
+                        <div class="pet-avatar me-3 bg-cat-subtle">
+                            <i class="fas fa-cat"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold">Luna</h6>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-cat me-1">Gato</span>
+                                <small class="text-muted">Siamês, 1 ano</small>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-link ms-auto">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                    <div class="pet-recent-item p-3 border-bottom d-flex align-items-center">
+                        <div class="pet-avatar me-3 bg-dog-subtle">
+                            <i class="fas fa-dog"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold">Thor</h6>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-dog me-1">Cachorro</span>
+                                <small class="text-muted">Pastor Alemão, 3 anos</small>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-link ms-auto">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                    <div class="pet-recent-item p-3 d-flex align-items-center">
+                        <div class="pet-avatar me-3 bg-cat-subtle">
+                            <i class="fas fa-cat"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold">Nina</h6>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-cat me-1">Gato</span>
+                                <small class="text-muted">Persa, 2 anos</small>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-link ms-auto">
+                            <i class="fas fa-eye"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+/* Estilos específicos para o dashboard */
+.pet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.list-group-item {
+    transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.pet-recent-item {
+    transition: all 0.2s;
+}
+
+.pet-recent-item:hover {
+    background-color: var(--bg-secondary);
+}
+</style>
 </body>
 </html>

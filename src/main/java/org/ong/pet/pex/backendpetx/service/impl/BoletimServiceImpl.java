@@ -59,10 +59,17 @@ public class BoletimServiceImpl implements BoletimService {
         Animal newAnimal = AnimalMapper.converterParaAnimal(boletimDTO.getAnimal());
         newAnimal.setOng(ongRepository.findById(1L).orElse(null));
         newAnimal = animalRepository.save(newAnimal);
+        
         boletim.setAnimal(newAnimal);
         boletim.setOng(newAnimal.getOng());
+        
         // Save Boletim entity
         boletim = boletimRepository.save(boletim);
+        
+        // Set the bidirectional relationship
+        newAnimal.setBoletim(boletim);
+        animalRepository.save(newAnimal);
+        
         return boletimMapper.converteParaDTO(boletim);
     }
 
@@ -98,7 +105,8 @@ public class BoletimServiceImpl implements BoletimService {
                                                     Destino destino,
                                                     Pageable pageable) {
 //        String destinoStr = destino != null ? destino : "";
-        Page<Boletim> boletins = boletimRepository.findAllBoletins(numeroOcorrencia,destino != null ? destino.name() : null, pageable);
+        Page<Boletim> boletins = boletimRepository.findAllBoletins(numeroOcorrencia, destino != null ? destino.name() : null, pageable);
+        System.out.println("asdasd");
         return boletins.map(boletimMapper::converteParaDTO);
     }
 
@@ -115,6 +123,10 @@ public class BoletimServiceImpl implements BoletimService {
             newAnimal.setOng(ongRepository.findById(1L).orElse(null));
             newAnimal = animalRepository.save(newAnimal);
             boletim.setAnimal(newAnimal);
+            
+            // Set the bidirectional relationship
+            newAnimal.setBoletim(boletim);
+            animalRepository.save(newAnimal);
         }
 
         boletim = boletimRepository.save(boletim);

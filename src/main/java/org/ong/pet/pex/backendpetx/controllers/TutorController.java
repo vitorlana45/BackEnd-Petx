@@ -39,6 +39,7 @@ public class TutorController {
                          @PageableDefault(size = 10) Pageable pageable) {
         Page<TutorDTOResposta> page = tutorService.findAllTutorPaginacao(nome, cep, cidade, estado, idade, pageable);
         model.addAttribute("page", page);
+        model.addAttribute("currentPage", "/tutores");
         model.addAttribute("tutores", page.getContent());
         model.addAttribute("filtroNome", nome);
         model.addAttribute("filtroCep", cep);

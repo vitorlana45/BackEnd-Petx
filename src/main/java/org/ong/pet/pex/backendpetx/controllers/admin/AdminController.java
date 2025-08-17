@@ -19,12 +19,14 @@ public class AdminController {
         model.addAttribute("totalUsuarios", 15);
         model.addAttribute("usuariosAtivos", 12);
         model.addAttribute("usuariosInativos", 3);
+        model.addAttribute("currentPage", "/admin");
         return "admin/dashboard";
     }
 
     @GetMapping("/usuarios")
     public String listarUsuarios(Model model) {
         // Aqui você buscaria os usuários do banco
+        model.addAttribute("currentPage", "/admin/usuarios");
         return "admin/usuarios/lista";
     }
 

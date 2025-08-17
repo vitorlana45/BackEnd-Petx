@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Resgates - ONG PetX</title>
+</head>
+<body>
+    <section>
+        <!-- Cabeçalho da página -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">Resgates de Animais</h2>
+                <p class="text-muted">Gerenciamento de resgates e entrada de animais na ONG</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/resgates/rapido}" class="btn btn-success">
+                    <i class="fas fa-plus-circle me-2"></i>Resgate Rápido
+                </a>
+                <a th:href="@{/boletins/novo}" class="btn btn-primary">
+                    <i class="fas fa-clipboard-list me-2"></i>Novo Boletim Completo
+                </a>
+            </div>
+        </div>
+
+        <!-- Abas de navegação -->
+        <ul class="nav nav-tabs mb-4" id="resgatesTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="recentes-tab" data-bs-toggle="tab" 
+                        data-bs-target="#recentes" type="button" role="tab" 
+                        aria-controls="recentes" aria-selected="true">
+                    <i class="fas fa-clock me-2"></i>Resgates Recentes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="todos-tab" data-bs-toggle="tab" 
+                        data-bs-target="#todos" type="button" role="tab" 
+                        aria-controls="todos" aria-selected="false">
+                    <i class="fas fa-list me-2"></i>Todos os Resgates
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="estatisticas-tab" data-bs-toggle="tab" 
+                        data-bs-target="#estatisticas" type="button" role="tab" 
+                        aria-controls="estatisticas" aria-selected="false">
+                    <i class="fas fa-chart-bar me-2"></i>Estatísticas
+                </button>
+            </li>
+        </ul>
+
+        <!-- Conteúdo das abas -->
+        <div class="tab-content" id="resgatesTabContent">
+            <!-- Resgates Recentes -->
+            <div class="tab-pane fade show active" id="recentes" role="tabpanel" aria-labelledby="recentes-tab">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nº Boletim</th>
+                                        <th>Data</th>
+                                        <th>Animal</th>
+                                        <th>Origem</th>
+                                        <th>Destino</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(resgatesRecentes)}">
+                                        <td colspan="7" class="text-center py-5">
+                                            <div class="my-4">
+                                                <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                                <p class="mb-0">Nenhum resgate recente encontrado</p>
+                                                <p class="text-muted">Registre novos resgates para visualizá-los aqui</p>
+                                                <a th:href="@{/resgates/rapido}" class="btn btn-sm btn-primary mt-2">
+                                                    <i class="fas fa-plus-circle me-2"></i>Registrar Resgate
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:each="resgate : ${resgatesRecentes}">
+                                        <td th:text="${resgate.numeroOcorrencia}">12345</td>
+                                        <td th:text="${#temporals.format(resgate.dataAtendimento, 'dd/MM/yyyy HH:mm')}">01/01/2023</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-animal me-2" th:classappend="${'bg-' + resgate.animal?.especie?.toLowerCase() + '-subtle'}">
+                                                    <i class="fas fa-paw"></i>
+                                                </div>
+                                                <div>
+                                                    <span th:text="${resgate.animal?.nome ?: 'Sem nome'}">Rex</span>
+                                                    <small class="d-block text-muted" th:text="${resgate.animal?.especie}">Cachorro</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${resgate.origem}">Resgate</td>
+                                        <td th:text="${resgate.destino}">ONG</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${'bg-' + (resgate.animal?.status ?: 'warning')}">
+                                                <i class="fas fa-circle me-1 small"></i>
+                                                <span th:text="${resgate.animal?.status ?: 'Pendente'}">Em tratamento</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a th:href="@{'/boletins/visualizar/' + ${resgate.id}}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a th:href="@{'/boletins/editar/' + ${resgate.id}}" 
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Todos os Resgates -->
+            <div class="tab-pane fade" id="todos" role="tabpanel" aria-labelledby="todos-tab">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <form id="filtroForm" class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Período</label>
+                                <div class="input-group">
+                                    <input type="date" class="form-control" name="dataInicio" placeholder="De">
+                                    <span class="input-group-text">até</span>
+                                    <input type="date" class="form-control" name="dataFim" placeholder="Até">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Origem</label>
+                                <select class="form-select" name="origem">
+                                    <option value="">Todas</option>
+                                    <option th:each="origem : ${origens}" th:value="${origem}" th:text="${origem}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" name="status">
+                                    <option value="">Todos</option>
+                                    <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-2"></i>Filtrar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nº Boletim</th>
+                                        <th>Data</th>
+                                        <th>Animal</th>
+                                        <th>Origem</th>
+                                        <th>Destino</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(todosResgates)}">
+                                        <td colspan="7" class="text-center py-5">
+                                            <div class="my-4">
+                                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                                <p class="mb-0">Nenhum resgate encontrado com os filtros selecionados</p>
+                                                <p class="text-muted">Tente outros filtros ou registre novos resgates</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:each="resgate : ${todosResgates}">
+                                        <td th:number="${resgate.getId()}">12345</td>
+                                        <td th:text="${#temporals.format(resgate.getDataAtendimento(), 'dd/MM/yyyy HH:mm')}">01/01/2023</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-animal me-2" th:classappend="${'bg-' + resgate.animal?.especie?.toLowerCase() + '-subtle'}">
+                                                    <i class="fas fa-paw"></i>
+                                                </div>
+                                                <div>
+                                                    <span th:text="${resgate.animal?.nome ?: 'Sem nome'}">Rex</span>
+                                                    <small class="d-block text-muted" th:text="${resgate.animal?.especie}">Cachorro</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${resgate.origem}">Resgate</td>
+                                        <td th:text="${resgate.destino}">ONG</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${'bg-' + (resgate.animal?.status ?: 'warning')}">
+                                                <i class="fas fa-circle me-1 small"></i>
+                                                <span th:text="${resgate.animal?.status ?: 'Pendente'}">Em tratamento</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a th:href="@{'/boletins/visualizar/' + ${resgate.id}}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a th:href="@{'/boletins/editar/' + ${resgate.id}}" 
+                                                   class="btn btn-sm btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent" th:if="${!#lists.isEmpty(todosResgates)}">
+                        <nav>
+                            <ul class="pagination justify-content-center mb-0">
+                                <!-- Paginação -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatísticas de Resgates -->
+            <div class="tab-pane fade" id="estatisticas" role="tabpanel" aria-labelledby="estatisticas-tab">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-transparent">
+                                <h5 class="mb-0">Resgates por Origem</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 300px;">
+                                    <!-- Gráfico de pizza -->
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <p class="text-muted">Gráfico de resgates por origem será exibido aqui</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-transparent">
+                                <h5 class="mb-0">Resgates por Espécie</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 300px;">
+                                    <!-- Gráfico de barras -->
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <p class="text-muted">Gráfico de resgates por espécie será exibido aqui</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-transparent">
+                                <h5 class="mb-0">Resgates ao Longo do Tempo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 300px;">
+                                    <!-- Gráfico de linha -->
+                                    <div class="d-flex align-items-center justify-content-center h-100">
+                                        <p class="text-muted">Gráfico de resgates ao longo do tempo será exibido aqui</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

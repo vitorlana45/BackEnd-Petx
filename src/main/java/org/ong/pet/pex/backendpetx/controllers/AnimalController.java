@@ -9,6 +9,7 @@ import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,11 +49,12 @@ public class AnimalController {
                             @RequestParam(required = false) MaturidadeEnum maturidade,
                             @RequestParam(required = false) OrigemAnimalEnum origem,
                             @RequestParam(required = false) SexoEnum sexo,
-                            Pageable pageable) {
+                            @PageableDefault(size = 20) Pageable pageable) {
         Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
                 nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
         );
         model.addAttribute("page", page);
+        model.addAttribute("currentPage", "/animais");
         model.addAttribute("animais", page.getContent());
         
         // Adicionar enums ao modelo para uso nos selects dos formulários

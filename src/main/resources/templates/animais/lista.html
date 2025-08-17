@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
 <head>
-    <title>Pets - PetX</title>
+    <title>Animais - PetX</title>
 </head>
 <body>
 <section>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Pets2222</h2>
+        <h2>Animais</h2>
         <a href="/boletins/novo" class="btn btn-success">
-            <i class="fas fa-plus me-2"></i>Novo Pet
+            <i class="fas fa-plus me-2"></i>Novo Animal
         </a>
     </div>
 
@@ -18,7 +18,7 @@
             <h5 class="mb-0">Filtros</h5>
         </div>
         <div class="card-body">
-            <form method="get" th:action="@{/pets}" class="row g-2 align-items-end">
+            <form method="get" th:action="@{/animais}" class="row g-2 align-items-end">
                 <div class="col-12 col-sm-6 col-md-3">
                     <label for="nome" class="form-label">Nome</label>
                     <input id="nome" name="nome" class="form-control" th:value="${filtroNome}">
@@ -97,7 +97,7 @@
                 </div>
                 <div class="col-12 col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary"><i class="fas fa-search me-2"></i>Buscar</button>
-                    <a th:href="@{/pets}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Limpar</a>
+                    <a th:href="@{/animais}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Limpar</a>
                 </div>
             </form>
         </div>
@@ -129,37 +129,39 @@
                         <td th:text="${a.especie}">CÃO</td>
                         <td th:text="${a.raca}">VIRA-LATA</td>
                         <td>
-                            <span class="badge" th:text="${a.status}" th:classappend="${a.status == 'ADOTADO' ? ' bg-success' : (a.status == 'FALECIDO' ? ' bg-secondary' : ' bg-info')}"/>
+                            <span class="badge" th:text="${a.status}" th:classappend="${a.status == 'ADOTADO' ? ' bg-success' : (a.status == 'FALECIDO' ? ' bg-secondary' : ' bg-info')}"></span>
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm" role="group">
-                                <a th:href="@{'/pets/' + ${a.id}}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-                                <form th:action="@{'/pets/' + ${a.id} + '/excluir'}" method="post" style="display:inline-block">
+                                <a th:href="@{'/animais/' + ${a.id}}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                                <form th:action="@{'/animais/' + ${a.id} + '/excluir'}" method="post" style="display:inline-block">
                                     <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(animais)}">
-                        <td colspan="7" class="text-center text-muted py-4">Nenhum pet encontrado com os filtros informados.</td>
+                        <td colspan="7" class="text-center text-muted py-4">Nenhum animal encontrado com os filtros informados.</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="card-footer d-flex justify-content-between align-items-center">
-            <small th:text="${'Total: ' + page.totalElements}">Total: 0</small>
-            <nav th:if="${page.totalPages > 1}">
-                <ul class="pagination mb-0">
-                    <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/pets?page=${page.number - 1}&size=${page.size}|}">Anterior</a>
-                    </li>
-                    <li class="page-item disabled"><a class="page-link" th:text="${page.number + 1 + ' / ' + page.totalPages}">1 / 1</a></li>
-                    <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/pets?page=${page.number + 1}&size=${page.size}|}">Próximo</a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="card-footer">
+            <!-- Construção da string de filtros para paginação -->
+            <th:block th:with="filtros=''
+                , filtros=${filtroNome != null && !#strings.isEmpty(filtroNome) ? filtros + '&nome=' + filtroNome : filtros}
+                , filtros=${filtroRaca != null && !#strings.isEmpty(filtroRaca) ? filtros + '&raca=' + filtroRaca : filtros}
+                , filtros=${filtroEspecie != null ? filtros + '&especie=' + filtroEspecie : filtros}
+                , filtros=${filtroPorte != null ? filtros + '&porte=' + filtroPorte : filtros}
+                , filtros=${filtroStatus != null ? filtros + '&status=' + filtroStatus : filtros}
+                , filtros=${filtroDoenca != null && !#strings.isEmpty(filtroDoenca) ? filtros + '&doenca=' + filtroDoenca : filtros}
+                , filtros=${filtroComportamento != null && !#strings.isEmpty(filtroComportamento) ? filtros + '&comportamento=' + filtroComportamento : filtros}
+                , filtros=${filtroMaturidade != null ? filtros + '&maturidade=' + filtroMaturidade : filtros}
+                , filtros=${filtroOrigem != null ? filtros + '&origem=' + filtroOrigem : filtros}
+                , filtros=${filtroSexo != null ? filtros + '&sexo=' + filtroSexo : filtros}">
+                <div th:replace="~{fragmentos/paginacao :: pagination(${page}, '/animais', ${filtros})}"></div>
+            </th:block>
         </div>
     </div>
 </section>

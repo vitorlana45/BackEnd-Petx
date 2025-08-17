@@ -97,19 +97,32 @@ public class AuthWebController {
     /** Dashboard (somente autenticado). Usa Principal p/ exibir nome. */
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
-        RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
-        model.addAttribute("username", usuario.nome());
+        try {
+            // Forçar o tipo de conteúdo para HTML
+            RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
+            model.addAttribute("username", usuario.nome());
 
-        // Retorna a view do dashboard
+            // Adiciona a variável page para substituir o uso de #request.requestURI
+            model.addAttribute("currentPage", "/dashboard");
 
-        Long totalAnimais = dashboardService.getTotalAnimais();
-        Long totalTutores = dashboardService.getTotalTutores();
-        Long totalConsumo = dashboardService.totalConsumo();
-        model.addAttribute("totalAnimais", totalAnimais);
-        model.addAttribute("totalTutores", totalTutores);
-        model.addAttribute("totalConsumo", totalConsumo);
+            // Retorna a view do dashboard
+            Long totalAnimais = dashboardService.getTotalAnimais();
+            Long totalTutores = dashboardService.getTotalTutores();
+            Long totalConsumo = dashboardService.totalConsumo();
+            model.addAttribute("totalAnimais", totalAnimais);
+            model.addAttribute("totalTutores", totalTutores);
+            model.addAttribute("totalConsumo", totalConsumo);
 
-        return "dashboard/index";
+            // Adiciona notificação para garantir que o alerta seja exibido
+            model.addAttribute("notification", true);
+
+            return "dashboard/index";
+        } catch (Exception e) {
+            // Log do erro
+            e.printStackTrace();
+            model.addAttribute("error", "Ocorreu um erro ao carregar o dashboard: " + e.getMessage());
+            return "error/generic";
+        }
     }
 
     /** Página para 403 */

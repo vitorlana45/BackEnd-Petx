@@ -15,6 +15,12 @@ import java.util.Set;
 public class AnimalGenericoRequisicao {
 
     private String chipId;
+    
+    // Custom setter to handle empty strings
+    public void setChipId(String chipId) {
+        this.chipId = (chipId == null || chipId.trim().isEmpty()) ? null : chipId.trim();
+    }
+    
     private String nome;
 
     @NotBlank(message = "A raça não pode estar em branco")

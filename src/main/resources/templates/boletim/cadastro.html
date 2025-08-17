@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
 <head>
-    <title>Cadastrar Boletim e Pet - PetX</title>
+    <title>Cadastrar Boletim de Resgate - ONG PetX</title>
 </head>
 <body>
 <section>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Cadastrar Novo Boletim de Entrada</h2>
+        <h2>Cadastrar Novo Boletim de Resgate</h2>
         <a th:href="@{/animais}" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i>Voltar
         </a>
@@ -15,7 +15,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Informações do Boletim e do Pet</h5>
+            <h5 class="mb-0">Informações do Boletim de Resgate</h5>
             <small class="text-muted">Campos com <span class="text-danger">*</span> são obrigatórios</small>
         </div>
 
@@ -109,14 +109,14 @@
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label">Observação Clínica</label>
+                    <label class="form-label">Observação sobre o estado do animal</label>
                     <textarea class="form-control" rows="3" th:field="*{observacaoClinica}"></textarea>
                     <div class="text-danger" th:errors="*{observacaoClinica}"></div>
                 </div>
 
                 <!-- Animal -->
                 <div class="col-12 mt-3">
-                    <h6 class="border-bottom pb-2">Dados do Pet</h6>
+                    <h6 class="border-bottom pb-2">Dados do Animal</h6>
                 </div>
 
                 <div class="col-md-6">
@@ -245,7 +245,7 @@
 
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Cadastrar Boletim e Pet
+                        <i class="fas fa-save me-2"></i>Cadastrar Boletim de Resgate
                     </button>
                     <a th:href="@{/animais}" class="btn btn-secondary ms-2">
                         <i class="fas fa-times me-2"></i>Cancelar

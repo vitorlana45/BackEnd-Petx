@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Comparator;
 
 @Controller
 @RequestMapping("/boletins")
@@ -43,6 +45,7 @@ public class BoletimController {
         }
 
         model.addAttribute("boletim", req);
+        model.addAttribute("currentPage", "/boletins/novo");
         carregarCombos(model);
         return "boletim/cadastro";
     }
@@ -66,14 +69,14 @@ public class BoletimController {
             }
         } else {
             // Se não é mãezinha, zere quantidades para evitar sujeira
-            if (a != null && a.getMaezinhaComFilhotes() != null) {
-                a.getMaezinhaComFilhotes().setQuantidadeFemea(null);
-                a.getMaezinhaComFilhotes().setQuantidadeMacho(null);
+            if (a != null) {
+                a.setMaezinhaComFilhotes(null);
             }
         }
 
         if (br.hasErrors()) {
             carregarCombos(model);
+            model.addAttribute("currentPage", "/boletins/novo");
             return "boletim/cadastro";
         }
 
@@ -131,11 +134,35 @@ public class BoletimController {
 
     private void carregarCombos(Model model) {
         model.addAttribute("destinos", Destino.values());
-        model.addAttribute("origens", OrigemAnimalEnum.values());
-        model.addAttribute("especies", EspecieEnum.values());
-        model.addAttribute("sexos", SexoEnum.values());
-        model.addAttribute("maturidades", MaturidadeEnum.values());
-        model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("statusEnum", StatusEnum.values());
+        
+        // Sort OrigemAnimalEnum values alphabetically by origemAnimal property
+        model.addAttribute("origens", Arrays.stream(OrigemAnimalEnum.values())
+                .sorted(Comparator.comparing(OrigemAnimalEnum::getOrigemAnimal))
+                .toArray(OrigemAnimalEnum[]::new));
+        
+        // Sort EspecieEnum values alphabetically by especie property
+        model.addAttribute("especies", Arrays.stream(EspecieEnum.values())
+                .sorted(Comparator.comparing(EspecieEnum::getEspecie))
+                .toArray(EspecieEnum[]::new));
+        
+        // Sort SexoEnum values alphabetically by sexo property
+        model.addAttribute("sexos", Arrays.stream(SexoEnum.values())
+                .sorted(Comparator.comparing(SexoEnum::getSexo))
+                .toArray(SexoEnum[]::new));
+        
+        // Sort MaturidadeEnum values alphabetically by maturidade property
+        model.addAttribute("maturidades", Arrays.stream(MaturidadeEnum.values())
+                .sorted(Comparator.comparing(MaturidadeEnum::getMaturidade))
+                .toArray(MaturidadeEnum[]::new));
+        
+        // Sort PorteEnum values alphabetically by porte property
+        model.addAttribute("portes", Arrays.stream(PorteEnum.values())
+                .sorted(Comparator.comparing(PorteEnum::getPorte))
+                .toArray(PorteEnum[]::new));
+        
+        // Sort StatusEnum values alphabetically by status property
+        model.addAttribute("statusEnum", Arrays.stream(StatusEnum.values())
+                .sorted(Comparator.comparing(StatusEnum::getStatus))
+                .toArray(StatusEnum[]::new));
     }
 }

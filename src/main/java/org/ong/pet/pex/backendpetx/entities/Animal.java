@@ -12,7 +12,13 @@ import java.util.Set;
 
 @Builder
 @Entity
-@Table(name = "animal_tb")
+@Table(name = "animal_tb", 
+       uniqueConstraints = {
+           @UniqueConstraint(
+               name = "unique_chip_id_when_not_null",
+               columnNames = {"chip_id"}
+           )
+       })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,8 +30,17 @@ public class Animal extends EntidadeBase {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(unique = true)
+    // Allow null values, but enforce uniqueness for non-null values with a custom index
+    @Column(name = "chip_id")
     private String chipId;
+    
+    /**
+     * Sets the chipId and converts empty strings to null to avoid unique constraint issues
+     */
+    public void setChipId(String chipId) {
+        // If chipId is null or empty, store as null
+        this.chipId = (chipId == null || chipId.trim().isEmpty()) ? null : chipId.trim();
+    }
 
     @Column(name = "nome")
     private String nome;

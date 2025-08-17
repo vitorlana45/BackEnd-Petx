@@ -85,19 +85,9 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer d-flex justify-content-between align-items-center">
-            <small th:text="${'Total: ' + page.totalElements}">Total: 0</small>
-            <nav th:if="${page.totalPages > 1}">
-                <ul class="pagination mb-0">
-                    <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/tutores?page=${page.number - 1}&size=${page.size}|}">Anterior</a>
-                    </li>
-                    <li class="page-item disabled"><a class="page-link" th:text="${page.number + 1 + ' / ' + page.totalPages}">1 / 1</a></li>
-                    <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{|/tutores?page=${page.number + 1}&size=${page.size}|}">Próximo</a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="card-footer">
+            <!-- Substituindo a paginação simples pelo novo componente -->
+            <div th:replace="~{fragmentos/paginacao :: pagination(${page}, '/tutores', 'nome=${fNome}, cep=${fCep}, cidade=${fCidade}, estado=${fEstado}, idade=${fIdade}')}"></div>
         </div>
     </div>
 </section>

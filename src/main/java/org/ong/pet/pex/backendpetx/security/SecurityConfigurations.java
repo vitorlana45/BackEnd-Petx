@@ -40,8 +40,8 @@ public class SecurityConfigurations {
                         .requestMatchers("/api/auth/**", "/api/usuarios/registrar").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/health/status").permitAll()
 
-                        // Dashboard - todos os usuários autenticados
-                        .requestMatchers("/dashboard").authenticated()
+                        // Dashboard - ADMIN e COLABORADOR
+                        .requestMatchers("/dashboard").hasAnyRole("ADMIN", "COLABORADOR")
 
                         // Gestão de Usuários - APENAS ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -62,9 +62,6 @@ public class SecurityConfigurations {
 
                         // Configurações - APENAS ADMIN
                         .requestMatchers("/configuracoes/**").hasRole("ADMIN")
-
-                        // dashboard
-                        .requestMatchers("/dashboard").hasAnyRole("ADMIN", "COLABORADOR")
 
                         .requestMatchers("/boletins/**").hasAnyRole("ADMIN", "COLABORADOR")
 

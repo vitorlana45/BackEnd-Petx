@@ -1,0 +1,108 @@
+/* CSS para a página de resgates */
+
+/* Estilos para os avatares de animais */
+.avatar-animal {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+/* Cores de fundo sutis para as espécies */
+.bg-cachorro-subtle {
+    background-color: var(--bs-blue-100);
+    color: var(--bs-blue-700);
+}
+
+.bg-gato-subtle {
+    background-color: var(--bs-indigo-100);
+    color: var(--bs-indigo-700);
+}
+
+.bg-ave-subtle {
+    background-color: var(--bs-yellow-100);
+    color: var(--bs-yellow-700);
+}
+
+.bg-roedor-subtle {
+    background-color: var(--bs-orange-100);
+    color: var(--bs-orange-700);
+}
+
+.bg-reptil-subtle {
+    background-color: var(--bs-green-100);
+    color: var(--bs-green-700);
+}
+
+.bg-outros-subtle {
+    background-color: var(--bs-gray-100);
+    color: var(--bs-gray-700);
+}
+
+/* Cores de status */
+.bg-SAUDAVEL {
+    background-color: var(--bs-success);
+}
+
+.bg-DOENTE {
+    background-color: var(--bs-warning);
+}
+
+.bg-ADOTADO {
+    background-color: var(--bs-info);
+}
+
+.bg-FALECIDO {
+    background-color: var(--bs-danger);
+}
+
+/* Estilos para estatísticas */
+.chart-container {
+    position: relative;
+    min-height: 300px;
+}
+
+/* Estilos para as tabs */
+.nav-tabs .nav-link {
+    color: var(--bs-gray-600);
+    padding: 0.75rem 1rem;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--bs-primary);
+    font-weight: 500;
+}
+
+/* Dark mode adjustments */
+[data-bs-theme="dark"] .bg-cachorro-subtle {
+    background-color: rgba(13, 110, 253, 0.2);
+    color: var(--bs-blue-300);
+}
+
+[data-bs-theme="dark"] .bg-gato-subtle {
+    background-color: rgba(102, 16, 242, 0.2);
+    color: var(--bs-indigo-300);
+}
+
+[data-bs-theme="dark"] .bg-ave-subtle {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: var(--bs-yellow-300);
+}
+
+[data-bs-theme="dark"] .bg-roedor-subtle {
+    background-color: rgba(253, 126, 20, 0.2);
+    color: var(--bs-orange-300);
+}
+
+[data-bs-theme="dark"] .bg-reptil-subtle {
+    background-color: rgba(25, 135, 84, 0.2);
+    color: var(--bs-green-300);
+}
+
+[data-bs-theme="dark"] .bg-outros-subtle {
+    background-color: rgba(173, 181, 189, 0.2);
+    color: var(--bs-gray-300);
+}

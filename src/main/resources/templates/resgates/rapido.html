@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Resgate Rápido - ONG PetX</title>
+</head>
+<body>
+    <section>
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">Resgate Rápido</h2>
+                    <p class="text-muted">Cadastro simplificado de animal resgatado</p>
+                </div>
+                <div>
+                    <a th:href="@{/boletins/novo}" class="btn btn-outline-primary">
+                        <i class="fas fa-clipboard-list me-2"></i>Usar Boletim Completo
+                    </a>
+                    <a th:href="@{/resgates}" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-transparent">
+                            <h5 class="mb-0">Informações do Animal</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/resgates/salvar}" method="post" th:object="${resgateRapidoDTO}">
+                                <div class="row g-3">
+                                    <!-- Informações Básicas do Resgate -->
+                                    <div class="col-12 mb-3">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Este formulário permite um cadastro rápido do animal. Para informações detalhadas sobre o resgate, use o <a th:href="@{/boletins/novo}" class="alert-link">Boletim Completo</a>.
+                                        </div>
+                                    </div>
+
+                                    <!-- Campo oculto para identificar como resgate rápido -->
+                                    <input type="hidden" th:field="*{tipoResgate}" value="RAPIDO" />
+
+                                    <!-- Data e Hora do Resgate -->
+                                    <div class="col-md-6">
+                                        <label for="dataResgate" class="form-label">Data do Resgate</label>
+                                        <input type="datetime-local" class="form-control" id="dataResgate" th:field="*{dataResgate}" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="origem" class="form-label">Origem do Animal</label>
+                                        <select class="form-select" id="origem" th:field="*{origem}" required>
+                                            <option value="">Selecione a origem</option>
+                                            <option value="GUARDA_MUNICIPAL">Guarda Municipal</option>
+                                            <option value="ABANDONO">Abandono</option>
+                                            <option value="RESGATE">Resgate</option>
+                                            <option value="SMA">SMA</option>
+                                            <option value="DIRETORIA">Diretoria</option>
+                                            <option value="COMUNIDADE">Comunidade</option>
+                                            <option value="FUNCIONARIO">Funcionário</option>
+                                            <option value="PORTAO">Portão</option>
+                                            <option value="OUTROS">Outros</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Informações do Animal -->
+                                    <div class="col-12">
+                                        <hr class="my-3">
+                                        <h6 class="fw-bold mb-3">Dados do Animal</h6>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="especieEnum" class="form-label">Espécie</label>
+                                        <select class="form-select" id="especieEnum" th:field="*{especieEnum}" required>
+                                            <option value="">Selecione a espécie</option>
+                                            <option value="CACHORRO">Cachorro</option>
+                                            <option value="GATO">Gato</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="nome" class="form-label">Nome (se conhecido)</label>
+                                        <input type="text" class="form-control" id="nome" th:field="*{nome}" placeholder="Nome do animal (opcional)">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="idadeAproximada" class="form-label">Idade Aproximada</label>
+                                        <select class="form-select" id="idadeAproximada" th:field="*{idadeAproximada}">
+                                            <option value="">Selecione a idade aproximada</option>
+                                            <option value="FILHOTE">Filhote</option>
+                                            <option value="ADULTO">Adulto</option>
+                                            <option value="IDOSO">Idoso</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="sexo" class="form-label">Sexo</label>
+                                        <select class="form-select" id="sexo" th:field="*{sexo}">
+                                            <option value="">Selecione o sexo</option>
+                                            <option value="MACHO">Macho</option>
+                                            <option value="FEMEA">Fêmea</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="cor" class="form-label">Cor Predominante</label>
+                                        <input type="text" class="form-control" id="cor" th:field="*{cor}" placeholder="Ex: Preto, Branco, Caramelo...">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="porte" class="form-label">Porte</label>
+                                        <select class="form-select" id="porte" th:field="*{porte}">
+                                            <option value="">Selecione o porte</option>
+                                            <option value="PEQUENO">Pequeno</option>
+                                            <option value="MEDIO">Médio</option>
+                                            <option value="GRANDE">Grande</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="statusSaude" class="form-label">Estado de Saúde</label>
+                                        <select class="form-select" id="statusSaude" th:field="*{statusSaude}" required>
+                                            <option value="">Selecione o estado de saúde</option>
+                                            <option value="SAUDAVEL">Saudável</option>
+                                            <option value="DOENTE">Doente</option>
+                                            <option value="FALECIDO">Falecido</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="observacoes" class="form-label">Observações</label>
+                                        <textarea class="form-control" id="observacoes" th:field="*{observacoes}" rows="3" 
+                                                  placeholder="Informações adicionais sobre o resgate e o animal..."></textarea>
+                                    </div>
+
+                                    <!-- Localização do Resgate -->
+                                    <div class="col-12">
+                                        <hr class="my-3">
+                                        <h6 class="fw-bold mb-3">Local do Resgate</h6>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="localResgate" class="form-label">Endereço do Resgate</label>
+                                        <input type="text" class="form-control" id="localResgate" th:field="*{localResgate}" 
+                                               placeholder="Rua, número, bairro...">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="cidadeResgate" class="form-label">Cidade</label>
+                                        <input type="text" class="form-control" id="cidadeResgate" th:field="*{cidadeResgate}" 
+                                               placeholder="Cidade do resgate">
+                                    </div>
+
+                                    <!-- Botões de Ação -->
+                                    <div class="col-12 mt-4">
+                                        <hr class="my-3">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="reset" class="btn btn-outline-secondary">
+                                                <i class="fas fa-eraser me-2"></i>Limpar
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>Registrar Resgate
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card lateral com dicas -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-transparent">
+                            <h5 class="mb-0">Quando usar o Resgate Rápido?</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Recebimento direto na ONG</strong>
+                                    <p class="text-muted small mb-0">Quando o animal é trazido diretamente para a ONG sem necessidade de registrar detalhes complexos do resgate.</p>
+                                </li>
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Entrada simples</strong>
+                                    <p class="text-muted small mb-0">Para registrar rapidamente animais que não possuem um histórico complexo de resgate.</p>
+                                </li>
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>Atendimento emergencial</strong>
+                                    <p class="text-muted small mb-0">Em casos que exigem atendimento rápido, registre o básico e complemente os dados depois.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-transparent">
+                            <h5 class="mb-0">Quando usar o Boletim Completo?</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Resgates com denúncia</strong>
+                                    <p class="text-muted small mb-0">Quando o resgate foi motivado por denúncia e é necessário registrar dados do denunciante.</p>
+                                </li>
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Resgates de maus-tratos</strong>
+                                    <p class="text-muted small mb-0">Casos que podem exigir documentação detalhada para processos legais ou investigação.</p>
+                                </li>
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Resgates complexos</strong>
+                                    <p class="text-muted small mb-0">Situações que exigiram equipe especializada, equipamentos ou procedimentos específicos.</p>
+                                </li>
+                                <li class="list-group-item border-0 ps-0">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Documentação completa</strong>
+                                    <p class="text-muted small mb-0">Quando é necessário anexar fotos, laudos ou outros documentos relativos ao resgate.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

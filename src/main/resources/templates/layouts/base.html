@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:replace="${title}">Título Padrão</title>
+    <title th:replace="${title}">ONG PetX - Sistema de Gestão</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -12,13 +12,22 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS customizado com sistema de temas -->
     <link rel="stylesheet" th:href="@{/css/estilo.css}">
+    
+    <!-- CSS específico para página de resgates -->
+    <link rel="stylesheet" th:href="@{/css/resgates.css}">
+
+    <!-- Animation CSS - AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" th:href="@{/images/favicon.svg}">
 </head>
 <body>
     <div class="main-wrapper">
@@ -27,8 +36,8 @@
 
         <!-- Conteúdo principal -->
         <main class="main-content">
-            <div class="container-fluid">
-                <div th:replace="${content}">
+            <div class="container-fluid container-max py-4">
+                <div th:replace="${content}" class="animate-fade-in">
                     <!-- O conteúdo da página será inserido aqui -->
                 </div>
             </div>
@@ -42,7 +51,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
+    <!-- Animation JS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <!-- JavaScript customizado -->
     <script th:src="@{/js/script.js}"></script>
+
+    <!-- Inicializar animações -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar AOS animations
+            AOS.init({
+                duration: 800,
+                easing: 'ease',
+                once: true
+            });
+        });
+    </script>
 </body>
 </html>
