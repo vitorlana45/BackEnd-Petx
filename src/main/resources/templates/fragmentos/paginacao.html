@@ -10,7 +10,7 @@
      class="pagination-container"
      th:if="${page.totalPages > 0}">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 w-100">
+    <div class="d-flex flex-column flex-md-row flex-wrap justify-content-between align-items-md-center gap-2 w-100">
         <div class="pagination-info small text-muted">
             Mostrando <span class="fw-medium" th:text="${page.numberOfElements}">0</span>
             de <span class="fw-medium" th:text="${page.totalElements}">0</span> registros
@@ -20,7 +20,7 @@
             </span>
         </div>
 
-        <div class="pagination-actions" th:if="${page.totalPages > 1}">
+        <div class="pagination-actions overflow-auto" th:if="${page.totalPages > 1}">
             <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" th:classappend="${page.first} ? 'disabled'">
                     <a class="page-link" th:href="${baseUrl + '?page=0&size=' + page.size + (queryParams != null ? queryParams : '')}" aria-label="Primeira">
@@ -65,7 +65,7 @@
 
     <style>
         .pagination-container { width: 100%; padding: 0.5rem 0; }
-        .pagination { margin-bottom: 0; }
+        .pagination { margin-bottom: 0; flex-wrap: wrap; }
         .page-link { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
         .page-item.active .page-link { background-color: var(--petx-primary, #4361ee); border-color: var(--petx-primary, #4361ee); }
     </style>
