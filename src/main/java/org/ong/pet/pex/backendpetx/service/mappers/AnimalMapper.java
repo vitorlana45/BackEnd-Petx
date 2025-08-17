@@ -70,6 +70,7 @@ public class AnimalMapper {
         animal.getDoencas().addAll(animalGenericoRequisicao.getDoencas());
         animal.setStatusEnum(animalGenericoRequisicao.getStatus());
         animal.setCorPelagem(animalGenericoRequisicao.getCorPelagem());
+        animal.setCondicaoAnimal(animalGenericoRequisicao.getCondicaoAnimal());
         animal.setMaezinhaComFilhotes(converteMaezinhaParaEntidade(animalGenericoRequisicao.getMaezinhaComFilhotes()));
         return animal;
 
@@ -108,6 +109,8 @@ public class AnimalMapper {
                         .comportamento(x.getComportamento())
                         .especie(x.getEspecieEnum().getEspecie())
                         .doencas(x.getDoencas())
+                        .condicaoAnimal(x.getCondicaoAnimal())
+                        .corPelagem(x.getCorPelagem())
                         .maezinhaComFilhotes(converteMaezinhaParaDTO(x.getMaezinhaComFilhotes()))
                         .status(x.getStatusEnum().getStatus())
                         .build())
@@ -127,6 +130,8 @@ public class AnimalMapper {
                 .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
                 .especie(animal.getEspecieEnum().getEspecie())
                 .status(animal.getStatusEnum().getStatus())
+                .corPelagem(animal.getCorPelagem())
+                .condicaoAnimal(animal.getCondicaoAnimal())
                 .listaAnimaisConjunto(lsAnmaisConjunto)
                 .build();
     }
@@ -166,6 +171,7 @@ public class AnimalMapper {
                 .condicaoAnimal(an.getCondicaoAnimal())
                 .status(String.valueOf(an.getStatusEnum()))
                 .corPelagem(an.getCorPelagem())
+                .condicaoAnimal(an.getCondicaoAnimal())
                 .maezinhaComFilhotes(
                         new MaezinhaComFilhotesDTO(
                             an.getMaezinhaComFilhotes().getQuantidadeFemeas(),
@@ -187,9 +193,12 @@ public class AnimalMapper {
 
     public static MaezinhaComFilhotes converteMaezinhaParaEntidade (MaezinhaComFilhotesDTO maezinhaComFilhotesDTO) {
         if (maezinhaComFilhotesDTO != null) {
+            Integer quantidadeFemea = maezinhaComFilhotesDTO.getQuantidadeFemea();
+            Integer quantidadeMacho = maezinhaComFilhotesDTO.getQuantidadeMacho();
+
             return new MaezinhaComFilhotes(
-                    maezinhaComFilhotesDTO.getQuantidadeFemea(),
-                    maezinhaComFilhotesDTO.getQuantidadeMacho()
+                    quantidadeFemea != null ? quantidadeFemea : 0,
+                    quantidadeMacho != null ? quantidadeMacho : 0
             );
         }
         return null;

@@ -29,4 +29,6 @@ public interface AnimalService {
     Page<AnimalPaginadoResposta> paginarAnimais(String nome, String raca, EspecieEnum especie, PorteEnum porte, StatusEnum status,
                                                 String doenca, String comportamento, MaturidadeEnum maturidade,
                                                 OrigemAnimalEnum origem, SexoEnum sexo, Pageable pageable);
+
+    Long contarQuantidadeAnimais();
 }

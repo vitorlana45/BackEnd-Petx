@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Cadastrar Boletim e Pet - PetX</title>
+</head>
+<body>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Cadastrar Novo Boletim de Entrada</h2>
+        <a th:href="@{/animais}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Informações do Boletim e do Pet</h5>
+            <small class="text-muted">Campos com <span class="text-danger">*</span> são obrigatórios</small>
+        </div>
+
+        <div class="card-body">
+            <!-- summary de erros globais -->
+
+
+            <form th:action="@{/boletins/criar}" th:object="${boletim}" method="post" class="row g-3" id="formBoletim">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                    <ul class="mb-0">
+                        <!--                    <li th:each="ge : ${#fields.globalErrors()}" th:text="${ge}"></li>-->
+                    </ul>
+                </div>
+                <!-- Boletim -->
+                <div class="col-12">
+                    <h6 class="border-bottom pb-2">Boletim de Entrada</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Data de Atendimento <span class="text-danger">*</span></label>
+                    <input type="datetime-local" class="form-control" th:field="*{dataAtendimento}" required>
+                    <div class="text-danger" th:errors="*{dataAtendimento}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Destino <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{destino}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="d : ${destinos}" th:value="${d.name()}" th:text="${d}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{destino}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Motivo do Recolhimento</label>
+                    <input type="text" class="form-control" th:field="*{motivoRecolhimento}">
+                    <div class="text-danger" th:errors="*{motivoRecolhimento}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Origem</label>
+                    <select class="form-select" th:field="*{origem}">
+                        <option value="">Selecione</option>
+                        <option th:each="o : ${origens}" th:value="${o.name()}" th:text="${o}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{origem}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Nome do Denunciante/Tutor</label>
+                    <input type="text" class="form-control" th:field="*{nomeDenuncianteOuTutor}">
+                    <div class="text-danger" th:errors="*{nomeDenuncianteOuTutor}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">CPF do Denunciante/Tutor</label>
+                    <input type="text" class="form-control" th:field="*{cpfDenuncianteOuTutor}">
+                    <div class="text-danger" th:errors="*{cpfDenuncianteOuTutor}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Telefone do Denunciante/Tutor</label>
+                    <input type="text" class="form-control" th:field="*{telefoneDenuncianteOuTutor}">
+                    <div class="text-danger" th:errors="*{telefoneDenuncianteOuTutor}"></div>
+                </div>
+
+                <!-- Endereço -->
+                <div class="col-md-3">
+                    <label class="form-label">Rua/Avenida</label>
+                    <input type="text" class="form-control" th:field="*{ruaAvenida}">
+                    <div class="text-danger" th:errors="*{ruaAvenida}"></div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Cidade</label>
+                    <input type="text" class="form-control" th:field="*{cidade}">
+                    <div class="text-danger" th:errors="*{cidade}"></div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Bairro</label>
+                    <input type="text" class="form-control" th:field="*{bairro}">
+                    <div class="text-danger" th:errors="*{bairro}"></div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Estado</label>
+                    <input type="text" class="form-control" th:field="*{estado}">
+                    <div class="text-danger" th:errors="*{estado}"></div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Observação Clínica</label>
+                    <textarea class="form-control" rows="3" th:field="*{observacaoClinica}"></textarea>
+                    <div class="text-danger" th:errors="*{observacaoClinica}"></div>
+                </div>
+
+                <!-- Animal -->
+                <div class="col-12 mt-3">
+                    <h6 class="border-bottom pb-2">Dados do Pet</h6>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Nome</label>
+                    <input type="text" class="form-control" th:field="*{animal.nome}">
+                    <div class="text-danger" th:errors="*{animal.nome}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">ID do Chip</label>
+                    <input type="text" class="form-control" th:field="*{animal.chipId}">
+                    <div class="text-danger" th:errors="*{animal.chipId}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Raça <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" th:field="*{animal.raca}" required>
+                    <div class="text-danger" th:errors="*{animal.raca}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Espécie <span class="text-danger">*</span></label>
+                    <select class="form-select" id="especie" th:field="*{animal.especie}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="e : ${especies}" th:value="${e.name()}" th:text="${e}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{animal.especie}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Sexo <span class="text-danger">*</span></label>
+                    <select class="form-select" id="sexo" th:field="*{animal.sexo}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="s : ${sexos}" th:value="${s.name()}" th:text="${s}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{animal.sexo}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Maturidade <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{animal.maturidade}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="m : ${maturidades}" th:value="${m.name()}" th:text="${m}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{animal.maturidade}"></div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Porte <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{animal.porte}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="p : ${portes}" th:value="${p.name()}" th:text="${p}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{animal.porte}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Origem do Animal <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{animal.origem}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="o : ${origens}" th:value="${o.name()}" th:text="${o}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{animal.origem}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Comportamento</label>
+                    <input type="text" class="form-control" th:field="*{animal.comportamento}">
+                    <div class="text-danger" th:errors="*{animal.comportamento}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Cor da Pelagem</label>
+                    <input type="text" class="form-control" th:field="*{animal.corPelagem}">
+                    <div class="text-danger" th:errors="*{animal.corPelagem}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{animal.status}" required>
+                        <option value="">Selecione</option>
+                        <option th:each="st : ${statusEnum}" th:value="${st.name()}" th:text="${st}"></option>
+                    </select>
+                    <div class="text-danger" th:errors="*{animal.status}"></div>
+                </div>
+
+                <!-- Mãezinha -->
+                <div class="col-md-6" id="maezinhaWrapper">
+                    <label class="form-label d-block">É uma fêmea com filhotes?</label>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="animalEMaezinha"
+                               th:field="*{animal.animalEMaezinha}">
+                        <label class="form-check-label" for="animalEMaezinha">Sim</label>
+                    </div>
+                    <div class="text-danger" th:errors="*{animal.animalEMaezinha}"></div>
+                </div>
+
+                <!-- Campos condicionais -->
+                <div class="col-md-6"
+                     id="filhotesWrapper"
+                     th:with="isMae=${boletim.animal != null and boletim.animal.animalEMaezinha}"
+                     th:classappend="${isMae} ? '' : 'd-none'">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label">Qtde. Machos</label>
+                            <input type="number" class="form-control" min="0" step="1"
+                                   th:field="*{animal.maezinhaComFilhotes.quantidadeMacho}">
+                            <div class="text-danger" th:errors="*{animal.maezinhaComFilhotes.quantidadeMacho}"></div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Qtde. Fêmeas</label>
+                            <input type="number" class="form-control" min="0" step="1"
+                                   th:field="*{animal.maezinhaComFilhotes.quantidadeFemea}">
+                            <div class="text-danger" th:errors="*{animal.maezinhaComFilhotes.quantidadeFemea}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Condição do Animal</label>
+                    <textarea class="form-control" rows="3" th:field="*{animal.condicaoAnimal}"></textarea>
+                    <div class="text-danger" th:errors="*{animal.condicaoAnimal}"></div>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Cadastrar Boletim e Pet
+                    </button>
+                    <a th:href="@{/animais}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const chk    = document.getElementById('animalEMaezinha');
+        const box    = document.getElementById('filhotesWrapper');
+        const qMacho = document.querySelector('[name="animal.maezinhaComFilhotes.quantidadeMacho"]');
+        const qFemea = document.querySelector('[name="animal.maezinhaComFilhotes.quantidadeFemea"]');
+
+        function toggle() {
+            if (!chk || !box) return;
+            const show = chk.checked;
+            box.classList.toggle('d-none', !show);
+            [qMacho, qFemea].forEach(i => {
+                if (!i) return;
+                i.toggleAttribute('required', show); // exige quando visível
+                if (!show) i.value = '';             // limpa quando esconder
+            });
+        }
+
+        if (chk && box) {
+            chk.addEventListener('change', toggle);
+            toggle(); // garante o estado inicial
+        }
+    });
+</script>
+
+</body>
+</html>

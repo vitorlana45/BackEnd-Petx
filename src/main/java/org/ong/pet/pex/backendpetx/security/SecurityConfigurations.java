@@ -1,53 +1,107 @@
 package org.ong.pet.pex.backendpetx.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true) // Habilita @PreAuthorize e @PostAuthorize
 public class SecurityConfigurations {
-
-    private final SecurityFilter securityFilter;
-
-    @Autowired
-    public SecurityConfigurations(SecurityFilter securityFilter) {
-        this.securityFilter = securityFilter;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        configureHttpSecurity(httpSecurity);
+        httpSecurity
+                .csrf(Customizer.withDefaults())
+                .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(false)
+                )
+                .authorizeHttpRequests(authorize -> authorize
+                        // Recursos estáticos públicos
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+
+                        // Páginas públicas
+                        .requestMatchers("/login", "/register", "/forgot-password").permitAll()
+
+                        // APIs públicas
+                        .requestMatchers("/api/auth/**", "/api/usuarios/registrar").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/health/status").permitAll()
+
+                        // Dashboard - todos os usuários autenticados
+                        .requestMatchers("/dashboard").authenticated()
+
+                        // Gestão de Usuários - APENAS ADMIN
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/usuarios/**").hasRole("ADMIN")
+
+                        // Gestão de Pets - ADMIN e COLABORADOR
+                        .requestMatchers("/pets/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        .requestMatchers("/animais/**").hasAnyRole("ADMIN", "COLABORADOR")
+
+                        // Gestão de Tutores - ADMIN e COLABORADOR (substitui Clientes)
+                        .requestMatchers("/tutores/**").hasAnyRole("ADMIN", "COLABORADOR")
+
+                        // Consultas - ADMIN e COLABORADOR
+                        .requestMatchers("/consultas/**").hasAnyRole("ADMIN", "COLABORADOR")
+
+                        // Relatórios - APENAS ADMIN
+                        .requestMatchers("/relatorios/**").hasRole("ADMIN")
+
+                        // Configurações - APENAS ADMIN
+                        .requestMatchers("/configuracoes/**").hasRole("ADMIN")
+
+                        // dashboard
+                        .requestMatchers("/dashboard").hasAnyRole("ADMIN", "COLABORADOR")
+
+                        .requestMatchers("/boletins/**").hasAnyRole("ADMIN", "COLABORADOR")
+
+                        // Todas as outras páginas precisam de autenticação
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/dashboard", true)
+                    .failureUrl("/login?error=true")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .permitAll()
+                )
+                .logout(logout -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout=true")
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                    .accessDeniedPage("/access-denied")
+                );
+
         return httpSecurity.build();
     }
 
-    private void configureHttpSecurity(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .cors(Customizer.withDefaults()) // Configure CORS adequadamente
-                .csrf(AbstractHttpConfigurer::disable) // CSRF desativado para APIs stateless
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios/registrar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // Login, recuperação de token, etc.
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/health/status").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class); // Filtro personalizado
+    /**
+     * Hierarquia de roles - ADMIN herda permissões de COLABORADOR
+     */
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_COLABORADOR");
+        return hierarchy;
     }
 
     @Bean
@@ -58,17 +112,5 @@ public class SecurityConfigurations {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://dominio-autorizado.com // substituir pelo front aqui");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }

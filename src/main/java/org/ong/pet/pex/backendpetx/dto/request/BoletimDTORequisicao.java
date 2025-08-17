@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 public class BoletimDTORequisicao{
 
     private Long numeroOcorrencia;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime dataAtendimento;
     private String motivoRecolhimento;
     private OrigemAnimalEnum origem;

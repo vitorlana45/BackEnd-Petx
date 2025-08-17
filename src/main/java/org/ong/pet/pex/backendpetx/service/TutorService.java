@@ -20,4 +20,5 @@ public interface TutorService {
 
     Page<TutorDTOResposta> findAllTutorPaginacao(String nome, String cep, String cidade,String estado, Integer idade, Pageable pageable);
 
+    Long getTotalTutores();
 }

@@ -205,6 +205,11 @@ public class TutorServiceImpl implements TutorService {
                 .build()).collect(Collectors.toList()), pageable,tutores.getTotalElements());
     }
 
+    @Override
+    public Long getTotalTutores() {
+        return tutorRepository.count();
+    }
+
     @Transactional
     public void deletarTutorPorCpf(String cpf) {
         var existeTutor = tutorRepository.findTutorByCpf(cpf).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpf));

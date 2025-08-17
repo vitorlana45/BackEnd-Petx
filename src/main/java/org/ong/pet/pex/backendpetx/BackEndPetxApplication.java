@@ -1,12 +1,11 @@
 package org.ong.pet.pex.backendpetx;
 
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entities.Boletim;
 import org.ong.pet.pex.backendpetx.entities.Ong;
-import org.ong.pet.pex.backendpetx.enums.EspecieEnum;
-import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
-import org.ong.pet.pex.backendpetx.enums.PorteEnum;
-import org.ong.pet.pex.backendpetx.enums.SexoEnum;
+import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
+import org.ong.pet.pex.backendpetx.repositories.BoletimRepository;
 import org.ong.pet.pex.backendpetx.repositories.OngRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,10 +23,13 @@ public class BackEndPetxApplication implements CommandLineRunner {
 
 	private final AnimalRepository animalRepository;
 
-	public BackEndPetxApplication(OngRepository ongRepository, AnimalRepository animalRepository) {
+	private final BoletimRepository boletimRepository;
+
+	public BackEndPetxApplication(OngRepository ongRepository, AnimalRepository animalRepository, BoletimRepository boletimRepository) {
 		this.ongRepository = ongRepository;
 		this.animalRepository = animalRepository;
-	}
+        this.boletimRepository = boletimRepository;
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(BackEndPetxApplication.class, args);
@@ -48,6 +50,26 @@ public class BackEndPetxApplication implements CommandLineRunner {
 			an.setComportamento("Docil");
 			an.setEspecieEnum(EspecieEnum.CACHORRO);
 			an.setOng(ong); // Associar o animal à ONG
+			animalRepository.save(an);
+
+			Boletim boletim = new Boletim();
+			boletim.setNumeroOcorrencia(123456L);
+			boletim.setDataAtendimento(LocalDateTime.now());
+			boletim.setMotivoRecolhimento("Abandono");
+			boletim.setOrigem(OrigemAnimalEnum.ABANDONO);
+			boletim.setNomeDenuncianteOuTutor("Vitor Lana");
+			boletim.setCpfDenuncianteOuTutor("123.456.789-00");
+			boletim.setTelefoneDenuncianteOuTutor("11987654321");
+			boletim.setObservacaoClinica("Animal saudável");
+			boletim.setRuaAvenida("Rua Exemplo");
+			boletim.setCidade("São Paulo");
+			boletim.setMunicipio("São Paulo");
+			boletim.setBairro("Centro");
+			boletim.setEstado("SP");
+			boletim.setDestino(Destino.ADOTACAO);
+			boletim.setAnimal(an); // Associar o boletim ao animal
+			boletim.setOng(ong); // Associar o boletim à ONG
+			boletimRepository.save(boletim);
 
 			System.out.println("nome: " + an.getNome());
 			System.out.println("maturidade: " + an.getMaturidadeEnum());

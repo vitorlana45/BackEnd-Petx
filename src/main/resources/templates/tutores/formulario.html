@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Novo Tutor - PetX</title>
+</head>
+<body>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Cadastrar Novo Tutor</h2>
+        <a class="btn btn-secondary" th:href="@{/tutores}">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-header"><h5 class="mb-0">Formulário de Cadastro</h5></div>
+        <div class="card-body">
+            <form method="post" th:action="@{/tutores/novo}" class="row g-3">
+                <div class="col-md-6">
+                    <label for="cpf" class="form-label">CPF *</label>
+                    <input type="text" class="form-control" id="cpf" name="cpf" required placeholder="000.000.000-00"
+                           pattern="\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11}" title="CPF válido no formato 000.000.000-00 ou 00000000000">
+                    <div class="form-text">Digite apenas os números ou use o formato 000.000.000-00</div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome *</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="telefone" class="form-label">Telefone *</label>
+                    <input type="text" class="form-control" id="telefone" name="telefone" required
+                           placeholder="(00) 00000-0000" pattern="\(\d{2}\) \d{5}-\d{4}|\d{11}|\d{10}">
+                    <div class="form-text">Digite apenas os números ou use o formato (00) 00000-0000</div>
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="idade" class="form-label">Idade *</label>
+                    <input type="number" class="form-control" id="idade" name="idade" required min="18" max="120">
+                </div>
+                
+                <hr class="my-3">
+                <h5>Endereço</h5>
+                
+                <div class="col-md-3">
+                    <label for="cep" class="form-label">CEP *</label>
+                    <input type="text" class="form-control" id="cep" name="cep" required
+                           placeholder="00000-000" pattern="\d{5}-\d{3}|\d{8}">
+                    <div class="form-text">Digite apenas os números ou use o formato 00000-000</div>
+                </div>
+                
+                <div class="col-md-7">
+                    <label for="logradouro" class="form-label">Logradouro *</label>
+                    <input type="text" class="form-control" id="logradouro" name="logradouro" required>
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="numero" class="form-label">Número</label>
+                    <input type="text" class="form-control" id="numero" name="numero">
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="complemento" class="form-label">Complemento</label>
+                    <input type="text" class="form-control" id="complemento" name="complemento">
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="bairro" class="form-label">Bairro *</label>
+                    <input type="text" class="form-control" id="bairro" name="bairro" required>
+                </div>
+                
+                <div class="col-md-3">
+                    <label for="cidade" class="form-label">Cidade *</label>
+                    <input type="text" class="form-control" id="cidade" name="cidade" required>
+                </div>
+                
+                <div class="col-md-1">
+                    <label for="estado" class="form-label">UF *</label>
+                    <input type="text" class="form-control" id="estado" name="estado" required maxlength="2">
+                </div>
+                
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Cadastrar
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-eraser me-2"></i>Limpar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Alertas -->
+    <div th:if="${mensagemSucesso != null}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="fas fa-check-circle me-2"></i><span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${mensagemErro != null}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i><span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <!-- Script para busca de CEP -->
+    <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const cepInput = document.getElementById('cep');
+        
+        cepInput.addEventListener('blur', function() {
+            const cep = this.value.replace(/\D/g, '');
+            
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById('logradouro').value = data.logradouro;
+                            document.getElementById('bairro').value = data.bairro;
+                            document.getElementById('cidade').value = data.localidade;
+                            document.getElementById('estado').value = data.uf;
+                            document.getElementById('numero').focus();
+                        }
+                    })
+                    .catch(error => console.error('Erro ao buscar CEP:', error));
+            }
+        });
+    });
+    </script>
+</section>
+</body>
+</html>

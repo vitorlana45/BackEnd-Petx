@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/base}">
+<head>
+    <title>Detalhes do Animal</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Detalhes do Animal</h1>
+            <div>
+                <a th:href="@{/animais}" class="btn btn-secondary">Voltar para Lista</a>
+                <a th:href="@{/animais/{id}/editar(id=${animal.id})}" class="btn btn-warning">Editar</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 th:text="${animal.nome}"></h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Informações Básicas</h4>
+                        <table class="table">
+                            <tr>
+                                <th>ID:</th>
+                                <td th:text="${animal.id}"></td>
+                            </tr>
+                            <tr>
+                                <th>Chip ID:</th>
+                                <td th:text="${animal.chipId}"></td>
+                            </tr>
+                            <tr>
+                                <th>Espécie:</th>
+                                <td th:text="${animal.especieEnum}"></td>
+                            </tr>
+                            <tr>
+                                <th>Raça:</th>
+                                <td th:text="${animal.raca}"></td>
+                            </tr>
+                            <tr>
+                                <th>Sexo:</th>
+                                <td th:text="${animal.sexoEnum}"></td>
+                            </tr>
+                            <tr>
+                                <th>Maturidade:</th>
+                                <td th:text="${animal.maturidadeEnum}"></td>
+                            </tr>
+                            <tr>
+                                <th>Porte:</th>
+                                <td th:text="${animal.porteEnum}"></td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td th:text="${animal.statusEnum}"></td>
+                            </tr>
+                            <tr>
+                                <th>Origem:</th>
+                                <td th:text="${animal.origemEnum}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Informações Adicionais</h4>
+                        <table class="table">
+                            <tr th:if="${animal.doenca}">
+                                <th>Doenças:</th>
+                                <td th:text="${animal.doenca}"></td>
+                            </tr>
+                            <tr th:if="${animal.comportamento}">
+                                <th>Comportamento:</th>
+                                <td th:text="${animal.comportamento}"></td>
+                            </tr>
+                            <tr th:if="${animal.castrado != null}">
+                                <th>Castrado:</th>
+                                <td th:text="${animal.castrado ? 'Sim' : 'Não'}"></td>
+                            </tr>
+                            <tr th:if="${animal.peso != null}">
+                                <th>Peso:</th>
+                                <td th:text="${animal.peso + ' kg'}"></td>
+                            </tr>
+                            <tr th:if="${animal.dataNascimento != null}">
+                                <th>Data de Nascimento:</th>
+                                <td th:text="${#temporals.format(animal.dataNascimento, 'dd/MM/yyyy')}"></td>
+                            </tr>
+                            <tr th:if="${animal.dataRegistro != null}">
+                                <th>Data de Registro:</th>
+                                <td th:text="${#temporals.format(animal.dataRegistro, 'dd/MM/yyyy HH:mm')}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Adoção Conjunta (se aplicável) -->
+                <div th:if="${animal.animalConjunto != null}" class="mt-4">
+                    <h4>Adoção Conjunta</h4>
+                    <p>Este animal faz parte de uma adoção conjunta com:</p>
+                    <ul>
+                        <li th:each="animalConjunto : ${animal.animalConjunto}">
+                            <a th:href="@{/animais/{id}(id=${animalConjunto.id})}" 
+                               th:text="${animalConjunto.nome + ' (ID: ' + animalConjunto.id + ')'}"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-end gap-2">
+                    <a th:href="@{/animais/{id}/obito(id=${animal.id})}" 
+                       class="btn btn-danger"
+                       th:if="${animal.statusEnum != 'FALECIDO'}">
+                        Registrar Óbito
+                    </a>
+                    <button type="button" class="btn btn-danger" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteModal">
+                        Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de confirmação para exclusão -->
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar Exclusão</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Deseja realmente excluir o animal <span th:text="${animal.nome}"></span>?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form th:action="@{/animais/{id}/excluir(id=${animal.id})}" method="post">
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alertas de mensagens -->
+        <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <span th:text="${mensagemSucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <span th:text="${mensagemErro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</body>
+</html>

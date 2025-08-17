@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Cadastrar Pet - PetX</title>
+</head>
+<body>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Cadastrar Novo Pet</h2>
+        <a href="/animais" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Informações do Pet</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/api/boletim}" method="post" id="formPet" class="row g-3">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                
+                <!-- Campos do Boletim -->
+                <div class="col-12">
+                    <h6 class="border-bottom pb-2">Boletim de Entrada</h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="dataAtendimento" class="form-label">Data de Atendimento</label>
+                    <input type="datetime-local" class="form-control" id="dataAtendimento" name="dataAtendimento" required>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="destino" class="form-label">Destino</label>
+                    <select class="form-select" id="destino" name="destino" required>
+                        <option value="">Selecione</option>
+                        <option th:each="d : ${T(org.ong.pet.pex.backendpetx.enums.Destino).values()}"
+                                th:value="${d}"
+                                th:text="${d}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-12">
+                    <label for="ocorrencia" class="form-label">Ocorrência</label>
+                    <textarea class="form-control" id="ocorrencia" name="ocorrencia" rows="3" required></textarea>
+                </div>
+                
+                <!-- Campos do Animal -->
+                <div class="col-12 mt-3">
+                    <h6 class="border-bottom pb-2">Dados do Pet</h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="animal.nome" required>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="chipId" class="form-label">ID do Chip</label>
+                    <input type="text" class="form-control" id="chipId" name="animal.chipId">
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="raca" class="form-label">Raça</label>
+                    <input type="text" class="form-control" id="raca" name="animal.raca" required>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="especie" class="form-label">Espécie</label>
+                    <select class="form-select" id="especie" name="animal.especieEnum" required>
+                        <option value="">Selecione</option>
+                        <option th:each="e : ${T(org.ong.pet.pex.backendpetx.enums.EspecieEnum).values()}"
+                                th:value="${e}"
+                                th:text="${e}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="sexo" class="form-label">Sexo</label>
+                    <select class="form-select" id="sexo" name="animal.sexoEnum" required>
+                        <option value="">Selecione</option>
+                        <option th:each="s : ${T(org.ong.pet.pex.backendpetx.enums.SexoEnum).values()}"
+                                th:value="${s}"
+                                th:text="${s}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="maturidade" class="form-label">Maturidade</label>
+                    <select class="form-select" id="maturidade" name="animal.maturidadeEnum" required>
+                        <option value="">Selecione</option>
+                        <option th:each="m : ${T(org.ong.pet.pex.backendpetx.enums.MaturidadeEnum).values()}"
+                                th:value="${m}"
+                                th:text="${m}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="porte" class="form-label">Porte</label>
+                    <select class="form-select" id="porte" name="animal.porteEnum" required>
+                        <option value="">Selecione</option>
+                        <option th:each="p : ${T(org.ong.pet.pex.backendpetx.enums.PorteEnum).values()}"
+                                th:value="${p}"
+                                th:text="${p}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="origem" class="form-label">Origem</label>
+                    <select class="form-select" id="origem" name="animal.origemEnum" required>
+                        <option value="">Selecione</option>
+                        <option th:each="o : ${T(org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum).values()}"
+                                th:value="${o}"
+                                th:text="${o}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="animal.statusEnum" required>
+                        <option value="">Selecione</option>
+                        <option th:each="st : ${T(org.ong.pet.pex.backendpetx.enums.StatusEnum).values()}"
+                                th:value="${st}"
+                                th:text="${st}"></option>
+                    </select>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="comportamento" class="form-label">Comportamento</label>
+                    <input type="text" class="form-control" id="comportamento" name="animal.comportamento" required>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="corPelagem" class="form-label">Cor da Pelagem</label>
+                    <input type="text" class="form-control" id="corPelagem" name="animal.corPelagem" required>
+                </div>
+                
+                <div class="col-12">
+                    <label for="condicaoAnimal" class="form-label">Condição do Animal</label>
+                    <textarea class="form-control" id="condicaoAnimal" name="animal.condicaoAnimal" rows="3" required></textarea>
+                </div>
+                
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Cadastrar Pet</button>
+                    <a href="/animais" class="btn btn-secondary ms-2"><i class="fas fa-times me-2"></i>Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Converter o formulário para envio via AJAX
+    document.getElementById('formPet').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Construir o objeto para envio
+        const formData = new FormData(this);
+        const jsonData = {};
+        
+        // Dados do boletim
+        jsonData.dataAtendimento = formData.get('dataAtendimento');
+        jsonData.destino = formData.get('destino');
+        jsonData.ocorrencia = formData.get('ocorrencia');
+        
+        // Dados do animal
+        jsonData.animal = {
+            nome: formData.get('animal.nome'),
+            chipId: formData.get('animal.chipId'),
+            raca: formData.get('animal.raca'),
+            especieEnum: formData.get('animal.especieEnum'),
+            sexoEnum: formData.get('animal.sexoEnum'),
+            maturidadeEnum: formData.get('animal.maturidadeEnum'),
+            porteEnum: formData.get('animal.porteEnum'),
+            origemEnum: formData.get('animal.origemEnum'),
+            statusEnum: formData.get('animal.statusEnum'),
+            comportamento: formData.get('animal.comportamento'),
+            corPelagem: formData.get('animal.corPelagem'),
+            condicaoAnimal: formData.get('animal.condicaoAnimal')
+        };
+        
+        // Enviar como JSON
+        fetch('/api/boletim', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': formData.get('_csrf')
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao cadastrar o pet');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Redirecionar para a lista de pets após o cadastro bem-sucedido
+            window.location.href = '/animais?cadastroSucesso=true';
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Ocorreu um erro ao cadastrar o pet. Por favor, tente novamente.');
+        });
+    });
+});
+</script>
+</body>
+</html>

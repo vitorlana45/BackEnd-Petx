@@ -8,7 +8,7 @@ import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
 
 public interface AuthService {
 
-    AuthLoginResposta validarLogin(@Valid AuthLoginRequisicao data);
+//    AuthLoginResposta validarLogin(@Valid AuthLoginRequisicao data);
     void criarRecuperarToken(@Valid EmailDTO emailDTO);
     void salvarNovaSenha(@Valid NovaSenhaRequisicaoDTO emailDTO);
 }

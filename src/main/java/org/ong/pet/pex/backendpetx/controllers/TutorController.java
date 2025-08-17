@@ -8,17 +8,16 @@ import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.net.URI;
-
-@RestController
-@RequestMapping("/api/tutor")
+@Controller
+@RequestMapping("/tutores")
+@PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
 public class TutorController {
 
     private final TutorService tutorService;
@@ -27,52 +26,124 @@ public class TutorController {
         this.tutorService = tutorService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-    @PostMapping
-    public ResponseEntity<HttpStatus> cadastrarTutor(@RequestBody @Valid CadastrarTutorRequisicao cadastrarTutorRequisicao) {
-        var dataUri = tutorService.cadastrarTutor(cadastrarTutorRequisicao);
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/tutor/{id}").buildAndExpand(dataUri).toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
+    /**
+     * Lista tutores com filtros e paginação
+     */
     @GetMapping
-    public ResponseEntity<Page<TutorDTOResposta>> paginarTutor(
-            @RequestParam(value = "nome", required = false) String nome,
-            @RequestParam(value = "cep", required = false) String cep,
-            @RequestParam(value = "cidade", required = false) String cidade,
-            @RequestParam(value = "estado", required = false) String estado,
-            @RequestParam(value = "idade", required = false) Integer idade,
-            @PageableDefault(size = 10) Pageable pageable) {
-
-        return ResponseEntity.ok(tutorService.findAllTutorPaginacao(nome, cep, cidade, estado, idade, pageable));
+    public String listarTutores(Model model,
+                         @RequestParam(required = false) String nome,
+                         @RequestParam(required = false) String cep,
+                         @RequestParam(required = false) String cidade,
+                         @RequestParam(required = false) String estado,
+                         @RequestParam(required = false) Integer idade,
+                         @PageableDefault(size = 10) Pageable pageable) {
+        Page<TutorDTOResposta> page = tutorService.findAllTutorPaginacao(nome, cep, cidade, estado, idade, pageable);
+        model.addAttribute("page", page);
+        model.addAttribute("tutores", page.getContent());
+        model.addAttribute("filtroNome", nome);
+        model.addAttribute("filtroCep", cep);
+        model.addAttribute("filtroCidade", cidade);
+        model.addAttribute("filtroEstado", estado);
+        model.addAttribute("filtroIdade", idade);
+        return "tutores/lista";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
+    /**
+     * Exibe formulário para novo tutor
+     */
+    @GetMapping("/novo")
+    public String formNovoTutor(Model model) {
+        // Como CadastrarTutorRequisicao é um record, não podemos usar o construtor vazio
+        // Vamos passar atributos individuais para o form em vez disso
+        model.addAttribute("cpf", "");
+        model.addAttribute("nome", "");
+        model.addAttribute("cep", "");
+        model.addAttribute("idade", "");
+        model.addAttribute("telefone", "");
+        model.addAttribute("cidade", "");
+        model.addAttribute("estado", "");
+        model.addAttribute("complemento", "");
+        model.addAttribute("bairro", "");
+        model.addAttribute("logradouro", "");
+        return "tutores/formulario";
+    }
+
+    /**
+     * Processa o formulário de criação de tutor
+     */
+    @PostMapping("/novo")
+    public String cadastrarTutor(@Valid @ModelAttribute CadastrarTutorRequisicao tutor,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "tutores/formulario";
+        }
+
+        try {
+            Long tutorId = tutorService.cadastrarTutor(tutor);
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Tutor cadastrado com sucesso!");
+            return "redirect:/tutores";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar tutor: " + e.getMessage());
+            return "tutores/formulario";
+        }
+    }
+
+    /**
+     * Exibe detalhes de um tutor
+     */
     @GetMapping("/{cpf}")
-    public ResponseEntity<TutorDTOResposta> buscarTutorPorCpf(@PathVariable(name = "cpf") String cpf) {
-        return ResponseEntity.ok(tutorService.buscarTutorPorCpf(cpf));
+    public String detalhesTutor(@PathVariable String cpf, Model model) {
+        TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
+        model.addAttribute("tutor", tutor);
+        return "tutores/detalhes";
     }
 
-    @PatchMapping("/{cpf}")
-    public ResponseEntity<HttpStatus> atualizarDadosTutor(@RequestBody @Valid AtualizarTutorRequisicao atualizarTutorRequisicao, @PathVariable(name = "cpf") String cpfAntigo) {
-        var cpf = tutorService.atualizarDadosTutor(cpfAntigo, atualizarTutorRequisicao);
-        ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/tutor/{cpf}").buildAndExpand(cpf).toUri();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, "http://localhost:8080/api/tutor/" + cpf);
-        return ResponseEntity.noContent().headers(headers).build();
+    /**
+     * Exibe formulário para editar tutor
+     */
+    @GetMapping("/{cpf}/editar")
+    public String formEditarTutor(@PathVariable String cpf, Model model) {
+        TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
+        model.addAttribute("tutor", tutor);
+        model.addAttribute("cpf", cpf);
+        return "tutores/editar";
     }
 
-    @DeleteMapping("/{cpf}")
-    public ResponseEntity<HttpStatus> deletarTutor(@PathVariable(name = "cpf") String cpf) {
-        tutorService.deletarTutorPorCpf(cpf);
-        return ResponseEntity.noContent().build();
+    /**
+     * Processa o formulário de edição de tutor
+     */
+    @PostMapping("/{cpf}/editar")
+    public String atualizarTutor(@PathVariable String cpf,
+                               @Valid @ModelAttribute AtualizarTutorRequisicao tutor,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "tutores/editar";
+        }
+
+        try {
+            String novoCpf = tutorService.atualizarDadosTutor(cpf, tutor);
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Tutor atualizado com sucesso!");
+            return "redirect:/tutores/" + novoCpf;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao atualizar tutor: " + e.getMessage());
+            return "tutores/editar";
+        }
     }
 
-    @DeleteMapping("/id/{id}")
-    public ResponseEntity<Void> buscarTutorPorId(@PathVariable(name = "id") Long id) {
-        tutorService.deletarTutorPorId(id);
-        return ResponseEntity.noContent().build();
+    /**
+     * Exclui um tutor
+     */
+    @PostMapping("/{cpf}/excluir")
+    public String excluirTutor(@PathVariable String cpf, RedirectAttributes redirectAttributes) {
+        try {
+            tutorService.deletarTutorPorCpf(cpf);
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Tutor excluído com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao excluir tutor: " + e.getMessage());
+        }
+        return "redirect:/tutores";
     }
 }
 

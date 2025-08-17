@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="cardSimples(titulo, conteudo)" class="card mb-3">
+  <div class="card-header" th:text="${titulo}">Título do Card</div>
+  <div class="card-body" th:replace="${conteudo}">
+    Conteúdo do Card
+  </div>
+</div>
+</body>
+</html>

@@ -48,6 +48,8 @@ public class BoletimMapper {
                         .especie(entidade.getAnimal().getEspecieEnum().toString())
                         .doencas(entidade.getAnimal().getDoencas())
                         .status(entidade.getAnimal().getStatusEnum().toString())
+                        .corPelagem(entidade.getAnimal().getCorPelagem())
+                        .condicaoAnimal(entidade.getAnimal().getCondicaoAnimal())
                         .maezinhaComFilhotes(MaezinhaComFilhotesDTO.builder()
                                 .quantidadeFemea(entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeFemeas())
                                 .quantidadeMacho(entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeMachos())

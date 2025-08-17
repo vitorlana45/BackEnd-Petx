@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Painel Administrativo - PetX</title>
+</head>
+<body>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Painel Administrativo</h2>
+        <span class="badge bg-danger">Apenas ADMIN</span>
+    </div>
+
+    <!-- Cards de estatísticas administrativas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Usuários</h5>
+                    <h2 th:text="${totalUsuarios}">0</h2>
+                    <small>Total no sistema</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Ativos</h5>
+                    <h2 th:text="${usuariosAtivos}">0</h2>
+                    <small>Usuários ativos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Inativos</h5>
+                    <h2 th:text="${usuariosInativos}">0</h2>
+                    <small>Usuários inativos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">ONGs</h5>
+                    <h2>5</h2>
+                    <small>ONGs cadastradas</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações rápidas -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Gestão de Usuários</h5>
+                </div>
+                <div class="card-body">
+                    <p>Gerencie usuários, roles e permissões do sistema.</p>
+                    <div class="d-grid gap-2">
+                        <a href="/admin/usuarios" class="btn btn-primary">
+                            <i class="fas fa-users me-2"></i>Ver Todos os Usuários
+                        </a>
+                        <a href="/admin/usuarios/novo" class="btn btn-success">
+                            <i class="fas fa-user-plus me-2"></i>Criar Novo Usuário
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Relatórios e Análises</h5>
+                </div>
+                <div class="card-body">
+                    <p>Acesse relatórios detalhados e estatísticas do sistema.</p>
+                    <div class="d-grid gap-2">
+                        <a href="/admin/relatorios" class="btn btn-info">
+                            <i class="fas fa-chart-bar me-2"></i>Ver Relatórios
+                        </a>
+                        <a href="/admin/configuracoes" class="btn btn-secondary">
+                            <i class="fas fa-cog me-2"></i>Configurações
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

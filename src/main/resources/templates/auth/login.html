@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PetX</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS customizado -->
+    <link rel="stylesheet" th:href="@{/css/estilo.css}">
+
+    <!-- CSS específico para login -->
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--petx-primary) 0%, var(--petx-secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animação de fundo com ícones flutuantes */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image:
+                url('/images/icon-cat.svg'),
+                url('/images/icon-dog.svg');
+            background-size: 60px 60px, 50px 50px;
+            background-position: 20% 30%, 80% 70%;
+            background-repeat: no-repeat, no-repeat;
+            opacity: 0.1;
+            animation: float 20s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(2deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 10;
+            max-width: 450px;
+            width: 100%;
+            margin: 20px;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 2rem;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--petx-primary), var(--petx-secondary));
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            position: relative;
+        }
+
+        .login-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: var(--card-bg);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .logo-container {
+            margin-bottom: 1rem;
+        }
+
+        .logo-container img {
+            height: 60px;
+            filter: brightness(0) invert(1);
+        }
+
+        .theme-toggle-login {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-body {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Cabeçalho -->
+            <div class="login-header">
+                <button id="theme-toggle" class="btn theme-toggle-login" title="Alternar tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <div class="logo-container">
+                    <img th:src="@{/images/logo-petx.svg}" alt="PetX Logo">
+                </div>
+                <h1 class="h3 mb-1">PetX</h1>
+                <p class="mb-0 opacity-75">Sistema de Gestão Pet</p>
+            </div>
+
+            <!-- Corpo do formulário -->
+            <div class="login-body">
+                <!-- Mensagens de feedback -->
+                <div th:if="${errorMessage}" class="alert alert-danger mb-3" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span th:text="${errorMessage}"></span>
+                </div>
+
+                <div th:if="${logoutMessage}" class="alert alert-success mb-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${logoutMessage}"></span>
+                </div>
+
+                <!-- Formulário de login -->
+                <form th:action="@{/login}" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>E-mail
+                        </label>
+                        <input type="email" class="form-control" id="username" name="username"
+                               placeholder="Digite seu e-mail" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Senha
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               placeholder="Digite sua senha" required>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Links adicionais -->
+                <div class="text-center">
+                    <small>
+                        <a href="#" class="text-decoration-none me-3" th:href="@{/forgot-password}">
+                            Esqueceu sua senha?
+                        </a>
+                        <a href="#" class="text-decoration-none" th:href="@{/register}">
+                            Criar conta
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>

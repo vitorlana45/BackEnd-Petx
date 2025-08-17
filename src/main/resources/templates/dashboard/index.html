@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Dashboard - PetX</title>
+</head>
+<body>
+<section>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dashboard</h2>
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Bem-vindo, <strong th:text="${username}">Usuário</strong>!</span>
+                </div>
+            </div>
+
+            <!-- Cards de estatísticas -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Pets Cadastrados</h5>
+                            <h2 class="text-primary" th:text="${totalAnimais}"></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Consumo Alimento KG</h5>
+                            <h2 class="text-success" th:text="${totalConsumo}"></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Tutores</h5>
+                            <h2 class="text-info" th:text="${totalTutores}"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acesso rápido -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Acesso Rápido</h5>
+                        </div>
+                        <div class="card-body py-3">
+                            <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-2">
+                                <!-- Pets -->
+                                <div class="col">
+                                    <a href="/animais" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
+                                            <div class="d-flex justify-content-center mb-1">
+                                                <div class="rounded-circle bg-primary-gradient p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                    <i class="fa-solid fa-paw" style="font-size: 46px;"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mb-0 fs-6">Pets</h6>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Gerenciar animais</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- Tutores -->
+                                <div class="col">
+                                    <a href="/tutores" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
+                                            <div class="d-flex justify-content-center mb-1">
+                                                <div class="rounded-circle bg-success p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                    <i class="fas fa-user-friends text-white"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mb-0 fs-6">Tutores</h6>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Cadastro e consulta</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <!-- Consultas -->
+                                <div class="col">
+                                    <a href="/consultas" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
+                                            <div class="d-flex justify-content-center mb-1">
+                                                <div class="rounded-circle bg-info p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                    <i class="fas fa-calendar-alt text-white"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mb-0 fs-6">Consultas</h6>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Agenda médica</small>
+                                        </div>
+                                    </a>
+                                </div>                                <!-- Medicamentos -->
+                                <div class="col">
+                                    <a href="/medicamentos" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
+                                            <div class="d-flex justify-content-center mb-1">
+                                                <div class="rounded-circle bg-warning p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                    <i class="fas fa-pills text-white"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mb-0 fs-6">Medicamentos</h6>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Estoque</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <!-- Vacinas -->
+                                <div class="col">
+                                    <a href="/vacinas" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
+                                            <div class="d-flex justify-content-center mb-1">
+                                                <div class="rounded-circle bg-danger p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                    <i class="fas fa-syringe text-white"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mb-0 fs-6">Vacinas</h6>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Vacinação</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                                <!-- Relatórios -->
+                                <div class="col">
+                                    <a href="/relatorios" class="text-decoration-none">
+                                        <div class="card h-100 border-0 shadow-custom rounded-custom text-center p-2 bg-light">
+                                            <div class="d-flex justify-content-center mb-1">
+                                                <div class="rounded-circle bg-secondary p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                                    <i class="fas fa-chart-bar text-white"></i>
+                                                </div>
+                                            </div>
+                                            <h6 class="mb-0 fs-6">Relatórios</h6>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Análise</small>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Atividades Recentes</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Pet "Rex" cadastrado</span>
+                                    <small class="text-muted">2h atrás</small>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Consulta agendada</span>
+                                    <small class="text-muted">4h atrás</small>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Tutor "Maria" atualizado</span>
+                                    <small class="text-muted">1 dia atrás</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
