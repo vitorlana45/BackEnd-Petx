@@ -65,6 +65,23 @@
     min-height: 300px;
 }
 
+/* Skeleton loader para gráficos */
+.skeleton-chart {
+    background: linear-gradient(90deg, var(--bs-secondary-bg) 25%, var(--bs-tertiary-bg) 37%, var(--bs-secondary-bg) 63%);
+    background-size: 400% 100%;
+    border-radius: 0.5rem;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+}
+
+[data-bs-theme="dark"] .skeleton-chart {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 37%, rgba(255,255,255,0.05) 63%);
+}
+
 /* Estilos para as tabs */
 .nav-tabs .nav-link {
     color: var(--bs-gray-600);

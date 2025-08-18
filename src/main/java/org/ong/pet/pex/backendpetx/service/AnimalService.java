@@ -4,12 +4,10 @@ import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Map;
 
 public interface AnimalService {
@@ -31,4 +29,10 @@ public interface AnimalService {
                                                 OrigemAnimalEnum origem, SexoEnum sexo, Pageable pageable);
 
     Long contarQuantidadeAnimais();
+
+    // Atualizações parciais (página detalhe)
+    void atualizarPerfilBasico(Long id, String nome, String raca, String especie, String porte,
+                               String sexo, String maturidade, String origem, String corPelagem);
+
+    void atualizarResumoSaude(Long id, String doencasLista);
 }

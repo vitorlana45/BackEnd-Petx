@@ -1,51 +1,53 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-    <footer th:fragment="rodape" class="py-4">
-        <div class="container-fluid container-max">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center mb-3 mb-md-0">
-                        <img th:src="@{/images/logo-petx.svg}" alt="PetX Logo" class="me-3 footer-logo">
-                        <div>
-                            <p class="mb-1 fw-semibold">ONG PetX - Proteção e Bem-estar Animal</p>
-                            <small class="text-muted">Todos os direitos reservados &copy; 2025</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">
-                        <div class="footer-links d-flex gap-4 justify-content-center justify-content-md-end mb-3 mb-md-0">
-                            <a href="#" title="Termos de Uso">Termos</a>
-                            <a href="#" title="Política de Privacidade">Privacidade</a>
-                            <a href="#" title="Ajuda e Suporte">Suporte</a>
-                        </div>
-                        <div class="social-icons d-flex justify-content-center justify-content-md-end">
-                            <a href="#" class="social-icon" title="Facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="social-icon" title="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-icon" title="LinkedIn">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                        </div>
+<!--
+  Fragmento para o rodapé do site
+  Uso: th:replace="~{fragmentos/rodape :: rodape}"
+-->
+<footer xmlns:th="http://www.thymeleaf.org" th:fragment="rodape" class="py-4" role="contentinfo">
+    <div class="container-fluid container-max">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <img th:src="@{/images/logo-petx.svg}" alt="PetX Logo" class="me-3 footer-logo" width="40" height="40">
+                    <div>
+                        <p class="mb-1 fw-semibold">ONG PetX - Proteção e Bem-estar Animal</p>
+                        <small class="text-muted">Todos os direitos reservados &copy; <th:block th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</th:block></small>
                     </div>
                 </div>
             </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center flex-column flex-md-row">
-                        <small class="text-muted">Desenvolvido com <i class="fas fa-heart text-danger"></i> para a ONG PetX</small>
-                        <small class="text-muted">Versão 1.0.0</small>
+            <div class="col-md-6">
+                <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3">
+                    <!-- Links de rodapé -->
+                    <div class="footer-links d-flex gap-4 justify-content-center justify-content-md-end mb-3 mb-md-0">
+                        <a href="#" th:href="@{/termos}" title="Termos de Uso" class="footer-link">Termos</a>
+                        <a href="#" th:href="@{/privacidade}" title="Política de Privacidade" class="footer-link">Privacidade</a>
+                        <a href="#" th:href="@{/suporte}" title="Ajuda e Suporte" class="footer-link">Suporte</a>
+                    </div>
+                    
+                    <!-- Ícones de redes sociais -->
+                    <div class="social-icons d-flex justify-content-center justify-content-md-end">
+                        <a href="#" class="social-icon" aria-label="Facebook" title="Facebook">
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                            <span class="visually-hidden">Facebook</span>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Instagram" title="Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                            <span class="visually-hidden">Instagram</span>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="LinkedIn" title="LinkedIn">
+                            <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+                            <span class="visually-hidden">LinkedIn</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </footer>
-</body>
-</html>
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center flex-column flex-md-row">
+                    <small class="text-muted">Desenvolvido com <i class="fas fa-heart text-danger" aria-hidden="true"></i><span class="visually-hidden">amor</span> para a ONG PetX</small>
+                    <small class="text-muted">Versão <span th:text="${@environment.getProperty('app.version') ?: '1.0.0'}">1.0.0</span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

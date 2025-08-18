@@ -51,7 +51,7 @@ public class Boletim extends EntidadeBase {
     @Enumerated(EnumType.STRING)
     private Destino destino;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     @JoinColumn(name = "animal_id")
     private Animal animal;
 

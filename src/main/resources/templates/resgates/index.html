@@ -27,23 +27,23 @@
         <!-- Abas de navegação -->
         <ul class="nav nav-tabs mb-4" id="resgatesTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="recentes-tab" data-bs-toggle="tab" 
+                <button class="nav-link" th:classappend="${activeTab == 'recentes' ? ' active' : ''}" id="recentes-tab" data-bs-toggle="tab" 
                         data-bs-target="#recentes" type="button" role="tab" 
-                        aria-controls="recentes" aria-selected="true">
+                        aria-controls="recentes" th:aria-selected="${activeTab == 'recentes'}">
                     <i class="fas fa-clock me-2"></i>Resgates Recentes
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="todos-tab" data-bs-toggle="tab" 
+                <button class="nav-link" th:classappend="${activeTab == 'todos' ? ' active' : ''}" id="todos-tab" data-bs-toggle="tab" 
                         data-bs-target="#todos" type="button" role="tab" 
-                        aria-controls="todos" aria-selected="false">
+                        aria-controls="todos" th:aria-selected="${activeTab == 'todos'}">
                     <i class="fas fa-list me-2"></i>Todos os Resgates
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="estatisticas-tab" data-bs-toggle="tab" 
+                <button class="nav-link" th:classappend="${activeTab == 'estatisticas' ? ' active' : ''}" id="estatisticas-tab" data-bs-toggle="tab" 
                         data-bs-target="#estatisticas" type="button" role="tab" 
-                        aria-controls="estatisticas" aria-selected="false">
+                        aria-controls="estatisticas" th:aria-selected="${activeTab == 'estatisticas'}">
                     <i class="fas fa-chart-bar me-2"></i>Estatísticas
                 </button>
             </li>
@@ -52,7 +52,7 @@
         <!-- Conteúdo das abas -->
         <div class="tab-content" id="resgatesTabContent">
             <!-- Resgates Recentes -->
-            <div class="tab-pane fade show active" id="recentes" role="tabpanel" aria-labelledby="recentes-tab">
+            <div class="tab-pane fade" th:classappend="${activeTab == 'recentes' ? ' show active' : ''}" id="recentes" role="tabpanel" aria-labelledby="recentes-tab">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -68,7 +68,6 @@
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
-                                <tbody>
                                     <tr th:if="${#lists.isEmpty(resgatesRecentes)}">
                                         <td colspan="7" class="text-center py-5">
                                             <div class="my-4">
@@ -82,11 +81,11 @@
                                         </td>
                                     </tr>
                                     <tr th:each="resgate : ${resgatesRecentes}">
-                                        <td th:text="${resgate.numeroOcorrencia}">12345</td>
+                                        <td th:text="${resgate.numeroOcorrencia ?: resgate.id}">12345</td>
                                         <td th:text="${#temporals.format(resgate.dataAtendimento, 'dd/MM/yyyy HH:mm')}">01/01/2023</td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar-animal me-2" th:classappend="${'bg-' + resgate.animal?.especie?.toLowerCase() + '-subtle'}">
+                                                <div class="avatar-animal me-2" th:classappend="${'bg-' + (resgate.animal?.especie != null ? resgate.animal.especie.toLowerCase() : 'other') + '-subtle'}">
                                                     <i class="fas fa-paw"></i>
                                                 </div>
                                                 <div>
@@ -98,19 +97,17 @@
                                         <td th:text="${resgate.origem}">Resgate</td>
                                         <td th:text="${resgate.destino}">ONG</td>
                                         <td>
-                                            <span class="badge" th:classappend="${'bg-' + (resgate.animal?.status ?: 'warning')}">
-                                                <i class="fas fa-circle me-1 small"></i>
-                                                <span th:text="${resgate.animal?.status ?: 'Pendente'}">Em tratamento</span>
-                                            </span>
+                                            <span th:if="${resgate.animal != null}" th:replace="~{fragmentos/status-badge :: status(${resgate.animal.status})}"></span>
+                                            <span th:if="${resgate.animal == null}" class="badge fs-6 px-3 py-2 bg-secondary">SEM ANIMAL</span>
                                         </td>
                                         <td>
-                                            <div class="btn-group">
-                                                <a th:href="@{'/boletins/visualizar/' + ${resgate.id}}" 
-                                                   class="btn btn-sm btn-outline-primary">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a th:href="@{'/boletins/visualizar/' + ${resgate.id}}"
+                                                   class="btn btn-outline-primary" title="Detalhes">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a th:href="@{'/boletins/editar/' + ${resgate.id}}" 
-                                                   class="btn btn-sm btn-outline-secondary">
+                                                <a th:href="@{'/boletins/editar/' + ${resgate.id}}"
+                                                   class="btn btn-outline-secondary" title="Editar">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             </div>
@@ -124,59 +121,80 @@
             </div>
 
             <!-- Todos os Resgates -->
-            <div class="tab-pane fade" id="todos" role="tabpanel" aria-labelledby="todos-tab">
+            <div class="tab-pane fade" th:classappend="${activeTab == 'todos' ? ' show active' : ''}" id="todos" role="tabpanel" aria-labelledby="todos-tab">
+                <!-- Filtros simples (número e destino) -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <form id="filtroForm" class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Período</label>
-                                <div class="input-group">
-                                    <input type="date" class="form-control" name="dataInicio" placeholder="De">
-                                    <span class="input-group-text">até</span>
-                                    <input type="date" class="form-control" name="dataFim" placeholder="Até">
-                                </div>
+                        <form method="get" class="row g-3 align-items-end" th:action="@{/resgates}">
+                            <input type="hidden" name="tab" value="todos" />
+                            <div class="col-sm-4 col-md-3">
+                                <label class="form-label" for="numero">Nº Ocorrência</label>
+                                <input id="numero" name="numero" type="number" class="form-control" th:value="${numeroFiltro}">
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Origem</label>
-                                <select class="form-select" name="origem">
-                                    <option value="">Todas</option>
-                                    <option th:each="origem : ${origens}" th:value="${origem}" th:text="${origem}"></option>
+                            <div class="col-sm-4 col-md-3">
+                                <label class="form-label" for="destino">Destino</label>
+                                <select id="destino" name="destino" class="form-select">
+                                    <option value="" th:selected="${destinoFiltro == null}">Todos</option>
+                                    <option th:each="d : ${origens}" th:value="${d}" th:text="${d.descricao}" th:selected="${destinoFiltro == d}"></option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" name="status">
-                                    <option value="">Todos</option>
-                                    <option th:each="status : ${statusList}" th:value="${status}" th:text="${status}"></option>
-                                </select>
+                            <div class="col-sm-4 col-md-3 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-search me-2"></i>Filtrar</button>
+                                <a th:href="@{/resgates(tab='todos')}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Limpar</a>
                             </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-search me-2"></i>Filtrar
-                                </button>
+                            <div class="col-sm-4 col-md-3">
+                                <label class="form-label" for="size">Itens por página</label>
+                                <select id="size" name="size" class="form-select">
+                                    <option th:selected="${todosResgatesPage.size == 10}" value="10">10</option>
+                                    <option th:selected="${todosResgatesPage.size == 20}" value="20">20</option>
+                                    <option th:selected="${todosResgatesPage.size == 50}" value="50">50</option>
+                                </select>
                             </div>
                         </form>
                     </div>
                 </div>
 
                 <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent">
+                        <h5 class="mb-0">Todos os Resgates2</h5>
+                    </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Nº Boletim</th>
-                                        <th>Data</th>
+                                        <th>
+                                            <a th:href="${'/resgates?tab=todos&page=0&size=' + todosResgatesPage.size + '&sort=numeroOcorrencia,' + (currentSortField=='numeroOcorrencia'? nextSortDir : 'asc')
+                                                + (numeroFiltro!=null? '&numero=' + numeroFiltro:'')
+                                                + (destinoFiltro!=null? '&destino=' + destinoFiltro:'')}" >
+                                                Nº Ocorrência
+                                                <i class="fas" th:classappend="${currentSortField=='numeroOcorrencia' ? (currentSortDir=='asc' ? ' fa-sort-up' : ' fa-sort-down') : ' fa-sort text-muted'}"></i>
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <a th:href="${'/resgates?tab=todos&page=0&size=' + todosResgatesPage.size + '&sort=dataAtendimento,' + (currentSortField=='dataAtendimento'? nextSortDir : 'desc')
+                                                + (numeroFiltro!=null? '&numero=' + numeroFiltro:'')
+                                                + (destinoFiltro!=null? '&destino=' + destinoFiltro:'')}" >
+                                                Data
+                                                <i class="fas" th:classappend="${currentSortField=='dataAtendimento' ? (currentSortDir=='asc' ? ' fa-sort-up' : ' fa-sort-down') : ' fa-sort text-muted'}"></i>
+                                            </a>
+                                        </th>
                                         <th>Animal</th>
-                                        <th>Origem</th>
-                                        <th>Destino</th>
+                                        <th>
+                                            <a th:href="${'/resgates?tab=todos&page=0&size=' + todosResgatesPage.size + '&sort=destino,' + (currentSortField=='destino'? nextSortDir : 'asc')
+                                                + (numeroFiltro!=null? '&numero=' + numeroFiltro:'')
+                                                + (destinoFiltro!=null? '&destino=' + destinoFiltro:'')}" >
+                                                Destino
+                                                <i class="fas" th:classappend="${currentSortField=='destino' ? (currentSortDir=='asc' ? ' fa-sort-up' : ' fa-sort-down') : ' fa-sort text-muted'}"></i>
+                                            </a>
+                                        </th>
                                         <th>Status</th>
-                                        <th>Ações</th>
+                                        <th class="text-end">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:if="${#lists.isEmpty(todosResgates)}">
-                                        <td colspan="7" class="text-center py-5">
+                                    <tr th:if="${#lists.isEmpty(todosResgatesPage.content)}">
+                                        <td colspan="6" class="text-center py-5">
                                             <div class="my-4">
                                                 <i class="fas fa-search fa-3x text-muted mb-3"></i>
                                                 <p class="mb-0">Nenhum resgate encontrado com os filtros selecionados</p>
@@ -184,12 +202,12 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr th:each="resgate : ${todosResgates}">
-                                        <td th:number="${resgate.getId()}">12345</td>
-                                        <td th:text="${#temporals.format(resgate.getDataAtendimento(), 'dd/MM/yyyy HH:mm')}">01/01/2023</td>
+                                    <tr th:each="resgate : ${todosResgatesPage.content}">
+                                        <td th:text="${resgate.numeroOcorrencia}">12345</td>
+                                        <td th:text="${#temporals.format(resgate.dataAtendimento, 'dd/MM/yyyy HH:mm')}">01/01/2023</td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <div class="avatar-animal me-2" th:classappend="${'bg-' + resgate.animal?.especie?.toLowerCase() + '-subtle'}">
+                                                <div class="avatar-animal me-2" th:classappend="${'bg-' + (resgate.animal?.especie != null ? resgate.animal.especie.toLowerCase() : 'other') + '-subtle'}">
                                                     <i class="fas fa-paw"></i>
                                                 </div>
                                                 <div>
@@ -198,24 +216,15 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td th:text="${resgate.origem}">Resgate</td>
-                                        <td th:text="${resgate.destino}">ONG</td>
+                                        <td th:text="${resgate.destino?.descricao ?: '—'}">Abrigo</td>
                                         <td>
-                                            <span class="badge" th:classappend="${'bg-' + (resgate.animal?.status ?: 'warning')}">
-                                                <i class="fas fa-circle me-1 small"></i>
-                                                <span th:text="${resgate.animal?.status ?: 'Pendente'}">Em tratamento</span>
-                                            </span>
+                                            <span th:if="${resgate.animal != null}" th:replace="~{fragmentos/status-badge :: status(${resgate.animal.status})}"></span>
+                                            <span th:if="${resgate.animal == null}" class="badge fs-6 px-3 py-2 bg-secondary">SEM ANIMAL</span>
                                         </td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a th:href="@{'/boletins/visualizar/' + ${resgate.id}}" 
-                                                   class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a th:href="@{'/boletins/editar/' + ${resgate.id}}" 
-                                                   class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a th:href="@{'/boletins/visualizar/' + ${resgate.id}}" class="btn btn-outline-primary" title="Detalhes"><i class="fas fa-eye"></i></a>
+                                                <a th:href="@{'/boletins/editar/' + ${resgate.id}}" class="btn btn-outline-secondary" title="Editar"><i class="fas fa-edit"></i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -223,18 +232,31 @@
                             </table>
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent" th:if="${!#lists.isEmpty(todosResgates)}">
-                        <nav>
-                            <ul class="pagination justify-content-center mb-0">
-                                <!-- Paginação -->
-                            </ul>
-                        </nav>
+                        <div class="card-footer" th:if="${todosResgatesPage.totalPages > 1}">
+                            <div th:with="params=''
+                                 , params=${numeroFiltro != null ? params + '&numero=' + numeroFiltro : params}
+                                 , params=${destinoFiltro != null ? params + '&destino=' + destinoFiltro : params}
+                                 , params=${currentSortField != null ? params + '&sort=' + currentSortField + ',' + currentSortDir : params}
+                            ">
+                                <div th:replace="~{fragmentos/paginacao :: pagination(${todosResgatesPage}, '/resgates?tab=todos', ${params})}"></div>
+                            </div>
                     </div>
                 </div>
             </div>
 
             <!-- Estatísticas de Resgates -->
-            <div class="tab-pane fade" id="estatisticas" role="tabpanel" aria-labelledby="estatisticas-tab">
+            <div class="tab-pane fade" th:classappend="${activeTab == 'estatisticas' ? ' show active' : ''}" id="estatisticas" role="tabpanel" aria-labelledby="estatisticas-tab">
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <div class="btn-group" role="group" aria-label="Período">
+                        <a th:href="@{/resgates(tab='estatisticas',meses=3)}" class="btn btn-sm" th:classappend="${mesesSelecionados==3?' btn-primary':' btn-outline-primary'}">3M</a>
+                        <a th:href="@{/resgates(tab='estatisticas',meses=6)}" class="btn btn-sm" th:classappend="${mesesSelecionados==6?' btn-primary':' btn-outline-primary'}">6M</a>
+                        <a th:href="@{/resgates(tab='estatisticas',meses=12)}" class="btn btn-sm" th:classappend="${mesesSelecionados==12?' btn-primary':' btn-outline-primary'}">12M</a>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="togglePercent" style="width: 3em; height: 1.5em;" />
+                        <label class="form-check-label fs-5 fw-bold ms-2" for="togglePercent">Mostrar %</label>
+                    </div>
+                </div>
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="card border-0 shadow-sm h-100">
@@ -242,10 +264,13 @@
                                 <h5 class="mb-0">Resgates por Origem</h5>
                             </div>
                             <div class="card-body">
-                                <div class="chart-container" style="height: 300px;">
-                                    <!-- Gráfico de pizza -->
-                                    <div class="d-flex align-items-center justify-content-center h-100">
-                                        <p class="text-muted">Gráfico de resgates por origem será exibido aqui</p>
+                                <div class="chart-container" style="height: 300px;" th:with="loaded=${estatisticasCarregadas ?: false}">
+                                    <!-- Área do gráfico de pizza -->
+                                    <div th:if="${loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <canvas id="chart-origem" class="w-100 h-100"></canvas>
+                                    </div>
+                                    <div th:if="${!loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <div class="skeleton-chart w-100 h-100" aria-label="Carregando gráfico de resgates por origem"></div>
                                     </div>
                                 </div>
                             </div>
@@ -257,10 +282,13 @@
                                 <h5 class="mb-0">Resgates por Espécie</h5>
                             </div>
                             <div class="card-body">
-                                <div class="chart-container" style="height: 300px;">
-                                    <!-- Gráfico de barras -->
-                                    <div class="d-flex align-items-center justify-content-center h-100">
-                                        <p class="text-muted">Gráfico de resgates por espécie será exibido aqui</p>
+                                <div class="chart-container" style="height: 300px;" th:with="loaded=${estatisticasCarregadas ?: false}">
+                                    <!-- Área do gráfico de barras -->
+                                    <div th:if="${loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <canvas id="chart-especie" class="w-100 h-100"></canvas>
+                                    </div>
+                                    <div th:if="${!loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <div class="skeleton-chart w-100 h-100" aria-label="Carregando gráfico de resgates por espécie"></div>
                                     </div>
                                 </div>
                             </div>
@@ -272,10 +300,30 @@
                                 <h5 class="mb-0">Resgates ao Longo do Tempo</h5>
                             </div>
                             <div class="card-body">
-                                <div class="chart-container" style="height: 300px;">
-                                    <!-- Gráfico de linha -->
-                                    <div class="d-flex align-items-center justify-content-center h-100">
-                                        <p class="text-muted">Gráfico de resgates ao longo do tempo será exibido aqui</p>
+                                <div class="chart-container" style="height: 300px;" th:with="loaded=${estatisticasCarregadas ?: false}">
+                                    <!-- Área do gráfico de linha -->
+                                    <div th:if="${loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <canvas id="chart-tempo" class="w-100 h-100"></canvas>
+                                    </div>
+                                    <div th:if="${!loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <div class="skeleton-chart w-100 h-100" aria-label="Carregando gráfico de resgates ao longo do tempo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-transparent">
+                                <h5 class="mb-0">Destinação dos Animais</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 300px;" th:with="loaded=${estatisticasCarregadas ?: false}">
+                                    <div th:if="${loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <canvas id="chart-destino" class="w-100 h-100"></canvas>
+                                    </div>
+                                    <div th:if="${!loaded}" class="h-100 d-flex align-items-center justify-content-center">
+                                        <div class="skeleton-chart w-100 h-100" aria-label="Carregando gráfico de resgates por destino"></div>
                                     </div>
                                 </div>
                             </div>
@@ -284,6 +332,121 @@
                 </div>
             </div>
         </div>
+        <!-- Scripts específicos da página (precisam estar DENTRO do <section>) -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+        
+        <!-- Script específico da página de resgates -->
+        <script th:src="@{/js/resgates.js}"></script>
+        
+        <!-- Inicialização da página com dados do Thymeleaf -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            document.addEventListener('DOMContentLoaded', function() {
+                // Dados vindos do backend via Thymeleaf
+                const estatisticasCarregadas = /*[[${estatisticasCarregadas}]]*/ false;
+                const estatisticas = /*[[${estatisticas}]]*/ {};
+                if (window.ResgatesPage) {
+                    window.ResgatesPage.init(estatisticas, estatisticasCarregadas);
+                } else {
+                    console.error('❌ Módulo ResgatesPage não encontrado!');
+                }
+            });
+            /*]]>*/
+        </script>
+        <style>
+            /* Estilos específicos para melhorar a legibilidade dos gráficos */
+            .chart-container {
+                position: relative;
+                box-shadow: 0 0 10px rgba(0,0,0,0.05) inset;
+                border-radius: 8px;
+                padding: 10px;
+            }
+            
+            /* Aumentar contraste para texto nos gráficos */
+            [data-theme="dark"] .chart-container canvas {
+                filter: brightness(1.2) contrast(1.2);
+            }
+            /* Ajustes para melhor visualização dos gráficos */
+            [data-theme="dark"] .chart-container canvas {
+                filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+            }
+            
+            [data-theme="light"] .chart-container canvas {
+                filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.2));
+            }
+            
+            /* Ajustar tooltips para maior legibilidade */
+            [data-theme="dark"] .chartjs-tooltip {
+                background-color: rgba(30, 30, 30, 0.95) !important;
+                color: white !important;
+                border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                font-weight: bold !important;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.5) !important;
+            }
+            
+            [data-theme="light"] .chartjs-tooltip {
+                background-color: rgba(255, 255, 255, 0.95) !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+                color: #333 !important;
+                font-weight: bold !important;
+                border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            /* Forçar contraste nas legendas no modo escuro */
+            [data-theme="dark"] .chart-container .chartjs-legend-item span {
+                color: white !important;
+                text-shadow: 0 0 3px rgba(0, 0, 0, 0.7) !important;
+                font-weight: bold !important;
+                font-size: 15px !important;
+            }
+            
+            /* Estilo para legendas no modo claro */
+            [data-theme="light"] .chart-container .chartjs-legend-item span {
+                color: #333 !important;
+                text-shadow: none !important;
+                font-weight: bold !important;
+                font-size: 14px !important;
+            }
+            
+            /* Melhorar a visibilidade dos valores nos eixos no modo escuro */
+            [data-theme="dark"] .chart-container .chartjs-scale-label,
+            [data-theme="dark"] .chart-container .chartjs-tick-label {
+                color: white !important;
+                text-shadow: 0 0 3px rgba(0, 0, 0, 0.7) !important;
+                font-weight: bold !important;
+                font-size: 15px !important;
+            }
+            
+            /* Estilo para valores nos eixos no modo claro */
+            [data-theme="light"] .chart-container .chartjs-scale-label,
+            [data-theme="light"] .chart-container .chartjs-tick-label {
+                color: #333 !important;
+                text-shadow: none !important;
+                font-weight: bold !important;
+                font-size: 14px !important;
+            }
+            
+            #togglePercent {
+                cursor: pointer;
+            }
+            
+            #togglePercent:checked {
+                background-color: var(--petx-primary);
+                border-color: var(--petx-primary-dark);
+            }
+            
+            /* Adicionar destaque às caixas de dados no modo escuro */
+            [data-theme="dark"] .card-body {
+                background-color: rgba(40, 40, 40, 0.4);
+            }
+            
+            /* Adicionar brilho extra às cores nos gráficos no modo escuro */
+            [data-theme="dark"] .chart-container [class^="chartjs-"] {
+                filter: brightness(1.1);
+            }
+        </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     </section>
 </body>
 </html>

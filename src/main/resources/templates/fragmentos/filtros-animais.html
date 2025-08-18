@@ -1,0 +1,138 @@
+<!--
+  Fragment para exibir e processar filtros de busca de animais
+  Uso: th:replace="~{fragmentos/filtros-animais :: filtros(${param.nome}, ${param.raca}, ${especie}, ${porte}, ${status}, ${sexo}, ${maturidade}, ${origem}, ${param.doenca}, ${param.comportamento})}"
+  Parâmetros:
+    - nome: valor atual do filtro de nome
+    - raca: valor atual do filtro de raça
+    - especie: valor atual do filtro de espécie (enum)
+    - porte: valor atual do filtro de porte (enum)
+    - status: valor atual do filtro de status (enum)
+    - sexo: valor atual do filtro de sexo (enum)
+    - maturidade: valor atual do filtro de maturidade (enum)
+    - origem: valor atual do filtro de origem (enum)
+    - doenca: valor atual do filtro de doença
+    - comportamento: valor atual do filtro de comportamento
+-->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="filtros(nome, raca, especie, porte, status, sexo, maturidade, origem, doenca, comportamento)" 
+     class="card mb-3 filter-card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0" th:text="#{filtros.titulo}">Filtros</h5>
+    <button class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#filtrosCollapse" 
+            aria-expanded="true" 
+            aria-controls="filtrosCollapse"
+            th:aria-label="#{acessibilidade.alternarFiltros}">
+      <i class="fas fa-filter me-1" aria-hidden="true"></i>
+      <span th:text="#{filtros.mostrarOcultar}">Mostrar / Ocultar</span>
+    </button>
+  </div>
+  <div id="filtrosCollapse" class="collapse show">
+    <div class="card-body">
+      <form method="get" th:action="@{/animais}" class="row g-2 align-items-end" id="filtrosForm" th:aria-label="#{acessibilidade.formFiltros}">
+        <!-- CSRF Token -->
+        <input type="hidden" th:name="${_csrf != null ? _csrf.parameterName : '_csrf'}" 
+               th:value="${_csrf != null ? _csrf.token : ''}"/>
+        
+        <div class="col-12 col-sm-6 col-md-3">
+          <label for="nome" class="form-label" th:text="#{animal.nome}">Nome</label>
+          <input id="nome" name="nome" class="form-control" 
+                 th:value="${nome}" 
+                 th:aria-label="'Filtrar por ' + #{animal.nome}"
+                 th:placeholder="#{animal.nome}">
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <label for="raca" class="form-label" th:text="#{animal.raca}">Raça</label>
+          <input id="raca" name="raca" class="form-control" 
+                 th:value="${raca}" 
+                 th:aria-label="'Filtrar por ' + #{animal.raca}"
+                 th:placeholder="#{animal.raca}">
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+          <label class="form-label" for="especie" th:text="#{animal.especie}">Espécie</label>
+          <select id="especie" name="especie" class="form-select" th:aria-label="'Filtrar por ' + #{animal.especie}">
+            <option th:selected="${especie == null}" value="">Todas</option>
+            <option th:each="e : ${T(org.ong.pet.pex.backendpetx.enums.EspecieEnum).values()}"
+                    th:value="${e}"
+                    th:text="#{${'especie.' + e}}"
+                    th:selected="${especie == e}"></option>
+          </select>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+          <label class="form-label" for="porte" th:text="#{animal.porte}">Porte</label>
+          <select id="porte" name="porte" class="form-select" th:aria-label="'Filtrar por ' + #{animal.porte}">
+            <option th:selected="${porte == null}" value="">Todos</option>
+            <option th:each="p : ${T(org.ong.pet.pex.backendpetx.enums.PorteEnum).values()}"
+                    th:value="${p}"
+                    th:text="#{${'porte.' + p}}"
+                    th:selected="${porte == p}"></option>
+          </select>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+          <label class="form-label" for="status" th:text="#{animal.status}">Status</label>
+          <select id="status" name="status" class="form-select" th:aria-label="'Filtrar por ' + #{animal.status}">
+            <option th:selected="${status == null}" value="">Todos</option>
+            <option th:each="s : ${T(org.ong.pet.pex.backendpetx.enums.StatusEnum).values()}"
+                    th:value="${s}"
+                    th:text="#{${'status.' + s}}"
+                    th:selected="${status == s}"></option>
+          </select>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+          <label class="form-label" for="sexo" th:text="#{animal.sexo}">Sexo</label>
+          <select id="sexo" name="sexo" class="form-select" th:aria-label="'Filtrar por ' + #{animal.sexo}">
+            <option th:selected="${sexo == null}" value="">Todos</option>
+            <option th:each="sx : ${T(org.ong.pet.pex.backendpetx.enums.SexoEnum).values()}"
+                    th:value="${sx}"
+                    th:text="#{${'sexo.' + sx}}"
+                    th:selected="${sexo == sx}"></option>
+          </select>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+          <label class="form-label" for="maturidade" th:text="#{animal.maturidade}">Maturidade</label>
+          <select id="maturidade" name="maturidade" class="form-select" th:aria-label="'Filtrar por ' + #{animal.maturidade}">
+            <option th:selected="${maturidade == null}" value="">Todas</option>
+            <option th:each="m : ${T(org.ong.pet.pex.backendpetx.enums.MaturidadeEnum).values()}"
+                    th:value="${m}"
+                    th:text="#{${'maturidade.' + m}}"
+                    th:selected="${maturidade == m}"></option>
+          </select>
+        </div>
+        <div class="col-6 col-sm-4 col-md-2">
+          <label class="form-label" for="origem" th:text="#{animal.origem}">Origem</label>
+          <select id="origem" name="origem" class="form-select" th:aria-label="'Filtrar por ' + #{animal.origem}">
+            <option th:selected="${origem == null}" value="">Todas</option>
+            <option th:each="o : ${T(org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum).values()}"
+                    th:value="${o}"
+                    th:text="#{${'origem.' + o}}"
+                    th:selected="${origem == o}"></option>
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label" for="doenca" th:text="#{animal.doencas}">Doença</label>
+          <input id="doenca" name="doenca" class="form-control" 
+                 th:value="${doenca}" 
+                 th:aria-label="'Filtrar por ' + #{animal.doencas}"
+                 th:placeholder="#{animal.doencas}">
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <label class="form-label" for="comportamento" th:text="#{animal.comportamento}">Comportamento</label>
+          <input id="comportamento" name="comportamento" class="form-control" 
+                 th:value="${comportamento}" 
+                 th:aria-label="'Filtrar por ' + #{animal.comportamento}"
+                 th:placeholder="#{animal.comportamento}">
+        </div>
+        <div class="col-12 col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary" th:aria-label="#{botao.buscar}">
+            <i class="fas fa-search me-2" aria-hidden="true"></i><span th:text="#{botao.buscar}">Buscar</span>
+          </button>
+          <a th:href="@{/animais}" class="btn btn-secondary" th:aria-label="#{botao.limpar}">
+            <i class="fas fa-times me-2" aria-hidden="true"></i><span th:text="#{botao.limpar}">Limpar</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

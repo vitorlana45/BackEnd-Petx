@@ -81,7 +81,7 @@ public class TutorController {
         }
 
         try {
-            Long tutorId = tutorService.cadastrarTutor(tutor);
+            tutorService.cadastrarTutor(tutor);
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Tutor cadastrado com sucesso!");
             return "redirect:/tutores";
         } catch (Exception e) {

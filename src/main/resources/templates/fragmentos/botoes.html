@@ -1,35 +1,27 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-</head>
-<body>
-    <!-- Botão primário -->
-    <a th:fragment="botaoPrimario(url, texto)"
+<!-- Botão primário -->
+<a xmlns:th="http://www.thymeleaf.org" th:fragment="botaoPrimario(url, texto)"
        th:href="${url}"
        class="btn btn-primary">
         <span th:text="${texto}">Botão</span>
     </a>
 
-    <!-- Botão secundário -->
-    <a th:fragment="botaoSecundario(url, texto)"
+<!-- Botão secundário -->
+<a xmlns:th="http://www.thymeleaf.org" th:fragment="botaoSecundario(url, texto)"
        th:href="${url}"
        class="btn btn-secondary">
         <span th:text="${texto}">Botão</span>
     </a>
 
-    <!-- Botão de sucesso -->
-    <a th:fragment="botaoSucesso(url, texto)"
+<!-- Botão de sucesso -->
+<a xmlns:th="http://www.thymeleaf.org" th:fragment="botaoSucesso(url, texto)"
        th:href="${url}"
        class="btn btn-success">
         <span th:text="${texto}">Botão</span>
     </a>
 
-    <!-- Botão de perigo -->
-    <a th:fragment="botaoPerigo(url, texto)"
+<!-- Botão de perigo -->
+<a xmlns:th="http://www.thymeleaf.org" th:fragment="botaoPerigo(url, texto)"
        th:href="${url}"
        class="btn btn-danger">
         <span th:text="${texto}">Botão</span>
     </a>
-</body>
-</html>

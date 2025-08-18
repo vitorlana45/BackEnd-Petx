@@ -13,95 +13,10 @@
         </a>
     </div>
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <h5 class="mb-0">Filtros</h5>
-        </div>
-        <div class="card-body">
-            <form method="get" th:action="@{/animais}" class="row g-2 align-items-end">
-                <div class="col-12 col-sm-6 col-md-3">
-                    <label for="nome" class="form-label">Nome</label>
-                    <input id="nome" name="nome" class="form-control" th:value="${filtroNome}">
-                </div>
-                <div class="col-12 col-sm-6 col-md-3">
-                    <label for="raca" class="form-label">Raça</label>
-                    <input id="raca" name="raca" class="form-control" th:value="${filtroRaca}">
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="especie">Espécie</label>
-                    <select id="especie" name="especie" class="form-select">
-                        <option th:selected="${filtroEspecie == null}" value="">Todas</option>
-                        <option th:each="e : ${T(org.ong.pet.pex.backendpetx.enums.EspecieEnum).values()}"
-                                th:value="${e}"
-                                th:text="${e}"
-                                th:selected="${filtroEspecie == e}"></option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="porte">Porte</label>
-                    <select id="porte" name="porte" class="form-select">
-                        <option th:selected="${filtroPorte == null}" value="">Todos</option>
-                        <option th:each="p : ${T(org.ong.pet.pex.backendpetx.enums.PorteEnum).values()}"
-                                th:value="${p}"
-                                th:text="${p}"
-                                th:selected="${filtroPorte == p}"></option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="status">Status</label>
-                    <select id="status" name="status" class="form-select">
-                        <option th:selected="${filtroStatus == null}" value="">Todos</option>
-                        <option th:each="s : ${T(org.ong.pet.pex.backendpetx.enums.StatusEnum).values()}"
-                                th:value="${s}"
-                                th:text="${s}"
-                                th:selected="${filtroStatus == s}"></option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="sexo">Sexo</label>
-                    <select id="sexo" name="sexo" class="form-select">
-                        <option th:selected="${filtroSexo == null}" value="">Todos</option>
-                        <option th:each="sx : ${T(org.ong.pet.pex.backendpetx.enums.SexoEnum).values()}"
-                                th:value="${sx}"
-                                th:text="${sx}"
-                                th:selected="${filtroSexo == sx}"></option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="maturidade">Maturidade</label>
-                    <select id="maturidade" name="maturidade" class="form-select">
-                        <option th:selected="${filtroMaturidade == null}" value="">Todas</option>
-                        <option th:each="m : ${T(org.ong.pet.pex.backendpetx.enums.MaturidadeEnum).values()}"
-                                th:value="${m}"
-                                th:text="${m}"
-                                th:selected="${filtroMaturidade == m}"></option>
-                    </select>
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="origem">Origem</label>
-                    <select id="origem" name="origem" class="form-select">
-                        <option th:selected="${filtroOrigem == null}" value="">Todas</option>
-                        <option th:each="o : ${T(org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum).values()}"
-                                th:value="${o}"
-                                th:text="${o}"
-                                th:selected="${filtroOrigem == o}"></option>
-                    </select>
-                </div>
-                <div class="col-12 col-sm-6 col-md-3">
-                    <label class="form-label" for="doenca">Doença</label>
-                    <input id="doenca" name="doenca" class="form-control" th:value="${filtroDoenca}">
-                </div>
-                <div class="col-12 col-sm-6 col-md-3">
-                    <label class="form-label" for="comportamento">Comportamento</label>
-                    <input id="comportamento" name="comportamento" class="form-control" th:value="${filtroComportamento}">
-                </div>
-                <div class="col-12 col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-search me-2"></i>Buscar</button>
-                    <a th:href="@{/animais}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Limpar</a>
-                </div>
-            </form>
-        </div>
-    </div>
+    <div th:replace="~{fragmentos/filtros-animais :: filtros(
+        ${filtroNome}, ${filtroRaca}, ${filtroEspecie}, ${filtroPorte}, ${filtroStatus},
+        ${filtroSexo}, ${filtroMaturidade}, ${filtroOrigem}, ${filtroDoenca}, ${filtroComportamento}
+    )}"></div>
 
     <div class="card">
         <div class="card-header">
@@ -122,20 +37,42 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="a : ${animais}">
+                    <tr th:each="a : ${animais}"
+                        th:attr="data-id=${a.id},
+                                 data-chip=${a.chipId},
+                                 data-nome=${a.nome},
+                                 data-raca=${a.raca},
+                                 data-especie=${a.especie},
+                                 data-porte=${a.porte},
+                                 data-sexo=${a.sexo},
+                                 data-maturidade=${a.maturidade},
+                                 data-origem=${a.origem},
+                                 data-status=${a.status},
+                                 data-comportamento=${a.comportamento}">
                         <td th:text="${a.id}">1</td>
-                        <td th:text="${a.chipId}">ABC</td>
+                        <td th:text="${a.chipId ?: '—'}">ABC</td>
                         <td th:text="${a.nome}">Rex</td>
                         <td th:text="${a.especie}">CÃO</td>
                         <td th:text="${a.raca}">VIRA-LATA</td>
                         <td>
-                            <span class="badge" th:text="${a.status}" th:classappend="${a.status == 'ADOTADO' ? ' bg-success' : (a.status == 'FALECIDO' ? ' bg-secondary' : ' bg-info')}"></span>
+                            <span th:replace="~{fragmentos/status-badge :: status(${a.status})}"></span>
                         </td>
                         <td class="text-end">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a th:href="@{'/animais/' + ${a.id}}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Ações">
+                                <a th:href="@{'/animais/' + ${a.id}}" class="btn btn-outline-primary" title="Página Completa">
+                                    <i class="fas fa-file-alt"></i>
+                                </a>
+                                <button type="button" class="btn btn-primary btn-detalhes-animal" title="Ver detalhes" 
+                                        aria-label="Ver detalhes do animal">
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                </button>
                                 <form th:action="@{'/animais/' + ${a.id} + '/excluir'}" method="post" style="display:inline-block">
-                                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="btn btn-danger" title="Excluir" 
+                                            aria-label="Excluir animal" 
+                                            onclick="return confirm('Tem certeza que deseja excluir este animal?');">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                    </button>
                                 </form>
                             </div>
                         </td>
@@ -148,22 +85,280 @@
             </div>
         </div>
         <div class="card-footer">
-            <!-- Construção da string de filtros para paginação -->
-            <th:block th:with="filtros=''
-                , filtros=${filtroNome != null && !#strings.isEmpty(filtroNome) ? filtros + '&nome=' + filtroNome : filtros}
-                , filtros=${filtroRaca != null && !#strings.isEmpty(filtroRaca) ? filtros + '&raca=' + filtroRaca : filtros}
-                , filtros=${filtroEspecie != null ? filtros + '&especie=' + filtroEspecie : filtros}
-                , filtros=${filtroPorte != null ? filtros + '&porte=' + filtroPorte : filtros}
-                , filtros=${filtroStatus != null ? filtros + '&status=' + filtroStatus : filtros}
-                , filtros=${filtroDoenca != null && !#strings.isEmpty(filtroDoenca) ? filtros + '&doenca=' + filtroDoenca : filtros}
-                , filtros=${filtroComportamento != null && !#strings.isEmpty(filtroComportamento) ? filtros + '&comportamento=' + filtroComportamento : filtros}
-                , filtros=${filtroMaturidade != null ? filtros + '&maturidade=' + filtroMaturidade : filtros}
-                , filtros=${filtroOrigem != null ? filtros + '&origem=' + filtroOrigem : filtros}
-                , filtros=${filtroSexo != null ? filtros + '&sexo=' + filtroSexo : filtros}">
-                <div th:replace="~{fragmentos/paginacao :: pagination(${page}, '/animais', ${filtros})}"></div>
+            <!-- Construção da string de filtros para paginação usando urlEncode para segurança -->
+            <th:block th:with="q='', 
+                q=${filtroNome != null && !#strings.isEmpty(filtroNome) ? q + '&nome=' + #urls.urlEncode(filtroNome) : q},
+                q=${filtroRaca != null && !#strings.isEmpty(filtroRaca) ? q + '&raca=' + #urls.urlEncode(filtroRaca) : q},
+                q=${filtroEspecie != null ? q + '&especie=' + #urls.urlEncode(filtroEspecie.toString()) : q},
+                q=${filtroPorte != null ? q + '&porte=' + #urls.urlEncode(filtroPorte.toString()) : q},
+                q=${filtroStatus != null ? q + '&status=' + #urls.urlEncode(filtroStatus.toString()) : q},
+                q=${filtroDoenca != null && !#strings.isEmpty(filtroDoenca) ? q + '&doenca=' + #urls.urlEncode(filtroDoenca) : q},
+                q=${filtroComportamento != null && !#strings.isEmpty(filtroComportamento) ? q + '&comportamento=' + #urls.urlEncode(filtroComportamento) : q},
+                q=${filtroMaturidade != null ? q + '&maturidade=' + #urls.urlEncode(filtroMaturidade.toString()) : q},
+                q=${filtroOrigem != null ? q + '&origem=' + #urls.urlEncode(filtroOrigem.toString()) : q},
+                q=${filtroSexo != null ? q + '&sexo=' + #urls.urlEncode(filtroSexo.toString()) : q}">
+                <div th:replace="~{fragmentos/paginacao :: pagination(${page}, '/animais', ${q})}"></div>
             </th:block>
         </div>
     </div>
+    <!-- Modal Detalhes Animal -->
+    <div class="modal fade" id="animalDetalhesModal" tabindex="-1" aria-labelledby="modalAnimalTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content modal-animal">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-start flex-column flex-md-row w-100">
+                        <div class="flex-grow-1">
+                            <h5 class="modal-title mb-1 d-flex align-items-center gap-2" id="modalAnimalTitulo">
+                                <span class="animal-icone-especie" id="animalIconeEspecie" aria-hidden="true">🐾</span>
+                                <span class="modal-animal-nome" data-campo="nome">Animal</span>
+                            </h5>
+                            <div class="d-flex flex-wrap gap-2 small align-items-center">
+                                <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis px-3" title="ID">
+                                    ID: <span data-campo="id"></span>
+                                </span>
+                                <span id="badgeChip" class="badge rounded-pill px-3" title="Chip">
+                                    Chip: <span data-campo="chipId"></span>
+                                </span>
+                                <span class="badge rounded-pill status-badge fs-6 px-3 py-2" title="Status">
+                                    <span data-campo="status">Status</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-3 mt-md-0 d-flex gap-2">
+                            <a id="linkPaginaAnimal" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="fas fa-external-link-alt me-1" aria-hidden="true"></i> Página Completa
+                            </a>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal" aria-label="Fechar">
+                                <i class="fas fa-times me-1" aria-hidden="true"></i> Fechar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body pt-3">
+                    <div id="animalDetalhesErro" class="alert alert-danger d-none small" role="alert"></div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="modal-section">
+                                <h6 class="modal-section-title"><i class="fas fa-paw me-2" aria-hidden="true"></i>Perfil</h6>
+                                <dl class="row mb-0 small">
+                                    <dt class="col-5">Nome</dt><dd class="col-7" data-campo="nome">—</dd>
+                                    <dt class="col-5">Raça</dt><dd class="col-7" data-campo="raca">—</dd>
+                                    <dt class="col-5">Espécie</dt><dd class="col-7" data-campo="especie">—</dd>
+                                    <dt class="col-5">Sexo</dt><dd class="col-7" data-campo="sexo">—</dd>
+                                    <dt class="col-5">Porte</dt><dd class="col-7" data-campo="porte">—</dd>
+                                    <dt class="col-5">Maturidade</dt><dd class="col-7" data-campo="maturidade">—</dd>
+                                    <dt class="col-5">Origem</dt><dd class="col-7" data-campo="origem">—</dd>
+                                    <dt class="col-5">Condição</dt><dd class="col-7" data-campo="condicaoAnimal">—</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="modal-section">
+                                <h6 class="modal-section-title"><i class="fas fa-heartbeat me-2" aria-hidden="true"></i>Saúde & Comportamento</h6>
+                                <dl class="row mb-0 small">
+                                    <dt class="col-5">Comportamento</dt><dd class="col-7" data-campo="comportamento">—</dd>
+                                    <dt class="col-5">Doenças</dt>
+                                    <dd class="col-7">
+                                        <div class="d-flex flex-wrap gap-1" id="listaDoencas">
+                                            <span class="text-muted">—</span>
+                                        </div>
+                                    </dd>
+                                    <dt class="col-5">Cor/Pelagem</dt><dd class="col-7" data-campo="corPelagem">—</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos DOM
+            const modalEl = document.getElementById('animalDetalhesModal');
+            if (!modalEl || !window.bootstrap?.Modal) return;
+            
+            const bsModal = new bootstrap.Modal(modalEl);
+            const linkPagina = document.getElementById('linkPaginaAnimal');
+            const erroBox = document.getElementById('animalDetalhesErro');
+            const listaDoencas = document.getElementById('listaDoencas');
+            const iconeEspecie = document.getElementById('animalIconeEspecie');
+            const btns = document.querySelectorAll('.btn-detalhes-animal');
+            
+            // Funções utilitárias
+            function normalizar(v){ 
+                return (!v || v === 'null' || !v.trim()) ? '—' : v; 
+            }
+            
+            function traduzirStatus(status) {
+                if (!status) return '—';
+                
+                const traducoes = {
+                    'DISPONIVEL': 'Disponível',
+                    'ADOTADO': 'Adotado',
+                    'ADOTADO_CONJUNTAMENTE': 'Adotado em Conjunto',
+                    'PENDENTE': 'Pendente',
+                    'TRATAMENTO': 'Em Tratamento',
+                    'FALECIDO': 'Falecido'
+                };
+                
+                return traducoes[status] || status;
+            }
+            
+            function iconeParaEspecie(e){
+                if(!e) return '🐾';
+                const val = e.toLowerCase();
+                if(val.includes('cão') || val.includes('cao') || val.includes('dog')) return '🐶';
+                if(val.includes('gato') || val.includes('cat')) return '🐱';
+                if(val.includes('ave') || val.includes('passaro') || val.includes('pássaro')) return '🐦';
+                if(val.includes('roedor')) return '🐹';
+                return '🐾';
+            }
+            
+            function aplicarStatusClasse(el, status){
+                el.classList.remove('bg-success','bg-warning','bg-danger','bg-secondary',
+                                   'bg-info','bg-primary','bg-dark','text-bg-success',
+                                   'text-bg-danger','text-bg-warning','bg-success-light','text-success-dark');
+                if(!status){ 
+                    el.classList.add('bg-secondary','text-white'); 
+                    return; 
+                }
+                
+                const s = status.toLowerCase();
+                if(s.includes('conjuntamente')) {
+                    el.classList.add('bg-success-light','text-success-dark');
+                } else if(s.includes('adot') || s.includes('adoção')) {
+                    el.classList.add('bg-success','text-white');
+                } else if(s.includes('trat') || s.includes('cuidados')) {
+                    el.classList.add('bg-warning','text-dark');
+                } else if(s.includes('falec')) {
+                    el.classList.add('bg-dark','text-white');
+                } else {
+                    el.classList.add('bg-primary','text-white');
+                }
+            }
+            
+            function renderizarDoencas(doencasStr) {
+                // Limpar lista existente
+                while(listaDoencas.firstChild) {
+                    listaDoencas.removeChild(listaDoencas.firstChild);
+                }
+                
+                // Tentar processar como JSON primeiro
+                let doencas = [];
+                try {
+                    doencas = JSON.parse(doencasStr || '[]');
+                } catch(e) {
+                    // Fallback para string com separadores
+                    let dstr = doencasStr || '';
+                    dstr = dstr.replace(/^\[/,'').replace(/\]$/,'');
+                    doencas = dstr.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+                }
+                
+                // Renderizar badges ou placeholder
+                if(!doencas.length) {
+                    listaDoencas.innerHTML = '<span class="text-muted">—</span>';
+                } else {
+                    doencas.forEach(p => {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge rounded-pill bg-danger-subtle text-danger-emphasis border border-danger-subtle fw-semibold small';
+                        badge.textContent = p;
+                        listaDoencas.appendChild(badge);
+                    });
+                }
+            }
+            
+            // Event listeners
+            btns.forEach(btn => btn.addEventListener('click', (e) => {
+                const tr = e.currentTarget.closest('tr');
+                if(!tr) return;
+                
+                // Resetar estado do modal
+                erroBox.classList.add('d-none');
+                
+                // Obter dados da linha
+                const dados = {
+                    id: tr.getAttribute('data-id'),
+                    chipId: tr.getAttribute('data-chip'),
+                    nome: tr.getAttribute('data-nome'),
+                    raca: tr.getAttribute('data-raca'),
+                    especie: tr.getAttribute('data-especie'),
+                    porte: tr.getAttribute('data-porte'),
+                    sexo: tr.getAttribute('data-sexo'),
+                    maturidade: tr.getAttribute('data-maturidade'),
+                    origem: tr.getAttribute('data-origem'),
+                    status: tr.getAttribute('data-status'),
+                    comportamento: tr.getAttribute('data-comportamento'),
+                    doencas: tr.getAttribute('data-doencas')
+                };
+                
+                // Preencher campos simples
+                modalEl.querySelectorAll('[data-campo]').forEach(span => {
+                    const campo = span.getAttribute('data-campo');
+                    if(campo === 'doencas') return; // tratado separado
+                    
+                    // Tratamento especial para o status
+                    if(campo === 'status') {
+                        span.textContent = traduzirStatus(dados[campo] || '');
+                    } else {
+                        span.textContent = normalizar(dados[campo] || '');
+                    }
+                });
+                
+                // Ajuste visual do chip
+                const chipValor = normalizar(dados.chipId || '');
+                const chipBadge = document.getElementById('badgeChip');
+                chipBadge.classList.remove('badge-chip-empty','badge-chip-filled');
+                chipBadge.classList.add(chipValor === '—' ? 'badge-chip-empty' : 'badge-chip-filled');
+                
+                // Doenças em badges
+                listaDoencas.innerHTML = '<span class="text-muted"><i class="fas fa-spinner fa-spin me-1"></i> Carregando...</span>';
+                
+                // Fazer requisição AJAX para carregar doenças e comportamentos
+                fetch(`/api/animais/${dados.id}/detalhes`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao carregar detalhes');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Renderizar doenças
+                    if (data.doencas && data.doencas.length > 0) {
+                        listaDoencas.innerHTML = '';
+                        data.doencas.forEach(doenca => {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge rounded-pill bg-danger-subtle text-danger-emphasis border border-danger-subtle fw-semibold small';
+                            badge.textContent = doenca;
+                            listaDoencas.appendChild(badge);
+                        });
+                    } else {
+                        listaDoencas.innerHTML = '<span class="text-muted">—</span>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar detalhes:', error);
+                    listaDoencas.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-circle me-1"></i> Erro ao carregar informações</span>';
+                });
+                
+                // Ícone espécie
+                iconeEspecie.textContent = iconeParaEspecie(dados.especie);
+                
+                // Status badge estilo
+                aplicarStatusClasse(modalEl.querySelector('.status-badge'), dados.status);
+                
+                // Link para página completa e título
+                linkPagina.href = '/animais/' + dados.id;
+                modalEl.querySelector('.modal-animal-nome').textContent = 
+                    normalizar(dados.nome) || ('Animal #' + dados.id);
+                
+                // Exibir modal
+                bsModal.show();
+            }));
+        });
+        /*]]>*/
+    </script>
 </section>
 </body>
 </html>

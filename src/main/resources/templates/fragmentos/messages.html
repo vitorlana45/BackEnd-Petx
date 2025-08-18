@@ -1,0 +1,84 @@
+<!--
+  Fragmento para exibição de mensagens (sucesso, erro, avisos)
+  Uso: th:replace="~{fragmentos/messages :: messages}"
+  Observações:
+    - Automaticamente exibe mensagens de sucesso, erro e avisos
+    - Suporta feedback de validação de formulários
+    - Inclui animação de fade e botão para fechar
+-->
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="messages">
+    <!-- Mensagem de sucesso -->
+    <div th:if="${mensagemSucesso}" 
+         class="alert alert-success alert-dismissible fade show animate-fade-in"
+         role="alert" 
+         aria-live="polite">
+        <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
+        <span th:text="${mensagemSucesso}">Operação realizada com sucesso</span>
+        <button type="button" 
+                class="btn-close" 
+                data-bs-dismiss="alert" 
+                th:aria-label="#{botao.fechar}"
+                aria-label="Fechar"></button>
+    </div>
+    
+    <!-- Mensagem de erro -->
+    <div th:if="${mensagemErro}" 
+         class="alert alert-danger alert-dismissible fade show animate-fade-in" 
+         role="alert" 
+         aria-live="assertive">
+        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+        <span th:text="${mensagemErro}">Ocorreu um erro</span>
+        <button type="button" 
+                class="btn-close" 
+                data-bs-dismiss="alert" 
+                th:aria-label="#{botao.fechar}"
+                aria-label="Fechar"></button>
+    </div>
+    
+    <!-- Erros de validação de formulário -->
+    <div th:if="${#ctx.containsVariable('__thymeleafFields') and #fields.hasErrors()}" 
+         class="alert alert-warning alert-dismissible fade show animate-fade-in" 
+         role="alert" 
+         aria-live="polite">
+        <div class="d-flex align-items-center mb-2">
+            <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+            <strong>Há problemas no formulário:</strong>
+        </div>
+        <ul class="mb-0 ps-4">
+            <li th:each="e: ${#fields.errors()}" th:text="${e}">Erro</li>
+        </ul>
+        <button type="button" 
+                class="btn-close" 
+                data-bs-dismiss="alert" 
+                th:aria-label="#{botao.fechar}"
+                aria-label="Fechar"></button>
+    </div>
+    
+    <!-- Mensagem de aviso genérico -->
+    <div th:if="${mensagemAviso}" 
+         class="alert alert-warning alert-dismissible fade show animate-fade-in" 
+         role="alert" 
+         aria-live="polite">
+        <i class="fas fa-exclamation-circle me-2" aria-hidden="true"></i>
+        <span th:text="${mensagemAviso}">Aviso importante</span>
+        <button type="button" 
+                class="btn-close" 
+                data-bs-dismiss="alert" 
+                th:aria-label="#{botao.fechar}"
+                aria-label="Fechar"></button>
+    </div>
+    
+    <!-- Mensagem informativa -->
+    <div th:if="${mensagemInfo}" 
+         class="alert alert-info alert-dismissible fade show animate-fade-in" 
+         role="alert" 
+         aria-live="polite">
+        <i class="fas fa-info-circle me-2" aria-hidden="true"></i>
+        <span th:text="${mensagemInfo}">Informação</span>
+        <button type="button" 
+                class="btn-close" 
+                data-bs-dismiss="alert" 
+                th:aria-label="#{botao.fechar}"
+                aria-label="Fechar"></button>
+    </div>
+</div>

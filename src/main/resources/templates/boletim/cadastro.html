@@ -36,6 +36,12 @@
                 </div>
 
                 <div class="col-md-6">
+                    <label class="form-label">Nº Ocorrência</label>
+                    <input type="number" class="form-control" th:field="*{numeroOcorrencia}" min="0" placeholder="Ex: 202500123">
+                    <div class="text-danger" th:errors="*{numeroOcorrencia}"></div>
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label">Data de Atendimento <span class="text-danger">*</span></label>
                     <input type="datetime-local" class="form-control" th:field="*{dataAtendimento}" required>
                     <div class="text-danger" th:errors="*{dataAtendimento}"></div>

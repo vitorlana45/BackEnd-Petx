@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#4361ee" />
+  <title>Home — ONG PetX</title>
+
+  <!-- Evita "flash" de tema: aplica o salvo no localStorage antes do CSS -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t) document.documentElement.setAttribute('data-theme', t);
+      } catch (_) {}
+    })();
+  </script>
+
+  <!-- Bootstrap / Fonts / Ícones -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <!-- CSS do app (temas/variáveis + ajustes globais) -->
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg border-bottom" aria-label="Navegação principal">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <img src="/images/logo-petx.svg" alt="PetX" width="28" height="28"/>
+        <span class="fw-semibold">ONG PetX</span>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Alternar menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div id="navMain" class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link active" href="/"><i class="fa-solid fa-house me-1"></i>Início</a></li>
+          <li class="nav-item"><a class="nav-link" href="/animais"><i class="fa-solid fa-paw me-1"></i>Animais</a></li>
+          <li class="nav-item"><a class="nav-link" href="/tutores"><i class="fa-solid fa-user-group me-1"></i>Adoções</a></li>
+          <li class="nav-item"><a class="nav-link" href="/resgates"><i class="fa-solid fa-clipboard-list me-1"></i>Resgates</a></li>
+          <li class="nav-item"><a class="nav-link" href="/doacoes"><i class="fa-solid fa-gift me-1"></i>Doações</a></li>
+          <li class="nav-item"><a class="nav-link" href="/voluntarios"><i class="fa-solid fa-hands-helping me-1"></i>Voluntários</a></li>
+          <li class="nav-item"><a class="nav-link" href="/relatorios"><i class="fa-solid fa-chart-bar me-1"></i>Relatórios</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fa-solid fa-gear me-1"></i>Configurações</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/admin">Painel Admin</a></li>
+              <li><a class="dropdown-item" href="/admin/usuarios">Usuários</a></li>
+              <li><a class="dropdown-item" href="/configuracoes">Preferências</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-sm theme-toggle" type="button" title="Alternar tema">
+            <i class="fa-solid fa-moon"></i><span class="ms-2 d-none d-sm-inline theme-text">Dark</span>
+          </button>
+          <a class="btn btn-sm btn-outline-primary" href="/perfil"><i class="fa-regular fa-user me-1"></i>Perfil</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTEÚDO -->
+  <main class="py-4">
+    <div class="container">
+      <!-- Cabeçalho -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3 mb-1">Dashboard</h1>
+          <p class="text-muted mb-0">Visão geral da ONG PetX</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/boletins/novo" class="btn btn-primary"><i class="fa-solid fa-clipboard-list me-2"></i>Novo Resgate</a>
+          <a href="/animais/novo" class="btn btn-success"><i class="fa-solid fa-paw me-2"></i>Cadastrar Animal</a>
+        </div>
+      </div>
+
+      <!-- Acesso rápido (cards) -->
+      <section class="mb-4">
+        <div class="row g-3">
+          <div class="col-6 col-md-3">
+            <a class="card h-100 quick-action" href="/animais">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="qa-icon"><i class="fa-solid fa-paw"></i></div>
+                <div>
+                  <div class="fw-semibold">Animais</div>
+                  <small class="text-muted">Listar/gerenciar</small>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-6 col-md-3">
+            <a class="card h-100 quick-action" href="/tutores">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="qa-icon"><i class="fa-solid fa-user-plus"></i></div>
+                <div>
+                  <div class="fw-semibold">Adotantes</div>
+                  <small class="text-muted">Cadastros</small>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-6 col-md-3">
+            <a class="card h-100 quick-action" href="/resgates">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="qa-icon"><i class="fa-solid fa-truck-medical"></i></div>
+                <div>
+                  <div class="fw-semibold">Resgates</div>
+                  <small class="text-muted">Operações</small>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-6 col-md-3">
+            <a class="card h-100 quick-action" href="/relatorios">
+              <div class="card-body d-flex align-items-center gap-3">
+                <div class="qa-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div>
+                  <div class="fw-semibold">Relatórios</div>
+                  <small class="text-muted">Indicadores</small>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Duas colunas: Atividades / Próximos -->
+      <section class="row g-4">
+        <div class="col-lg-8">
+          <div class="card h-100">
+            <div class="card-header bg-transparent">
+              <h5 class="mb-0">Atividades Recentes</h5>
+            </div>
+            <div class="card-body">
+              <ul id="recent-activity" class="list-group list-group-flush small">
+                <!-- preenchido por /js/pages/home.js -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card h-100">
+            <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Próximas Consultas</h5>
+              <a href="/agenda" class="btn btn-sm btn-outline-primary">Agenda</a>
+            </div>
+            <div class="card-body">
+              <div id="upcoming-list" class="vstack gap-3">
+                <!-- preenchido por /js/pages/home.js -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="border-top py-4">
+    <div class="container d-flex justify-content-between flex-column flex-md-row gap-2 small">
+      <span class="text-muted">© 2025 ONG PetX</span>
+      <span class="text-muted">v1.0.0</span>
+    </div>
+  </footer>
+
+  <!-- JS: vendor + app + page -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="/js/app.js"></script>
+  <script defer src="/js/pages/home.js"></script>
+</body>
+</html>

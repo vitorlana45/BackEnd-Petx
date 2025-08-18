@@ -1,0 +1,312 @@
+/* ===== COMPONENTES PETX ===== */
+
+/* 
+ * Arquivo de componentes para o sistema PetX
+ * Contém estilos específicos para componentes reutilizáveis
+ * Deve ser importado após o Bootstrap
+ */
+
+/* == BADGES == */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+  border-radius: 0.375rem;
+}
+
+/* Badges específicos */
+.badge-chip-empty {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.badge-chip-filled {
+  background-color: #ffe082;
+  color: #805500;
+  border: 1px solid #ffca28;
+}
+
+[data-theme="dark"] .badge-chip-filled {
+  color: #ffffff;
+}
+
+/* Status badges */
+.status-badge {
+  font-weight: 500;
+}
+
+/* == MODAIS == */
+.modal-animal .modal-header {
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-animal .modal-body {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.modal-animal .modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-animal-nome {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-section {
+  background-color: var(--bg-secondary);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  height: 100%;
+}
+
+.modal-section-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--petx-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ícone para espécies */
+.animal-icone-especie {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+/* Ajuste específico para DL em modais */
+.modal-animal dl.row dt {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.modal-animal dl.row dd {
+  color: var(--text-primary);
+}
+
+/* == FORMULÁRIOS == */
+.form-control, .form-select {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: var(--input-bg);
+  border-color: var(--petx-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.375rem;
+  color: var(--text-secondary);
+}
+
+/* == CARDS == */
+.card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: var(--card-bg);
+  border-bottom-color: var(--border-color);
+  padding: 1rem 1.25rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-footer {
+  background-color: var(--bg-secondary);
+  border-top-color: var(--border-color);
+  padding: 1rem 1.25rem;
+}
+
+/* == TABELAS == */
+.table {
+  color: var(--text-primary);
+  --bs-table-striped-color: var(--text-primary);
+  --bs-table-striped-bg: var(--bg-secondary);
+  margin-bottom: 0;
+}
+
+.table thead th {
+  font-weight: 600;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-bottom-color: var(--border-color);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+/* == ANIMAÇÕES == */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* == PAGINAÇÃO == */
+.pagination-container { 
+  width: 100%; 
+  padding: 0.5rem 0; 
+}
+
+.pagination { 
+  margin-bottom: 0; 
+  flex-wrap: wrap; 
+}
+
+.pagination .page-link {
+  color: var(--petx-primary);
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagination .page-link:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--petx-primary);
+  color: var(--petx-primary);
+  z-index: 2;
+}
+
+.pagination .page-link:focus {
+  box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+  z-index: 3;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--petx-primary);
+  border-color: var(--petx-primary);
+  color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: var(--text-muted);
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: var(--text-secondary);
+}
+
+/* Espaçamento para ícones nos links da paginação */
+.pagination .page-link i {
+  line-height: 1;
+}
+
+/* == RODAPÉ == */
+footer {
+  background-color: var(--card-bg);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.footer-logo {
+  width: 40px;
+  height: auto;
+}
+
+.footer-links {
+  margin-bottom: 0;
+}
+
+.footer-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
+}
+
+.footer-link:hover,
+.footer-link:focus {
+  color: var(--petx-primary);
+  text-decoration: underline;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all 0.2s ease-in-out;
+}
+
+.social-icon:hover,
+.social-icon:focus {
+  background-color: var(--petx-primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* == ACESSIBILIDADE == */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--petx-primary);
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.2s ease-in-out;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Melhorar foco visual em elementos interativos */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--petx-primary);
+  outline-offset: 2px;
+}
+
+/* Espaçamentos padrão para inputs e controles */
+.form-control,
+.form-select,
+.form-check-input {
+  margin-bottom: 0.5rem;
+}
+
+/* Labels acessíveis */
+label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  display: inline-block;
+}

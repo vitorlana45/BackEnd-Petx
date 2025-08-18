@@ -1,1 +1,345 @@
-package org.ong.pet.pex.backendpetx.service.impl;import jakarta.persistence.EntityNotFoundException;import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;import org.ong.pet.pex.backendpetx.entities.*;import org.ong.pet.pex.backendpetx.enums.*;import org.ong.pet.pex.backendpetx.repositories.*;import org.ong.pet.pex.backendpetx.service.AnimalService;import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.AnimalUtils;import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;import org.slf4j.Logger;import org.slf4j.LoggerFactory;import org.springframework.dao.DataIntegrityViolationException;import org.springframework.data.domain.Page;import org.springframework.data.domain.PageImpl;import org.springframework.data.domain.Pageable;import org.springframework.orm.jpa.JpaSystemException;import org.springframework.stereotype.Service;import org.springframework.transaction.annotation.Transactional;import java.util.HashSet;import java.util.List;import java.util.Map;import java.util.Set;import java.util.stream.Collectors;import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaAnimalSemConjunto;import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaRespostaAnimalComConjuntoDTO;@Servicepublic class AnimalServiceImpl implements AnimalService {    private final AnimalRepository animalRepository;    private final OngRepository ongRepository;    private final AnimalConjuntoRepository animalConjuntoRepository;    private final TutorRepository tutorRepository;    private final ObitoRepository obitoRepository;    private static final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);    private final AnimalUtils animalUtils;    public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils) {        this.animalRepository = animalRepository;        this.ongRepository = ongRepository;        this.animalConjuntoRepository = animalConjuntoRepository;        this.tutorRepository = tutorRepository;        this.obitoRepository = obitoRepository;        this.animalUtils = animalUtils;    }    @Transactional    public void adicionarAdocaoConjuntaEmAnimal(Map<String, Long> ids) {        Long idPrincipal = ids.remove("principal");        // Pegando e verificando a lista dos animais passados no mapa        var lista = ids.values().stream()                .map(value -> animalRepository.findAnimalById(value)                        .orElseThrow(() -> PetXException.animalNaoEncontrado(value.toString())))                .collect(Collectors.toSet());        // Verifica se os animais não estão falecidos        lista.forEach(this::verificarSeOAnimalNaoEstaFalecido);        // Pegando o animal principal        var animalPrincipal = animalRepository.findAnimalById(idPrincipal)                .orElseThrow(() -> PetXException.animalNaoEncontrado(idPrincipal.toString()));        verificarSeOAnimalNaoEstaFalecido(animalPrincipal);        // Processando cada animal para associação        lista.forEach(animal -> {            // Verifica se o animal já está associado            var animalConjunto = animalConjuntoRepository.findByAnimalRelacionamentoId(animal.getId());            if (animalConjunto.isPresent()) {                throw PetXException.animalJaCadastrado("Animal com ID: " + animal.getId() + " já pertence a um conjunto");            }            // Criando a entidade de associação            AnimalConjunto entidade = new AnimalConjunto();            entidade.setAnimalPrincipal(animalPrincipal); // Definindo o animal principal            entidade.setAnimalRelacionamento(animal); // Definindo o animal associado            // Associando tutores do animal principal            var tutores = animalPrincipal.getTutores();            if (tutores != null && !tutores.isEmpty()) {                Set<Tutor> novosTutores = new HashSet<>(tutores);                // Sincronizando a relação bidirecional                novosTutores.forEach(tutor -> tutor.getAnimais().add(animal)); // Atualiza os animais no lado Tutor                animal.setTutores(novosTutores);                // Persistindo animal com novos tutores                animalRepository.save(animal);                // Persistindo os tutores atualizados                tutorRepository.saveAll(novosTutores); // Certifique-se de ter este repositório configurado            }            // Salvando a associação no banco            animalConjuntoRepository.saveAndFlush(entidade);        });    }    @Override    @Transactional    public AnimalGenericoResposta atualizarAnimal(Long id, AnimalGenericoRequisicao animalSemConjuntoDTO) {        try {            Animal entidade = animalRepository.getReferenceById(id);            if (animalRepository.findAnimalByChipId(animalSemConjuntoDTO.getChipId()).isPresent() && !entidade.getChipId().equals(animalSemConjuntoDTO.getChipId())) {                throw new PetXException("Já existe um animal com o CHIP: " + animalSemConjuntoDTO.getChipId());            }            entidade.setChipId(animalSemConjuntoDTO.getChipId());            entidade.setNome(animalSemConjuntoDTO.getNome());            entidade.setRaca(animalSemConjuntoDTO.getRaca().toUpperCase());            entidade.setMaturidadeEnum(animalSemConjuntoDTO.getMaturidade());            entidade.setEspecieEnum(animalSemConjuntoDTO.getEspecie());            entidade.setPorteEnum(animalSemConjuntoDTO.getPorte());            entidade.setSexoEnum(animalSemConjuntoDTO.getSexo());            entidade.setOrigemEnum(animalSemConjuntoDTO.getOrigem());            entidade.setComportamento(animalSemConjuntoDTO.getComportamento());            entidade.setDoencas(animalSemConjuntoDTO.getDoencas());            entidade = animalRepository.save(entidade);            return converterParaRespostaAnimalComConjuntoDTO(entidade);        } catch (EntityNotFoundException e) {            throw PetXException.animalNaoEncontrado(id.toString());        } catch (DataIntegrityViolationException e) {            throw new PetXException("Erro ao salvar: dados conflitantes ou inválidos.");        } catch (JpaSystemException e) {            throw new PetXException("Erro de conexão com o banco de dados.");        } catch (RuntimeException e) {            throw new PetXException("Erro ao processar a solicitação: " + e.getMessage());        }    }    @Transactional    public void deletarPorId(Long id) {        try {            logger.info("Iniciando a exclusão do animal com id: {}", id);            var animal = animalRepository.findById(id)                    .orElseThrow(() -> PetXException.animalNaoEncontrado("Animal com id: " + id + " não encontrado"));            logger.info("Animal encontrado, iniciando processo de exclusão de relacionamentos");            logger.info("Removendo relacionamentos com tutores");            tutorRepository.removeAnimalFromTutor(animal);            logger.info("Removendo relacionamentos com doenças");            animal.setDoencas(new HashSet<>());            logger.info("Removendo relacionamento com ONG");            if (animal.getOng() != null) {                animal.getOng().getAnimais().remove(animal);                animal.setOng(null);            }            logger.info("Removendo relacionamentos de conjunto de animais");            animalConjuntoRepository.deleteAnimalConjuntoByAnimalConjuntoId(animal.getId());            logger.info("Limpando referências do animal");            animal.setTutores(new HashSet<>());            // o flush ele da um reload no banco de dados            animalRepository.flush();            logger.info("Excluindo o animal");            animalRepository.delete(animal);            animalRepository.flush();            logger.info("Animal excluído com sucesso");        } catch (Exception e) {            logger.error("Erro ao excluir animal: ", e);            throw PetXException.recursoNaoEncontrado("Erro ao tentar excluir o animal: ", id);        }    }    @Override    @Transactional(readOnly = true)    public AnimalGenericoResposta buscarAnimalPorId(Long id) {        return animalUtils.buscarAnimalPorIdComConjuntoResposta(id);    }    @Override    @Transactional    public void declararObito(AnimalObituarioResquisicao obiturario) {        animalRepository.findAnimalByChipId(obiturario.chipId())                .ifPresentOrElse(animal -> {                    if (animal.getStatusEnum().getStatus().equals(StatusEnum.FALECIDO.getStatus())) {                        throw PetXException.animalJaFalecido("Animal com CHIP: " + obiturario.chipId());                    }                    animal.setStatusEnum(StatusEnum.FALECIDO);                    var lista = animal.getTutores();                    if (lista == null || lista.isEmpty()) {                        obitoRepository.save(Obito.builder()                                .dataObito(obiturario.dataObito())                                .motivoObito(obiturario.motivoObito())                                .animal(animal)                                .build());                    } else {                        lista.forEach(tutor -> {                            tutor.getAnimais().remove(animal);                        });                        animalRepository.save(animal);                    }                }, () -> {                    throw PetXException.animalNaoEncontrado(obiturario.chipId());                });    }    @Override    @Transactional(readOnly = true)    public AnimalGenericoResposta buscarAnimalPorChip(String chip) {        Animal existeAnimal = animalRepository.findAnimalByChipId(chip).orElseThrow(() -> PetXException.animalNaoEncontrado(chip));        return converterParaRespostaAnimalComConjuntoDTO(existeAnimal);    }    @Transactional(readOnly = true)    public Page<AnimalPaginadoResposta> paginarAnimais(            String nome,            String raca,            EspecieEnum especie,            PorteEnum porte,            StatusEnum status,            String doenca,            String comportamento,            MaturidadeEnum maturidade,            OrigemAnimalEnum origem,            SexoEnum sexo,            Pageable pageable) {        Page<Animal> page = animalRepository.findAllPorFiltro(                nome,                raca,                especie != null ? especie.name() : null,                porte != null ? porte.name() : null,                status != null ? status.name() : null,                comportamento,                maturidade != null ? maturidade.name() : null,                origem != null ? origem.name() : null,                sexo != null ? sexo.name() : null,                pageable        );        // Mapeamento dos resultados para DTOs        List<AnimalPaginadoResposta> dtos = page.getContent().stream()                .map(this::mapearParaDto)                .toList();        // Retorno da página final com os DTOs        return new PageImpl<>(dtos, pageable, page.getTotalElements());    }    @Override    public Long contarQuantidadeAnimais() {        return animalRepository.count();    }    private AnimalPaginadoResposta mapearParaDto(Animal animal) {        return AnimalPaginadoResposta.builder()                .id(animal.getId())                .chipId(animal.getChipId())                .nome(animal.getNome())                .maturidade(animal.getMaturidadeEnum() != null ? animal.getMaturidadeEnum().getMaturidade() : null)                .raca(animal.getRaca())                .sexo(animal.getSexoEnum() != null ? animal.getSexoEnum().getSexo() : null)                .origem(animal.getOrigemEnum() != null ? animal.getOrigemEnum().getOrigemAnimal() : null)                .porte(animal.getPorteEnum() != null ? animal.getPorteEnum().getPorte() : null)                .comportamento(animal.getComportamento())                .especie(animal.getEspecieEnum() != null ? animal.getEspecieEnum().getEspecie() : null)                .doencas(animal.getDoencas())                .status(animal.getStatusEnum() != null ? animal.getStatusEnum().getStatus() : null)                .build();    }    private void verificarSeOAnimalNaoEstaFalecido(Animal animal) {        if (animal.getStatusEnum().getStatus().equals(StatusEnum.FALECIDO.getStatus())) {            throw PetXException.animalJaFalecido(animal.getChipId());        }    }}
+package org.ong.pet.pex.backendpetx.service.impl;
+
+import jakarta.persistence.EntityNotFoundException;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
+import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
+import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
+import org.ong.pet.pex.backendpetx.entities.*;
+import org.ong.pet.pex.backendpetx.enums.*;
+import org.ong.pet.pex.backendpetx.repositories.*;
+import org.ong.pet.pex.backendpetx.service.AnimalService;
+import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
+import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.AnimalUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaRespostaAnimalComConjuntoDTO;
+
+@Service
+public class AnimalServiceImpl implements AnimalService {
+
+    private final AnimalRepository animalRepository;
+    // Mantido para futuras operações (ex: vincular ONG), atualmente não utilizado
+    @SuppressWarnings("unused")
+    private final OngRepository ongRepository;
+    private final AnimalConjuntoRepository animalConjuntoRepository;
+    private final TutorRepository tutorRepository;
+    private final ObitoRepository obitoRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
+    private final AnimalUtils animalUtils;
+
+    public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils) {
+        this.animalRepository = animalRepository;
+        this.ongRepository = ongRepository;
+        this.animalConjuntoRepository = animalConjuntoRepository;
+        this.tutorRepository = tutorRepository;
+        this.obitoRepository = obitoRepository;
+        this.animalUtils = animalUtils;
+    }
+
+
+
+    @Transactional
+    public void adicionarAdocaoConjuntaEmAnimal(Map<String, Long> ids) {
+        Long idPrincipal = ids.remove("principal");
+
+        // Pegando e verificando a lista dos animais passados no mapa
+        var lista = ids.values().stream()
+                .map(value -> animalRepository.findAnimalById(value)
+                        .orElseThrow(() -> PetXException.animalNaoEncontrado(value.toString())))
+                .collect(Collectors.toSet());
+
+        // Verifica se os animais não estão falecidos
+        lista.forEach(this::verificarSeOAnimalNaoEstaFalecido);
+
+        // Pegando o animal principal
+        var animalPrincipal = animalRepository.findAnimalById(idPrincipal)
+                .orElseThrow(() -> PetXException.animalNaoEncontrado(idPrincipal.toString()));
+
+        verificarSeOAnimalNaoEstaFalecido(animalPrincipal);
+
+        // Processando cada animal para associação
+        lista.forEach(animal -> {
+            // Verifica se o animal já está associado
+            var animalConjunto = animalConjuntoRepository.findByAnimalRelacionamentoId(animal.getId());
+            if (animalConjunto.isPresent()) {
+                throw PetXException.animalJaCadastrado("Animal com ID: " + animal.getId() + " já pertence a um conjunto");
+            }
+
+            // Criando a entidade de associação
+            AnimalConjunto entidade = new AnimalConjunto();
+            entidade.setAnimalPrincipal(animalPrincipal); // Definindo o animal principal
+            entidade.setAnimalRelacionamento(animal); // Definindo o animal associado
+
+            // Associando tutores do animal principal
+            var tutores = animalPrincipal.getTutores();
+            if (tutores != null && !tutores.isEmpty()) {
+                Set<Tutor> novosTutores = new HashSet<>(tutores);
+
+                // Sincronizando a relação bidirecional
+                novosTutores.forEach(tutor -> tutor.getAnimais().add(animal)); // Atualiza os animais no lado Tutor
+                animal.setTutores(novosTutores);
+
+                // Persistindo animal com novos tutores
+                animalRepository.save(animal);
+
+                // Persistindo os tutores atualizados
+                tutorRepository.saveAll(novosTutores); // Certifique-se de ter este repositório configurado
+            }
+
+            // Salvando a associação no banco
+            animalConjuntoRepository.saveAndFlush(entidade);
+        });
+    }
+
+    @Override
+    @Transactional
+    public AnimalGenericoResposta atualizarAnimal(Long id, AnimalGenericoRequisicao animalSemConjuntoDTO) {
+        try {
+            Animal entidade = animalRepository.getReferenceById(id);
+
+            if (animalRepository.findAnimalByChipId(animalSemConjuntoDTO.getChipId()).isPresent() && !entidade.getChipId().equals(animalSemConjuntoDTO.getChipId())) {
+                throw new PetXException("Já existe um animal com o CHIP: " + animalSemConjuntoDTO.getChipId());
+            }
+
+            entidade.setChipId(animalSemConjuntoDTO.getChipId());
+            entidade.setNome(animalSemConjuntoDTO.getNome());
+            entidade.setRaca(animalSemConjuntoDTO.getRaca().toUpperCase());
+            entidade.setMaturidadeEnum(animalSemConjuntoDTO.getMaturidade());
+            entidade.setEspecieEnum(animalSemConjuntoDTO.getEspecie());
+            entidade.setPorteEnum(animalSemConjuntoDTO.getPorte());
+            entidade.setSexoEnum(animalSemConjuntoDTO.getSexo());
+            entidade.setOrigemEnum(animalSemConjuntoDTO.getOrigem());
+            entidade.setComportamento(animalSemConjuntoDTO.getComportamento());
+            entidade.setDoencas(animalSemConjuntoDTO.getDoencas());
+
+            entidade = animalRepository.save(entidade);
+            return converterParaRespostaAnimalComConjuntoDTO(entidade);
+
+        } catch (EntityNotFoundException e) {
+            throw PetXException.animalNaoEncontrado(id.toString());
+        } catch (DataIntegrityViolationException e) {
+            throw new PetXException("Erro ao salvar: dados conflitantes ou inválidos.");
+        } catch (JpaSystemException e) {
+            throw new PetXException("Erro de conexão com o banco de dados.");
+        } catch (RuntimeException e) {
+            throw new PetXException("Erro ao processar a solicitação: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void deletarPorId(Long id) {
+        try {
+            logger.info("Iniciando a exclusão do animal com id: {}", id);
+
+            var animal = animalRepository.findById(id)
+                    .orElseThrow(() -> PetXException.animalNaoEncontrado("Animal com id: " + id + " não encontrado"));
+
+            logger.info("Animal encontrado, iniciando processo de exclusão de relacionamentos");
+
+            logger.info("Removendo relacionamentos com tutores");
+            tutorRepository.removeAnimalFromTutor(animal);
+
+            logger.info("Removendo relacionamentos com doenças");
+            animal.setDoencas(new HashSet<>());
+
+            logger.info("Removendo relacionamento com ONG");
+            if (animal.getOng() != null) {
+                animal.getOng().getAnimais().remove(animal);
+                animal.setOng(null);
+            }
+
+            logger.info("Removendo relacionamentos de conjunto de animais");
+            animalConjuntoRepository.deleteAnimalConjuntoByAnimalConjuntoId(animal.getId());
+
+            logger.info("Limpando referências do animal");
+            animal.setTutores(new HashSet<>());
+
+            // o flush ele da um reload no banco de dados
+            animalRepository.flush();
+
+            logger.info("Excluindo o animal");
+            animalRepository.delete(animal);
+            animalRepository.flush();
+
+            logger.info("Animal excluído com sucesso");
+
+        } catch (Exception e) {
+            logger.error("Erro ao excluir animal: ", e);
+            throw PetXException.recursoNaoEncontrado("Erro ao tentar excluir o animal: ", id);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AnimalGenericoResposta buscarAnimalPorId(Long id) {
+        return animalUtils.buscarAnimalPorIdComConjuntoResposta(id);
+    }
+
+    @Override
+    @Transactional
+    public void declararObito(AnimalObituarioResquisicao obiturario) {
+        animalRepository.findAnimalByChipId(obiturario.chipId())
+                .ifPresentOrElse(animal -> {
+
+                    if (animal.getStatusEnum().getStatus().equals(StatusEnum.FALECIDO.getStatus())) {
+                        throw PetXException.animalJaFalecido("Animal com CHIP: " + obiturario.chipId());
+                    }
+
+                    animal.setStatusEnum(StatusEnum.FALECIDO);
+                    var lista = animal.getTutores();
+                    if (lista == null || lista.isEmpty()) {
+                        obitoRepository.save(Obito.builder()
+                                .dataObito(obiturario.dataObito())
+                                .motivoObito(obiturario.motivoObito())
+                                .animal(animal)
+                                .build());
+                    } else {
+                        lista.forEach(tutor -> {
+                            tutor.getAnimais().remove(animal);
+                        });
+                        animalRepository.save(animal);
+                    }
+                }, () -> {
+                    throw PetXException.animalNaoEncontrado(obiturario.chipId());
+                });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AnimalGenericoResposta buscarAnimalPorChip(String chip) {
+
+        Animal existeAnimal = animalRepository.findAnimalByChipId(chip).orElseThrow(() -> PetXException.animalNaoEncontrado(chip));
+
+        return converterParaRespostaAnimalComConjuntoDTO(existeAnimal);
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<AnimalPaginadoResposta> paginarAnimais(
+            String nome,
+            String raca,
+            EspecieEnum especie,
+            PorteEnum porte,
+            StatusEnum status,
+            String doenca,
+            String comportamento,
+            MaturidadeEnum maturidade,
+            OrigemAnimalEnum origem,
+            SexoEnum sexo,
+            Pageable pageable) {
+
+    Page<Object[]> page = animalRepository.findAllPorFiltroBasico(
+        nome,
+        raca,
+        especie != null ? especie.name() : null,
+        porte != null ? porte.name() : null,
+        status != null ? status.name() : null,
+        comportamento,
+        maturidade != null ? maturidade.name() : null,
+        origem != null ? origem.name() : null,
+        sexo != null ? sexo.name() : null,
+        pageable
+    );
+
+    List<AnimalPaginadoResposta> dtos = page.getContent().stream().map(arr -> {
+        // Ordem conforme select em findAllPorFiltroBasico
+        Long id = ((Number) arr[0]).longValue();
+        String chipId = (String) arr[1];
+        String nomeVal = (String) arr[2];
+        String maturidadeVal = (String) arr[3];
+        String racaVal = (String) arr[4];
+        String sexoVal = (String) arr[5];
+        String origemVal = (String) arr[6];
+        String porteVal = (String) arr[7];
+        String comportamentoVal = (String) arr[8];
+        String especieVal = (String) arr[9];
+        String statusVal = (String) arr[10];
+        return AnimalPaginadoResposta.builder()
+            .id(id)
+            .chipId(chipId)
+            .nome(nomeVal)
+            .maturidade(maturidadeVal)
+            .raca(racaVal)
+            .sexo(sexoVal)
+            .origem(origemVal)
+            .porte(porteVal)
+            .comportamento(comportamentoVal)
+            .especie(especieVal)
+            .status(statusVal)
+            .build();
+    }).toList();
+
+    return new PageImpl<>(dtos, pageable, page.getTotalElements());
+    }
+
+    @Override
+    public Long contarQuantidadeAnimais() {
+        return animalRepository.count();
+    }
+
+
+    private void verificarSeOAnimalNaoEstaFalecido(Animal animal) {
+        if (animal.getStatusEnum().getStatus().equals(StatusEnum.FALECIDO.getStatus())) {
+            throw PetXException.animalJaFalecido(animal.getChipId());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void atualizarPerfilBasico(Long id, String nome, String raca, String especie, String porte,
+                                      String sexo, String maturidade, String origem, String corPelagem) {
+        Animal entidade = animalRepository.findById(id)
+                .orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString()));
+        if (nome != null) entidade.setNome(nome);
+        if (raca != null) entidade.setRaca(raca.toUpperCase());
+        if (especie != null) {
+            try { entidade.setEspecieEnum(EspecieEnum.valueOf(especie)); } catch (IllegalArgumentException ignored) {}
+        }
+        if (porte != null) {
+            try { entidade.setPorteEnum(PorteEnum.valueOf(porte)); } catch (IllegalArgumentException ignored) {}
+        }
+        if (sexo != null) {
+            try { entidade.setSexoEnum(SexoEnum.valueOf(sexo)); } catch (IllegalArgumentException ignored) {}
+        }
+        if (maturidade != null) {
+            try { entidade.setMaturidadeEnum(MaturidadeEnum.valueOf(maturidade)); } catch (IllegalArgumentException ignored) {}
+        }
+        if (origem != null) {
+            try { entidade.setOrigemEnum(OrigemAnimalEnum.valueOf(origem)); } catch (IllegalArgumentException ignored) {}
+        }
+        if (corPelagem != null) entidade.setCorPelagem(corPelagem);
+        animalRepository.save(entidade);
+    }
+
+    @Override
+    @Transactional
+    public void atualizarResumoSaude(Long id, String doencasLista) {
+        Animal entidade = animalRepository.findById(id)
+                .orElseThrow(() -> PetXException.animalNaoEncontrado(id.toString()));
+        if (doencasLista != null) {
+            // assumindo que Animal#doencas é Set<String> ou similar - adaptar se necessário
+            Set<String> novas = new HashSet<>();
+            for (String p : doencasLista.split(",")) {
+                String t = p.trim();
+                if (!t.isEmpty()) novas.add(t);
+            }
+            entidade.setDoencas(novas);
+        }
+        animalRepository.save(entidade);
+    }
+}

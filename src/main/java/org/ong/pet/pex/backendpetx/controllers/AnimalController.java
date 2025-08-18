@@ -49,7 +49,7 @@ public class AnimalController {
                             @RequestParam(required = false) MaturidadeEnum maturidade,
                             @RequestParam(required = false) OrigemAnimalEnum origem,
                             @RequestParam(required = false) SexoEnum sexo,
-                            @PageableDefault(size = 20) Pageable pageable) {
+                            @PageableDefault(size = 10) Pageable pageable) {
         Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
                 nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
         );
@@ -87,7 +87,74 @@ public class AnimalController {
     public String detalhesAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
-        return "animais/detalhes";
+        // Retorna nova página completa
+        // (template criado em animais/detalhe.html)
+        return "animais/detalhe";
+    }
+
+    /**
+     * Atualiza bloco PERFIL via formulário parcial (POST simples por enquanto)
+     */
+    @PostMapping("/{id}/atualizar/perfil")
+    public String atualizarPerfil(@PathVariable Long id,
+                                  @RequestParam(required = false) String nome,
+                                  @RequestParam(required = false) String raca,
+                                  @RequestParam(required = false) String especie,
+                                  @RequestParam(required = false) String porte,
+                                  @RequestParam(required = false) String sexo,
+                                  @RequestParam(required = false) String maturidade,
+                                  @RequestParam(required = false) String origem,
+                                  @RequestParam(required = false) String corPelagem,
+                                  RedirectAttributes ra) {
+        try {
+            animalService.atualizarPerfilBasico(id, nome, raca, especie, porte, sexo, maturidade, origem, corPelagem);
+            ra.addFlashAttribute("mensagemSucesso", "Perfil atualizado.");
+        } catch (Exception ex) {
+            ra.addFlashAttribute("mensagemErro", "Erro ao atualizar perfil: " + ex.getMessage());
+        }
+        return "redirect:/animais/" + id;
+    }
+
+    /**
+     * Atualiza bloco SAÚDE resumida
+     */
+    @PostMapping("/{id}/atualizar/saude")
+    public String atualizarSaude(@PathVariable Long id,
+                                 @RequestParam(required = false) String doencas,
+                                 RedirectAttributes ra) {
+        try {
+            animalService.atualizarResumoSaude(id, doencas);
+            ra.addFlashAttribute("mensagemSucesso", "Saúde atualizada.");
+        } catch (Exception ex) {
+            ra.addFlashAttribute("mensagemErro", "Erro ao atualizar saúde: " + ex.getMessage());
+        }
+        return "redirect:/animais/" + id;
+    }
+
+    /**
+     * Endpoint JSON compacto para modal de detalhes via AJAX
+     */
+    @GetMapping(value = "/{id}/detalhes.json", produces = "application/json")
+    @ResponseBody
+    public Map<String,Object> detalhesAnimalJson(@PathVariable Long id){
+        AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
+        Map<String,Object> resp = new HashMap<>();
+        resp.put("id", animal.getId());
+        resp.put("chipId", animal.getChipId());
+        resp.put("nome", animal.getNome());
+        resp.put("raca", animal.getRaca());
+        resp.put("especie", animal.getEspecie());
+        resp.put("porte", animal.getPorte());
+        resp.put("sexo", animal.getSexo());
+        resp.put("maturidade", animal.getMaturidade());
+        resp.put("origem", animal.getOrigem());
+        resp.put("status", animal.getStatus());
+        resp.put("comportamento", animal.getComportamento());
+        resp.put("doencas", animal.getDoencas());
+        resp.put("corPelagem", animal.getCorPelagem());
+        resp.put("condicaoAnimal", animal.getCondicaoAnimal());
+        // Campos relacionados (lazy) podem ser adicionados futuramente se DTO suportar
+        return resp;
     }
     
     /**

@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.ResgateRapidoDTO;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
+import org.ong.pet.pex.backendpetx.enums.Destino;
+import org.ong.pet.pex.backendpetx.enums.StatusEnum;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.ong.pet.pex.backendpetx.service.mappers.ResgateRapidoMapper;
 import org.springframework.data.domain.Page;
@@ -17,11 +19,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * Controller para gerenciar as operações relacionadas aos resgates de animais.
@@ -39,19 +43,100 @@ public class ResgateController {
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'VETERINARIO', 'OPERADOR')")
-    public String index(Model model, Pageable pageable) {
-        // Busca os resgates mais recentes (últimos 10)
-        Page<BoletimDTOResposta> resgatesRecentes = boletimService.findAllBoletins(null, null, 
-                PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "data_atendimento")));
-        
-        // Busca todos os resgates (com paginação)
-        Page<BoletimDTOResposta> todosResgates = boletimService.findAllBoletins(
-                null, null, PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "data_atendimento")));
-        
-        model.addAttribute("resgatesRecentes", resgatesRecentes.getContent());
-        model.addAttribute("todosResgates", todosResgates.getContent());
-        
-        return "resgates/index";
+    public String index(Model model,
+                        Pageable pageable,
+                        @org.springframework.web.bind.annotation.RequestParam(value = "numero", required = false) Long numeroOcorrencia,
+                        @org.springframework.web.bind.annotation.RequestParam(value = "destino", required = false) Destino destino,
+                        @org.springframework.web.bind.annotation.RequestParam(value = "tab", required = false) String tab,
+                        @org.springframework.web.bind.annotation.RequestParam(value = "meses", required = false, defaultValue = "6") Integer meses) {
+    // Página de recentes fixa (não paginada pelo usuário) - últimos 10
+    // Ajuste: usar nome de propriedade da entidade (dataAtendimento) em vez de snake_case
+    Page<BoletimDTOResposta> resgatesRecentes = boletimService.findAllBoletins(null, null,
+        PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "dataAtendimento")));
+
+        // Determina sort solicitado (whitelist para evitar campos inválidos / injection)
+    Sort sort = pageable != null && pageable.getSort().isSorted()
+        ? sanitizeSort(pageable.getSort())
+        : Sort.by(Sort.Direction.DESC, "dataAtendimento");
+
+        int pageNumber = (pageable == null) ? 0 : pageable.getPageNumber();
+    // Força padrão de 10 itens se não especificado ou se tamanho inválido (<1)
+    int pageSize = (pageable == null || pageable.getPageSize() <= 0) ? 10 : pageable.getPageSize();
+
+        Pageable effectivePageable = PageRequest.of(pageNumber, pageSize, sort);
+
+    Page<BoletimDTOResposta> todosResgatesPage = boletimService.findAllBoletins(numeroOcorrencia, destino, effectivePageable);
+
+    model.addAttribute("resgatesRecentes", resgatesRecentes.getContent());
+    model.addAttribute("todosResgatesPage", todosResgatesPage);
+    model.addAttribute("destinoFiltro", destino);
+    model.addAttribute("numeroFiltro", numeroOcorrencia);
+    model.addAttribute("origens", Destino.values());
+    model.addAttribute("statusList", StatusEnum.values()); // placeholder para futura filtragem por status
+
+    // Determina aba ativa: prioridade para parâmetro explícito; senão inferir se há filtros/paginação
+    String activeTab = (tab != null && !tab.isBlank()) ? tab : "recentes";
+    if (tab == null) {
+        boolean hasFilters = (numeroOcorrencia != null) || (destino != null);
+        boolean paginatingTodos = pageable != null && pageable.getPageNumber() > 0; // usuário navegou páginas da aba 'todos'
+        if (hasFilters || paginatingTodos) {
+            activeTab = "todos";
+        }
+    }
+    model.addAttribute("activeTab", activeTab);
+    try {
+        int mesesValidado = (meses == null || meses < 1 || meses > 24) ? 6 : meses; // limite máximo 24
+        var estatisticas = boletimService.obterEstatisticasResgates(mesesValidado);
+        model.addAttribute("estatisticas", estatisticas);
+        model.addAttribute("estatisticasCarregadas", true);
+        model.addAttribute("mesesSelecionados", mesesValidado);
+    } catch (Exception ex) {
+        log.warn("Falha ao carregar estatísticas de resgates", ex);
+        model.addAttribute("estatisticasCarregadas", false);
+    }
+
+        // Infos de sort para o template
+    Sort.Order primary = sort.stream().findFirst().orElse(Sort.Order.desc("dataAtendimento"));
+        model.addAttribute("currentSortField", primary.getProperty());
+        model.addAttribute("currentSortDir", primary.getDirection().name().toLowerCase());
+        model.addAttribute("nextSortDir", primary.getDirection().isAscending() ? "desc" : "asc");
+
+    return "resgates/index";
+    }
+
+    /**
+     * Endpoint AJAX para estatísticas (JSON) usado pelo front para evitar recarregar toda a página e permitir melhorias.
+     */
+    @GetMapping("/api/estatisticas")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VETERINARIO', 'OPERADOR')")
+    @ResponseBody
+    public Map<String,Object> estatisticasAjax(@org.springframework.web.bind.annotation.RequestParam(value = "meses", required = false, defaultValue = "6") Integer meses) {
+        int mesesValidado = (meses == null || meses < 1 || meses > 24) ? 6 : meses;
+        return boletimService.obterEstatisticasResgates(mesesValidado);
+    }
+
+    private Sort sanitizeSort(Sort requested) {
+        // Campos permitidos (nomes de propriedades da entidade Boletim)
+        String[] allowed = {"numeroOcorrencia", "dataAtendimento", "destino"};
+        java.util.List<String> allowedList = java.util.Arrays.asList(allowed);
+
+        // Função de mapeamento snake_case -> camelCase conhecida
+        java.util.function.Function<String,String> mapProp = p -> {
+            if(p == null) return null;
+            return switch (p) {
+                case "data_atendimento" -> "dataAtendimento";
+                case "numero_ocorrencia" -> "numeroOcorrencia";
+                default -> p;
+            };
+        };
+
+        Sort.Order effective = requested.stream()
+                .map(o -> new Sort.Order(o.getDirection(), mapProp.apply(o.getProperty())))
+                .filter(o -> allowedList.contains(o.getProperty()))
+                .findFirst()
+                .orElse(Sort.Order.desc("dataAtendimento"));
+
+        return Sort.by(effective);
     }
 
     /**

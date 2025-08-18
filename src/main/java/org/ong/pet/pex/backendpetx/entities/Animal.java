@@ -74,9 +74,11 @@ public class Animal extends EntidadeBase {
     @Column(name = "cor_pelagem")
     private String corPelagem;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    // Tornar LAZY para não carregar todas as doenças em listagens paginadas
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "animal_doencas", joinColumns = @JoinColumn(name = "animal_id"))
     @Column(name = "doenca")
+    @Builder.Default
     private Set<String> doencas = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
@@ -88,11 +90,14 @@ public class Animal extends EntidadeBase {
 
     private MaezinhaComFilhotes maezinhaComFilhotes;
 
-    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    // Evitar carregamento automático em listagens: trocar fetch padrão (EAGER em ManyToOne) para LAZY.
+    // Cascade ALL em ManyToOne tende a propagar operações indesejadas; manter apenas MERGE/PERSIST/REFRESH se necessário.
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_ong")
     private Ong ong;
 
-    @ManyToOne(cascade = {CascadeType.ALL, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    // Este relacionamento originalmente EAGER + recíproco em Boletim gerava queries profundas repetidas.
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "id_boletim")
     private Boletim boletim;
 

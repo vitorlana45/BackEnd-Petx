@@ -47,8 +47,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/usuarios/**").hasRole("ADMIN")
 
-                        // Gestão de Pets - ADMIN e COLABORADOR
-                        .requestMatchers("/pets/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        // Gestão de Animais - ADMIN e COLABORADOR
                         .requestMatchers("/animais/**").hasAnyRole("ADMIN", "COLABORADOR")
 
                         // Gestão de Tutores - ADMIN e COLABORADOR (substitui Clientes)
@@ -95,6 +94,7 @@ public class SecurityConfigurations {
      * Hierarquia de roles - ADMIN herda permissões de COLABORADOR
      */
     @Bean
+    @SuppressWarnings("deprecation")
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
         hierarchy.setHierarchy("ROLE_ADMIN > ROLE_COLABORADOR");

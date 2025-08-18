@@ -1,0 +1,19 @@
+<!-- 
+  Fragment para exibir um badge de status com cores apropriadas
+  Uso: th:replace="~{fragmentos/status-badge :: status(${statusValue})}"
+  Parâmetros:
+    - value: valor do status (ex: "ADOTADO", "PENDENTE")
+-->
+<span xmlns:th="http://www.thymeleaf.org"
+      th:fragment="status(value)"
+      class="badge fs-6 px-3 py-2"
+      th:classappend="${
+        value=='ADOTADO' ? ' bg-success text-white' : 
+        (value=='ADOTADO_CONJUNTAMENTE' ? ' bg-success-light text-success-dark' : 
+        (value=='FALECIDO' ? ' bg-secondary text-white' : 
+        (value=='PENDENTE' ? ' bg-warning text-dark' : 
+        (value=='TRATAMENTO' ? ' bg-info text-dark' : 
+        ' bg-primary text-white'))))}"
+      th:text="#{${'status.' + value}}"
+      th:title="#{${'status.' + value}}"
+      role="status">STATUS</span>

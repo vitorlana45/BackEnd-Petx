@@ -119,19 +119,6 @@ public class BoletimController {
         return ResponseEntity.noContent().build();
     }
 
-
-    private String validacaoAnimalMaezinho(AnimalDTO animalDTO){
-
-            if(animalDTO.getMaturidade().equals(MaturidadeEnum.FILHOTE)) {
-                return "Filhote não pode ser maezinha.";
-            }
-
-            if(!animalDTO.getSexo().equals(SexoEnum.FEMEA)){
-                return "Apenas fêmeas podem ser maezinhas.";
-            }
-            return null;
-    }
-
     private void carregarCombos(Model model) {
         model.addAttribute("destinos", Destino.values());
         
