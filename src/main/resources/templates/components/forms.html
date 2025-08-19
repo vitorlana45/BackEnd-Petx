@@ -1,0 +1,347 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+
+<!-- ============================================================================ -->
+<!-- COMPONENTS - FORMS - Componentes de formulário reutilizáveis              -->
+<!-- ============================================================================ -->
+
+<!-- Input de Texto -->
+<div th:fragment="text-input(field, label, placeholder, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <input type="text" 
+           th:id="${field}"
+           th:name="${field}"
+           th:field="*{__${field}__}"
+           th:placeholder="${placeholder}"
+           class="form-control"
+           th:required="${required}"
+           th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Textarea -->
+<div th:fragment="textarea(field, label, placeholder, rows, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <textarea th:id="${field}"
+              th:name="${field}"
+              th:field="*{__${field}__}"
+              th:placeholder="${placeholder}"
+              th:rows="${rows ?: 3}"
+              class="form-control"
+              th:required="${required}"
+              th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}"></textarea>
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Select -->
+<div th:fragment="select(field, label, options, valueProperty, textProperty, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <select th:id="${field}"
+            th:name="${field}"
+            th:field="*{__${field}__}"
+            class="form-select"
+            th:required="${required}"
+            th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+        <option value="">Selecione uma opção</option>
+        <option th:each="option : ${options}"
+                th:value="${valueProperty != null ? option[valueProperty] : option}"
+                th:text="${textProperty != null ? option[textProperty] : option}">
+                Opção
+        </option>
+    </select>
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Checkbox -->
+<div th:fragment="checkbox(field, label, help)" 
+     class="mb-3">
+    <div class="form-check">
+        <input type="checkbox" 
+               th:id="${field}"
+               th:name="${field}"
+               th:field="*{__${field}__}"
+               class="form-check-input"
+               th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+        <label th:for="${field}" 
+               class="form-check-label"
+               th:text="${label}">
+               Label do Checkbox
+        </label>
+        <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+            <span th:errors="*{__${field}__}">Erro de validação</span>
+        </div>
+    </div>
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+</div>
+
+<!-- Radio Buttons -->
+<div th:fragment="radio-group(field, label, options, valueProperty, textProperty, required)" 
+     class="mb-3">
+    <fieldset>
+        <legend class="form-label" 
+                th:text="${label}"
+                th:classappend="${required ? 'required' : ''}">
+                Label do Grupo
+        </legend>
+        <div th:each="option, iterStat : ${options}" class="form-check">
+            <input type="radio" 
+                   th:id="${field + '_' + iterStat.index}"
+                   th:name="${field}"
+                   th:field="*{__${field}__}"
+                   th:value="${valueProperty != null ? option[valueProperty] : option}"
+                   class="form-check-input"
+                   th:required="${required}"
+                   th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+            <label th:for="${field + '_' + iterStat.index}" 
+                   class="form-check-label"
+                   th:text="${textProperty != null ? option[textProperty] : option}">
+                   Opção
+            </label>
+        </div>
+        <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback d-block">
+            <span th:errors="*{__${field}__}">Erro de validação</span>
+        </div>
+    </fieldset>
+</div>
+
+<!-- Upload de Arquivo -->
+<div th:fragment="file-upload(field, label, accept, multiple, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <input type="file" 
+           th:id="${field}"
+           th:name="${field}"
+           th:accept="${accept}"
+           th:multiple="${multiple}"
+           class="form-control"
+           th:required="${required}"
+           th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Input de Data -->
+<div th:fragment="date-input(field, label, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <input type="date" 
+           th:id="${field}"
+           th:name="${field}"
+           th:field="*{__${field}__}"
+           class="form-control"
+           th:required="${required}"
+           th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Input de Email -->
+<div th:fragment="email-input(field, label, placeholder, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <input type="email" 
+           th:id="${field}"
+           th:name="${field}"
+           th:field="*{__${field}__}"
+           th:placeholder="${placeholder}"
+           class="form-control"
+           th:required="${required}"
+           th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Input de Telefone -->
+<div th:fragment="phone-input(field, label, placeholder, required, help)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <input type="tel" 
+           th:id="${field}"
+           th:name="${field}"
+           th:field="*{__${field}__}"
+           th:placeholder="${placeholder}"
+           class="form-control phone-mask"
+           th:required="${required}"
+           th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Grupo de Botões do Formulário -->
+<div th:fragment="form-buttons(submitText, cancelUrl, showCancel)" 
+     class="form-buttons mt-4">
+    <div class="d-flex gap-2 justify-content-end">
+        <a th:if="${showCancel and cancelUrl}" 
+           th:href="${cancelUrl}" 
+           class="btn btn-secondary">
+            <i class="fas fa-times me-2"></i>Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-2"></i>
+            <span th:text="${submitText ?: 'Salvar'}">Salvar</span>
+        </button>
+    </div>
+</div>
+
+<!-- Campo de Busca com Autocomplete -->
+<div th:fragment="search-input(field, label, placeholder, searchUrl, required)" 
+     class="mb-3">
+    <label th:for="${field}" 
+           class="form-label"
+           th:text="${label}"
+           th:classappend="${required ? 'required' : ''}">
+           Label
+    </label>
+    <div class="search-input-container">
+        <input type="text" 
+               th:id="${field}"
+               th:name="${field}"
+               th:field="*{__${field}__}"
+               th:placeholder="${placeholder}"
+               class="form-control search-input"
+               th:data-search-url="${searchUrl}"
+               th:required="${required}"
+               th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}"
+               autocomplete="off">
+        <div class="search-results" style="display: none;"></div>
+    </div>
+    <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+        <span th:errors="*{__${field}__}">Erro de validação</span>
+    </div>
+</div>
+
+<!-- Switch/Toggle -->
+<div th:fragment="switch(field, label, help)" 
+     class="mb-3">
+    <div class="form-check form-switch">
+        <input type="checkbox" 
+               th:id="${field}"
+               th:name="${field}"
+               th:field="*{__${field}__}"
+               class="form-check-input"
+               role="switch"
+               th:classappend="${#fields.hasErrors(field) ? 'is-invalid' : ''}">
+        <label th:for="${field}" 
+               class="form-check-label"
+               th:text="${label}">
+               Label do Switch
+        </label>
+        <div th:if="${#fields.hasErrors(field)}" class="invalid-feedback">
+            <span th:errors="*{__${field}__}">Erro de validação</span>
+        </div>
+    </div>
+    <div th:if="${help}" class="form-text" th:text="${help}">Texto de ajuda</div>
+</div>
+
+<!-- Componente: Date Input -->
+<div th:fragment="date-input(field, label, required, help)">
+    <div class="mb-3">
+        <label th:for="${field}" class="form-label">
+            <span th:text="${label}"></span>
+            <span class="text-danger" th:if="${required}">*</span>
+        </label>
+        <input type="date" 
+               class="form-control" 
+               th:field="*{__${field}__}" 
+               th:id="${field}"
+               th:required="${required}"
+               th:aria-describedby="${field + 'Help'}">
+        <div class="form-text" th:if="${help}" th:id="${field + 'Help'}" th:text="${help}"></div>
+        <div class="invalid-feedback">
+            Por favor, forneça uma data válida.
+        </div>
+    </div>
+</div>
+
+<!-- Componente: Textarea -->
+<div th:fragment="textarea(field, label, placeholder, rows, required, help)">
+    <div class="mb-3">
+        <label th:for="${field}" class="form-label">
+            <span th:text="${label}"></span>
+            <span class="text-danger" th:if="${required}">*</span>
+        </label>
+        <textarea class="form-control" 
+                  th:field="*{__${field}__}" 
+                  th:id="${field}"
+                  th:placeholder="${placeholder}"
+                  th:rows="${rows}"
+                  th:required="${required}"
+                  th:aria-describedby="${field + 'Help'}"></textarea>
+        <div class="form-text" th:if="${help}" th:id="${field + 'Help'}" th:text="${help}"></div>
+        <div class="invalid-feedback">
+            Por favor, preencha este campo.
+        </div>
+    </div>
+</div>
+
+<!-- Componente: Botões do Formulário -->
+<div th:fragment="form-buttons(submitText, cancelUrl, showCancel)">
+    <div class="form-actions d-flex gap-3 justify-content-end pt-4 border-top">
+        <button type="button" 
+                class="btn btn-outline-secondary" 
+                th:if="${showCancel}"
+                th:onclick="'window.location.href=\'' + ${cancelUrl} + '\''">
+            <i class="fas fa-times me-2"></i>Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save me-2"></i>
+            <span th:text="${submitText}"></span>
+        </button>
+    </div>
+</div>
+
+</th:block>

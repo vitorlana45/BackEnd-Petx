@@ -1,0 +1,253 @@
+<!--
+  Fragmento para Tabelas de Dados
+  Uso: th:replace="~{fragmentos/data-table :: data-table(title, icon, data, columns, actions)}"
+-->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="data-table(title, icon, data, columns, actions)"
+     class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i th:if="${icon}" th:class="${'fas fa-' + icon + ' me-2'}"></i>
+            <span th:text="${title}">Título da Tabela</span>
+        </h5>
+        <span class="badge bg-primary" th:text="${data?.size() ?: 0} + ' itens'">0 itens</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th th:each="column : ${columns}" th:text="${column.label}">Coluna</th>
+                        <th th:if="${actions}" width="120">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(data)}">
+                        <td th:colspan="${columns?.size() + (actions ? 1 : 0)}" class="text-center text-muted py-4">
+                            <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                            Nenhum registro encontrado
+                        </td>
+                    </tr>
+                    <tr th:each="item : ${data}" th:if="${!#lists.isEmpty(data)}">
+                        <td th:each="column : ${columns}">
+                            <!-- Conteúdo dinâmico da célula -->
+                            <div th:switch="${column.type}">
+                                <span th:case="'text'" th:text="${item[column.field]}">Texto</span>
+                                <span th:case="'date'" th:text="${#temporals.format(item[column.field], 'dd/MM/yyyy')}">Data</span>
+                                <span th:case="'badge'"
+                                      th:class="'badge ' + ${column.badgeClass ?: 'bg-secondary'}"
+                                      th:text="${item[column.field]}">Badge</span>
+                                <img th:case="'image'"
+                                     th:src="${item[column.field]}"
+                                     class="rounded-circle" width="40" height="40">
+                                <span th:case="*" th:text="${item[column.field]}">Default</span>
+                            </div>
+                        </td>
+                        <td th:if="${actions}">
+                            <div th:utext="${actions}" class="btn-group">
+                                <!-- Ações serão inseridas aqui -->
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela simples para animais -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="animal-table(animais)"
+     class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>Lista de Animais
+        </h5>
+        <span class="badge bg-primary" th:text="${animais?.size() ?: 0} + ' animais'">0 animais</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nome</th>
+                        <th>Espécie</th>
+                        <th>Idade</th>
+                        <th>Status</th>
+                        <th>Data Cadastro</th>
+                        <th width="120">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(animais)}">
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                            Nenhum animal encontrado
+                        </td>
+                    </tr>
+                    <tr th:each="animal : ${animais}" th:if="${!#lists.isEmpty(animais)}">
+                        <td>
+                            <div class="animal-avatar">
+                                <img th:if="${animal.foto}"
+                                     th:src="@{'/uploads/animais/' + ${animal.foto}}"
+                                     th:alt="${animal.nome}"
+                                     class="rounded-circle"
+                                     width="40" height="40">
+                                <div th:unless="${animal.foto}"
+                                     class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-light">
+                                    <i class="fas fa-paw text-muted"></i>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <strong th:text="${animal.nome}">Nome</strong>
+                                <br>
+                                <small class="text-muted" th:text="${animal.raca}">Raça</small>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${animal.especie == 'CACHORRO'} ? 'bg-primary' :
+                                                  ${animal.especie == 'GATO'} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${animal.especie}">Espécie</span>
+                        </td>
+                        <td th:text="${animal.idade} + ' anos'">Idade</td>
+                        <td>
+                            <div th:replace="~{fragmentos/status-badge :: status-badge(${animal.status})}"></div>
+                        </td>
+                        <td th:text="${#temporals.format(animal.dataCadastro, 'dd/MM/yyyy')}">Data</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/animais/{id}(id=${animal.id})}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Ver detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/animais/{id}/editar(id=${animal.id})}"
+                                   class="btn btn-sm btn-outline-secondary"
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela Simples para Animais -->
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="tabela" class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Lista de Animais</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Espécie</th>
+                        <th>Idade</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(animais)}">
+                        <td colspan="5" class="text-center text-muted py-4">
+                            <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                            Nenhum animal encontrado
+                        </td>
+                    </tr>
+                    <tr th:each="animal : ${animais}" th:if="${!#lists.isEmpty(animais)}">
+                        <td th:text="${animal.nome}">Nome</td>
+                        <td th:text="${animal.especie}">Espécie</td>
+                        <td th:text="${animal.idade}">Idade</td>
+                        <td th:text="${animal.status}">Status</td>
+                        <td>
+                            <a th:href="@{/animais/{id}(id=${animal.id})}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a th:href="@{/animais/{id}/editar(id=${animal.id})}" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela para tutores -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="tutor-table(tutores)"
+     class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-users me-2"></i>Lista de Tutores
+        </h5>
+        <span class="badge bg-primary" th:text="${tutores?.size() ?: 0} + ' tutores'">0 tutores</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Cidade</th>
+                        <th>Status</th>
+                        <th>Data Cadastro</th>
+                        <th width="120">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(tutores)}">
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                            Nenhum tutor encontrado
+                        </td>
+                    </tr>
+                    <tr th:each="tutor : ${tutores}" th:if="${!#lists.isEmpty(tutores)}">
+                        <td>
+                            <div>
+                                <strong th:text="${tutor.nome}">Nome</strong>
+                                <br>
+                                <small class="text-muted" th:text="${tutor.cpf}">CPF</small>
+                            </div>
+                        </td>
+                        <td th:text="${tutor.email}">Email</td>
+                        <td th:text="${tutor.telefone}">Telefone</td>
+                        <td th:text="${tutor.cidade}">Cidade</td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${tutor.ativo} ? 'bg-success' : 'bg-danger'"
+                                  th:text="${tutor.ativo} ? 'Ativo' : 'Inativo'">Status</span>
+                        </td>
+                        <td th:text="${#temporals.format(tutor.dataCadastro, 'dd/MM/yyyy')}">Data</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/tutores/{id}(id=${tutor.id})}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Ver detalhes">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/tutores/{id}/editar(id=${tutor.id})}"
+                                   class="btn btn-sm btn-outline-secondary"
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

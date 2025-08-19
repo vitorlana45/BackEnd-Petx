@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/form :: layout(~{::title}, ~{::formContent})}"
+      lang="pt-BR">
+
+<title>Cadastro de Animal</title>
+
+<!-- Conteúdo do Formulário -->
+<div th:fragment="formContent">
+    <form th:action="@{/animais}" 
+          th:object="${animal}" 
+          method="post" 
+          enctype="multipart/form-data"
+          class="needs-validation" 
+          novalidate>
+        
+        <!-- Seção: Informações Básicas -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-paw me-2"></i>Informações Básicas
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: text-input('nome', 'Nome do Animal', 'Ex: Rex, Luna, Mimi...', true, 'Nome como o animal é conhecido')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: select('especie', 'Espécie', ${especies}, 'codigo', 'nome', true, 'Tipo de animal')}"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div th:replace="~{components/forms :: text-input('raca', 'Raça', 'Ex: Labrador, Persa, SRD...', false, 'Raça ou SRD (Sem Raça Definida)')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{components/forms :: text-input('idade', 'Idade (anos)', 'Ex: 2', true, 'Idade aproximada em anos')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{components/forms :: radio-group('genero', 'Gênero', ${generos}, 'codigo', 'nome', true)}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção: Características Físicas -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-ruler me-2"></i>Características Físicas
+            </h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div th:replace="~{components/forms :: select('porte', 'Porte', ${portes}, 'codigo', 'nome', true, 'Tamanho do animal')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{components/forms :: text-input('peso', 'Peso (kg)', 'Ex: 15.5', false, 'Peso aproximado em quilogramas')}"></div>
+                </div>
+                <div class="col-md-4">
+                    <div th:replace="~{components/forms :: text-input('cor', 'Cor/Pelagem', 'Ex: Marrom, Preto e branco...', false, 'Cor predominante')}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção: Saúde -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-heartbeat me-2"></i>Informações de Saúde
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: switch('vacinado', 'Animal vacinado', 'Marque se o animal possui vacinas em dia')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: switch('castrado', 'Animal castrado', 'Marque se o animal foi castrado/esterilizado')}"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: date-input('dataUltimaVacina', 'Data da Última Vacina', false, 'Data da vacina mais recente')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: date-input('dataCastracao', 'Data da Castração', false, 'Data do procedimento de castração')}"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div th:replace="~{components/forms :: textarea('observacoesSaude', 'Observações de Saúde', 'Descreva condições médicas, tratamentos, medicações...', 4, false, 'Informações médicas importantes')}"></div>
+            </div>
+        </div>
+
+        <!-- Seção: Comportamento -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-heart me-2"></i>Comportamento e Personalidade
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: switch('docil', 'Animal dócil', 'Marque se o animal é calmo e carinhoso')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: switch('sociavel', 'Sociável com outros animais', 'Marque se convive bem com outros pets')}"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: switch('bomComCriancas', 'Bom com crianças', 'Marque se o animal é adequado para famílias com crianças')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: select('nivelEnergia', 'Nível de Energia', ${niveisEnergia}, 'codigo', 'nome', false, 'Quão ativo é o animal')}"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div th:replace="~{components/forms :: textarea('personalidade', 'Descrição da Personalidade', 'Descreva o temperamento, gostos, medos, brincadeiras favoritas...', 4, false, 'Ajude futuros tutores a conhecer melhor o animal')}"></div>
+            </div>
+        </div>
+
+        <!-- Seção: Localização e Resgate -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-map-marker-alt me-2"></i>Localização e Histórico
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: text-input('localizacao', 'Localização Atual', 'Ex: Abrigo Central, Casa Temporária...', true, 'Onde o animal se encontra')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: date-input('dataResgate', 'Data do Resgate', false, 'Quando o animal foi resgatado')}"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div th:replace="~{components/forms :: textarea('historiaResgate', 'História do Resgate', 'Como o animal foi encontrado/resgatado...', 4, false, 'Contexto do resgate e situação anterior')}"></div>
+            </div>
+        </div>
+
+        <!-- Seção: Fotos -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-camera me-2"></i>Fotos do Animal
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: file-upload('fotoPrincipal', 'Foto Principal', 'image/*', false, false, 'Foto que será exibida como destaque')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: file-upload('fotosAdicionais', 'Fotos Adicionais', 'image/*', true, false, 'Outras fotos do animal (máximo 5)')}"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção: Adoção -->
+        <div class="form-section mb-5">
+            <h3 class="form-section-title">
+                <i class="fas fa-home me-2"></i>Disponibilidade para Adoção
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: switch('disponivelAdocao', 'Disponível para adoção', 'Marque se o animal está pronto para ser adotado')}"></div>
+                </div>
+                <div class="col-md-6">
+                    <div th:replace="~{components/forms :: select('urgenciaAdocao', 'Urgência da Adoção', ${urgencias}, 'codigo', 'nome', false, 'Prioridade na busca por um lar')}"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div th:replace="~{components/forms :: textarea('requisitosAdocao', 'Requisitos Especiais para Adoção', 'Ex: Casa com quintal, experiência com a raça, sem outros pets...', 3, false, 'Condições específicas que o novo lar deve atender')}"></div>
+            </div>
+        </div>
+
+        <!-- Botões do Formulário -->
+        <div th:replace="~{components/forms :: form-buttons('Cadastrar Animal', '/animais', true)}"></div>
+    </form>
+</div>
+
+</html>

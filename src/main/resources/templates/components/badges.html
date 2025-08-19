@@ -1,0 +1,205 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+
+<!-- ============================================================================ -->
+<!-- COMPONENTS - BADGES - Badges de status e categorias                       -->
+<!-- ============================================================================ -->
+
+<!-- Badge de Status Principal -->
+<span th:fragment="status-badge(status)" 
+      class="badge" 
+      th:classappend="${
+        status == 'ATIVO' or status == 'APROVADO' or status == 'CONFIRMADO' ? 'bg-success' :
+        status == 'INATIVO' or status == 'REJEITADO' or status == 'CANCELADO' ? 'bg-danger' :
+        status == 'PENDENTE' or status == 'EM_ANALISE' ? 'bg-warning' :
+        status == 'TRATAMENTO' or status == 'CONSULTA' ? 'bg-info' :
+        status == 'ADOTADO' ? 'bg-primary' :
+        'bg-secondary'
+      }"
+      th:text="${
+        status == 'ATIVO' ? 'Ativo' :
+        status == 'INATIVO' ? 'Inativo' :
+        status == 'PENDENTE' ? 'Pendente' :
+        status == 'APROVADO' ? 'Aprovado' :
+        status == 'REJEITADO' ? 'Rejeitado' :
+        status == 'EM_ANALISE' ? 'Em Análise' :
+        status == 'CONFIRMADO' ? 'Confirmado' :
+        status == 'CANCELADO' ? 'Cancelado' :
+        status == 'TRATAMENTO' ? 'Em Tratamento' :
+        status == 'CONSULTA' ? 'Consulta' :
+        status == 'ADOTADO' ? 'Adotado' :
+        status
+      }">
+      Status
+</span>
+
+<!-- Badge de Prioridade -->
+<span th:fragment="priority-badge(priority)" 
+      class="badge" 
+      th:classappend="${
+        priority == 'ALTA' or priority == 'URGENTE' ? 'bg-danger' :
+        priority == 'MEDIA' or priority == 'NORMAL' ? 'bg-warning' :
+        priority == 'BAIXA' ? 'bg-success' :
+        'bg-secondary'
+      }"
+      th:text="${
+        priority == 'ALTA' ? 'Alta' :
+        priority == 'MEDIA' ? 'Média' :
+        priority == 'BAIXA' ? 'Baixa' :
+        priority == 'URGENTE' ? 'Urgente' :
+        priority == 'NORMAL' ? 'Normal' :
+        priority
+      }">
+      Prioridade
+</span>
+
+<!-- Badge de Tipo de Animal -->
+<span th:fragment="animal-type-badge(type)" 
+      class="badge" 
+      th:classappend="${
+        type == 'CACHORRO' ? 'bg-primary' :
+        type == 'GATO' ? 'bg-info' :
+        type == 'COELHO' ? 'bg-warning' :
+        type == 'PASSARO' ? 'bg-success' :
+        'bg-secondary'
+      }"
+      th:text="${
+        type == 'CACHORRO' ? 'Cachorro' :
+        type == 'GATO' ? 'Gato' :
+        type == 'COELHO' ? 'Coelho' :
+        type == 'PASSARO' ? 'Pássaro' :
+        type
+      }">
+      <i th:class="${
+        type == 'CACHORRO' ? 'fas fa-dog' :
+        type == 'GATO' ? 'fas fa-cat' :
+        type == 'COELHO' ? 'fas fa-rabbit' :
+        type == 'PASSARO' ? 'fas fa-dove' :
+        'fas fa-paw'
+      }" class="me-1"></i>
+      Tipo
+</span>
+
+<!-- Badge de Gênero -->
+<span th:fragment="gender-badge(gender)" 
+      class="badge" 
+      th:classappend="${
+        gender == 'MACHO' ? 'bg-info' :
+        gender == 'FEMEA' ? 'bg-danger' :
+        'bg-secondary'
+      }"
+      th:text="${
+        gender == 'MACHO' ? 'Macho' :
+        gender == 'FEMEA' ? 'Fêmea' :
+        gender
+      }">
+      <i th:class="${
+        gender == 'MACHO' ? 'fas fa-mars' :
+        gender == 'FEMEA' ? 'fas fa-venus' :
+        'fas fa-question'
+      }" class="me-1"></i>
+      Gênero
+</span>
+
+<!-- Badge de Idade -->
+<span th:fragment="age-badge(age)" 
+      class="badge bg-light text-dark"
+      th:text="${age + (age == 1 ? ' ano' : ' anos')}">
+      <i class="fas fa-birthday-cake me-1"></i>
+      Idade
+</span>
+
+<!-- Badge de Porte -->
+<span th:fragment="size-badge(size)" 
+      class="badge" 
+      th:classappend="${
+        size == 'PEQUENO' ? 'bg-success' :
+        size == 'MEDIO' ? 'bg-warning' :
+        size == 'GRANDE' ? 'bg-danger' :
+        'bg-secondary'
+      }"
+      th:text="${
+        size == 'PEQUENO' ? 'Pequeno' :
+        size == 'MEDIO' ? 'Médio' :
+        size == 'GRANDE' ? 'Grande' :
+        size
+      }">
+      Porte
+</span>
+
+<!-- Badge de Vacinação -->
+<span th:fragment="vaccination-badge(vaccinated)" 
+      class="badge" 
+      th:classappend="${vaccinated ? 'bg-success' : 'bg-warning'}"
+      th:text="${vaccinated ? 'Vacinado' : 'Não Vacinado'}">
+      <i th:class="${vaccinated ? 'fas fa-check' : 'fas fa-exclamation-triangle'}" class="me-1"></i>
+      Vacinação
+</span>
+
+<!-- Badge de Castração -->
+<span th:fragment="neutered-badge(neutered)" 
+      class="badge" 
+      th:classappend="${neutered ? 'bg-success' : 'bg-warning'}"
+      th:text="${neutered ? 'Castrado' : 'Não Castrado'}">
+      <i th:class="${neutered ? 'fas fa-check' : 'fas fa-times'}" class="me-1"></i>
+      Castração
+</span>
+
+<!-- Badge de Disponibilidade para Adoção -->
+<span th:fragment="adoption-badge(available)" 
+      class="badge" 
+      th:classappend="${available ? 'bg-success' : 'bg-secondary'}"
+      th:text="${available ? 'Disponível' : 'Indisponível'}">
+      <i th:class="${available ? 'fas fa-heart' : 'fas fa-heart-broken'}" class="me-1"></i>
+      Adoção
+</span>
+
+<!-- Badge Customizável -->
+<span th:fragment="custom-badge(text, color, icon)" 
+      class="badge" 
+      th:classappend="${'bg-' + (color ?: 'secondary')}"
+      th:text="${text}">
+      <i th:if="${icon}" th:class="${'fas fa-' + icon + ' me-1'}"></i>
+      Badge
+</span>
+
+<!-- Badge com Contador -->
+<span th:fragment="count-badge(count, color)" 
+      class="badge rounded-pill" 
+      th:classappend="${'bg-' + (color ?: 'primary')}"
+      th:text="${count}">
+      0
+</span>
+
+<!-- Badge de Localização -->
+<span th:fragment="location-badge(location)" 
+      class="badge bg-info"
+      th:text="${location}">
+      <i class="fas fa-map-marker-alt me-1"></i>
+      Localização
+</span>
+
+<!-- Badge de Data -->
+<span th:fragment="date-badge(date)" 
+      class="badge bg-light text-dark"
+      th:text="${#temporals.format(date, 'dd/MM/yyyy')}">
+      <i class="fas fa-calendar me-1"></i>
+      Data
+</span>
+
+<!-- Badge de Tempo Relativo -->
+<span th:fragment="time-badge(date)" 
+      class="badge bg-light text-muted"
+      th:with="daysDiff=${#temporals.daysBetween(date, #temporals.createNow())}"
+      th:text="${
+        daysDiff == 0 ? 'Hoje' :
+        daysDiff == 1 ? 'Ontem' :
+        daysDiff < 7 ? daysDiff + ' dias atrás' :
+        daysDiff < 30 ? (daysDiff / 7) + ' semanas atrás' :
+        daysDiff < 365 ? (daysDiff / 30) + ' meses atrás' :
+        (daysDiff / 365) + ' anos atrás'
+      }">
+      <i class="fas fa-clock me-1"></i>
+      Tempo
+</span>
+
+</th:block>

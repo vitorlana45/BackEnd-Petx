@@ -1,0 +1,217 @@
+<th:block xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ============================================================================ -->
+<!-- NAVIGATION MASTER FRAGMENT - Sistema de navegação modular                  -->
+<!-- ============================================================================ -->
+
+<nav th:fragment="navigation" class="navbar navbar-expand-lg main-navbar" id="main-navbar">
+    <div class="container-fluid">
+        <!-- Logo / Brand -->
+        <a class="navbar-brand" th:href="@{/}" aria-label="PetX - Página inicial">
+            <img th:src="@{/images/logo.svg}" alt="PetX Logo" class="logo-img">
+            <span class="brand-text">Pet<strong>X</strong></span>
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#main-navigation" 
+                aria-controls="main-navigation" 
+                aria-expanded="false" 
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navigation Menu -->
+        <div class="collapse navbar-collapse" id="main-navigation">
+            <!-- Menu Principal -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li th:replace="~{layouts/fragments/navigation :: nav-item('/', 'Dashboard', 'dashboard')}"></li>
+                <li th:replace="~{layouts/fragments/navigation :: nav-dropdown('animais', 'Animais', 'paw', ~{:: animais-menu})}">
+                    <th:block th:ref="animais-menu">
+                        <li><a class="dropdown-item" th:href="@{/animais}"><i class="fas fa-list me-2"></i>Listar Animais</a></li>
+                        <li><a class="dropdown-item" th:href="@{/animais/novo}"><i class="fas fa-plus me-2"></i>Cadastrar Animal</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/animais/adocao}"><i class="fas fa-heart me-2"></i>Para Adoção</a></li>
+                        <li><a class="dropdown-item" th:href="@{/animais/tratamento}"><i class="fas fa-stethoscope me-2"></i>Em Tratamento</a></li>
+                    </th:block>
+                </li>
+                <li th:replace="~{layouts/fragments/navigation :: nav-dropdown('adocoes', 'Adoções', 'home', ~{:: adocoes-menu})}">
+                    <th:block th:ref="adocoes-menu">
+                        <li><a class="dropdown-item" th:href="@{/adocoes}"><i class="fas fa-list me-2"></i>Processos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/adocoes/nova}"><i class="fas fa-plus me-2"></i>Nova Adoção</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/tutores}"><i class="fas fa-users me-2"></i>Tutores</a></li>
+                    </th:block>
+                </li>
+                <li th:replace="~{layouts/fragments/navigation :: nav-dropdown('veterinario', 'Veterinário', 'stethoscope', ~{:: vet-menu})}">
+                    <th:block th:ref="vet-menu">
+                        <li><a class="dropdown-item" th:href="@{/consultas}"><i class="fas fa-calendar me-2"></i>Consultas</a></li>
+                        <li><a class="dropdown-item" th:href="@{/boletim}"><i class="fas fa-file-medical me-2"></i>Boletins Médicos</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/vacinas}"><i class="fas fa-syringe me-2"></i>Vacinas</a></li>
+                        <li><a class="dropdown-item" th:href="@{/medicamentos}"><i class="fas fa-pills me-2"></i>Medicamentos</a></li>
+                    </th:block>
+                </li>
+                <li th:replace="~{layouts/fragments/navigation :: nav-item('/resgates', 'Resgates', 'life-ring')}"></li>
+            </ul>
+
+            <!-- Menu de Usuário e Configurações -->
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <!-- Busca Rápida -->
+                <li class="nav-item d-none d-lg-block">
+                    <form class="d-flex search-form" role="search">
+                        <div class="input-group">
+                            <input class="form-control" type="search" placeholder="Buscar..." aria-label="Buscar">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </li>
+
+                <!-- Notificações -->
+                <li th:replace="~{layouts/fragments/navigation :: nav-notifications}"></li>
+
+                <!-- Toggle de Tema -->
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link theme-toggle" 
+                            type="button" 
+                            aria-label="Alternar tema"
+                            title="Alternar tema">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                </li>
+
+                <!-- Menu de Usuário -->
+                <li th:replace="~{layouts/fragments/navigation :: nav-user-menu}"></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================================ -->
+<!-- NAVIGATION COMPONENTS - Componentes reutilizáveis do menu                  -->
+<!-- ============================================================================ -->
+
+<!-- Item de Menu Simples -->
+<li th:fragment="nav-item(url, text, icon)" class="nav-item">
+    <a class="nav-link" 
+       th:href="@{${url}}" 
+       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.startsWith(url) ? 'active' : ''}"
+       th:aria-current="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.startsWith(url) ? 'page' : null}">
+        <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
+        <span th:text="${text}">Menu Item</span>
+    </a>
+</li>
+
+<!-- Dropdown Menu -->
+<li th:fragment="nav-dropdown(section, text, icon, items)" class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" 
+       href="#" 
+       role="button" 
+       data-bs-toggle="dropdown" 
+       aria-expanded="false"
+       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.contains(section) ? 'active' : ''}">
+        <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
+        <span th:text="${text}">Dropdown</span>
+    </a>
+    <ul class="dropdown-menu" th:replace="${items}">
+        <!-- Items do dropdown serão inseridos aqui -->
+    </ul>
+</li>
+
+<!-- Notificações -->
+<li th:fragment="nav-notifications" class="nav-item dropdown">
+    <a class="nav-link position-relative" 
+       href="#" 
+       role="button" 
+       data-bs-toggle="dropdown" 
+       aria-expanded="false"
+       aria-label="Notificações">
+        <i class="fas fa-bell"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+              th:if="${unreadNotificationsCount > 0}"
+              th:text="${unreadNotificationsCount}">
+            0
+        </span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end notifications-dropdown">
+        <div class="dropdown-header">
+            <h6 class="mb-0">Notificações</h6>
+            <span class="badge bg-primary rounded-pill" th:text="${unreadNotificationsCount ?: 0}">0</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <div class="notifications-list">
+            <div th:if="${notifications == null or notifications.isEmpty()}" class="dropdown-item-text text-center text-muted">
+                <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                Nenhuma notificação
+            </div>
+            <div th:each="notification : ${notifications}" class="notification-item dropdown-item">
+                <div class="d-flex">
+                    <div class="notification-icon me-3">
+                        <i th:class="${'fas fa-' + notification.icon}" th:classappend="${'text-' + notification.type}"></i>
+                    </div>
+                    <div class="notification-content flex-grow-1">
+                        <h6 class="notification-title" th:text="${notification.title}">Título</h6>
+                        <p class="notification-text mb-1" th:text="${notification.message}">Mensagem</p>
+                        <small class="text-muted" th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm')}">Data</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-center" th:href="@{/notifications}">
+            <i class="fas fa-eye me-2"></i>Ver todas as notificações
+        </a>
+    </div>
+</li>
+
+<!-- Menu de Usuário -->
+<li th:fragment="nav-user-menu" class="nav-item dropdown" sec:authorize="isAuthenticated()">
+    <a class="nav-link dropdown-toggle user-menu" 
+       href="#" 
+       role="button" 
+       data-bs-toggle="dropdown" 
+       aria-expanded="false">
+        <img class="user-avatar me-2" 
+             th:src="${user?.avatar ?: '/images/default-avatar.png'}" 
+             th:alt="${user?.name ?: 'Usuário'}"
+             width="32" height="32">
+        <span class="user-name d-none d-md-inline" 
+              th:text="${user?.name ?: 'Usuário'}" 
+              sec:authentication="name">Usuário</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li class="dropdown-header">
+            <div class="user-info">
+                <strong th:text="${user?.name}" sec:authentication="name">Nome do Usuário</strong>
+                <small class="text-muted" th:text="${user?.email}" sec:authentication="principal.email">email@exemplo.com</small>
+            </div>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" th:href="@{/profile}"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
+        <li><a class="dropdown-item" th:href="@{/settings}"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <a class="dropdown-item" th:href="@{/admin}"><i class="fas fa-shield-alt me-2"></i>Administração</a>
+        </li>
+        <li sec:authorize="hasRole('ADMIN')"><hr class="dropdown-divider"></li>
+        <li>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="dropdown-item text-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i>Sair
+                </button>
+            </form>
+        </li>
+    </ul>
+</li>
+
+<!-- Menu para usuários não autenticados -->
+<li th:fragment="nav-guest-menu" class="nav-item" sec:authorize="!isAuthenticated()">
+    <a class="nav-link btn btn-primary text-white px-3" th:href="@{/login}">
+        <i class="fas fa-sign-in-alt me-2"></i>Entrar
+    </a>
+</li>
+
+</th:block>

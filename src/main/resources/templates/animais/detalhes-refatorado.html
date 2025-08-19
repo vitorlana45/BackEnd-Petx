@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/master :: layout(~{::title}, ~{::content})}"
+      lang="pt-BR">
+
+<title>Detalhes do Animal - [[${animal.nome}]]</title>
+
+<!-- Conteúdo Principal -->
+<div th:fragment="content">
+    <!-- Breadcrumb -->
+    <div th:replace="~{layouts/fragments/breadcrumb :: breadcrumb(${breadcrumbs})}"></div>
+
+    <!-- Cabeçalho da Página -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title mb-2">
+                <i class="fas fa-paw me-2 text-primary"></i>
+                <span th:text="${animal.nome}">Rex</span>
+                <div th:replace="~{components/badges :: status-badge(${animal.status})}"></div>
+            </h1>
+            <p class="text-muted mb-0">
+                <i class="fas fa-clock me-1"></i>
+                Cadastrado em <span th:text="${#temporals.format(animal.dataCadastro, 'dd/MM/yyyy')}">01/01/2024</span>
+            </p>
+        </div>
+        <div class="page-actions">
+            <a th:href="@{/animais/{id}/editar(id=${animal.id})}" class="btn btn-outline-primary me-2">
+                <i class="fas fa-edit me-2"></i>Editar
+            </a>
+            <button type="button" class="btn btn-outline-danger" 
+                    th:onclick="'confirmDelete(' + ${animal.id} + ', \'' + ${animal.nome} + '\')'">
+                <i class="fas fa-trash me-2"></i>Excluir
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Coluna Principal - Informações do Animal -->
+        <div class="col-lg-8">
+            <!-- Galeria de Fotos -->
+            <div class="card mb-4" th:if="${animal.fotos != null and !animal.fotos.empty}">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-images me-2"></i>Fotos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="animalCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item" 
+                                 th:each="foto, iterStat : ${animal.fotos}"
+                                 th:classappend="${iterStat.first} ? 'active' : ''">
+                                <img th:src="@{'/uploads/' + ${foto.nomeArquivo}}" 
+                                     class="d-block w-100 rounded" 
+                                     style="height: 400px; object-fit: cover;"
+                                     th:alt="${animal.nome}">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#animalCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#animalCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações Básicas -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Informações Básicas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">Espécie:</label>
+                                <span class="info-value" th:text="${animal.especie.nome}">Cão</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">Raça:</label>
+                                <span class="info-value" th:text="${animal.raca ?: 'SRD'}">Labrador</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <label class="info-label">Idade:</label>
+                                <span class="info-value">
+                                    <span th:text="${animal.idade}">2</span> anos
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <label class="info-label">Gênero:</label>
+                                <span class="info-value">
+                                    <div th:replace="~{components/badges :: custom-badge(${animal.genero.nome}, ${animal.genero == 'MACHO'} ? 'primary' : 'pink')}"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <label class="info-label">Porte:</label>
+                                <span class="info-value" th:text="${animal.porte.nome}">Médio</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">Peso:</label>
+                                <span class="info-value">
+                                    <span th:text="${animal.peso}">15.5</span> kg
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">Cor/Pelagem:</label>
+                                <span class="info-value" th:text="${animal.cor}">Marrom e branco</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saúde -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-heartbeat me-2"></i>Informações de Saúde
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">Vacinação:</label>
+                                <span class="info-value">
+                                    <div th:replace="~{components/badges :: vaccination-badge(${animal.vacinado})}"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <label class="info-label">Castração:</label>
+                                <span class="info-value">
+                                    <div th:replace="~{components/badges :: custom-badge(${animal.castrado} ? 'Castrado' : 'Não castrado', ${animal.castrado} ? 'success' : 'warning')}"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" th:if="${animal.dataUltimaVacina}">
+                            <div class="info-item">
+                                <label class="info-label">Última Vacina:</label>
+                                <span class="info-value" th:text="${#temporals.format(animal.dataUltimaVacina, 'dd/MM/yyyy')}">15/03/2024</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" th:if="${animal.dataCastracao}">
+                            <div class="info-item">
+                                <label class="info-label">Data da Castração:</label>
+                                <span class="info-value" th:text="${#temporals.format(animal.dataCastracao, 'dd/MM/yyyy')}">10/01/2024</span>
+                            </div>
+                        </div>
+                        <div class="col-12" th:if="${animal.observacoesSaude}">
+                            <div class="info-item">
+                                <label class="info-label">Observações de Saúde:</label>
+                                <div class="info-value mt-2">
+                                    <div class="alert alert-info">
+                                        <p class="mb-0" th:text="${animal.observacoesSaude}">Animal saudável, sem restrições.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personalidade e Comportamento -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-heart me-2"></i>Personalidade e Comportamento
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <label class="info-label">Temperamento:</label>
+                                <span class="info-value">
+                                    <div th:replace="~{components/badges :: custom-badge(${animal.docil} ? 'Dócil' : 'Agitado', ${animal.docil} ? 'success' : 'warning')}"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <label class="info-label">Sociabilidade:</label>
+                                <span class="info-value">
+                                    <div th:replace="~{components/badges :: custom-badge(${animal.sociavel} ? 'Sociável' : 'Reservado', ${animal.sociavel} ? 'success' : 'secondary')}"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <label class="info-label">Com Crianças:</label>
+                                <span class="info-value">
+                                    <div th:replace="~{components/badges :: custom-badge(${animal.bomComCriancas} ? 'Adequado' : 'Não recomendado', ${animal.bomComCriancas} ? 'success' : 'warning')}"></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" th:if="${animal.nivelEnergia}">
+                            <div class="info-item">
+                                <label class="info-label">Nível de Energia:</label>
+                                <span class="info-value" th:text="${animal.nivelEnergia.nome}">Alto</span>
+                            </div>
+                        </div>
+                        <div class="col-12" th:if="${animal.personalidade}">
+                            <div class="info-item">
+                                <label class="info-label">Descrição da Personalidade:</label>
+                                <div class="info-value mt-2">
+                                    <p class="text-muted mb-0" th:text="${animal.personalidade}">Animal muito carinhoso e brincalhão...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Histórico -->
+            <div class="card mb-4" th:if="${animal.historiaResgate}">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-history me-2"></i>História do Resgate
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-light">
+                        <p class="mb-0" th:text="${animal.historiaResgate}">Animal foi encontrado abandonado...</p>
+                    </div>
+                    <div class="row mt-3" th:if="${animal.dataResgate}">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                Data do Resgate: <span th:text="${#temporals.format(animal.dataResgate, 'dd/MM/yyyy')}">01/01/2024</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar - Informações de Adoção e Ações -->
+        <div class="col-lg-4">
+            <!-- Status de Adoção -->
+            <div class="card mb-4 border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-home me-2"></i>Status de Adoção
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div th:if="${animal.disponivelAdocao}">
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                <h6>Disponível para Adoção!</h6>
+                            </div>
+                        </div>
+                        <div th:unless="${animal.disponivelAdocao}">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-clock fa-2x mb-2"></i>
+                                <h6>Não Disponível</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div th:if="${animal.urgenciaAdocao}">
+                        <div class="info-item mb-3">
+                            <label class="info-label">Prioridade:</label>
+                            <div th:replace="~{components/badges :: priority-badge(${animal.urgenciaAdocao})}"></div>
+                        </div>
+                    </div>
+
+                    <div th:if="${animal.disponivelAdocao}">
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-success">
+                                <i class="fas fa-heart me-2"></i>Tenho Interesse
+                            </a>
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-share me-2"></i>Compartilhar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requisitos para Adoção -->
+            <div class="card mb-4" th:if="${animal.requisitosAdocao}">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list-check me-2"></i>Requisitos Especiais
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p class="mb-0" th:text="${animal.requisitosAdocao}">Casa com quintal grande...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Localização -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-map-marker-alt me-2"></i>Localização
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">
+                        <i class="fas fa-location-dot me-2 text-primary"></i>
+                        <span th:text="${animal.localizacao}">Abrigo Central</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Informações de Contato -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-phone me-2"></i>Contato
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <i class="fas fa-envelope me-2 text-primary"></i>
+                        contato@petx.com
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-phone me-2 text-primary"></i>
+                        (11) 99999-9999
+                    </p>
+                    <p class="mb-0">
+                        <i class="fab fa-whatsapp me-2 text-success"></i>
+                        WhatsApp
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS específico da página -->
+<style>
+.info-item {
+    margin-bottom: 1rem;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #212529;
+    font-size: 1rem;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    padding: 1rem;
+}
+</style>
+
+<!-- Scripts específicos da página -->
+<script th:inline="javascript">
+function confirmDelete(id, nome) {
+    if (confirm('Tem certeza que deseja excluir o animal "' + nome + '"?')) {
+        // Criar um formulário e submeter
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/animais/' + id;
+        
+        const hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = '_method';
+        hiddenField.value = 'DELETE';
+        
+        form.appendChild(hiddenField);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
+
+</html>

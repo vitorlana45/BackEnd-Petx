@@ -1,0 +1,53 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+
+<!-- ============================================================================ -->
+<!-- BREADCRUMB FRAGMENT - Navegação hierárquica                               -->
+<!-- ============================================================================ -->
+
+<nav th:fragment="breadcrumb" aria-label="breadcrumb" class="breadcrumb-nav" th:if="${breadcrumbs != null and not #lists.isEmpty(breadcrumbs)}">
+    <div class="container-fluid">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}" class="breadcrumb-link">
+                    <i class="fas fa-home me-1"></i>
+                    <span class="d-none d-sm-inline">Dashboard</span>
+                </a>
+            </li>
+            <li th:each="breadcrumb, iterStat : ${breadcrumbs}" 
+                class="breadcrumb-item"
+                th:classappend="${iterStat.last} ? 'active' : ''">
+                <a th:if="${not iterStat.last and breadcrumb.url != null}" 
+                   th:href="${breadcrumb.url}" 
+                   th:text="${breadcrumb.title}"
+                   class="breadcrumb-link">
+                   Página
+                </a>
+                <span th:if="${iterStat.last or breadcrumb.url == null}" 
+                      th:text="${breadcrumb.title}"
+                      th:aria-current="${iterStat.last} ? 'page' : null">
+                      Página Atual
+                </span>
+            </li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Breadcrumb simples para páginas que não usam lista -->
+<nav th:fragment="simple-breadcrumb(sections)" aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container-fluid">
+        <ol class="breadcrumb mb-0" th:with="sectionsList=${#strings.listSplit(sections, '|')}">
+            <li class="breadcrumb-item">
+                <a th:href="@{/}" class="breadcrumb-link">
+                    <i class="fas fa-home me-1"></i>Dashboard
+                </a>
+            </li>
+            <li th:each="section, iterStat : ${sectionsList}" 
+                class="breadcrumb-item"
+                th:classappend="${iterStat.last} ? 'active' : ''">
+                <span th:text="${section}" th:aria-current="${iterStat.last} ? 'page' : null">Seção</span>
+            </li>
+        </ol>
+    </div>
+</nav>
+
+</th:block>

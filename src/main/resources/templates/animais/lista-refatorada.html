@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/list :: layout(~{::title}, ~{::filtersContent}, ~{::tableContent})}"
+      lang="pt-BR">
+
+<title>Lista de Animais</title>
+
+<!-- Filtros da Listagem -->
+<div th:fragment="filtersContent">
+    <form method="get" th:action="@{/animais}" class="row g-3">
+        <div class="col-md-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" name="nome" th:value="${param.nome}">
+        </div>
+        <div class="col-md-3">
+            <label for="especie" class="form-label">Espécie</label>
+            <select class="form-select" id="especie" name="especie">
+                <option value="">Todas</option>
+                <option value="CACHORRO" th:selected="${param.especie == 'CACHORRO'}">Cachorro</option>
+                <option value="GATO" th:selected="${param.especie == 'GATO'}">Gato</option>
+                <option value="COELHO" th:selected="${param.especie == 'COELHO'}">Coelho</option>
+                <option value="PASSARO" th:selected="${param.especie == 'PASSARO'}">Pássaro</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" name="status">
+                <option value="">Todos</option>
+                <option value="DISPONIVEL" th:selected="${param.status == 'DISPONIVEL'}">Disponível</option>
+                <option value="ADOTADO" th:selected="${param.status == 'ADOTADO'}">Adotado</option>
+                <option value="TRATAMENTO" th:selected="${param.status == 'TRATAMENTO'}">Em Tratamento</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">
+                <i class="fas fa-search me-1"></i>Filtrar
+            </button>
+            <a th:href="@{/animais}" class="btn btn-outline-secondary">
+                <i class="fas fa-times me-1"></i>Limpar
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Tabela de Animais -->
+<div th:fragment="tableContent">
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Espécie/Raça</th>
+                <th>Idade</th>
+                <th>Status</th>
+                <th>Localização</th>
+                <th>Cadastro</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="animal : ${animals.content}">
+                <td>
+                    <img th:src="${animal.foto ?: '/images/default-pet.jpg'}" 
+                         th:alt="${animal.nome}"
+                         class="rounded-circle"
+                         width="40" height="40">
+                </td>
+                <td>
+                    <strong th:text="${animal.nome}">Nome</strong>
+                    <br>
+                    <small class="text-muted" th:text="${'#' + animal.id}">ID</small>
+                </td>
+                <td>
+                    <div th:replace="~{components/badges :: animal-type-badge(${animal.especie})}"></div>
+                    <br>
+                    <small th:text="${animal.raca}">Raça</small>
+                </td>
+                <td>
+                    <div th:replace="~{components/badges :: age-badge(${animal.idade})}"></div>
+                    <br>
+                    <div th:replace="~{components/badges :: gender-badge(${animal.genero})}"></div>
+                </td>
+                <td>
+                    <div th:replace="~{components/badges :: status-badge(${animal.status})}"></div>
+                    <br>
+                    <div th:if="${animal.disponibilidadeAdocao}" 
+                         th:replace="~{components/badges :: adoption-badge(${animal.disponibilidadeAdocao})}"></div>
+                </td>
+                <td>
+                    <div th:replace="~{components/badges :: location-badge(${animal.localizacao})}"></div>
+                </td>
+                <td>
+                    <div th:replace="~{components/badges :: date-badge(${animal.dataCadastro})}"></div>
+                    <br>
+                    <div th:replace="~{components/badges :: time-badge(${animal.dataCadastro})}"></div>
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a th:href="@{/animais/{id}(id=${animal.id})}" 
+                           class="btn btn-outline-primary"
+                           title="Ver detalhes">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a th:href="@{/animais/{id}/editar(id=${animal.id})}" 
+                           class="btn btn-outline-secondary"
+                           title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button type="button" 
+                                class="btn btn-outline-danger"
+                                th:onclick="'confirmDelete(' + ${animal.id} + ', \'' + ${animal.nome} + '\')'"
+                                title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(animals.content)}">
+                <td colspan="8" class="text-center py-5">
+                    <div class="empty-state">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Nenhum animal encontrado</h5>
+                        <p class="text-muted">Tente ajustar os filtros ou cadastrar um novo animal.</p>
+                        <a href="/animais/novo" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Cadastrar Animal
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</html>

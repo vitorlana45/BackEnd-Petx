@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(title, head, content, scripts)" 
+      lang="pt-BR" 
+      data-theme="light">
+
+<head th:replace="~{layouts/fragments/head :: head(${title}, ${head})}"></head>
+
+<body class="main-layout">
+    <!-- Skip Navigation para Acessibilidade -->
+    <a href="#main-content" class="skip-link visually-hidden-focusable">
+        Pular para o conteúdo principal
+    </a>
+
+    <!-- Loader Global -->
+    <div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2">Carregando PetX...</p>
+        </div>
+    </div>
+
+    <!-- Layout Principal -->
+    <div class="app-wrapper">
+        <!-- Barra de Navegação -->
+        <nav th:replace="~{layouts/fragments/navigation :: navigation}"></nav>
+
+        <!-- Conteúdo Principal -->
+        <main id="main-content" class="main-content" role="main">
+            <!-- Breadcrumb (será inserido pelas páginas quando necessário) -->
+            <div th:replace="~{layouts/fragments/breadcrumb :: breadcrumb}"></div>
+            
+            <!-- Alerts e Mensagens -->
+            <div th:replace="~{layouts/fragments/alerts :: alerts}"></div>
+            
+            <!-- Conteúdo da Página -->
+            <div th:replace="${content}" class="page-content">
+                <!-- Conteúdo dinâmico inserido aqui -->
+            </div>
+        </main>
+
+        <!-- Sidebar Flutuante (para notificações, etc.) -->
+        <aside th:replace="~{layouts/fragments/sidebar :: floating-sidebar}"></aside>
+    </div>
+
+    <!-- Rodapé -->
+    <footer th:replace="~{layouts/fragments/footer :: footer}"></footer>
+
+    <!-- Modais Globais -->
+    <div th:replace="~{layouts/fragments/modals :: global-modals}"></div>
+
+    <!-- Scripts Base -->
+    <div th:replace="~{layouts/fragments/scripts :: base-scripts}"></div>
+    
+    <!-- Scripts Específicos da Página -->
+    <th:block th:replace="${scripts}"></th:block>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+</body>
+</html>
