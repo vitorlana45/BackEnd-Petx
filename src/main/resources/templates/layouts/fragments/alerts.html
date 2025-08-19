@@ -1,88 +1,88 @@
-<th:block xmlns:th="http://www.thymeleaf.org">
+<!--<th:block xmlns:th="http://www.thymeleaf.org">-->
 
-<!-- ============================================================================ -->
-<!-- ALERTS FRAGMENT - Sistema de alertas e mensagens                          -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; ALERTS FRAGMENT - Sistema de alertas e mensagens                          &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<div th:fragment="alerts" class="alerts-container">
-    <!-- Alert de Sucesso -->
-    <div th:if="${successMessage}" 
-         class="alert alert-success alert-dismissible fade show" 
-         role="alert">
-        <i class="fas fa-check-circle me-2"></i>
-        <span th:text="${successMessage}">Operação realizada com sucesso!</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
+<!--<div th:fragment="alerts" class="alerts-container">-->
+<!--    &lt;!&ndash; Alert de Sucesso &ndash;&gt;-->
+<!--    <div th:if="${successMessage}" -->
+<!--         class="alert alert-success alert-dismissible fade show" -->
+<!--         role="alert">-->
+<!--        <i class="fas fa-check-circle me-2"></i>-->
+<!--        <span th:text="${successMessage}">Operação realizada com sucesso!</span>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>-->
+<!--    </div>-->
 
-    <!-- Alert de Erro -->
-    <div th:if="${errorMessage}" 
-         class="alert alert-danger alert-dismissible fade show" 
-         role="alert">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        <span th:text="${errorMessage}">Ocorreu um erro na operação!</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
+<!--    &lt;!&ndash; Alert de Erro &ndash;&gt;-->
+<!--    <div th:if="${errorMessage}" -->
+<!--         class="alert alert-danger alert-dismissible fade show" -->
+<!--         role="alert">-->
+<!--        <i class="fas fa-exclamation-circle me-2"></i>-->
+<!--        <span th:text="${errorMessage}">Ocorreu um erro na operação!</span>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>-->
+<!--    </div>-->
 
-    <!-- Alert de Aviso -->
-    <div th:if="${warningMessage}" 
-         class="alert alert-warning alert-dismissible fade show" 
-         role="alert">
-        <i class="fas fa-exclamation-triangle me-2"></i>
-        <span th:text="${warningMessage}">Atenção para esta informação!</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
+<!--    &lt;!&ndash; Alert de Aviso &ndash;&gt;-->
+<!--    <div th:if="${warningMessage}" -->
+<!--         class="alert alert-warning alert-dismissible fade show" -->
+<!--         role="alert">-->
+<!--        <i class="fas fa-exclamation-triangle me-2"></i>-->
+<!--        <span th:text="${warningMessage}">Atenção para esta informação!</span>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>-->
+<!--    </div>-->
 
-    <!-- Alert de Informação -->
-    <div th:if="${infoMessage}" 
-         class="alert alert-info alert-dismissible fade show" 
-         role="alert">
-        <i class="fas fa-info-circle me-2"></i>
-        <span th:text="${infoMessage}">Informação importante!</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
+<!--    &lt;!&ndash; Alert de Informação &ndash;&gt;-->
+<!--    <div th:if="${infoMessage}" -->
+<!--         class="alert alert-info alert-dismissible fade show" -->
+<!--         role="alert">-->
+<!--        <i class="fas fa-info-circle me-2"></i>-->
+<!--        <span th:text="${infoMessage}">Informação importante!</span>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>-->
+<!--    </div>-->
 
-    <!-- Alerts de Validação (Spring Boot) -->
-    <div th:if="${#fields.hasAnyErrors()}" 
-         class="alert alert-danger alert-dismissible fade show" 
-         role="alert">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        <strong>Corrija os seguintes erros:</strong>
-        <ul class="mb-0 mt-2">
-            <li th:each="error : ${#fields.allErrors()}" th:text="${error}">Erro de validação</li>
-        </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-</div>
+<!--    &lt;!&ndash; Alerts de Validação (Spring Boot) &ndash;&gt;-->
+<!--    <div th:if="${#fields.hasAnyErrors()}" -->
+<!--         class="alert alert-danger alert-dismissible fade show" -->
+<!--         role="alert">-->
+<!--        <i class="fas fa-exclamation-circle me-2"></i>-->
+<!--        <strong>Corrija os seguintes erros:</strong>-->
+<!--        <ul class="mb-0 mt-2">-->
+<!--            <li th:each="error : ${#fields.allErrors()}" th:text="${error}">Erro de validação</li>-->
+<!--        </ul>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>-->
+<!--    </div>-->
+<!--</div>-->
 
-<!-- ============================================================================ -->
-<!-- COMPONENTES DE ALERTA ESPECÍFICOS                                          -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; COMPONENTES DE ALERTA ESPECÍFICOS                                          &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<!-- Alert customizável -->
-<div th:fragment="custom-alert(type, icon, title, message, dismissible)" 
-     class="alert" 
-     th:classappend="${'alert-' + type + (dismissible ? ' alert-dismissible fade show' : '')}"
-     role="alert">
-    <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
-    <strong th:text="${title}" th:if="${title != null}">Título</strong>
-    <span th:text="${message}">Mensagem</span>
-    <button th:if="${dismissible}" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-</div>
+<!--&lt;!&ndash; Alert customizável &ndash;&gt;-->
+<!--<div th:fragment="custom-alert(type, icon, title, message, dismissible)" -->
+<!--     class="alert" -->
+<!--     th:classappend="${'alert-' + type + (dismissible ? ' alert-dismissible fade show' : '')}"-->
+<!--     role="alert">-->
+<!--    <i th:class="${'fas fa-' + icon + ' me-2'}"></i>-->
+<!--    <strong th:text="${title}" th:if="${title != null}">Título</strong>-->
+<!--    <span th:text="${message}">Mensagem</span>-->
+<!--    <button th:if="${dismissible}" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>-->
+<!--</div>-->
 
-<!-- Alert de confirmação para ações críticas -->
-<div th:fragment="confirmation-alert(message, confirmUrl, cancelUrl)" 
-     class="alert alert-warning" 
-     role="alert">
-    <i class="fas fa-question-circle me-2"></i>
-    <span th:text="${message}">Confirma esta ação?</span>
-    <div class="mt-3">
-        <a th:href="${confirmUrl}" class="btn btn-sm btn-danger me-2">
-            <i class="fas fa-check me-1"></i>Confirmar
-        </a>
-        <a th:href="${cancelUrl}" class="btn btn-sm btn-secondary">
-            <i class="fas fa-times me-1"></i>Cancelar
-        </a>
-    </div>
-</div>
+<!--&lt;!&ndash; Alert de confirmação para ações críticas &ndash;&gt;-->
+<!--<div th:fragment="confirmation-alert(message, confirmUrl, cancelUrl)" -->
+<!--     class="alert alert-warning" -->
+<!--     role="alert">-->
+<!--    <i class="fas fa-question-circle me-2"></i>-->
+<!--    <span th:text="${message}">Confirma esta ação?</span>-->
+<!--    <div class="mt-3">-->
+<!--        <a th:href="${confirmUrl}" class="btn btn-sm btn-danger me-2">-->
+<!--            <i class="fas fa-check me-1"></i>Confirmar-->
+<!--        </a>-->
+<!--        <a th:href="${cancelUrl}" class="btn btn-sm btn-secondary">-->
+<!--            <i class="fas fa-times me-1"></i>Cancelar-->
+<!--        </a>-->
+<!--    </div>-->
+<!--</div>-->
 
-</th:block>
+<!--</th:block>-->

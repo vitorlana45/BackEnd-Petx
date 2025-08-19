@@ -21,194 +21,66 @@
                 data-bs-target="#navbarNav"
                 aria-controls="navbarNav" 
                 aria-expanded="false" 
-                th:aria-label="#{acessibilidade.alternarMenu}">
+                aria-label="Alternar menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Conteúdo do menu colapsável -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <!-- Dashboard - Todos os usuários autenticados -->
+                <!-- Dashboard -->
                 <li class="nav-item">
-                    <a class="nav-link" 
-                       th:classappend="${currentPage == '/dashboard' ? 'active' : ''}"
-                       href="#" 
-                       th:href="@{/dashboard}"
-                       th:aria-current="${currentPage == '/dashboard' ? 'page' : null}">
-                        <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>
-                        <span th:text="#{nav.home}">Dashboard</span>
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                     </a>
                 </li>
 
-                <!-- Pets - ADMIN e COLABORADOR -->
+                <!-- Animais -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
-                    <a class="nav-link" 
-                       th:classappend="${currentPage != null && currentPage.startsWith('/animais') ? 'active' : ''}"
-                       href="#" 
-                       th:href="@{/animais}"
-                       th:aria-current="${currentPage != null && currentPage.startsWith('/animais') ? 'page' : null}">
-                        <i class="fas fa-paw me-1" aria-hidden="true"></i>
-                        <span th:text="#{nav.animais}">Animais</span>
+                    <a class="nav-link" th:href="@{/animais}">
+                        <i class="fas fa-paw me-1"></i>Animais
                     </a>
                 </li>
 
-                <!-- Tutores - ADMIN e COLABORADOR -->
+                <!-- Tutores -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
-                    <a class="nav-link" 
-                       th:classappend="${currentPage != null && currentPage.startsWith('/tutores') ? 'active' : ''}"
-                       href="#" 
-                       th:href="@{/tutores}"
-                       th:aria-current="${currentPage != null && currentPage.startsWith('/tutores') ? 'page' : null}">
-                        <i class="fas fa-user-friends me-1" aria-hidden="true"></i>
-                        <span th:text="#{nav.adocoes}">Adotantes</span>
+                    <a class="nav-link" th:href="@{/tutores}">
+                        <i class="fas fa-user-friends me-1"></i>Tutores
                     </a>
                 </li>
 
-                <!-- Resgates - ADMIN e COLABORADOR -->
+                <!-- Boletins -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
-                    <a class="nav-link"
-                       th:classappend="${currentPage != null && currentPage.startsWith('/resgates') ? 'active' : ''}"
-                       th:href="@{/resgates}"
-                       th:aria-current="${currentPage != null && currentPage.startsWith('/resgates') ? 'page' : null}">
-                        <i class="fas fa-clipboard-list me-1" aria-hidden="true"></i>
-                        <span>Resgates</span>
+                    <a class="nav-link" th:href="@{/boletins}">
+                        <i class="fas fa-clipboard-list me-1"></i>Boletins
                     </a>
                 </li>
+            </ul>
 
-                <!-- Menu Administrativo - APENAS ADMIN -->
-                <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link dropdown-toggle" 
-                       th:classappend="${currentPage != null && currentPage.startsWith('/admin') ? 'active' : ''}"
-                       href="#" 
-                       id="adminDropdown" 
-                       role="button" 
-                       data-bs-toggle="dropdown" 
-                       aria-expanded="false"
-                       th:aria-current="${currentPage != null && currentPage.startsWith('/admin') ? 'page' : null}">
-                        <i class="fas fa-cog me-1" aria-hidden="true"></i>
-                        <span th:text="#{nav.configuracoes}">Administração</span>
+            <!-- Menu do usuário -->
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i>
+                        <span sec:authentication="name">Usuário</span>
                     </a>
-                    <ul class="dropdown-menu shadow-lg" aria-labelledby="adminDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <a class="dropdown-item" 
-                               th:classappend="${currentPage == '/admin' ? 'active' : ''}"
-                               th:href="@{/admin}"
-                               th:aria-current="${currentPage == '/admin' ? 'page' : null}">
-                                <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>Painel Admin
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" 
-                               th:classappend="${currentPage != null && currentPage.startsWith('/admin/usuarios') ? 'active' : ''}"
-                               th:href="@{/admin/usuarios}"
-                               th:aria-current="${currentPage != null && currentPage.startsWith('/admin/usuarios') ? 'page' : null}">
-                                <i class="fas fa-user-cog me-2" aria-hidden="true"></i>Usuários
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" 
-                               th:classappend="${currentPage != null && currentPage.startsWith('/admin/voluntarios') ? 'active' : ''}"
-                               th:href="@{/admin/voluntarios}"
-                               th:aria-current="${currentPage != null && currentPage.startsWith('/admin/voluntarios') ? 'page' : null}">
-                                <i class="fas fa-hands-helping me-2" aria-hidden="true"></i>Voluntários
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" 
-                               th:classappend="${currentPage != null && currentPage.startsWith('/admin/doacoes') ? 'active' : ''}"
-                               th:href="@{/admin/doacoes}"
-                               th:aria-current="${currentPage != null && currentPage.startsWith('/admin/doacoes') ? 'page' : null}">
-                                <i class="fas fa-gift me-2" aria-hidden="true"></i>Doações
+                            <a class="dropdown-item" th:href="@{/perfil}">
+                                <i class="fas fa-user-edit me-2"></i>Perfil
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" 
-                               th:classappend="${currentPage != null && currentPage.startsWith('/admin/relatorios') ? 'active' : ''}"
-                               th:href="@{/admin/relatorios}"
-                               th:aria-current="${currentPage != null && currentPage.startsWith('/admin/relatorios') ? 'page' : null}">
-                                <i class="fas fa-chart-bar me-2" aria-hidden="true"></i>
-                                <span th:text="#{nav.relatorios}">Relatórios</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" 
-                               th:classappend="${currentPage != null && currentPage.startsWith('/admin/configuracoes') ? 'active' : ''}"
-                               th:href="@{/admin/configuracoes}"
-                               th:aria-current="${currentPage != null && currentPage.startsWith('/admin/configuracoes') ? 'page' : null}">
-                                <i class="fas fa-sliders-h me-2" aria-hidden="true"></i>
-                                <span th:text="#{nav.configuracoes}">Configurações</span>
-                            </a>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </li>
             </ul>
-
-            <!-- Ações à direita: toggle de tema + usuário -->
-            <div class="d-flex align-items-center gap-3">
-                <!-- Botão de alternar tema -->
-                <button id="theme-toggle" 
-                        class="btn btn-sm theme-toggle" 
-                        title="Alternar tema claro/escuro" 
-                        aria-label="Alternar tema claro/escuro"
-                        type="button">
-                    <i class="fas fa-moon" aria-hidden="true"></i>
-                </button>
-
-                <!-- Menu do usuário -->
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" 
-                           href="#" 
-                           id="userDropdown" 
-                           role="button"
-                           data-bs-toggle="dropdown" 
-                           aria-expanded="false"
-                           aria-label="Menu do usuário">
-                            <div class="avatar-circle me-2">
-                                <span class="avatar-initials" th:text="${#authentication != null ? #strings.substring(#authentication.name,0,1).toUpperCase() : 'U'}">U</span>
-                            </div>
-                            <span sec:authentication="name" class="d-none d-md-inline">Usuário</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="userDropdown">
-                            <li class="dropdown-item-text">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-circle me-2">
-                                        <span class="avatar-initials" th:text="${#authentication != null ? #strings.substring(#authentication.name,0,1).toUpperCase() : 'U'}">U</span>
-                                    </div>
-                                    <div>
-                                        <div class="fw-semibold" sec:authentication="name">Usuário</div>
-                                        <div class="small text-muted" sec:authentication="principal.authorities">Perfil</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item" href="#" th:href="@{/perfil}">
-                                    <i class="fas fa-user-edit me-2" aria-hidden="true"></i>
-                                    <span th:text="#{nav.usuario}">Meu Perfil</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" th:href="@{/configuracoes}">
-                                    <i class="fas fa-cog me-2" aria-hidden="true"></i>
-                                    <span th:text="#{nav.configuracoes}">Configurações</span>
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form th:action="@{/logout}" method="post" class="d-inline">
-                                    <!-- CSRF Token embutido automaticamente pelo Thymeleaf -->
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>
-                                        <span th:text="#{nav.sair}">Sair</span>
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 </nav>

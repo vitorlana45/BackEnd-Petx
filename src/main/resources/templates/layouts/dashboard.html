@@ -1,63 +1,63 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:replace="~{layouts/master :: layout(~{::title}, ~{::head}, ~{::content}, ~{::scripts})}"
-      lang="pt-BR">
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" -->
+<!--      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"-->
+<!--      th:replace="~{layouts/master :: layout(~{::title}, ~{::head}, ~{::content}, ~{::scripts})}"-->
+<!--      lang="pt-BR">-->
 
-<!-- ============================================================================ -->
-<!-- DASHBOARD LAYOUT - Layout específico para páginas administrativas          -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; DASHBOARD LAYOUT - Layout específico para páginas administrativas          &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<head th:fragment="head">
-    <!-- CSS específico do Dashboard -->
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    <link rel="stylesheet" th:href="@{/css/charts.css}">
-    <link rel="stylesheet" th:href="@{/css/widgets.css}">
-</head>
+<!--<head th:fragment="head">-->
+<!--    &lt;!&ndash; CSS específico do Dashboard &ndash;&gt;-->
+<!--    <link rel="stylesheet" th:href="@{/css/dashboard.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/charts.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/widgets.css}">-->
+<!--</head>-->
 
-<div th:fragment="content" class="dashboard-layout">
-    <!-- Header do Dashboard -->
-    <div class="dashboard-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h1 class="dashboard-title" th:text="${pageTitle ?: 'Dashboard'}">Dashboard</h1>
-                    <p class="dashboard-subtitle text-muted" th:text="${pageSubtitle}" th:if="${pageSubtitle}">
-                        Subtítulo da página
-                    </p>
-                </div>
-                <div class="col-auto">
-                    <!-- Ações do header (será inserido pelas páginas) -->
-                    <div th:replace="${headerActions}" class="dashboard-actions">
-                        <!-- Ações específicas da página -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!--<div th:fragment="content" class="dashboard-layout">-->
+<!--    &lt;!&ndash; Header do Dashboard &ndash;&gt;-->
+<!--    <div class="dashboard-header">-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="row align-items-center">-->
+<!--                <div class="col">-->
+<!--                    <h1 class="dashboard-title" th:text="${pageTitle ?: 'Dashboard'}">Dashboard</h1>-->
+<!--                    <p class="dashboard-subtitle text-muted" th:text="${pageSubtitle}" th:if="${pageSubtitle}">-->
+<!--                        Subtítulo da página-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--                <div class="col-auto">-->
+<!--                    &lt;!&ndash; Ações do header (será inserido pelas páginas) &ndash;&gt;-->
+<!--                    <div th:replace="${headerActions}" class="dashboard-actions">-->
+<!--                        &lt;!&ndash; Ações específicas da página &ndash;&gt;-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
-    <!-- Conteúdo Principal do Dashboard -->
-    <div class="dashboard-content">
-        <div class="container-fluid">
-            <!-- Stats Cards (se existirem) -->
-            <div th:if="${statsCards}" class="dashboard-stats mb-4">
-                <div th:replace="${statsCards}"></div>
-            </div>
+<!--    &lt;!&ndash; Conteúdo Principal do Dashboard &ndash;&gt;-->
+<!--    <div class="dashboard-content">-->
+<!--        <div class="container-fluid">-->
+<!--            &lt;!&ndash; Stats Cards (se existirem) &ndash;&gt;-->
+<!--            <div th:if="${statsCards}" class="dashboard-stats mb-4">-->
+<!--                <div th:replace="${statsCards}"></div>-->
+<!--            </div>-->
 
-            <!-- Widgets/Cards principais -->
-            <div class="dashboard-widgets">
-                <div th:replace="${pageContent}">
-                    <!-- Conteúdo específico da página será inserido aqui -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!--            &lt;!&ndash; Widgets/Cards principais &ndash;&gt;-->
+<!--            <div class="dashboard-widgets">-->
+<!--                <div th:replace="${pageContent}">-->
+<!--                    &lt;!&ndash; Conteúdo específico da página será inserido aqui &ndash;&gt;-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
-<th:block th:fragment="scripts">
-    <!-- Scripts específicos do Dashboard -->
-    <script th:replace="~{layouts/fragments/scripts :: dashboard-scripts}"></script>
-    <script th:replace="~{layouts/fragments/scripts :: csrf-config}"></script>
-</th:block>
+<!--<th:block th:fragment="scripts">-->
+<!--    &lt;!&ndash; Scripts específicos do Dashboard &ndash;&gt;-->
+<!--    <script th:replace="~{layouts/fragments/scripts :: dashboard-scripts}"></script>-->
+<!--    <script th:replace="~{layouts/fragments/scripts :: csrf-config}"></script>-->
+<!--</th:block>-->
 
-</html>
+<!--</html>-->

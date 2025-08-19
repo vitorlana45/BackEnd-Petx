@@ -1,71 +1,20 @@
-<!--
-  Fragmento para Filtros de Pesquisa
-  Uso: th:replace="~{fragmentos/filters :: search-filters(fields, action)}"
--->
-<div xmlns:th="http://www.thymeleaf.org"
-     th:fragment="search-filters(fields, action)"
-     class="card mb-4">
+<!-- Filtros Simples -->
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="search-filters" class="card mb-4">
     <div class="card-body">
-        <form method="get" th:action="${action ?: '#'}" class="row g-3">
-            <div th:each="field : ${fields}"
-                 th:class="${field.size ?: 'col-md-4'}">
-
-                <!-- Campo de texto -->
-                <div th:if="${field.type == 'text'}">
-                    <label th:for="${field.name}" class="form-label" th:text="${field.label}">Label</label>
-                    <input type="text"
-                           class="form-control"
-                           th:id="${field.name}"
-                           th:name="${field.name}"
-                           th:value="${param.get(field.name)}"
-                           th:placeholder="${field.placeholder ?: 'Digite...'}">
-                </div>
-
-                <!-- Campo select -->
-                <div th:if="${field.type == 'select'}">
-                    <label th:for="${field.name}" class="form-label" th:text="${field.label}">Label</label>
-                    <select class="form-select" th:id="${field.name}" th:name="${field.name}">
-                        <option value="" th:text="${field.emptyOption ?: 'Todos'}">Todos</option>
-                        <option th:each="option : ${field.options}"
-                                th:value="${option.key}"
-                                th:selected="${param.get(field.name) == option.key}"
-                                th:text="${option.value}">Opção</option>
-                    </select>
-                </div>
-
-                <!-- Campo de data -->
-                <div th:if="${field.type == 'date'}">
-                    <label th:for="${field.name}" class="form-label" th:text="${field.label}">Label</label>
-                    <input type="date"
-                           class="form-control"
-                           th:id="${field.name}"
-                           th:name="${field.name}"
-                           th:value="${param.get(field.name)}">
-                </div>
-            </div>
-
-            <!-- Botões -->
-            <div class="col-md-12 d-flex justify-content-end gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search me-1"></i>Buscar
-                </button>
-                <a th:href="${action ?: '#'}" class="btn btn-outline-secondary">
-                    <i class="fas fa-times me-1"></i>Limpar
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Filtros Simples para Animais -->
-<div xmlns:th="http://www.thymeleaf.org" th:fragment="filtros" class="card mb-4">
-    <div class="card-body">
-        <form method="get" th:action="@{/animais}" class="row g-3">
+        <form method="get" class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">Nome do Animal</label>
+                <label class="form-label">Nome</label>
                 <input type="text" class="form-control" name="nome" th:value="${param.nome}" placeholder="Digite o nome...">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" th:if="${showStatusFilter}">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status">
+                    <option value="">Todos</option>
+                    <option value="ATIVO" th:selected="${param.status == 'ATIVO'}">Ativo</option>
+                    <option value="INATIVO" th:selected="${param.status == 'INATIVO'}">Inativo</option>
+                </select>
+            </div>
+            <div class="col-md-3" th:if="${showEspecieFilter}">
                 <label class="form-label">Espécie</label>
                 <select class="form-select" name="especie">
                     <option value="">Todas</option>
@@ -74,57 +23,12 @@
                     <option value="OUTRO" th:selected="${param.especie == 'OUTRO'}">Outro</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Status</label>
-                <select class="form-select" name="status">
-                    <option value="">Todos</option>
-                    <option value="DISPONIVEL" th:selected="${param.status == 'DISPONIVEL'}">Disponível</option>
-                    <option value="ADOTADO" th:selected="${param.status == 'ADOTADO'}">Adotado</option>
-                    <option value="TRATAMENTO" th:selected="${param.status == 'TRATAMENTO'}">Em Tratamento</option>
-                </select>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col d-flex align-items-end">
                 <button type="submit" class="btn btn-primary me-2">
-                    <i class="fas fa-search"></i> Buscar
+                    <i class="fas fa-search me-1"></i>Buscar
                 </button>
-                <a th:href="@{/animais}" class="btn btn-outline-secondary">
-                    <i class="fas fa-times"></i>
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Filtro para tutores -->
-<div xmlns:th="http://www.thymeleaf.org"
-     th:fragment="tutor-filters"
-     class="card mb-4">
-    <div class="card-body">
-        <form method="get" th:action="@{/tutores}" class="row g-3">
-            <div class="col-md-4">
-                <label for="nome" class="form-label">Nome do Tutor</label>
-                <input type="text" class="form-control" id="nome" name="nome"
-                       th:value="${param.nome}" placeholder="Digite o nome...">
-            </div>
-            <div class="col-md-3">
-                <label for="cidade" class="form-label">Cidade</label>
-                <input type="text" class="form-control" id="cidade" name="cidade"
-                       th:value="${param.cidade}" placeholder="Digite a cidade...">
-            </div>
-            <div class="col-md-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-select" id="status" name="status">
-                    <option value="">Todos</option>
-                    <option value="ATIVO" th:selected="${param.status == 'ATIVO'}">Ativo</option>
-                    <option value="INATIVO" th:selected="${param.status == 'INATIVO'}">Inativo</option>
-                </select>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary me-2">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-                <a th:href="@{/tutores}" class="btn btn-outline-secondary">
-                    <i class="fas fa-times"></i>
+                <a href="?" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-1"></i>Limpar
                 </a>
             </div>
         </form>

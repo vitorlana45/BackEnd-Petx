@@ -1,56 +1,78 @@
-<!--
-  Fragmento para Cabeçalhos de Página
-  Uso: th:replace="~{fragmentos/page-header :: page-header(title, description, icon, actions)}"
--->
-<div xmlns:th="http://www.thymeleaf.org"
-     th:fragment="page-header(title, description, icon, actions)"
-     class="page-header d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="page-title">
-            <i th:if="${icon}" th:class="${'fas fa-' + icon + ' me-2 text-primary'}"></i>
-            <span th:text="${title}">Título da Página</span>
-        </h1>
-        <p th:if="${description}" class="text-muted mb-0" th:text="${description}">Descrição da página</p>
-    </div>
-    <div th:if="${actions}" class="page-actions" th:utext="${actions}">
-        <!-- Ações serão inseridas aqui -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<!-- Fragment para cabeçalho de página inteligente -->
+<div th:fragment="smart-header(pageInfo, actionButton)" class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1 class="page-title">
+                <i th:class="${pageInfo}" class="me-2"></i>
+                <span th:text="${pageInfo.title}">Título da Página</span>
+            </h1>
+            <p class="page-subtitle" th:text="${pageInfo.subtitle}">Subtítulo da página</p>
+
+            <!-- Breadcrumb dinâmico -->
+            <div class="breadcrumb-wrapper">
+                <a th:href="@{/dashboard}" class="breadcrumb-item">
+                    <i class="fas fa-home me-1"></i>Dashboard
+                </a>
+                <th:block th:each="crumb, crumbStat : ${pageInfo.breadcrumbs}">
+                    <span class="breadcrumb-separator">/</span>
+                    <a th:if="${!crumbStat.last}"
+                       th:href="${crumb.url}"
+                       th:text="${crumb.name}"
+                       class="breadcrumb-item">Item</a>
+                    <span th:if="${crumbStat.last}"
+                          th:text="${crumb.name}"
+                          class="breadcrumb-item active">Atual</span>
+                </th:block>
+            </div>
+        </div>
+
+        <!-- Botão de ação (opcional) -->
+        <div th:if="${actionButton != null}" class="col-auto">
+            <a th:href="${actionButton.url}"
+               th:class="${'btn ' + actionButton.cssClass}">
+                <i th:class="${actionButton.icon}" class="me-2"></i>
+                <span th:text="${actionButton.text}">Ação</span>
+            </a>
+        </div>
     </div>
 </div>
 
-<!-- Cabeçalho com estatísticas -->
-<div xmlns:th="http://www.thymeleaf.org"
-     th:fragment="stats-header(title, description, icon, stats)"
-     class="page-header mb-4">
-    <div class="row align-items-center">
-        <div class="col-md-8">
-            <h1 class="page-title">
-                <i th:if="${icon}" th:class="${'fas fa-' + icon + ' me-2 text-primary'}"></i>
-                <span th:text="${title}">Título da Página</span>
-            </h1>
-            <p th:if="${description}" class="text-muted mb-0" th:text="${description}">Descrição da página</p>
-        </div>
-        <div th:if="${stats}" class="col-md-4">
-            <div class="row g-2 text-center">
-                <div th:each="stat : ${stats}" class="col">
-                    <div class="stat-item">
-                        <div class="stat-number h4 mb-1" th:text="${stat.value}">0</div>
-                        <div class="stat-label small text-muted" th:text="${stat.label}">Label</div>
-                    </div>
-                </div>
+<!-- Fragment para estatísticas rápidas -->
+<div th:fragment="stats(statsData)" class="row g-2 mb-3" th:if="${statsData != null}">
+    <div th:each="stat : ${statsData}" class="col-xl-3 col-md-6">
+        <div th:class="${'stats-card ' + stat.type}" style="padding: 1rem;">
+            <div class="stats-icon" style="width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.5rem;">
+                <i th:class="${stat.icon}"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-number" style="font-size: 1.5rem;" th:text="${stat.value}">0</div>
+                <div class="stats-label" style="font-size: 0.8rem;" th:text="${stat.label}">Label</div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Cabeçalho Simples -->
-<div xmlns:th="http://www.thymeleaf.org" th:fragment="header" class="d-flex justify-content-between align-items-center mb-4">
+<!-- Cabeçalho de Página Simples (mantendo para compatibilidade) -->
+<div th:fragment="page-header" class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1><i class="fas fa-paw me-2 text-primary"></i>Animais</h1>
-        <p class="text-muted mb-0">Gerencie todos os animais cadastrados</p>
+        <h1 class="h3 mb-1">
+            <i class="fas fa-paw me-2 text-primary" th:if="${icon}"></i>
+            <span th:text="${title ?: 'Página'}">Título</span>
+        </h1>
+        <p class="text-muted mb-0" th:if="${description}" th:text="${description}">Descrição</p>
     </div>
-    <div>
-        <a th:href="@{/animais/novo}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Novo Animal
+    <div th:if="${showAddButton}">
+        <a th:href="${addLink ?: '#'}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>
+            <span th:text="${addButtonText ?: 'Adicionar'}">Adicionar</span>
         </a>
     </div>
 </div>
+
+</body>
+</html>

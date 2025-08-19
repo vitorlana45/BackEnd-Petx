@@ -7,6 +7,9 @@ import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
+import org.petx.dto.PageInfoBean;
+import org.petx.dto.ActionButtonDTO;
+import org.petx.controller.helper.SmartPageHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -26,7 +29,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/animais")
 @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-public class AnimalController {
+public class AnimalController extends PageControl {
 
     private final AnimalService animalService;
 
@@ -50,35 +53,35 @@ public class AnimalController {
                             @RequestParam(required = false) OrigemAnimalEnum origem,
                             @RequestParam(required = false) SexoEnum sexo,
                             @PageableDefault(size = 10) Pageable pageable) {
+        
+        // Configurar navegação inteligente
+        SmartPageHelper.setupAnimalsPage(model);
+
+        // Botão de ação para adicionar novo animal
+        ActionButtonDTO actionButton = ActionButtonDTO.primary(
+                "Novo Animal", 
+                "/animais/novo", 
+                "fas fa-plus"
+        );
+        model.addAttribute("actionButton", actionButton);
+        
         Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
                 nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
         );
+
+        carregarComboFiltros(model, nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo);
+
         model.addAttribute("page", page);
         model.addAttribute("currentPage", "/animais");
         model.addAttribute("animais", page.getContent());
+        montarComboStatusEnum(model);
         
         // Adicionar enums ao modelo para uso nos selects dos formulários
-        model.addAttribute("especies", EspecieEnum.values());
-        model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("statusEnum", StatusEnum.values());
-        model.addAttribute("maturidades", MaturidadeEnum.values());
-        model.addAttribute("origens", OrigemAnimalEnum.values());
-        model.addAttribute("sexos", SexoEnum.values());
-        
-        // Filtros atuais para manter valores no form
-        model.addAttribute("filtroNome", nome);
-        model.addAttribute("filtroRaca", raca);
-        model.addAttribute("filtroEspecie", especie);
-        model.addAttribute("filtroPorte", porte);
-        model.addAttribute("filtroStatus", status);
-        model.addAttribute("filtroDoenca", doenca);
-        model.addAttribute("filtroComportamento", comportamento);
-        model.addAttribute("filtroMaturidade", maturidade);
-        model.addAttribute("filtroOrigem", origem);
-        model.addAttribute("filtroSexo", sexo);
-        
+
         return "animais/lista";
     }
+
+
 
     /**
      * Exibe detalhes de um animal específico
@@ -87,8 +90,6 @@ public class AnimalController {
     public String detalhesAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
-        // Retorna nova página completa
-        // (template criado em animais/detalhe.html)
         return "animais/detalhe";
     }
 
@@ -178,12 +179,7 @@ public class AnimalController {
     @GetMapping("/novo")
     public String formNovoAnimal(Model model) {
         model.addAttribute("animal", new AnimalGenericoRequisicao());
-        model.addAttribute("especies", EspecieEnum.values());
-        model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("statusEnum", StatusEnum.values());
-        model.addAttribute("maturidades", MaturidadeEnum.values());
-        model.addAttribute("origens", OrigemAnimalEnum.values());
-        model.addAttribute("sexos", SexoEnum.values());
+        montarComboStatusEnum(model);
         return "animais/formulario";
     }
     
@@ -196,12 +192,7 @@ public class AnimalController {
                                   RedirectAttributes redirectAttributes,
                                   Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("especies", EspecieEnum.values());
-            model.addAttribute("portes", PorteEnum.values());
-            model.addAttribute("statusEnum", StatusEnum.values());
-            model.addAttribute("maturidades", MaturidadeEnum.values());
-            model.addAttribute("origens", OrigemAnimalEnum.values());
-            model.addAttribute("sexos", SexoEnum.values());
+           montarComboStatusEnum(model);
             return "animais/formulario";
         }
         
@@ -219,12 +210,7 @@ public class AnimalController {
     public String formEditarAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
-        model.addAttribute("especies", EspecieEnum.values());
-        model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("statusEnum", StatusEnum.values());
-        model.addAttribute("maturidades", MaturidadeEnum.values());
-        model.addAttribute("origens", OrigemAnimalEnum.values());
-        model.addAttribute("sexos", SexoEnum.values());
+        montarComboStatusEnum(model);
         return "animais/editar";
     }
     
@@ -238,12 +224,7 @@ public class AnimalController {
                                  RedirectAttributes redirectAttributes,
                                  Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("especies", EspecieEnum.values());
-            model.addAttribute("portes", PorteEnum.values());
-            model.addAttribute("statusEnum", StatusEnum.values());
-            model.addAttribute("maturidades", MaturidadeEnum.values());
-            model.addAttribute("origens", OrigemAnimalEnum.values());
-            model.addAttribute("sexos", SexoEnum.values());
+            montarComboStatusEnum(model);
             return "animais/editar";
         }
         
@@ -251,7 +232,7 @@ public class AnimalController {
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Animal atualizado com sucesso!");
         return "redirect:/animais/" + id;
     }
-    
+
     /**
      * Exclui um animal
      */
@@ -326,5 +307,46 @@ public class AnimalController {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao registrar adoção conjunta: " + e.getMessage());
             return "redirect:/animais/conjunto";
         }
+    }
+
+
+    public void carregarComboFiltros(Model model,
+                                     String nome,
+                                     String raca,
+                                     EspecieEnum especie,
+                                     PorteEnum porte,
+                                     StatusEnum status,
+                                     String doenca,
+                                     String comportamento,
+                                     MaturidadeEnum maturidade,
+                                     OrigemAnimalEnum origem,
+                                     SexoEnum sexo) {
+
+        model.addAttribute("filtroNome", nome);
+        model.addAttribute("filtroRaca", raca);
+        model.addAttribute("filtroEspecie", especie);
+        model.addAttribute("filtroPorte", porte);
+        model.addAttribute("filtroStatus", status);
+        model.addAttribute("filtroDoenca", doenca);
+        model.addAttribute("filtroComportamento", comportamento);
+        model.addAttribute("filtroMaturidade", maturidade);
+        model.addAttribute("filtroOrigem", origem);
+        model.addAttribute("filtroSexo", sexo);
+    }
+
+    public void montarComboStatusEnum(Model model) {
+        model.addAttribute("statusEnum", StatusEnum.values());
+        model.addAttribute("especies", EspecieEnum.values());
+        model.addAttribute("portes", PorteEnum.values());
+        model.addAttribute("statusEnum", StatusEnum.values());
+        model.addAttribute("maturidades", MaturidadeEnum.values());
+        model.addAttribute("origens", OrigemAnimalEnum.values());
+        model.addAttribute("sexos", SexoEnum.values());
+    }
+
+
+    @Override
+    PageInfoBean montarSmartHeaderBean() {
+        return null;
     }
 }

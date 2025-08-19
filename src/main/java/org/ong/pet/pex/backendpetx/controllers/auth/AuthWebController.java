@@ -1,9 +1,11 @@
 package org.ong.pet.pex.backendpetx.controllers.auth;
 
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
-import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.DashboardService;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
+import org.petx.dto.PageInfoBean;
+import org.petx.dto.StatsDTO;
+import org.petx.controller.helper.SmartPageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 
 import java.security.Principal;
+import java.util.Arrays;
 
 /**
  * Controller web para autenticação - 100% Thymeleaf
@@ -98,31 +101,53 @@ public class AuthWebController {
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
         try {
-            // Forçar o tipo de conteúdo para HTML
+            // Informações do usuário logado
             RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
             model.addAttribute("username", usuario.nome());
-
-            // Adiciona a variável page para substituir o uso de #request.requestURI
             model.addAttribute("currentPage", "/dashboard");
 
-            // Retorna a view do dashboard
+            // === USANDO HELPER INTELIGENTE - MUITO MAIS LIMPO! ===
             Long totalAnimais = dashboardService.getTotalAnimais();
             Long totalTutores = dashboardService.getTotalTutores();
             Long totalConsumo = dashboardService.totalConsumo();
-            model.addAttribute("totalAnimais", totalAnimais);
-            model.addAttribute("totalTutores", totalTutores);
-            model.addAttribute("totalConsumo", totalConsumo);
+            
+            SmartPageHelper.setupDashboard(model, totalAnimais, totalTutores, totalConsumo);
 
-            // Adiciona notificação para garantir que o alerta seja exibido
+            // Dados para gráficos e estatísticas (mantendo compatibilidade)
+            model.addAttribute("animaisPorStatus", obterAnimaisPorStatusMock());
+            model.addAttribute("crescimentoMensal", obterCrescimentoMensalMock());
             model.addAttribute("notification", true);
 
             return "dashboard/index";
         } catch (Exception e) {
-            // Log do erro
             e.printStackTrace();
             model.addAttribute("error", "Ocorreu um erro ao carregar o dashboard: " + e.getMessage());
             return "error/generic";
         }
+    }
+
+    /**
+     * Mock para animais por status até implementarmos corretamente
+     */
+    private java.util.Map<String, Long> obterAnimaisPorStatusMock() {
+        java.util.Map<String, Long> statusMap = new java.util.HashMap<>();
+        statusMap.put("SAUDAVEL", 25L);
+        statusMap.put("DOENTE", 8L);
+        statusMap.put("ADOTADO", 45L);
+        statusMap.put("FALECIDO", 3L);
+        return statusMap;
+    }
+
+    /**
+     * Mock para crescimento mensal até implementarmos corretamente
+     */
+    private java.util.Map<String, Object> obterCrescimentoMensalMock() {
+        java.util.Map<String, Object> crescimento = new java.util.HashMap<>();
+        crescimento.put("novosAnimaisMes", 12L);
+        crescimento.put("novosTutoresMes", 8L);
+        crescimento.put("adocoesMes", 15L);
+        crescimento.put("boletinsMes", 5L);
+        return crescimento;
     }
 
     /** Página para 403 */

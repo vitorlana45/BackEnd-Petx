@@ -1,170 +1,170 @@
-<th:block xmlns:th="http://www.thymeleaf.org">
+<!--<th:block xmlns:th="http://www.thymeleaf.org">-->
 
-<!-- ============================================================================ -->
-<!-- SCRIPTS MASTER FRAGMENT - Gerenciamento de JavaScript modular              -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; SCRIPTS MASTER FRAGMENT - Gerenciamento de JavaScript modular              &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<th:block th:fragment="base-scripts">
-    <!-- Bootstrap JavaScript Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
-            crossorigin="anonymous"></script>
+<!--<th:block th:fragment="base-scripts">-->
+<!--    &lt;!&ndash; Bootstrap JavaScript Bundle &ndash;&gt;-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"-->
+<!--            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" -->
+<!--            crossorigin="anonymous"></script>-->
 
-    <!-- Animation Library -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!--    &lt;!&ndash; Animation Library &ndash;&gt;-->
+<!--    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>-->
 
-    <!-- Core PetX JavaScript -->
-    <script th:src="@{/js/core/app.js}"></script>
-    <script th:src="@{/js/core/theme.js}"></script>
-    <script th:src="@{/js/core/notifications.js}"></script>
-    <script th:src="@{/js/core/utils.js}"></script>
+<!--    &lt;!&ndash; Core PetX JavaScript &ndash;&gt;-->
+<!--    <script th:src="@{/js/core/app.js}"></script>-->
+<!--    <script th:src="@{/js/core/theme.js}"></script>-->
+<!--    <script th:src="@{/js/core/notifications.js}"></script>-->
+<!--    <script th:src="@{/js/core/utils.js}"></script>-->
 
-    <!-- Componentes JavaScript -->
-    <script th:src="@{/js/components/modals.js}"></script>
-    <script th:src="@{/js/components/forms.js}"></script>
-    <script th:src="@{/js/components/tables.js}"></script>
-    <script th:src="@{/js/components/charts.js}"></script>
+<!--    &lt;!&ndash; Componentes JavaScript &ndash;&gt;-->
+<!--    <script th:src="@{/js/components/modals.js}"></script>-->
+<!--    <script th:src="@{/js/components/forms.js}"></script>-->
+<!--    <script th:src="@{/js/components/tables.js}"></script>-->
+<!--    <script th:src="@{/js/components/charts.js}"></script>-->
 
-    <!-- Inicialização da Aplicação -->
-    <script th:replace="~{layouts/fragments/scripts :: app-init}"></script>
-</th:block>
+<!--    &lt;!&ndash; Inicialização da Aplicação &ndash;&gt;-->
+<!--    <script th:replace="~{layouts/fragments/scripts :: app-init}"></script>-->
+<!--</th:block>-->
 
-<!-- ============================================================================ -->
-<!-- INICIALIZAÇÃO DA APLICAÇÃO                                                 -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; INICIALIZAÇÃO DA APLICAÇÃO                                                 &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<script th:fragment="app-init">
-document.addEventListener('DOMContentLoaded', function() {
-    'use strict';
-    
-    try {
-        // Inicializar AOS (Animate on Scroll)
-        if (typeof AOS !== 'undefined') {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-out-cubic',
-                once: true,
-                offset: 100,
-                disable: 'mobile'
-            });
-        }
+<!--<script th:fragment="app-init">-->
+<!--document.addEventListener('DOMContentLoaded', function() {-->
+<!--    'use strict';-->
+<!--    -->
+<!--    try {-->
+<!--        // Inicializar AOS (Animate on Scroll)-->
+<!--        if (typeof AOS !== 'undefined') {-->
+<!--            AOS.init({-->
+<!--                duration: 800,-->
+<!--                easing: 'ease-out-cubic',-->
+<!--                once: true,-->
+<!--                offset: 100,-->
+<!--                disable: 'mobile'-->
+<!--            });-->
+<!--        }-->
 
-        // Inicializar componentes PetX
-        if (window.PetX) {
-            window.PetX.init();
-        }
+<!--        // Inicializar componentes PetX-->
+<!--        if (window.PetX) {-->
+<!--            window.PetX.init();-->
+<!--        }-->
 
-        // Remover loader após carregamento completo
-        const loader = document.getElementById('global-loader');
-        if (loader) {
-            setTimeout(() => {
-                loader.classList.add('fade-out');
-                setTimeout(() => loader.remove(), 300);
-            }, 500);
-        }
+<!--        // Remover loader após carregamento completo-->
+<!--        const loader = document.getElementById('global-loader');-->
+<!--        if (loader) {-->
+<!--            setTimeout(() => {-->
+<!--                loader.classList.add('fade-out');-->
+<!--                setTimeout(() => loader.remove(), 300);-->
+<!--            }, 500);-->
+<!--        }-->
 
-        // Inicializar tooltips do Bootstrap
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+<!--        // Inicializar tooltips do Bootstrap-->
+<!--        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));-->
+<!--        tooltipTriggerList.map(function (tooltipTriggerEl) {-->
+<!--            return new bootstrap.Tooltip(tooltipTriggerEl);-->
+<!--        });-->
 
-        // Inicializar popovers do Bootstrap
-        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-        popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl);
-        });
+<!--        // Inicializar popovers do Bootstrap-->
+<!--        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));-->
+<!--        popoverTriggerList.map(function (popoverTriggerEl) {-->
+<!--            return new bootstrap.Popover(popoverTriggerEl);-->
+<!--        });-->
 
-        console.log('✅ PetX Application initialized successfully');
-    } catch (error) {
-        console.error('❌ Error initializing PetX Application:', error);
-    }
-});
-</script>
+<!--        console.log('✅ PetX Application initialized successfully');-->
+<!--    } catch (error) {-->
+<!--        console.error('❌ Error initializing PetX Application:', error);-->
+<!--    }-->
+<!--});-->
+<!--</script>-->
 
-<!-- ============================================================================ -->
-<!-- SCRIPTS ESPECÍFICOS POR TIPO DE PÁGINA                                     -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; SCRIPTS ESPECÍFICOS POR TIPO DE PÁGINA                                     &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<!-- Scripts para Dashboard -->
-<th:block th:fragment="dashboard-scripts">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script th:src="@{/js/pages/dashboard.js}"></script>
-    <script th:src="@{/js/charts/stats.js}"></script>
-</th:block>
+<!--&lt;!&ndash; Scripts para Dashboard &ndash;&gt;-->
+<!--<th:block th:fragment="dashboard-scripts">-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<!--    <script th:src="@{/js/pages/dashboard.js}"></script>-->
+<!--    <script th:src="@{/js/charts/stats.js}"></script>-->
+<!--</th:block>-->
 
-<!-- Scripts para Formulários -->
-<th:block th:fragment="form-scripts">
-    <script th:src="@{/js/forms/validation.js}"></script>
-    <script th:src="@{/js/forms/masks.js}"></script>
-    <script th:src="@{/js/forms/file-upload.js}"></script>
-</th:block>
+<!--&lt;!&ndash; Scripts para Formulários &ndash;&gt;-->
+<!--<th:block th:fragment="form-scripts">-->
+<!--    <script th:src="@{/js/forms/validation.js}"></script>-->
+<!--    <script th:src="@{/js/forms/masks.js}"></script>-->
+<!--    <script th:src="@{/js/forms/file-upload.js}"></script>-->
+<!--</th:block>-->
 
-<!-- Scripts para Tabelas com Funcionalidades Avançadas -->
-<th:block th:fragment="datatable-scripts">
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-    <script th:src="@{/js/tables/datatable-config.js}"></script>
-</th:block>
+<!--&lt;!&ndash; Scripts para Tabelas com Funcionalidades Avançadas &ndash;&gt;-->
+<!--<th:block th:fragment="datatable-scripts">-->
+<!--    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>-->
+<!--    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>-->
+<!--    <script th:src="@{/js/tables/datatable-config.js}"></script>-->
+<!--</th:block>-->
 
-<!-- Scripts para Mapas -->
-<th:block th:fragment="maps-scripts">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script th:src="@{/js/maps/location.js}"></script>
-</th:block>
+<!--&lt;!&ndash; Scripts para Mapas &ndash;&gt;-->
+<!--<th:block th:fragment="maps-scripts">-->
+<!--    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>-->
+<!--    <script th:src="@{/js/maps/location.js}"></script>-->
+<!--</th:block>-->
 
-<!-- Scripts para Upload de Arquivos -->
-<th:block th:fragment="upload-scripts">
-    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
-    <script th:src="@{/js/upload/dropzone-config.js}"></script>
-</th:block>
+<!--&lt;!&ndash; Scripts para Upload de Arquivos &ndash;&gt;-->
+<!--<th:block th:fragment="upload-scripts">-->
+<!--    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>-->
+<!--    <script th:src="@{/js/upload/dropzone-config.js}"></script>-->
+<!--</th:block>-->
 
-<!-- Scripts para Chat/Mensagens -->
-<th:block th:fragment="chat-scripts">
-    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <script th:src="@{/js/chat/websocket.js}"></script>
-</th:block>
+<!--&lt;!&ndash; Scripts para Chat/Mensagens &ndash;&gt;-->
+<!--<th:block th:fragment="chat-scripts">-->
+<!--    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>-->
+<!--    <script th:src="@{/js/chat/websocket.js}"></script>-->
+<!--</th:block>-->
 
-<!-- ============================================================================ -->
-<!-- SCRIPTS UTILITÁRIOS                                                        -->
-<!-- ============================================================================ -->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
+<!--&lt;!&ndash; SCRIPTS UTILITÁRIOS                                                        &ndash;&gt;-->
+<!--&lt;!&ndash; ============================================================================ &ndash;&gt;-->
 
-<!-- Script de configuração CSRF para AJAX -->
-<script th:fragment="csrf-config">
-$(document).ready(function() {
-    // Configurar CSRF para todas as requisições AJAX
-    const token = $('meta[name=_csrf]').attr('content');
-    const header = $('meta[name=_csrf_header]').attr('content');
-    
-    if (token && header) {
-        $(document).ajaxSend(function(e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-    }
-});
-</script>
+<!--&lt;!&ndash; Script de configuração CSRF para AJAX &ndash;&gt;-->
+<!--<script th:fragment="csrf-config">-->
+<!--$(document).ready(function() {-->
+<!--    // Configurar CSRF para todas as requisições AJAX-->
+<!--    const token = $('meta[name=_csrf]').attr('content');-->
+<!--    const header = $('meta[name=_csrf_header]').attr('content');-->
+<!--    -->
+<!--    if (token && header) {-->
+<!--        $(document).ajaxSend(function(e, xhr, options) {-->
+<!--            xhr.setRequestHeader(header, token);-->
+<!--        });-->
+<!--    }-->
+<!--});-->
+<!--</script>-->
 
-<!-- Script de Analytics (se necessário) -->
-<script th:fragment="analytics" th:if="${analyticsEnabled}">
-// Google Analytics ou outra ferramenta de analytics
-// Configurado apenas se habilitado
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<!--&lt;!&ndash; Script de Analytics (se necessário) &ndash;&gt;-->
+<!--<script th:fragment="analytics" th:if="${analyticsEnabled}">-->
+<!--// Google Analytics ou outra ferramenta de analytics-->
+<!--// Configurado apenas se habilitado-->
+<!--(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){-->
+<!--(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),-->
+<!--m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)-->
+<!--})(window,document,'script','//www.google-analytics.com/analytics.js','ga');-->
 
-ga('create', /*[[${googleAnalyticsId}]]*/ 'UA-XXXXX-Y', 'auto');
-ga('send', 'pageview');
-</script>
+<!--ga('create', /*[[${googleAnalyticsId}]]*/ 'UA-XXXXX-Y', 'auto');-->
+<!--ga('send', 'pageview');-->
+<!--</script>-->
 
-<!-- Script de Debug (apenas em desenvolvimento) -->
-<script th:fragment="debug" th:if="${#profiles.active('dev')}">
-console.log('🔧 Debug mode enabled');
-console.log('📊 Context variables:', {
-    user: /*[[${user}]]*/ null,
-    currentPage: /*[[${currentPage}]]*/ null,
-    environment: /*[[${environment}]]*/ null
-});
-</script>
+<!--&lt;!&ndash; Script de Debug (apenas em desenvolvimento) &ndash;&gt;-->
+<!--<script th:fragment="debug" th:if="${#profiles.active('dev')}">-->
+<!--console.log('🔧 Debug mode enabled');-->
+<!--console.log('📊 Context variables:', {-->
+<!--    user: /*[[${user}]]*/ null,-->
+<!--    currentPage: /*[[${currentPage}]]*/ null,-->
+<!--    environment: /*[[${environment}]]*/ null-->
+<!--});-->
+<!--</script>-->
 
-</th:block>
+<!--</th:block>-->

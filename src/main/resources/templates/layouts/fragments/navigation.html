@@ -13,11 +13,11 @@
         </a>
 
         <!-- Mobile Toggle Button -->
-        <button class="navbar-toggler" type="button" 
-                data-bs-toggle="collapse" 
-                data-bs-target="#main-navigation" 
-                aria-controls="main-navigation" 
-                aria-expanded="false" 
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#main-navigation"
+                aria-controls="main-navigation"
+                aria-expanded="false"
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -75,8 +75,8 @@
 
                 <!-- Toggle de Tema -->
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link theme-toggle" 
-                            type="button" 
+                    <button class="btn btn-link nav-link theme-toggle"
+                            type="button"
                             aria-label="Alternar tema"
                             title="Alternar tema">
                         <i class="fas fa-moon" id="theme-icon"></i>
@@ -96,8 +96,8 @@
 
 <!-- Item de Menu Simples -->
 <li th:fragment="nav-item(url, text, icon)" class="nav-item">
-    <a class="nav-link" 
-       th:href="@{${url}}" 
+    <a class="nav-link"
+       th:href="@{${url}}"
        th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.startsWith(url) ? 'active' : ''}"
        th:aria-current="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.startsWith(url) ? 'page' : null}">
         <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
@@ -107,10 +107,10 @@
 
 <!-- Dropdown Menu -->
 <li th:fragment="nav-dropdown(section, text, icon, items)" class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" 
-       href="#" 
-       role="button" 
-       data-bs-toggle="dropdown" 
+    <a class="nav-link dropdown-toggle"
+       href="#"
+       role="button"
+       data-bs-toggle="dropdown"
        aria-expanded="false"
        th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.contains(section) ? 'active' : ''}">
         <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
@@ -123,14 +123,14 @@
 
 <!-- Notificações -->
 <li th:fragment="nav-notifications" class="nav-item dropdown">
-    <a class="nav-link position-relative" 
-       href="#" 
-       role="button" 
-       data-bs-toggle="dropdown" 
+    <a class="nav-link position-relative"
+       href="#"
+       role="button"
+       data-bs-toggle="dropdown"
        aria-expanded="false"
        aria-label="Notificações">
         <i class="fas fa-bell"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
               th:if="${unreadNotificationsCount > 0}"
               th:text="${unreadNotificationsCount}">
             0
@@ -169,17 +169,17 @@
 
 <!-- Menu de Usuário -->
 <li th:fragment="nav-user-menu" class="nav-item dropdown" sec:authorize="isAuthenticated()">
-    <a class="nav-link dropdown-toggle user-menu" 
-       href="#" 
-       role="button" 
-       data-bs-toggle="dropdown" 
+    <a class="nav-link dropdown-toggle user-menu"
+       href="#"
+       role="button"
+       data-bs-toggle="dropdown"
        aria-expanded="false">
-        <img class="user-avatar me-2" 
-             th:src="${user?.avatar ?: '/images/default-avatar.png'}" 
+        <img class="user-avatar me-2"
+             th:src="${user?.avatar ?: '/images/default-avatar.png'}"
              th:alt="${user?.name ?: 'Usuário'}"
              width="32" height="32">
-        <span class="user-name d-none d-md-inline" 
-              th:text="${user?.name ?: 'Usuário'}" 
+        <span class="user-name d-none d-md-inline"
+              th:text="${user?.name ?: 'Usuário'}"
               sec:authentication="name">Usuário</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end">

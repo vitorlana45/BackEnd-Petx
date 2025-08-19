@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      th:fragment="layout(title, content)" 
-      lang="pt-BR" 
+      th:fragment="layout(title, content)"
+      lang="pt-BR"
       data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -41,7 +41,9 @@
     <!-- CSS customizado - ordem importante para sobreposições corretas -->
     <link rel="stylesheet" th:href="@{/css/estilo.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
-    
+    <link rel="stylesheet" th:href="@{/css/navigation.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/animais.css}">\n
     <!-- CSS específico para página de resgates - carregado por último para prioridade máxima -->
     <link rel="stylesheet" th:href="@{/css/resgates.css}">
 
@@ -55,7 +57,7 @@
 <body>
     <!-- Skip link para acessibilidade -->
     <a href="#main-content" class="visually-hidden-focusable skip-link">Pular para o conteúdo principal</a>
-    
+
     <div class="main-wrapper">
         <!-- Menu de navegação -->
         <nav th:replace="~{fragmentos/menu :: menu}"></nav>
@@ -65,7 +67,7 @@
             <div class="container-fluid container-max py-4">
                 <!-- Mensagens de alerta (erros, sucessos, etc) -->
                 <div th:replace="~{fragmentos/messages :: messages}"></div>
-                
+
                 <!-- Conteúdo dinâmico da página -->
                 <div th:replace="${content}" class="animate-fade-in">
                     <!-- O conteúdo da página será inserido aqui -->
@@ -96,18 +98,18 @@
                 easing: 'ease',
                 once: true
             });
-            
+
             // Inicializar tooltips do Bootstrap
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-            
+
             // Configuração global para requisições AJAX com CSRF
             if (document.querySelector('meta[name="_csrf"]')) {
                 const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
                 const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-                
+
                 // Configurar cabeçalhos CSRF para fetch API
                 window.fetchWithCsrf = function(url, options = {}) {
                     options.headers = options.headers || {};
