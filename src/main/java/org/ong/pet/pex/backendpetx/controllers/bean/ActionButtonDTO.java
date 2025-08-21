@@ -1,9 +1,15 @@
-package org.petx.dto;
+package org.ong.pet.pex.backendpetx.controllers.bean;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DTO para botões de ação no cabeçalho
  */
+@Setter
+@Getter
 public class ActionButtonDTO {
+    // Getters e Setters
     private String text;
     private String url;
     private String icon;
@@ -18,6 +24,10 @@ public class ActionButtonDTO {
         this.cssClass = cssClass;
     }
 
+    public static ActionButtonDTO createCustom(String text, String url, String icon, String cssClass) {
+        return new ActionButtonDTO(text, url, icon, cssClass);
+    }
+
     public static ActionButtonDTO primary(String text, String url, String icon) {
         return new ActionButtonDTO(text, url, icon, "btn-primary");
     }
@@ -30,16 +40,4 @@ public class ActionButtonDTO {
         return new ActionButtonDTO(text, url, icon, "btn-warning");
     }
 
-    // Getters e Setters
-    public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
-
-    public String getUrl() { return url; }
-    public void setUrl(String url) { this.url = url; }
-
-    public String getIcon() { return icon; }
-    public void setIcon(String icon) { this.icon = icon; }
-
-    public String getCssClass() { return cssClass; }
-    public void setCssClass(String cssClass) { this.cssClass = cssClass; }
 }

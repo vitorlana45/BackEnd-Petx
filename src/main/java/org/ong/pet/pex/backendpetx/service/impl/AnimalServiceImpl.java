@@ -9,10 +9,12 @@ import org.ong.pet.pex.backendpetx.entities.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repositories.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
+import org.ong.pet.pex.backendpetx.service.Minio;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.AnimalUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,10 +23,12 @@ import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaRespostaAnimalComConjuntoDTO;
@@ -41,14 +45,19 @@ public class AnimalServiceImpl implements AnimalService {
     private final ObitoRepository obitoRepository;
     private static final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
     private final AnimalUtils animalUtils;
+    private final Minio minioService;
 
-    public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils) {
+    @Value("${minio.bucket:petx}")
+    private String animalBucketName;
+
+    public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService) {
         this.animalRepository = animalRepository;
         this.ongRepository = ongRepository;
         this.animalConjuntoRepository = animalConjuntoRepository;
         this.tutorRepository = tutorRepository;
         this.obitoRepository = obitoRepository;
         this.animalUtils = animalUtils;
+        this.minioService = minioService;
     }
 
 
@@ -126,6 +135,22 @@ public class AnimalServiceImpl implements AnimalService {
             entidade.setOrigemEnum(animalSemConjuntoDTO.getOrigem());
             entidade.setComportamento(animalSemConjuntoDTO.getComportamento());
             entidade.setDoencas(animalSemConjuntoDTO.getDoencas());
+
+            // Upload da imagem para o MinIO (se enviada)
+            if (animalSemConjuntoDTO.getImagemPrincipalPerfil() != null && !animalSemConjuntoDTO.getImagemPrincipalPerfil().isEmpty()) {
+                var arquivo = animalSemConjuntoDTO.getImagemPrincipalPerfil();
+                String original = arquivo.getOriginalFilename() != null ? arquivo.getOriginalFilename() : "imagem.jpg";
+                String sanitized = original.replaceAll("[^a-zA-Z0-9._-]", "_");
+                String objectName = "animals/" + id + "/" + UUID.randomUUID() + "_" + sanitized;
+                try {
+                    minioService.upload(animalBucketName, objectName, arquivo.getInputStream(), arquivo.getSize(), arquivo.getContentType());
+                    String url = minioService.getFileUrl(animalBucketName, objectName);
+                    entidade.setImagemPrincipalPerfil(url != null ? url : objectName);
+                } catch (IOException e) {
+                    logger.error("Falha ao ler o arquivo para upload: {}", e.getMessage());
+                    throw new PetXException("Não foi possível processar a imagem enviada.");
+                }
+            }
 
             entidade = animalRepository.save(entidade);
             return converterParaRespostaAnimalComConjuntoDTO(entidade);
@@ -343,3 +368,4 @@ public class AnimalServiceImpl implements AnimalService {
         animalRepository.save(entidade);
     }
 }
+

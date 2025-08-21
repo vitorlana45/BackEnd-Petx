@@ -7,9 +7,8 @@ import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
-import org.petx.dto.PageInfoBean;
-import org.petx.dto.ActionButtonDTO;
-import org.petx.controller.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +19,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,45 +43,65 @@ public class AnimalController extends PageControl {
      */
     @GetMapping
     public String listarAnimais(Model model,
-                            @RequestParam(required = false) String nome,
-                            @RequestParam(required = false) String raca,
-                            @RequestParam(required = false) EspecieEnum especie,
-                            @RequestParam(required = false) PorteEnum porte,
-                            @RequestParam(required = false) StatusEnum status,
-                            @RequestParam(required = false) String doenca,
-                            @RequestParam(required = false) String comportamento,
-                            @RequestParam(required = false) MaturidadeEnum maturidade,
-                            @RequestParam(required = false) OrigemAnimalEnum origem,
-                            @RequestParam(required = false) SexoEnum sexo,
-                            @PageableDefault(size = 10) Pageable pageable) {
-        
-        // Configurar navegação inteligente
+                                @RequestParam(required = false) String nome,
+                                @RequestParam(required = false) String raca,
+                                @RequestParam(required = false) EspecieEnum especie,
+                                @RequestParam(required = false) PorteEnum porte,
+                                @RequestParam(required = false) StatusEnum status,
+                                @RequestParam(required = false) String doenca,
+                                @RequestParam(required = false) String comportamento,
+                                @RequestParam(required = false) MaturidadeEnum maturidade,
+                                @RequestParam(required = false) OrigemAnimalEnum origem,
+                                @RequestParam(required = false) SexoEnum sexo,
+                                @PageableDefault(size = 12) Pageable pageable,
+                                @RequestHeader(value = "HX-Request", required = false) String htmx) {
+
         SmartPageHelper.setupAnimalsPage(model);
 
-        // Botão de ação para adicionar novo animal
-        ActionButtonDTO actionButton = ActionButtonDTO.primary(
-                "Novo Animal", 
-                "/animais/novo", 
-                "fas fa-plus"
-        );
-        model.addAttribute("actionButton", actionButton);
-        
+        List<ActionButtonDTO> actionButtons = getActionButtonDTOS();
+        model.addAttribute("actionButtons", actionButtons);
+
         Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
                 nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
         );
 
         carregarComboFiltros(model, nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo);
+        montarComboStatusEnum(model);
 
         model.addAttribute("page", page);
         model.addAttribute("currentPage", "/animais");
         model.addAttribute("animais", page.getContent());
-        montarComboStatusEnum(model);
-        
-        // Adicionar enums ao modelo para uso nos selects dos formulários
+
+        // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
+        if ("true".equalsIgnoreCase(htmx)) {
+            return "animais/fragmentos :: lista";
+        }
 
         return "animais/lista";
     }
 
+
+    private static List<ActionButtonDTO> getActionButtonDTOS() {
+        ActionButtonDTO actionButton = ActionButtonDTO.createCustom(
+                "Novo Animal",
+                "/animais/novo",
+                "fas fa-plus",
+                "btn-primary"
+        );
+
+        ActionButtonDTO segundo = ActionButtonDTO.createCustom(
+                "Importar Animais",
+                "/animais/importar",
+                "fas fa-file-import",
+                "btn-secondary"
+        );
+
+
+        List<ActionButtonDTO> actionButtons = new ArrayList<>();
+        actionButtons.add(actionButton);
+        actionButtons.add(segundo);
+        return actionButtons;
+    }
 
 
     /**
@@ -90,7 +111,7 @@ public class AnimalController extends PageControl {
     public String detalhesAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
-        return "animais/detalhe";
+        return "animais/perfil";
     }
 
     /**
@@ -344,9 +365,8 @@ public class AnimalController extends PageControl {
         model.addAttribute("sexos", SexoEnum.values());
     }
 
-
     @Override
-    PageInfoBean montarSmartHeaderBean() {
-        return null;
+    void begin() {
+
     }
 }

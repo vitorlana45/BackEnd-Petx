@@ -3,9 +3,8 @@ package org.ong.pet.pex.backendpetx.controllers.auth;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.service.DashboardService;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
-import org.petx.dto.PageInfoBean;
-import org.petx.dto.StatsDTO;
-import org.petx.controller.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+//import org.petx.dto.SmartPageBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 
 import java.security.Principal;
-import java.util.Arrays;
 
 /**
  * Controller web para autenticação - 100% Thymeleaf
@@ -39,7 +37,7 @@ public class AuthWebController {
     @GetMapping("/")
     public String home(Authentication auth) {
         return (auth != null && auth.isAuthenticated() && !trust.isAnonymous(auth))
-                ? "redirect:/dashboard"
+                ? "index"
                 : "redirect:/login";
     }
 
@@ -50,12 +48,12 @@ public class AuthWebController {
                             Authentication auth,
                             Model model) {
 
-        // já logado? manda pra dashboard
+
         if (auth != null && auth.isAuthenticated() && !trust.isAnonymous(auth)) {
-            return "redirect:/dashboard";
+            return "index";
         }
 
-        // mensagens padrão do Spring Security (opcional: pode usar ${param.error} direto no HTML)
+
         if (error != null)   model.addAttribute("errorMessage",  "Credenciais inválidas!");
         if (logout != null)  model.addAttribute("logoutMessage", "Logout realizado com sucesso!");
 
@@ -97,28 +95,26 @@ public class AuthWebController {
         return "auth/forgot-password";
     }
 
-    /** Dashboard (somente autenticado). Usa Principal p/ exibir nome. */
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
         try {
-            // Informações do usuário logado
             RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
             model.addAttribute("username", usuario.nome());
-            model.addAttribute("currentPage", "/dashboard");
+            model.addAttribute("currentPage", "/Home");
 
-            // === USANDO HELPER INTELIGENTE - MUITO MAIS LIMPO! ===
+
             Long totalAnimais = dashboardService.getTotalAnimais();
             Long totalTutores = dashboardService.getTotalTutores();
             Long totalConsumo = dashboardService.totalConsumo();
-            
-            SmartPageHelper.setupDashboard(model, totalAnimais, totalTutores, totalConsumo);
 
-            // Dados para gráficos e estatísticas (mantendo compatibilidade)
+//            SmartPageBuilder.homePage();
+            SmartPageHelper.setupHome(model, totalAnimais, totalTutores, totalConsumo);
+
             model.addAttribute("animaisPorStatus", obterAnimaisPorStatusMock());
             model.addAttribute("crescimentoMensal", obterCrescimentoMensalMock());
             model.addAttribute("notification", true);
 
-            return "dashboard/index";
+            return "index";
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Ocorreu um erro ao carregar o dashboard: " + e.getMessage());

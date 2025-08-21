@@ -20,7 +20,8 @@ public record RespostaAnimalSemConjunto (
          String status,
          String destino,
          String corPelagem,
-         MaezinhaComFilhotesDTO maezinhaComFilhotes
+         MaezinhaComFilhotesDTO maezinhaComFilhotes,
+         String imagemPrincipalPerfil
 
 
 

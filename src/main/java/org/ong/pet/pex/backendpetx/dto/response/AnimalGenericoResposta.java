@@ -3,6 +3,7 @@ package org.ong.pet.pex.backendpetx.dto.response;
 import lombok.*;
 import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +29,9 @@ public class AnimalGenericoResposta {
     private String status;
     private String corPelagem;
     private String condicaoAnimal;
+    private String imagemPrincipalPerfil;
     private MaezinhaComFilhotesDTO maezinhaComFilhotes;
     private List<AnimalGenericoResposta> listaAnimaisConjunto = new ArrayList<>();
-
+    private LocalDateTime dataCadastro;
 
 }

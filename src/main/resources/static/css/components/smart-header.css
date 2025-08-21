@@ -1,0 +1,562 @@
+/* 
+ * Smart Header Component - Sistema Padronizado com Variações por Página
+ * Utiliza as variáveis CSS definidas em estilo.css
+ */
+
+/* Container Principal */
+.smart-header-container {
+    margin-bottom: 1.5rem;
+}
+
+/* ===== HEADER PADRÃO - BASE PARA TODAS AS PÁGINAS ===== */
+.page-header {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--petx-primary);
+    border-radius: 12px 12px 0 0;
+    opacity: 0.8;
+}
+
+/* Título da Página */
+.page-title {
+    color: var(--text-primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+}
+
+.page-title i {
+    color: var(--petx-primary);
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+    background: linear-gradient(135deg, var(--petx-primary), var(--petx-info));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Subtítulo */
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0 0 1rem 0;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+/* Breadcrumb Padronizado */
+.breadcrumb-wrapper {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.breadcrumb-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+.breadcrumb-item:hover {
+    color: var(--petx-primary);
+    text-decoration: none;
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.breadcrumb-separator {
+    margin: 0 0.25rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+/* ===== VARIAÇÕES TEMÁTICAS POR PÁGINA ===== */
+
+/* Dashboard - Tema Principal (Gradiente Azul) */
+.dashboard .page-header {
+    background: linear-gradient(135deg, var(--petx-primary) 0%, var(--petx-info) 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 32px rgba(67, 97, 238, 0.15);
+}
+
+.dashboard .page-header::before {
+    background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+    height: 2px;
+}
+
+.dashboard .page-title {
+    color: white;
+    font-size: 2rem;
+}
+
+.dashboard .page-title i {
+    color: white;
+    -webkit-text-fill-color: white;
+}
+
+.dashboard .page-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+}
+
+.dashboard .breadcrumb-item {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.dashboard .breadcrumb-item:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard .breadcrumb-item.active {
+    color: white;
+}
+
+/* Animais - Tema Verde (Natureza) */
+.animais .page-header {
+    background: linear-gradient(135deg, var(--petx-success) 0%, #43aa8b 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 32px rgba(12, 206, 107, 0.15);
+}
+
+.animais .page-header::before {
+    background: linear-gradient(90deg, #0cce6b, #43aa8b);
+}
+
+.animais .page-title {
+    color: white;
+}
+
+.animais .page-title i {
+    color: white;
+    -webkit-text-fill-color: white;
+}
+
+.animais .page-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.animais .breadcrumb-item {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.animais .breadcrumb-item:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.animais .breadcrumb-item.active {
+    color: white;
+}
+
+/* Resgates - Tema Laranja (Urgência) */
+.resgates .page-header {
+    background: linear-gradient(135deg, var(--petx-warning) 0%, #f8961e 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 8px 32px rgba(255, 158, 0, 0.15);
+}
+
+.resgates .page-header::before {
+    background: linear-gradient(90deg, #ff9e00, #f8961e);
+}
+
+.resgates .page-title {
+    color: white;
+}
+
+.resgates .page-title i {
+    color: white;
+    -webkit-text-fill-color: white;
+}
+
+.resgates .page-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.resgates .breadcrumb-item {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.resgates .breadcrumb-item:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.resgates .breadcrumb-item.active {
+    color: white;
+}
+
+/* Grupo de Botões - Padrão para todas as páginas */
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.btn-group .btn {
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão Primário */
+.btn-group .btn-primary {
+    background: var(--petx-primary);
+    border-color: var(--petx-primary);
+    color: white;
+}
+
+.btn-group .btn-primary:hover {
+    background: var(--petx-primary-dark);
+    border-color: var(--petx-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+/* Botão Secundário */
+.btn-group .btn-secondary {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-group .btn-secondary:hover {
+    background: var(--hover-bg);
+    border-color: var(--petx-primary);
+    color: var(--petx-primary);
+    transform: translateY(-2px);
+}
+
+/* Botão Success */
+.btn-group .btn-success {
+    background: var(--petx-success);
+    border-color: var(--petx-success);
+    color: white;
+}
+
+.btn-group .btn-success:hover {
+    background: #0aa856;
+    border-color: #0aa856;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(12, 206, 107, 0.3);
+}
+
+/* Ícones nos botões */
+.btn-group .btn i {
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+}
+
+/* ===== RESPONSIVIDADE PADRONIZADA ===== */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.25rem 1.5rem;
+        border-radius: 10px;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .page-title i {
+        margin-right: 0;
+    }
+    
+    .page-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Ajustes para temas coloridos em mobile */
+    .dashboard .page-title,
+    .animais .page-title,
+    .resgates .page-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.25rem;
+    }
+    
+    .page-subtitle {
+        font-size: 0.875rem;
+    }
+    
+    .breadcrumb-wrapper {
+        font-size: 0.75rem;
+    }
+    
+    .btn-group .btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* ===== MELHORIAS DE ACESSIBILIDADE ===== */
+.btn-group .btn:focus {
+    outline: 2px solid var(--petx-primary);
+    outline-offset: 2px;
+}
+
+.breadcrumb-item:focus {
+    outline: 1px solid var(--petx-primary);
+    outline-offset: 1px;
+    border-radius: 4px;
+}
+
+/* ===== ANIMAÇÕES SUTIS ===== */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.smart-header-container {
+    animation: slideInDown 0.5s ease-out;
+}
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-group .btn {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.5rem 0.875rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+/* Botão Primário */
+.btn-group .btn-primary {
+    background: var(--petx-primary);
+    border-color: var(--petx-primary);
+    color: white;
+}
+
+.btn-group .btn-primary:hover {
+    background: var(--petx-primary-dark);
+    border-color: var(--petx-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+}
+
+/* Botão Secundário */
+.btn-group .btn-secondary {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-group .btn-secondary:hover {
+    background: var(--hover-bg);
+    border-color: var(--petx-primary);
+    color: var(--petx-primary);
+    transform: translateY(-1px);
+}
+
+/* Botão Success */
+.btn-group .btn-success {
+    background: var(--petx-success);
+    border-color: var(--petx-success);
+    color: white;
+}
+
+.btn-group .btn-success:hover {
+    background: #0aa856;
+    border-color: #0aa856;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(12, 206, 107, 0.3);
+}
+
+/* Ícones nos botões */
+.btn-group .btn i {
+    font-size: 0.75rem;
+    margin-right: 0.375rem;
+}
+
+/* Stats Container */
+.stats-container {
+    margin-top: 1rem;
+}
+
+.stats-row {
+    margin-top: 0.75rem;
+}
+
+.stats-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.stats-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+    border-color: var(--petx-primary);
+}
+
+.stats-icon {
+    font-size: 1.25rem;
+    color: var(--petx-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.stats-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    line-height: 1;
+}
+
+.stats-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.25rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .page-title i {
+        margin-right: 0;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .stats-card {
+        margin-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 0.75rem;
+        border-radius: 6px;
+    }
+    
+    .page-title {
+        font-size: 1.125rem;
+    }
+    
+    .breadcrumb-wrapper {
+        font-size: 0.75rem;
+    }
+}
+
+/* Melhorias de acessibilidade */
+.btn-group .btn:focus {
+    outline: 2px solid var(--petx-primary);
+    outline-offset: 2px;
+}
+
+.breadcrumb-item:focus {
+    outline: 1px solid var(--petx-primary);
+    outline-offset: 1px;
+    border-radius: 3px;
+}

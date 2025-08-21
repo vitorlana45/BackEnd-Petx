@@ -1,4 +1,4 @@
-package org.petx.dto;
+package org.ong.pet.pex.backendpetx.controllers.bean;
 
 import org.springframework.ui.Model;
 import java.util.ArrayList;
@@ -77,7 +77,7 @@ public class SmartPageBuilder {
     }
 
     // === BUILDERS PRÉ-CONFIGURADOS PARA PÁGINAS COMUNS ===
-    
+
     /**
      * Configuração padrão para página de listagem de animais
      */
@@ -93,9 +93,9 @@ public class SmartPageBuilder {
     /**
      * Configuração padrão para dashboard
      */
-    public static SmartPageBuilder dashboardPage() {
+    public static SmartPageBuilder homePage() {
         return create()
-                .title("Dashboard")
+                .title("Home")
                 .subtitle("Bem-vindo ao sistema de gestão da ONG PetX")
                 .icon("fas fa-tachometer-alt");
     }
@@ -119,7 +119,7 @@ public class SmartPageBuilder {
                 .title(title)
                 .subtitle(subtitle)
                 .icon(icon);
-        
+
         // Adicionar breadcrumbs
         for (String[] crumb : breadcrumbs) {
             if (crumb[1] != null) {
@@ -128,13 +128,13 @@ public class SmartPageBuilder {
                 pageInfo.addBreadcrumb(crumb[0]);
             }
         }
-        
+
         model.addAttribute("pageInfo", pageInfo);
-        
+
         if (actionButton != null) {
             model.addAttribute("actionButton", actionButton);
         }
-        
+
         if (!stats.isEmpty()) {
             model.addAttribute("statsData", stats);
         }

@@ -7,10 +7,17 @@
 <body>
 <section id="paginaAnimal" th:with="a=${animal}">
     <!-- HEADER / HERO -->
-    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-4 mb-4">
+    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-4 mb-4 w-100">
         <div class="d-flex align-items-center gap-3">
-            <div class="rounded-3 bg-light d-flex align-items-center justify-content-center" style="width:90px;height:90px;font-size:3rem;"
-                 th:text="${a != null && a.especie != null ? (a.especie.toLowerCase().contains('gato') ? '🐱' : (a.especie.toLowerCase().contains('cão') || a.especie.toLowerCase().contains('cao') ? '🐶' : '🐾')) : '🐾'}">🐾</div>
+            <div class="rounded-3 bg-light d-flex align-items-center justify-content-center overflow-hidden" style="width:90px;height:90px;">
+                <img th:if="${a != null and a.imagemPrincipalPerfil != null and !#strings.isEmpty(a.imagemPrincipalPerfil)}"
+                     th:src="${a.imagemPrincipalPerfil}"
+                     alt=""
+                     class="w-100 h-100" style="object-fit: cover;">
+                <div th:unless="${a != null and a.imagemPrincipalPerfil != null and !#strings.isEmpty(a.imagemPrincipalPerfil)}"
+                     style="font-size:3rem;"
+                     th:text="${a != null && a.especie != null ? (a.especie.toLowerCase().contains('gato') ? '🐱' : (a.especie.toLowerCase().contains('cão') || a.especie.toLowerCase().contains('cao') ? '🐶' : '🐾')) : '🐾'}">🐾</div>
+            </div>
             <div>
                 <h2 class="mb-2 d-flex align-items-center gap-2">
                     <span th:text="${a != null ? a.nome : 'Animal'}">Animal</span>
@@ -29,11 +36,15 @@
             </div>
         </div>
         <div class="ms-lg-auto d-flex flex-wrap gap-2">
-            <button class="btn btn-outline-primary btn-sm" id="btnModoEdicao" type="button">Editar</button>
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/animais}"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
+            <a class="btn btn-outline-primary btn-sm" th:href="@{'/animais/' + ${a != null ? a.id : 0} + '/editar'}">Editar</a>
             <button class="btn btn-outline-success btn-sm d-none" id="btnSalvarAlteracoes" type="button">Salvar</button>
             <button class="btn btn-outline-secondary btn-sm d-none" id="btnCancelarAlteracoes" type="button">Cancelar</button>
             <button class="btn btn-outline-warning btn-sm" type="button">Registrar Vacina</button>
             <button class="btn btn-outline-danger btn-sm" type="button">Tratamento</button>
+            <button class="btn btn-outline-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalExcluirAnimal">
+                <i class="fas fa-trash me-1"></i> Excluir
+            </button>
         </div>
     </div>
 
@@ -57,7 +68,7 @@
                     <div class="col-6 mb-2"><strong>Origem:</strong> <span th:text="${a != null ? a.origem : '—'}">—</span></div>
                     <div class="col-6 mb-2"><strong>Cor/Pelagem:</strong> <span th:text="${a != null ? a.corPelagem : '—'}">—</span></div>
                     <div class="col-12 mb-2"><strong>Condição Inicial:</strong> <span th:text="${a != null ? a.condicaoAnimal : '—'}">—</span></div>
-                    <div class="col-12 mb-2"><strong>Descrição Divulgação:</strong> <span th:text="${a != null && a.descricaoDivulgacao != null ? a.descricaoDivulgacao : '—'}">—</span></div>
+<!--                    <div class="col-12 mb-2"><strong>Descrição Divulgação:</strong> <span th:text="${a != null && a.descricaoDivulgacao != null ? a.descricaoDivulgacao : '—'}">—</span></div>-->
                 </div>
                 <form data-edit="perfil" class="d-none" method="post" th:action="@{'/animais/' + ${a.id} + '/atualizar/perfil'}">
                     <div class="row g-3 small">
@@ -95,7 +106,7 @@
                         </div>
                         <div class="col-12">
                             <label class="form-label">Descrição Divulgação</label>
-                            <textarea name="descricaoDivulgacao" class="form-control" rows="3" th:text="${a != null ? a.descricaoDivulgacao : ''}"></textarea>
+                            <!-- textarea opcional -->
                         </div>
                         <div class="col-12 text-end">
                             <button type="submit" class="btn btn-sm btn-primary">Salvar Perfil</button>
@@ -113,7 +124,7 @@
                 <div class="small" data-view="saude">
                     <div><strong>Doenças:</strong> <span th:text="${doencas != null && !#lists.isEmpty(doencas) ? #strings.arrayJoin(doencas, ', ') : 'Nenhuma'}">Nenhuma</span></div>
                     <div><strong>Vacinas:</strong> <span th:text="${vacinasResumo != null ? vacinasResumo : '—'}">—</span></div>
-                    <div><strong>Castrado:</strong> <span th:text="${a != null && a.castrado != null ? (a.castrado ? 'Sim' : 'Não') : '—'}">—</span></div>
+<!--                    <div><strong>Castrado:</strong> <span th:text="${a != null && a.castrado != null ? (a.castrado ? 'Sim' : 'Não') : '—'}">—</span></div>-->
                 </div>
                 <form data-edit="saude" class="d-none" method="post" th:action="@{'/animais/' + ${a.id} + '/atualizar/saude'}">
                     <div class="row g-3 small">
@@ -125,13 +136,13 @@
                             <label class="form-label">Castrado?</label>
                             <select name="castrado" class="form-select">
                                 <option value="">—</option>
-                                <option value="true" th:selected="${a != null && a.castrado}">Sim</option>
-                                <option value="false" th:selected="${a != null && a.castrado != null && !a.castrado}">Não</option>
+<!--                                <option value="true" th:selected="${a != null && a.castrado}">Sim</option>-->
+<!--                                <option value="false" th:selected="${a != null && a.castrado != null && !a.castrado}">Não</option>-->
                             </select>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Data Castração</label>
-                            <input type="date" name="dataCastracao" class="form-control" th:value="${a != null && a.dataCastracao != null ? a.dataCastracao : ''}" />
+<!--                            <input type="date" name="dataCastracao" class="form-control" th:value="${a != null && a.dataCastracao != null ? a.dataCastracao : ''}" />-->
                         </div>
                         <div class="col-12 text-end">
                             <button type="submit" class="btn btn-sm btn-primary">Salvar Saúde</button>
@@ -175,16 +186,15 @@
 
         <!-- COL DIREITA -->
         <div class="col-12 col-lg-4 d-flex flex-column gap-4">
-            <!-- GALERIA SIMPLES -->
-            <div class="modal-animal modal-section p-3" id="blocoGaleria">
+            <!-- STATUS SIMPLES -->
+            <div class="modal-animal modal-section p-3" id="blocoStatus">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="modal-section-title mb-0">Galeria</h6>
-                    <button class="btn btn-sm btn-outline-primary" type="button">Adicionar</button>
+                    <h6 class="modal-section-title mb-0">Status do Animal</h6>
                 </div>
-                <div class="row g-2" id="galeriaMidia">
-                    <div class="col-6">
-                        <div class="ratio ratio-4x3 rounded border d-flex align-items-center justify-content-center text-muted small">Sem mídia</div>
-                    </div>
+                <div class="small">
+                    <div><strong>Status:</strong> <span th:text="${a != null ? a.status : '—'}">—</span></div>
+                    <div><strong>Sexo:</strong> <span th:text="${a != null ? a.sexo : '—'}">—</span></div>
+                    <div><strong>Porte:</strong> <span th:text="${a != null ? a.porte : '—'}">—</span></div>
                 </div>
             </div>
 
@@ -199,7 +209,7 @@
                 </ul>
             </div>
 
-            <!-- METRICAS / RESUMO -->
+            <!-- MÉTRICAS / RESUMO -->
             <div class="modal-animal modal-section p-3" id="blocoMetricas">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Métricas</h6>
@@ -222,6 +232,27 @@
         </div>
     </div>
 
+    <!-- Modal Excluir -->
+    <div class="modal fade" id="modalExcluirAnimal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja excluir o animal <strong th:text="${a != null ? a.nome : ''}"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form th:action="@{'/animais/' + ${a != null ? a.id : 0} + '/excluir'}" method="post">
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JS Inline para modo edição básico -->
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -238,9 +269,9 @@
                 inlineBtns.forEach(b=>b.classList.toggle('d-none', !on));
                 document.querySelectorAll('[data-view]').forEach(v=>v.classList.toggle('d-none', on));
                 document.querySelectorAll('[data-edit]').forEach(f=>f.classList.toggle('d-none', !on));
-                btnModo.classList.toggle('d-none', on);
-                btnSalvar.classList.toggle('d-none', !on);
-                btnCancelar.classList.toggle('d-none', !on);
+                if(document.getElementById('btnModoEdicao')) document.getElementById('btnModoEdicao').classList.toggle('d-none', on);
+                btnSalvar && btnSalvar.classList.toggle('d-none', !on);
+                btnCancelar && btnCancelar.classList.toggle('d-none', !on);
             }
             btnModo && btnModo.addEventListener('click', ()=> setEdit(true));
             btnCancelar && btnCancelar.addEventListener('click', ()=> setEdit(false));

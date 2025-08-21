@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="lista">
+    <!-- CONTEÚDO PARCIAL: cards + tabela + paginação -->
+    <div id="lista-animais" class="card shadow-sm" hx-boost="true" hx-target="#lista-animais" hx-swap="outerHTML">
+        <div class="card-header py-2 d-flex justify-content-between align-items-center">
+            <h3 class="h6 mb-0"><i class="fas fa-list me-2"></i>Lista de Animais</h3>
+            <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-primary-subtle text-primary small"
+              th:text="${page?.totalElements ?: 0} + ' animais encontrados'">0 animais encontrados</span>
+                <div class="btn-group" role="group" aria-label="Alternar visualização">
+                    <input type="radio" class="btn-check" name="view" id="view-cards" autocomplete="off">
+                    <label class="btn btn-outline-secondary btn-sm" for="view-cards" data-view="cards" style="padding:.25rem .5rem">
+                        <i class="fas fa-th"></i><span class="visually-hidden">Cards</span>
+                    </label>
+                    <input type="radio" class="btn-check" name="view" id="view-table" autocomplete="off">
+                    <label class="btn btn-outline-secondary btn-sm" for="view-table" data-view="table" style="padding:.25rem .5rem">
+                        <i class="fas fa-list"></i><span class="visually-hidden">Tabela</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            <!-- Cards -->
+            <div id="cards-view" class="p-3">
+                <div th:if="${#lists.isEmpty(animais)}" class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted h5">Nenhum animal encontrado</h4>
+                    <p class="text-muted small">Tente ajustar os filtros ou cadastre um novo animal</p>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(animais)}" class="row g-3">
+                    <div th:each="animal : ${animais}" class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                        <a th:href="@{/animais/{id}(id=${animal.id})}" class="text-decoration-none">
+                            <article class="card h-100 shadow-sm animal-card"
+                                     th:attr="aria-label='Ver detalhes de ' + ${animal.nome}">
+                                <div class="ratio ratio-1x1 position-relative">
+                                    <img th:src="@{/images/icon-dog.svg}" alt="" class="img-fluid object-fit-contain p-3" loading="lazy">
+                                    <div class="position-absolute top-0 start-0 m-2">
+                                        <span class="badge" th:switch="${animal.status}">
+                                          <span class="badge bg-success" th:case="'SAUDAVEL'" th:text="${animal.status}">SAUDAVEL</span>
+                                          <span class="badge bg-danger" th:case="'DOENTE'" th:text="${animal.status}">DOENTE</span>
+                                          <span class="badge bg-info" th:case="'ADOTADO'" th:text="${animal.status}">ADOTADO</span>
+                                          <span class="badge bg-secondary" th:case="*" th:text="${animal.status}">STATUS</span>
+                                        </span>
+                                    </div>
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <button type="button" class="btn btn-sm btn-light border btn-quick-view" th:attr="data-id=${animal.id}" title="Visualização rápida">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body py-2">
+                                    <h5 class="h6 mb-2 text-truncate" th:text="${animal.nome}">Nome do Animal</h5>
+                                    <ul class="list-unstyled d-flex flex-wrap gap-2 small text-muted mb-0">
+                                        <li class="d-inline-flex align-items-center gap-1">
+                                            <i class="fas fa-paw"></i><span th:text="${animal.especie}">Espécie</span>
+                                        </li>
+                                        <li class="d-inline-flex align-items-center gap-1" th:if="${animal.raca}">
+                                            <i class="fas fa-tag"></i><span th:text="${animal.raca}">Raça</span>
+                                        </li>
+                                        <li class="d-inline-flex align-items-center gap-1">
+                                            <i class="fas fa-ruler"></i><span th:text="${animal.porte}">Porte</span>
+                                        </li>
+                                        <li class="d-inline-flex align-items-center gap-1">
+                                            <i class="fas fa-venus-mars"></i><span th:text="${animal.sexo}">Sexo</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela -->
+            <div id="table-view" class="d-none">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Nome</th><th>Espécie</th><th>Raça</th><th>Porte</th>
+                            <th>Sexo</th><th>Status</th><th>Chip ID</th>
+                            <th class="text-center" style="width: 150px">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(animais)}">
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="fas fa-search fa-2x mb-2 d-block"></i>
+                                Nenhum animal encontrado
+                            </td>
+                        </tr>
+                        <tr th:each="animal : ${animais}" th:unless="${#lists.isEmpty(animais)}">
+                            <td><strong th:text="${animal.nome}">Nome</strong></td>
+                            <td th:text="${animal.especie}">Espécie</td>
+                            <td th:text="${animal.raca ?: '-'}">Raça</td>
+                            <td th:text="${animal.porte}">Porte</td>
+                            <td th:text="${animal.sexo}">Sexo</td>
+                            <td>
+                        <span th:switch="${animal.status}">
+                              <span class="badge bg-success" th:case="'SAUDAVEL'" th:text="${animal.status}">SAUDAVEL</span>
+                              <span class="badge bg-danger" th:case="'DOENTE'" th:text="${animal.status}">DOENTE</span>
+                              <span class="badge bg-info" th:case="'ADOTADO'" th:text="${animal.status}">ADOTADO</span>
+                              <span class="badge bg-secondary" th:case="*" th:text="${animal.status}">STATUS</span>
+                        </span>
+                            </td>
+                            <td th:text="${animal.chipId ?: '-'}">Chip</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a th:href="@{/animais/{id}(id=${animal.id})}" class="btn btn-sm btn-outline-primary" title="Ver">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+<!--                                    <a th:href="@{/animais/{id}/editar(id=${animal.id})}" class="btn btn-sm btn-outline-secondary" title="Editar">-->
+<!--                                        <i class="fas fa-edit"></i>-->
+<!--                                    </a>-->
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginação (via HTMX) -->
+        <div class="card-footer" th:if="${page?.totalPages > 1}">
+            <nav aria-label="Navegação de páginas"
+                 th:with="
+                       qNome=${#strings.isEmpty(filtroNome) ? null : filtroNome},
+                       qRaca=${#strings.isEmpty(filtroRaca) ? null : filtroRaca},
+                       qDoenca=${#strings.isEmpty(filtroDoenca) ? null : filtroDoenca},
+                       qComport=${#strings.isEmpty(filtroComportamento) ? null : filtroComportamento},
+                       qEspecie=${filtroEspecie}, qPorte=${filtroPorte}, qStatus=${filtroStatus},
+                       qMatur=${filtroMaturidade}, qOrigem=${filtroOrigem}, qSexo=${filtroSexo},
+                       start=${T(java.lang.Math).max(0, page.number - 2)},
+                       end=${T(java.lang.Math).min(page.totalPages - 1, page.number + 2)}
+                 ">
+                <ul class="pagination pagination-sm justify-content-center mb-0">
+
+                    <!-- Primeira -->
+                    <li class="page-item" th:classappend="${page.first} ? ' disabled'">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${0}, size=${page.size},
+                                  nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                                  status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                                  maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}"
+                           th:attr="aria-disabled=${page.first}"
+                           tabindex="-1">
+                            <i class="fas fa-angle-double-left"></i><span class="visually-hidden">Primeira</span>
+                        </a>
+                    </li>
+
+                    <!-- Anterior -->
+                    <li class="page-item" th:classappend="${page.first} ? ' disabled'">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${page.number - 1}, size=${page.size},
+                                  nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                                  status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                                  maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}"
+                           th:attr="aria-disabled=${page.first}"
+                           tabindex="-1">
+                            <i class="fas fa-angle-left"></i><span class="visually-hidden">Anterior</span>
+                        </a>
+                    </li>
+
+                    <!-- Primeira página e reticências (início) -->
+                    <li class="page-item" th:if="${start > 0}">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${0}, size=${page.size},
+                                  nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                                  status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                                  maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}">1</a>
+                    </li>
+                    <li class="page-item disabled" th:if="${start > 1}">
+                        <span class="page-link">&hellip;</span>
+                    </li>
+
+                    <!-- Numeradas -->
+                    <li th:each="i : ${#numbers.sequence(start, end)}"
+                        class="page-item" th:classappend="${i == page.number} ? ' active'">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${i}, size=${page.size},
+                              nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                              status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                              maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}"
+                           th:attr="aria-current=${i == page.number} ? 'page' : null"
+                           th:text="${i + 1}">1</a>
+                    </li>
+
+                    <!-- Reticências e última página (fim) -->
+                    <li class="page-item disabled" th:if="${end < page.totalPages - 2}">
+                        <span class="page-link">&hellip;</span>
+                    </li>
+                    <li class="page-item" th:if="${end < page.totalPages - 1}">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${page.totalPages - 1}, size=${page.size},
+                                  nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                                  status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                                  maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}"
+                           th:text="${page.totalPages}">999</a>
+                    </li>
+
+                    <!-- Próxima -->
+                    <li class="page-item" th:classappend="${page.last} ? ' disabled'">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${page.number + 1}, size=${page.size},
+                              nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                              status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                              maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}">
+                            <i class="fas fa-angle-right"></i><span class="visually-hidden">Próxima</span>
+                        </a>
+                    </li>
+
+                    <!-- Última -->
+                    <li class="page-item" th:classappend="${page.last} ? ' disabled'">
+                        <a class="page-link"
+                           th:href="@{/animais(page=${page.totalPages - 1}, size=${page.size},
+                                  nome=${qNome}, raca=${qRaca}, especie=${qEspecie}, porte=${qPorte},
+                                  status=${qStatus}, doenca=${qDoenca}, comportamento=${qComport},
+                                  maturidade=${qMatur}, origem=${qOrigem}, sexo=${qSexo})}">
+                            <i class="fas fa-angle-double-right"></i><span class="visually-hidden">Última</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+    <!-- Modal Quick View -->
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h5 class="modal-title small">Resumo do Animal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="/images/icon-dog.svg" alt="" width="40" height="40" class="opacity-75">
+                        <div>
+                            <div class="fw-semibold" id="qv-nome">Nome</div>
+                            <div class="small text-muted"><span id="qv-especie">Espécie</span> • <span id="qv-raca">Raça</span></div>
+                        </div>
+                    </div>
+                    <ul class="list-unstyled small mb-0">
+                        <li><i class="fas fa-id-badge me-1 text-primary"></i> Chip: <span id="qv-chip">-</span></li>
+                        <li><i class="fas fa-ruler me-1 text-primary"></i> Porte: <span id="qv-porte">-</span></li>
+                        <li><i class="fas fa-venus-mars me-1 text-primary"></i> Sexo: <span id="qv-sexo">-</span></li>
+                        <li><i class="fas fa-heartbeat me-1 text-primary"></i> Saúde: <span id="qv-doencas">-</span></li>
+                        <li><i class="fas fa-brain me-1 text-primary"></i> Comportamento: <span id="qv-comport">-</span></li>
+                        <li><i class="fas fa-circle me-1 text-primary"></i> Status: <span id="qv-status">-</span></li>
+                    </ul>
+                </div>
+                <div class="modal-footer py-2">
+                    <a href="#" class="btn btn-primary btn-sm" id="qv-ver-detalhes">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de alternância Cards/Tabela (precisa rodar após cada swap) -->
+    <script>
+        (function() {
+            const STORAGE_KEY = 'animais:view';
+            const cardsView = document.getElementById('cards-view');
+            const tableView = document.getElementById('table-view');
+
+            function setView(v){
+                if(!cardsView || !tableView) return;
+                if(v === 'table'){
+                    cardsView.classList.add('d-none');
+                    tableView.classList.remove('d-none');
+                    const t = document.getElementById('view-table'); if(t) t.checked = true;
+                } else {
+                    tableView.classList.add('d-none');
+                    cardsView.classList.remove('d-none');
+                    const c = document.getElementById('view-cards'); if(c) c.checked = true;
+                }
+                try { localStorage.setItem(STORAGE_KEY, v); } catch(_) {}
+            }
+
+            const saved = (function(){ try { return localStorage.getItem(STORAGE_KEY); } catch(_) { return null; } })();
+            setView(saved === 'table' ? 'table' : 'cards');
+
+            const group = document.querySelector('.btn-group[role="group"]');
+            if(group){
+                group.addEventListener('click', function(e){
+                    const btn = e.target.closest('label[data-view]');
+                    if(!btn) return;
+                    setView(btn.getAttribute('data-view'));
+                });
+            }
+
+            // Quick View handler
+            document.addEventListener('click', async function(e){
+                const btn = e.target.closest('.btn-quick-view');
+                if(!btn) return;
+                e.preventDefault();
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                try {
+                    const resp = await fetch(`/animais/${id}/detalhes.json`, { headers: { 'Accept': 'application/json' } });
+                    if(!resp.ok) throw new Error('Falha ao carregar dados');
+                    const data = await resp.json();
+                    // Preencher modal
+                    const setText = (sel, val) => { const el = document.getElementById(sel); if(el) el.textContent = val || '-'; };
+                    setText('qv-nome', data.nome);
+                    setText('qv-especie', data.especie);
+                    setText('qv-raca', data.raca);
+                    setText('qv-chip', data.chipId);
+                    setText('qv-porte', data.porte);
+                    setText('qv-sexo', data.sexo);
+                    setText('qv-status', data.status);
+                    setText('qv-doencas', data.doencas || '—');
+                    setText('qv-comport', data.comportamento || '—');
+                    const link = document.getElementById('qv-ver-detalhes');
+                    if(link) link.setAttribute('href', `/animais/${id}`);
+                    const modalEl = document.getElementById('quickViewModal');
+                    if(window.bootstrap && modalEl){
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+                    }
+                } catch(err){
+                    console.error(err);
+                }
+            }, true);
+        })();
+    </script>
+</th:block>
+</html>

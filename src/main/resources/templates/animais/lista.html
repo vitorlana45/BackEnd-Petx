@@ -5,12 +5,11 @@
     <title>Animais - ONG PetX</title>
 </head>
 <body>
-<section>
+<section class="animais">
     <!-- Cabeçalho Inteligente -->
-    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButton})}"></div>
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButtons})}"></div>
 
-    <!-- Resumo e Estatísticas Rápidas -->
-    <!-- Removido inline-style; usando utilitários Bootstrap e classes consistentes -->
+
     <div class="row g-3 mb-3">
         <div class="col-xl-3 col-md-6">
             <div class="card h-100 border-0 shadow-sm bg-primary-subtle">
@@ -156,169 +155,12 @@
         </div>
     </div>
 
-    <!-- Resultados -->
-    <div class="card shadow-sm">
-        <div class="card-header py-2 d-flex justify-content-between align-items-center">
-            <h3 class="h6 mb-0"><i class="fas fa-list me-2" aria-hidden="true"></i>Lista de Animais</h3>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary small" th:text="${page?.totalElements ?: 0} + ' animais encontrados'">
-                    0 animais encontrados
-                </span>
-                <div class="btn-group" role="group" aria-label="Alternar visualização">
-                    <input type="radio" class="btn-check" name="view" id="view-cards" autocomplete="off">
-                    <label class="btn btn-outline-secondary btn-sm" for="view-cards" data-view="cards" style="padding:.25rem .5rem">
-                        <i class="fas fa-th" aria-hidden="true"></i><span class="visually-hidden">Cards</span>
-                    </label>
-                    <input type="radio" class="btn-check" name="view" id="view-table" autocomplete="off">
-                    <label class="btn btn-outline-secondary btn-sm" for="view-table" data-view="table" style="padding:.25rem .5rem">
-                        <i class="fas fa-list" aria-hidden="true"></i><span class="visually-hidden">Tabela</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-body p-0">
-            <!-- Vista em Cards (padrão) -->
-            <div id="cards-view" class="p-3">
-                <div th:if="${#lists.isEmpty(animais)}" class="text-center py-5">
-                    <i class="fas fa-search fa-3x text-muted mb-3" aria-hidden="true"></i>
-                    <h4 class="text-muted h5">Nenhum animal encontrado</h4>
-                    <p class="text-muted small">Tente ajustar os filtros ou cadastre um novo animal</p>
-                </div>
-
-                <div th:unless="${#lists.isEmpty(animais)}" class="row g-3">
-                    <div th:each="animal : ${animais}" class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                        <a th:href="@{/animais/{id}(id=${animal.id})}" class="text-decoration-none">
-                            <article class="card h-100 border-0 shadow-sm animal-card" tabindex="0" role="button"
-                                     th:attr="aria-label='Ver detalhes de ' + ${animal.nome}">
-                                <div class="ratio ratio-1x1 position-relative">
-                                    <img th:src="@{/images/icon-dog.svg}" alt="" class="img-fluid object-fit-contain p-3" loading="lazy">
-                                    <div class="position-absolute top-0 start-0 m-2">
-                                        <span class="badge" th:switch="${animal.status}">
-                                            <span class="badge bg-success" th:case="'SAUDAVEL'" th:text="${animal.status}">SAUDAVEL</span>
-                                            <span class="badge bg-danger" th:case="'DOENTE'" th:text="${animal.status}">DOENTE</span>
-                                            <span class="badge bg-info" th:case="'ADOTADO'" th:text="${animal.status}">ADOTADO</span>
-                                            <span class="badge bg-secondary" th:case="*" th:text="${animal.status}">STATUS</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="card-body py-2">
-                                    <h5 class="h6 mb-2 text-truncate" th:text="${animal.nome}">Nome do Animal</h5>
-                                    <ul class="list-unstyled d-flex flex-wrap gap-2 small text-muted mb-0">
-                                        <li class="d-inline-flex align-items-center gap-1"><i class="fas fa-paw" aria-hidden="true"></i><span th:text="${animal.especie}">Espécie</span></li>
-                                        <li class="d-inline-flex align-items-center gap-1" th:if="${animal.raca}"><i class="fas fa-tag" aria-hidden="true"></i><span th:text="${animal.raca}">Raça</span></li>
-                                        <li class="d-inline-flex align-items-center gap-1"><i class="fas fa-ruler" aria-hidden="true"></i><span th:text="${animal.porte}">Porte</span></li>
-                                        <li class="d-inline-flex align-items-center gap-1"><i class="fas fa-venus-mars" aria-hidden="true"></i><span th:text="${animal.sexo}">Sexo</span></li>
-                                    </ul>
-                                </div>
-                            </article>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vista em Tabela -->
-            <div id="table-view" class="d-none">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Espécie</th>
-                            <th>Raça</th>
-                            <th>Porte</th>
-                            <th>Sexo</th>
-                            <th>Status</th>
-                            <th>Chip ID</th>
-                            <th class="text-center" style="width: 150px">Ações</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${#lists.isEmpty(animais)}">
-                            <td colspan="8" class="text-center text-muted py-4">
-                                <i class="fas fa-search fa-2x mb-2 d-block" aria-hidden="true"></i>
-                                Nenhum animal encontrado
-                            </td>
-                        </tr>
-                        <tr th:each="animal : ${animais}" th:unless="${#lists.isEmpty(animais)}">
-                            <td><strong th:text="${animal.nome}">Nome</strong></td>
-                            <td th:text="${animal.especie}">Espécie</td>
-                            <td th:text="${animal.raca ?: '-'}">Raça</td>
-                            <td th:text="${animal.porte}">Porte</td>
-                            <td th:text="${animal.sexo}">Sexo</td>
-                            <td>
-                                <span th:switch="${animal.status}">
-                                    <span class="badge bg-success" th:case="'SAUDAVEL'" th:text="${animal.status}">SAUDAVEL</span>
-                                    <span class="badge bg-danger" th:case="'DOENTE'" th:text="${animal.status}">DOENTE</span>
-                                    <span class="badge bg-info" th:case="'ADOTADO'" th:text="${animal.status}">ADOTADO</span>
-                                    <span class="badge bg-secondary" th:case="*" th:text="${animal.status}">STATUS</span>
-                                </span>
-                            </td>
-                            <td th:text="${animal.chipId ?: '-'}">Chip</td>
-                            <td class="text-center">
-                                <div class="btn-group" role="group">
-                                    <a th:href="@{/animais/{id}(id=${animal.id})}"
-                                       class="btn btn-sm btn-outline-primary" title="Ver Detalhes" aria-label="Ver detalhes">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a th:href="@{/animais/{id}/editar(id=${animal.id})}"
-                                       class="btn btn-sm btn-outline-secondary" title="Editar" aria-label="Editar">
-                                        <i class="fas fa-edit" aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Paginação -->
-        <div class="card-footer" th:if="${page?.totalPages > 1}">
-            <nav aria-label="Navegação de páginas">
-                <ul class="pagination pagination-sm justify-content-center mb-0">
-                    <!-- Primeira página -->
-                    <li class="page-item" th:classappend="${page.first} ? ' disabled'">
-                        <a class="page-link" th:href="@{/animais(page=0, size=${page.size}, nome=${filtroNome}, raca=${filtroRaca}, especie=${filtroEspecie}, porte=${filtroPorte}, status=${filtroStatus}, doenca=${filtroDoenca}, comportamento=${filtroComportamento}, maturidade=${filtroMaturidade}, origem=${filtroOrigem}, sexo=${filtroSexo})}">
-                            <i class="fas fa-angle-double-left" aria-hidden="true"></i>
-                            <span class="visually-hidden">Primeira</span>
-                        </a>
-                    </li>
-                    <!-- Página anterior -->
-                    <li class="page-item" th:classappend="${page.first} ? ' disabled'">
-                        <a class="page-link" th:href="@{/animais(page=${page.number - 1}, size=${page.size}, nome=${filtroNome}, raca=${filtroRaca}, especie=${filtroEspecie}, porte=${filtroPorte}, status=${filtroStatus}, doenca=${filtroDoenca}, comportamento=${filtroComportamento}, maturidade=${filtroMaturidade}, origem=${filtroOrigem}, sexo=${filtroSexo})}">
-                            <i class="fas fa-angle-left" aria-hidden="true"></i>
-                            <span class="visually-hidden">Anterior</span>
-                        </a>
-                    </li>
-                    <!-- Páginas numeradas -->
-                    <li th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, page.number - 2), T(java.lang.Math).min(page.totalPages - 1, page.number + 2))}"
-                        class="page-item" th:classappend="${i == page.number} ? ' active'">
-                        <a class="page-link"
-                           th:href="@{/animais(page=${i}, size=${page.size}, nome=${filtroNome}, raca=${filtroRaca}, especie=${filtroEspecie}, porte=${filtroPorte}, status=${filtroStatus}, doenca=${filtroDoenca}, comportamento=${filtroComportamento}, maturidade=${filtroMaturidade}, origem=${filtroOrigem}, sexo=${filtroSexo})}"
-                           th:text="${i + 1}">1</a>
-                    </li>
-                    <!-- Próxima página -->
-                    <li class="page-item" th:classappend="${page.last} ? ' disabled'">
-                        <a class="page-link" th:href="@{/animais(page=${page.number + 1}, size=${page.size}, nome=${filtroNome}, raca=${filtroRaca}, especie=${filtroEspecie}, porte=${filtroPorte}, status=${filtroStatus}, doenca=${filtroDoenca}, comportamento=${filtroComportamento}, maturidade=${filtroMaturidade}, origem=${filtroOrigem}, sexo=${filtroSexo})}">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                            <span class="visually-hidden">Próxima</span>
-                        </a>
-                    </li>
-                    <!-- Última página -->
-                    <li class="page-item" th:classappend="${page.last} ? ' disabled'">
-                        <a class="page-link" th:href="@{/animais(page=${page.totalPages - 1}, size=${page.size}, nome=${filtroNome}, raca=${filtroRaca}, especie=${filtroEspecie}, porte=${filtroPorte}, status=${filtroStatus}, doenca=${filtroDoenca}, comportamento=${filtroComportamento}, maturidade=${filtroMaturidade}, origem=${filtroOrigem}, sexo=${filtroSexo})}">
-                            <i class="fas fa-angle-double-right" aria-hidden="true"></i>
-                            <span class="visually-hidden">Última</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+    <div id="lista-animais" th:replace="~{animais/fragmentos :: lista}"></div>
 </section>
 
+
+
+<script src="https://unpkg.com/htmx.org@2.0.3"></script>
 <script>
     (function() {
         // Persistir visualização escolhida (cards/tabela)

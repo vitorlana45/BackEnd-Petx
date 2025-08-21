@@ -1,41 +1,5 @@
 /* ===== DASHBOARD STYLES ===== */
-
-/* Page Header */
-.page-header {
-    background: linear-gradient(135deg, var(--petx-primary) 0%, var(--petx-info) 100%);
-    color: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow-lg);
-}
-
-.page-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-}
-
-.page-subtitle {
-    font-size: 1rem;
-    opacity: 0.9;
-    margin-bottom: 0.75rem;
-}
-
-.breadcrumb-wrapper {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-}
-
-.breadcrumb-item {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.breadcrumb-item.active {
-    color: white;
-    font-weight: 500;
-}
+/* Header styles agora estão centralizados em smart-header.css */
 
 /* Stats Cards */
 .stats-card {
@@ -431,28 +395,28 @@
     .page-header {
         padding: 1.5rem;
     }
-    
+
     .page-title {
         font-size: 1.5rem;
     }
-    
+
     .stats-card {
         padding: 1rem;
     }
-    
+
     .stats-number {
         font-size: 2rem;
     }
-    
+
     .card-header,
     .card-body {
         padding: 1rem;
     }
-    
+
     .quick-action-card {
         padding: 0.75rem;
     }
-    
+
     .qa-icon {
         width: 40px;
         height: 40px;

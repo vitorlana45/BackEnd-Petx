@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,14 +38,13 @@ public class AnimalMapper {
                 .status(animal.getStatusEnum() != null ? animal.getStatusEnum().toString() : null)
                 .condicaoAnimal(animal.getCondicaoAnimal())
                 .corPelagem(animal.getCorPelagem())
+                .imagemPrincipalPerfil(animal.getImagemPrincipalPerfil())
                 .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
                 .listaAnimaisConjunto(null)
+                .dataCadastro(animal.getCriadoEm())
                 .build();
 
-        if (animal.getDoencas() != null) {
-            resposta.setDoencas(new HashSet<>(animal.getDoencas()));
-        }
-
+        // Removido setDoencas redundante
         return resposta;
 
     }
@@ -67,32 +65,40 @@ public class AnimalMapper {
         animal.setSexoEnum(animalGenericoRequisicao.getSexo());
         animal.setOrigemEnum(animalGenericoRequisicao.getOrigem());
         animal.setComportamento(animalGenericoRequisicao.getComportamento());
-        animal.getDoencas().addAll(animalGenericoRequisicao.getDoencas());
+        if (animalGenericoRequisicao.getDoencas() != null) {
+            animal.getDoencas().addAll(animalGenericoRequisicao.getDoencas());
+        }
         animal.setStatusEnum(animalGenericoRequisicao.getStatus());
         animal.setCorPelagem(animalGenericoRequisicao.getCorPelagem());
         animal.setCondicaoAnimal(animalGenericoRequisicao.getCondicaoAnimal());
+        // Trata imagem: usa nome original do arquivo como placeholder de armazenamento
+        if (animalGenericoRequisicao.getImagemPrincipalPerfil() != null && !animalGenericoRequisicao.getImagemPrincipalPerfil().isEmpty()) {
+            animal.setImagemPrincipalPerfil(animalGenericoRequisicao.getImagemPrincipalPerfil().getOriginalFilename());
+        }
         animal.setMaezinhaComFilhotes(converteMaezinhaParaEntidade(animalGenericoRequisicao.getMaezinhaComFilhotes()));
         return animal;
 
     }
 
     public static RespostaAnimalSemConjunto converterParaAnimalSemConjunto(Animal animal) {
-        return RespostaAnimalSemConjunto.builder()
-                .id(animal.getId())
-                .chipId(animal.getChipId())
-                .nome(animal.getNome())
-                .maturidade(animal.getMaturidadeEnum().toString())
-                .raca(animal.getRaca())
-                .sexo(animal.getSexoEnum().toString())
-                .origem(animal.getOrigemEnum().toString())
-                .porte(animal.getPorteEnum().toString())
-                .comportamento(animal.getComportamento())
-                .especie(animal.getEspecieEnum().toString())
-                .doencas(animal.getDoencas())
-                .status(animal.getStatusEnum().toString())
-                .corPelagem(animal.getCorPelagem())
-                .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
-                .build();
+        return new RespostaAnimalSemConjunto(
+                animal.getId(),
+                animal.getChipId(),
+                animal.getNome(),
+                animal.getMaturidadeEnum() != null ? animal.getMaturidadeEnum().toString() : null,
+                animal.getRaca(),
+                animal.getSexoEnum() != null ? animal.getSexoEnum().toString() : null,
+                animal.getOrigemEnum() != null ? animal.getOrigemEnum().toString() : null,
+                animal.getPorteEnum() != null ? animal.getPorteEnum().toString() : null,
+                animal.getComportamento(),
+                animal.getEspecieEnum() != null ? animal.getEspecieEnum().toString() : null,
+                animal.getDoencas(),
+                animal.getStatusEnum() != null ? animal.getStatusEnum().toString() : null,
+                null, // destino não mapeado na entidade, manter null
+                animal.getCorPelagem(),
+                converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()),
+                animal.getImagemPrincipalPerfil()
+        );
     }
 
     public AnimalGenericoResposta mapeiaAnimalEListaParaRetorno  (Animal animal, List<Animal> lsAnimais) {
@@ -111,6 +117,7 @@ public class AnimalMapper {
                         .doencas(x.getDoencas())
                         .condicaoAnimal(x.getCondicaoAnimal())
                         .corPelagem(x.getCorPelagem())
+                        .imagemPrincipalPerfil(x.getImagemPrincipalPerfil())
                         .maezinhaComFilhotes(converteMaezinhaParaDTO(x.getMaezinhaComFilhotes()))
                         .status(x.getStatusEnum() != null ? x.getStatusEnum().getStatus() : null)
                         .build())
@@ -132,6 +139,7 @@ public class AnimalMapper {
                 .status(animal.getStatusEnum() != null ? animal.getStatusEnum().getStatus() : null)
                 .corPelagem(animal.getCorPelagem())
                 .condicaoAnimal(animal.getCondicaoAnimal())
+                .imagemPrincipalPerfil(animal.getImagemPrincipalPerfil())
                 .listaAnimaisConjunto(lsAnmaisConjunto)
                 .build();
     }
@@ -153,11 +161,12 @@ public class AnimalMapper {
                 .corPelagem(dto.getCorPelagem())
                 .maezinhaComFilhotes(converteMaezinhaParaEntidade(dto.getMaezinhaComFilhotes())
                 )
+                .imagemPrincipalPerfil(dto.getImagemPrincipalPerfil() != null && !dto.getImagemPrincipalPerfil().isEmpty() ? dto.getImagemPrincipalPerfil().getOriginalFilename() : null)
                 .build();
     }
 
-    public static AnimalGenericoResposta converterParaAnimalGenericoResposta(Animal an) {
-        return AnimalGenericoResposta.builder()
+    public static org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta converterParaAnimalGenericoResposta(Animal an) {
+        return org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta.builder()
                 .chipId(an.getChipId())
                 .nome(an.getNome())
                 .raca(an.getRaca())
@@ -172,6 +181,7 @@ public class AnimalMapper {
                 .status(an.getStatusEnum() != null ? String.valueOf(an.getStatusEnum()) : null)
                 .corPelagem(an.getCorPelagem())
                 .condicaoAnimal(an.getCondicaoAnimal())
+                .imagemPrincipalPerfil(an.getImagemPrincipalPerfil())
                 .maezinhaComFilhotes(
                         an.getMaezinhaComFilhotes() != null ? 
                         converteMaezinhaParaDTO(an.getMaezinhaComFilhotes()) : null
@@ -179,9 +189,9 @@ public class AnimalMapper {
                 .build();
     }
 
-    public static MaezinhaComFilhotesDTO converteMaezinhaParaDTO (MaezinhaComFilhotes maezinhaComFilhotes) {
+    public static org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO converteMaezinhaParaDTO (MaezinhaComFilhotes maezinhaComFilhotes) {
         if (maezinhaComFilhotes != null) {
-            return new MaezinhaComFilhotesDTO(
+            return new org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO(
                     maezinhaComFilhotes.getQuantidadeFemeas(),
                     maezinhaComFilhotes.getQuantidadeMachos()
             );
@@ -189,7 +199,7 @@ public class AnimalMapper {
         return null;
     }
 
-    public static MaezinhaComFilhotes converteMaezinhaParaEntidade (MaezinhaComFilhotesDTO maezinhaComFilhotesDTO) {
+    public static MaezinhaComFilhotes converteMaezinhaParaEntidade (org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO maezinhaComFilhotesDTO) {
         if (maezinhaComFilhotesDTO != null) {
             Integer quantidadeFemea = maezinhaComFilhotesDTO.getQuantidadeFemea();
             Integer quantidadeMacho = maezinhaComFilhotesDTO.getQuantidadeMacho();

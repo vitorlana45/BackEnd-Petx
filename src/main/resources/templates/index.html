@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Dashboard - ONG PetX</title>
+</head>
+<body>
+<section class="dashboard">
+
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButton})}"></div>
+
+    <div th:replace="~{fragmentos/stat-cards :: stats-grid(
+         ${totalAnimais},
+         ${totalAdocoes},
+         ${totalTutores},
+         ${totalBoletins},
+         ${crescimentoMensal}
+    )}"></div>
+
+
+    <!-- Gráficos e Estatísticas -->
+    <div class="row g-4 mb-4">
+        <!-- Distribuição de Animais por Status -->
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Distribuição por Status
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="status-chart-container">
+                        <div class="status-item" th:each="status : ${animaisPorStatus}">
+                            <div class="status-indicator"
+                                 th:class="${'status-' + status.key.toLowerCase()}"></div>
+                            <div class="status-info">
+                                <div class="status-label" th:text="${status.key}">Status</div>
+                                <div class="status-count" th:text="${status.value}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="col-xl-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-bolt me-2"></i>
+                        Ações Rápidas
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a th:href="@{/animais/novo}" class="quick-action-card">
+                                <div class="qa-icon qa-primary">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="qa-content">
+                                    <div class="qa-title">Novo Animal</div>
+                                    <div class="qa-subtitle">Cadastrar animal</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a th:href="@{/boletins/novo}" class="quick-action-card">
+                                <div class="qa-icon qa-warning">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                                <div class="qa-content">
+                                    <div class="qa-title">Novo Boletim</div>
+                                    <div class="qa-subtitle">Registrar resgate</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a th:href="@{/tutores/novo}" class="quick-action-card">
+                                <div class="qa-icon qa-success">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="qa-content">
+                                    <div class="qa-title">Novo Tutor</div>
+                                    <div class="qa-subtitle">Cadastrar tutor</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a th:href="@{/animais}" class="quick-action-card">
+                                <div class="qa-icon qa-info">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="qa-content">
+                                    <div class="qa-title">Ver Animais</div>
+                                    <div class="qa-subtitle">Listar todos</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informações Detalhadas -->
+    <div class="row g-4">
+        <!-- Alertas e Notificações -->
+        <div class="col-xl-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-bell me-2"></i>
+                        Alertas
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert-list">
+                        <div class="alert-item" th:if="${animaisPorStatus?.DOENTE > 0}">
+                            <div class="alert-icon alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Animais Doentes</div>
+                                <div class="alert-text">
+                                    <span th:text="${animaisPorStatus?.DOENTE ?: 0}">0</span> animais necessitam cuidados
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert-item">
+                            <div class="alert-icon alert-info">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Consumo do Mês</div>
+                                <div class="alert-text">
+                                    Total: <span th:text="${totalConsumo ?: 0}">0</span> unidades
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert-item">
+                            <div class="alert-icon alert-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Sistema Ativo</div>
+                                <div class="alert-text">Todos os serviços funcionando normalmente</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Links Úteis -->
+        <div class="col-xl-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-link me-2"></i>
+                        Navegação Rápida
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="nav-card">
+                                <div class="nav-icon">
+                                    <i class="fas fa-paw"></i>
+                                </div>
+                                <div class="nav-content">
+                                    <h4>Animais</h4>
+                                    <ul class="nav-links">
+                                        <li><a th:href="@{/animais}">Ver todos</a></li>
+                                        <li><a th:href="@{/animais/novo}">Cadastrar novo</a></li>
+                                        <li><a th:href="@{/animais?status=SAUDAVEL}">Disponíveis</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="nav-card">
+                                <div class="nav-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="nav-content">
+                                    <h4>Tutores</h4>
+                                    <ul class="nav-links">
+                                        <li><a th:href="@{/tutores}">Ver todos</a></li>
+                                        <li><a th:href="@{/novo}">Cadastrar novo</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="nav-card">
+                                <div class="nav-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div class="nav-content">
+                                    <h4>Gestão</h4>
+                                    <ul class="nav-links">
+                                        <li><a th:href="@{/boletins}">Boletins</a></li>
+                                        <li><a th:href="@{/estoque}">Estoque</a></li>
+                                        <li><a th:href="@{/despesas}">Despesas</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

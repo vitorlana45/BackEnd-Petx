@@ -33,14 +33,8 @@ public class Animal extends EntidadeBase {
     // Allow null values, but enforce uniqueness for non-null values with a custom index
     @Column(name = "chip_id")
     private String chipId;
-    
-    /**
-     * Sets the chipId and converts empty strings to null to avoid unique constraint issues
-     */
-    public void setChipId(String chipId) {
-        // If chipId is null or empty, store as null
-        this.chipId = (chipId == null || chipId.trim().isEmpty()) ? null : chipId.trim();
-    }
+
+    private String imagemPrincipalPerfil;
 
     @Column(name = "nome")
     private String nome;
@@ -109,6 +103,12 @@ public class Animal extends EntidadeBase {
             inverseJoinColumns = @JoinColumn(name = "tutor_id")
     )
     private Set<Tutor> tutores;
+
+    public void setChipId(String chipId) {
+        // If chipId is null or empty, store as null
+        this.chipId = (chipId == null || chipId.trim().isEmpty()) ? null : chipId.trim();
+    }
+
 
     @Override
     public boolean equals(Object o) {

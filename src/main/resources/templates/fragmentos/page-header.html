@@ -4,54 +4,75 @@
 <body>
 
 <!-- Fragment para cabeçalho de página inteligente -->
-<div th:fragment="smart-header(pageInfo, actionButton)" class="page-header">
-    <div class="row align-items-center">
-        <div class="col">
-            <h1 class="page-title">
-                <i th:class="${pageInfo}" class="me-2"></i>
-                <span th:text="${pageInfo.title}">Título da Página</span>
-            </h1>
-            <p class="page-subtitle" th:text="${pageInfo.subtitle}">Subtítulo da página</p>
+<div th:fragment="smart-header(pageInfo, actionButtons)" class="smart-header-container">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <!-- Título da página com ícone -->
+                <h1 class="page-title">
+                    <i th:class="${pageInfo.icon}" class="me-2"></i>
+                    <span th:text="${pageInfo.title}">Título da Página</span>
+                </h1>
+                
+                <!-- Subtítulo com mensagem personalizada -->
+                <p class="page-subtitle">
+                    <!-- Mensagem especial para dashboard -->
+                    <span th:if="${pageInfo.title == 'Dashboard'}" 
+                          sec:authorize="isAuthenticated()">
+                        Bem-vindo de volta, <span sec:authentication="name" class="fw-semibold"></span>! 
+                        <span th:text="${pageInfo.subtitle}"></span>
+                    </span>
+                    <!-- Subtítulo padrão para outras páginas -->
+                    <span th:unless="${pageInfo.title == 'Dashboard'}" 
+                          th:text="${pageInfo.subtitle}">Subtítulo da página</span>
+                </p>
 
-            <!-- Breadcrumb dinâmico -->
-            <div class="breadcrumb-wrapper">
-                <a th:href="@{/dashboard}" class="breadcrumb-item">
-                    <i class="fas fa-home me-1"></i>Dashboard
-                </a>
-                <th:block th:each="crumb, crumbStat : ${pageInfo.breadcrumbs}">
-                    <span class="breadcrumb-separator">/</span>
-                    <a th:if="${!crumbStat.last}"
-                       th:href="${crumb.url}"
-                       th:text="${crumb.name}"
-                       class="breadcrumb-item">Item</a>
-                    <span th:if="${crumbStat.last}"
-                          th:text="${crumb.name}"
-                          class="breadcrumb-item active">Atual</span>
-                </th:block>
+                <!-- Breadcrumb dinâmico -->
+                <div class="breadcrumb-wrapper">
+                    <a th:href="@{/dashboard}" class="breadcrumb-item">
+                        <i class="fas fa-home me-1"></i>Visão Geral
+                    </a>
+                    <th:block th:each="crumb, crumbStat : ${pageInfo.breadcrumbs}">
+                        <span class="breadcrumb-separator">/</span>
+                        <a th:if="${!crumbStat.last}"
+                           th:href="${crumb.url}"
+                           th:text="${crumb.name}"
+                           class="breadcrumb-item">Item</a>
+                        <span th:if="${crumbStat.last}"
+                              th:text="${crumb.name}"
+                              class="breadcrumb-item active">Atual</span>
+                    </th:block>
+                </div>
             </div>
-        </div>
 
-        <!-- Botão de ação (opcional) -->
-        <div th:if="${actionButton != null}" class="col-auto">
-            <a th:href="${actionButton.url}"
-               th:class="${'btn ' + actionButton.cssClass}">
-                <i th:class="${actionButton.icon}" class="me-2"></i>
-                <span th:text="${actionButton.text}">Ação</span>
-            </a>
+            <!-- Botões de ação (lado direito) -->
+            <div th:if="${actionButtons != null}" class="col-auto">
+                <div class="btn-group" role="group">
+                    <!-- Renderização de botões de ação (suporta lista de ActionButtonDTO) -->
+                    <a th:each="btn : ${actionButtons}"
+                       th:href="${btn.url}"
+                       th:class="${'btn ' + btn.cssClass}"
+                       th:classappend="${btnStat.index > 0 ? 'ms-2' : ''}">
+                        <i th:class="${btn.icon}" class="me-2" aria-hidden="true"></i>
+                        <span th:text="${btn.text}">Ação</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</div><!-- Fragment para estatísticas rápidas -->
 
-<!-- Fragment para estatísticas rápidas -->
-<div th:fragment="stats(statsData)" class="row g-2 mb-3" th:if="${statsData != null}">
-    <div th:each="stat : ${statsData}" class="col-xl-3 col-md-6">
-        <div th:class="${'stats-card ' + stat.type}" style="padding: 1rem;">
-            <div class="stats-icon" style="width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.5rem;">
-                <i th:class="${stat.icon}"></i>
-            </div>
-            <div class="stats-content">
-                <div class="stats-number" style="font-size: 1.5rem;" th:text="${stat.value}">0</div>
-                <div class="stats-label" style="font-size: 0.8rem;" th:text="${stat.label}">Label</div>
+<div th:fragment="stats(statsData)" class="stats-container">
+    <div class="row g-3" th:if="${statsData != null}">
+        <div th:each="stat : ${statsData}" class="col-xl-3 col-md-6">
+            <div th:class="${'stats-card ' + stat.type}">
+                <div class="stats-icon">
+                    <i th:class="${stat.icon}"></i>
+                </div>
+                <div class="stats-content">
+                    <div class="stats-number" th:text="${stat.value}">0</div>
+                    <div class="stats-label" th:text="${stat.label}">Label</div>
+                </div>
             </div>
         </div>
     </div>
@@ -66,7 +87,7 @@
         </h1>
         <p class="text-muted mb-0" th:if="${description}" th:text="${description}">Descrição</p>
     </div>
-    <div th:if="${showAddButton}">
+    <div th:for="${showAddButton}">
         <a th:href="${addLink ?: '#'}" class="btn btn-primary">
             <i class="fas fa-plus me-1"></i>
             <span th:text="${addButtonText ?: 'Adicionar'}">Adicionar</span>

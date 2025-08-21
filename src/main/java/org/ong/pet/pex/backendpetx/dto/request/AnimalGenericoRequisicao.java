@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.ong.pet.pex.backendpetx.enums.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -56,4 +57,7 @@ public class AnimalGenericoRequisicao {
 
     @NotNull(message = "O status de vida é obrigatório")
     private StatusEnum status;
+
+    // Arquivo da imagem principal do perfil (multipart)
+    private MultipartFile imagemPrincipalPerfil;
 }

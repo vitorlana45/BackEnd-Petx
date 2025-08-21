@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<!--
+===========================================
+🎯 SMART HEADER COMPONENT - Ultra Flexível
+===========================================
+Uso Principal:
+  th:replace="~{components/smart-header :: main(${config})}"
+
+Onde config é um objeto com:
+ - title: string
+ - subtitle: string (opcional)
+ - icon: string (opcional)
+ - breadcrumbs: array (opcional)
+ - actionButton: objeto (opcional)
+ - stats: array (opcional)
+ - variant: 'default', 'compact', 'detailed'
+-->
+
+<!-- 🏗️ LAYOUT PRINCIPAL -->
+<div th:fragment="main(config)" class="smart-header-container">
+    <!-- Header Principal -->
+    <div th:replace="~{components/smart-header :: header-main(${config})}"></div>
+
+    <!-- Estatísticas (se fornecidas) -->
+    <div th:if="${config.stats != null and !config.stats.isEmpty()}"
+         th:replace="~{components/smart-header :: stats-row(${config.stats})}"></div>
+</div>
+
+<!-- 🎨 CABEÇALHO PRINCIPAL -->
+<div th:fragment="header-main(config)"
+     th:class="${'page-header page-header--' + (config.variant ?: 'default')}">
+    <div class="row align-items-center">
+        <div class="col">
+            <!-- Título e Ícone -->
+            <div class="header-title-section">
+                <h1 class="page-title d-flex align-items-center">
+                    <i th:if="${config.icon != null}"
+                       th:class="${config.icon + ' me-3 text-primary'}"
+                       aria-hidden="true"></i>
+                    <span th:text="${config.title ?: 'Página'}">Título</span>
+                </h1>
+                <p th:if="${config.subtitle != null}"
+                   th:text="${config.subtitle}"
+                   class="page-subtitle text-muted mb-2">Subtítulo</p>
+            </div>
+
+            <!-- Breadcrumbs -->
+            <div th:if="${config.breadcrumbs != null and !config.breadcrumbs.isEmpty()}"
+                 th:replace="~{components/smart-header :: breadcrumbs(${config.breadcrumbs})}"></div>
+        </div>
+
+        <!-- Área de Ações -->
+        <div th:if="${config.actionButton != null}" class="col-auto">
+            <div th:replace="~{components/smart-header :: action-button(${config.actionButton})}"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 🧭 BREADCRUMBS -->
+<nav th:fragment="breadcrumbs(breadcrumbs)"
+     class="breadcrumb-container"
+     aria-label="Navegação de páginas">
+    <ol class="breadcrumb custom-breadcrumb">
+        <!-- Home sempre primeiro -->
+        <li class="breadcrumb-item">
+            <a th:href="@{/dashboard}" class="breadcrumb-link">
+                <i class="fas fa-home me-1" aria-hidden="true"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Breadcrumbs dinâmicos -->
+        <li th:each="crumb, crumbStat : ${breadcrumbs}"
+            th:class="${'breadcrumb-item' + (crumbStat.last ? ' active' : '')}">
+            <a th:if="${!crumbStat.last and crumb.url != null}"
+               th:href="${crumb.url}"
+               th:text="${crumb.name}"
+               class="breadcrumb-link">Item</a>
+            <span th:if="${crumbStat.last}"
+                  th:text="${crumb.name}"
+                  aria-current="page">Atual</span>
+        </li>
+    </ol>
+</nav>
+
+<!-- 🎯 BOTÃO DE AÇÃO -->
+<div th:fragment="action-button(button)">
+    <a th:href="${button.url ?: '#'}"
+       th:class="${'btn ' + (button.variant ?: 'btn-primary') + (button.size ? ' btn-' + button.size : '')}"
+       th:target="${button.target ?: '_self'}">
+        <i th:if="${button.icon != null}"
+           th:class="${button.icon + ' me-2'}"
+           aria-hidden="true"></i>
+        <span th:text="${button.text ?: 'Ação'}">Texto</span>
+    </a>
+</div>
+
+<!-- 📊 LINHA DE ESTATÍSTICAS -->
+<div th:fragment="stats-row(stats)" class="stats-container mt-3">
+    <div class="row g-3">
+        <div th:each="stat : ${stats}"
+             th:class="${'col-xl-3 col-md-6 col-sm-' + (stats.size() > 2 ? '6' : '12')}">
+            <div th:replace="~{components/smart-header :: stat-card(${stat})}"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 📈 CARD DE ESTATÍSTICA -->
+<div th:fragment="stat-card(stat)"
+     th:class="${'stat-card stat-card--' + (stat.type ?: 'default')}">
+    <div class="stat-card__content">
+        <div class="stat-card__icon">
+            <i th:class="${stat.icon ?: 'fas fa-chart-bar'}" aria-hidden="true"></i>
+        </div>
+        <div class="stat-card__info">
+            <div class="stat-card__value" th:text="${stat.value ?: '0'}">0</div>
+            <div class="stat-card__label" th:text="${stat.label ?: 'Estatística'}">Label</div>
+        </div>
+    </div>
+</div>
+
+<!--
+===========================================
+🎨 VARIAÇÕES DE LAYOUT
+===========================================
+-->
+
+<!-- 📱 VERSÃO COMPACTA -->
+<div th:fragment="compact(title, icon, actionButton)" class="smart-header-compact">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h4 mb-0 d-flex align-items-center">
+            <i th:if="${icon != null}" th:class="${icon + ' me-2'}" aria-hidden="true"></i>
+            <span th:text="${title}">Título</span>
+        </h2>
+        <div th:if="${actionButton != null}">
+            <a th:href="${actionButton.url}" th:class="${'btn btn-sm ' + (actionButton.variant ?: 'btn-primary')}">
+                <i th:if="${actionButton.icon}" th:class="${actionButton.icon + ' me-1'}"></i>
+                <span th:text="${actionButton.text}">Ação</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 🎯 VERSÃO MINIMALISTA -->
+<div th:fragment="minimal(title, subtitle)" class="smart-header-minimal">
+    <div class="text-center">
+        <h1 class="display-6" th:text="${title}">Título</h1>
+        <p th:if="${subtitle != null}" class="lead text-muted" th:text="${subtitle}">Subtítulo</p>
+    </div>
+</div>
+
+</body>
+</html>

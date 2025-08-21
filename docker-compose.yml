@@ -9,3 +9,23 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: ong_db
 
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Console Web
+    environment:
+      MINIO_ROOT_USER: 12345678     # troque em produção
+      MINIO_ROOT_PASSWORD: 12345678  # troque em produção
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  minio-data:

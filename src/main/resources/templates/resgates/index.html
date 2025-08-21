@@ -97,7 +97,7 @@
                                         <td th:text="${resgate.origem}">Resgate</td>
                                         <td th:text="${resgate.destino}">ONG</td>
                                         <td>
-                                            <span th:if="${resgate.animal != null}" th:replace="~{fragmentos/status-badge :: status(${resgate.animal.status})}"></span>
+                                            <span th:if="${resgate.animal != null}" th:replace="~{components/status-badge :: status(${resgate.animal.status})}"></span>
                                             <span th:if="${resgate.animal == null}" class="badge fs-6 px-3 py-2 bg-secondary">SEM ANIMAL</span>
                                         </td>
                                         <td>
@@ -218,7 +218,7 @@
                                         </td>
                                         <td th:text="${resgate.destino?.descricao ?: '—'}">Abrigo</td>
                                         <td>
-                                            <span th:if="${resgate.animal != null}" th:replace="~{fragmentos/status-badge :: status(${resgate.animal.status})}"></span>
+                                            <span th:if="${resgate.animal != null}" th:replace="~{components/status-badge :: status(${resgate.animal.status})}"></span>
                                             <span th:if="${resgate.animal == null}" class="badge fs-6 px-3 py-2 bg-secondary">SEM ANIMAL</span>
                                         </td>
                                         <td class="text-end">

@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.dto;
+package org.ong.pet.pex.backendpetx.controllers.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

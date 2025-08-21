@@ -1,4 +1,4 @@
-package org.petx.dto;
+package org.ong.pet.pex.backendpetx.controllers.bean;
 
 import lombok.*;
 

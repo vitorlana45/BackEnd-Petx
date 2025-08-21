@@ -1,4 +1,4 @@
-package org.petx.dto;
+package org.ong.pet.pex.backendpetx.controllers.bean;
 
 /**
  * DTO para estatísticas do cabeçalho
