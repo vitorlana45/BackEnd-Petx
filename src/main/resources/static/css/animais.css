@@ -2,10 +2,10 @@
 
 /* Animal Cards - Clickable */
 .animal-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
+    background: var(--bg-primary, white);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.125));
     transition: all 0.3s ease;
     overflow: hidden;
     height: 100%;
@@ -18,16 +18,16 @@
 }
 
 .animal-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
     text-decoration: none;
     color: inherit;
-    border-color: var(--petx-primary);
-    background-color: rgba(67, 97, 238, 0.02);
+    border-color: var(--petx-primary, #4361ee);
+    background-color: rgba(67, 97, 238, 0.03);
 }
 
 .animal-card:focus {
-    outline: 2px solid var(--petx-primary);
+    outline: 2px solid var(--petx-primary, #4361ee);
     outline-offset: 2px;
 }
 
@@ -37,8 +37,8 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--petx-primary), var(--petx-info));
+    height: 4px;
+    background: linear-gradient(90deg, var(--petx-primary, #4361ee), var(--petx-info, #2196f3));
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -49,15 +49,28 @@
 
 .animal-image {
     position: relative;
-    height: 140px;
-    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+    height: 160px;
+    background: linear-gradient(135deg, var(--bg-secondary, #f8f9fa), var(--bg-tertiary, #e9ecef));
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color, rgba(0, 0, 0, 0.125));
+    overflow: hidden;
 }
 
 .animal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.animal-card:hover .animal-image img {
+    transform: scale(1.05);
+}
+
+/* Fallback icon when no image is available */
+.animal-image .fallback-icon {
     max-height: 80px;
     max-width: 80px;
     opacity: 0.7;
@@ -66,38 +79,39 @@
 
 .animal-status {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 3px 6px;
-    border-radius: 8px;
+    top: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
     color: white;
     text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .animal-status.status-saudavel {
-    background: var(--petx-success);
+    background: var(--petx-success, #4caf50);
 }
 
 .animal-status.status-doente {
-    background: var(--petx-danger);
+    background: var(--petx-danger, #f44336);
 }
 
 .animal-status.status-adotado {
-    background: var(--petx-info);
+    background: var(--petx-info, #2196f3);
 }
 
 .animal-status.status-falecido {
-    background: var(--text-muted);
+    background: var(--text-muted, #6c757d);
 }
 
 .animal-status.status-adotado_conjuntamente {
-    background: var(--petx-secondary);
+    background: var(--petx-secondary, #6c757d);
 }
 
 .animal-info {
-    padding: 1rem;
+    padding: 1.25rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -106,7 +120,7 @@
 .animal-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-primary, #212529);
     margin-bottom: 0.75rem;
     line-height: 1.2;
 }
@@ -114,7 +128,7 @@
 .animal-details {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.5rem;
     margin-bottom: 0.75rem;
     flex: 1;
 }
@@ -122,24 +136,33 @@
 .detail-item {
     display: flex;
     align-items: center;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+    font-size: 0.85rem;
+    color: var(--text-secondary, #6c757d);
 }
 
 .detail-item i {
-    color: var(--petx-primary);
-    width: 16px;
+    color: var(--petx-primary, #4361ee);
+    width: 18px;
+    margin-right: 8px;
 }
 
 .animal-actions {
     display: flex;
     gap: 0.5rem;
     margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.08));
 }
 
 .animal-actions .btn {
     flex: 1;
     font-size: 0.875rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.animal-actions .btn:hover {
+    transform: translateY(-2px);
 }
 
 /* View Toggle */

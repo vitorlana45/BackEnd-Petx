@@ -87,7 +87,7 @@ public class SmartPageBuilder {
                 .subtitle("Administre e acompanhe todos os animais da ONG")
                 .icon("fas fa-paw")
                 .addBreadcrumb("Animais")
-                .primaryAction("Novo Animal", "/animais/novo", "fas fa-plus");
+                .primaryAction("Novo Animal", "ANIMAIS.FORM", "fas fa-plus");
     }
 
     /**

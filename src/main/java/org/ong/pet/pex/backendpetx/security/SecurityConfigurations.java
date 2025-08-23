@@ -30,6 +30,10 @@ public class SecurityConfigurations {
                     .maxSessionsPreventsLogin(false)
                 )
                 .authorizeHttpRequests(authorize -> authorize
+
+                        .requestMatchers("/actuator", "/actuator/health", "/actuator/health/**",
+                                "/actuator/info", "/actuator/mappings").permitAll()
+
                         // Recursos estáticos públicos
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
 
@@ -40,8 +44,8 @@ public class SecurityConfigurations {
                         .requestMatchers("/api/auth/**", "/api/usuarios/registrar").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/health/status").permitAll()
 
-                        // Dashboard - ADMIN e COLABORADOR
-                        .requestMatchers("/dashboard").hasAnyRole("ADMIN", "COLABORADOR")
+                        // Dashboard e Init - ADMIN e COLABORADOR
+                        .requestMatchers("/home").hasAnyRole("ADMIN", "COLABORADOR")
 
                         // Gestão de Usuários - APENAS ADMIN
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -70,7 +74,7 @@ public class SecurityConfigurations {
                 .formLogin(form -> form
                     .loginPage("/login")
                     .loginProcessingUrl("/login")
-                    .defaultSuccessUrl("/dashboard", true)
+                    .defaultSuccessUrl("/home", true) // Alterando para redirecionar para /init
                     .failureUrl("/login?error=true")
                     .usernameParameter("username")
                     .passwordParameter("password")

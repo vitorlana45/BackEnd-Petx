@@ -41,7 +41,7 @@ public class ResgateController {
     /**
      * Exibe a página inicial de resgates com listagem e estatísticas.
      */
-    @GetMapping
+    @GetMapping(name = "RESGATES#LISTAR")
     @PreAuthorize("hasAnyRole('ADMIN', 'VETERINARIO', 'OPERADOR')")
     public String index(Model model,
                         Pageable pageable,
@@ -107,7 +107,7 @@ public class ResgateController {
     /**
      * Endpoint AJAX para estatísticas (JSON) usado pelo front para evitar recarregar toda a página e permitir melhorias.
      */
-    @GetMapping("/api/estatisticas")
+    @GetMapping(value = "/api/estatisticas", name = "RESGATES#ESTATISTICAS_API")
     @PreAuthorize("hasAnyRole('ADMIN', 'VETERINARIO', 'OPERADOR')")
     @ResponseBody
     public Map<String,Object> estatisticasAjax(@org.springframework.web.bind.annotation.RequestParam(value = "meses", required = false, defaultValue = "6") Integer meses) {
@@ -142,7 +142,7 @@ public class ResgateController {
     /**
      * Exibe o formulário para cadastro rápido de animal resgatado.
      */
-    @GetMapping("/rapido")
+    @GetMapping(value = "/rapido", name = "RESGATES#RAPIDO")
     @PreAuthorize("hasAnyRole('ADMIN', 'VETERINARIO', 'OPERADOR')")
     public String formResgaterapido(Model model) {
         // Inicializa o DTO com a data atual
@@ -157,7 +157,7 @@ public class ResgateController {
     /**
      * Processa o formulário de cadastro rápido e salva o animal através do boletim.
      */
-    @PostMapping("/salvar")
+    @PostMapping(value = "/salvar", name = "RESGATES#SALVAR")
     @PreAuthorize("hasAnyRole('ADMIN', 'VETERINARIO', 'OPERADOR')")
     public String salvarResgateRapido(
             @ModelAttribute("resgateRapidoDTO") ResgateRapidoDTO dto,

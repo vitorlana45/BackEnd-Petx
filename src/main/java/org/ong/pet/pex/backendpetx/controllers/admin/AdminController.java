@@ -14,7 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    @GetMapping
+    @GetMapping(name = "ADMIN#DASHBOARD")
     public String adminDashboard(Model model) {
         model.addAttribute("totalUsuarios", 15);
         model.addAttribute("usuariosAtivos", 12);
@@ -23,19 +23,19 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-    @GetMapping("/usuarios")
+    @GetMapping(value = "/usuarios", name = "ADMIN#USUARIOS_LISTAR")
     public String listarUsuarios(Model model) {
         // Aqui você buscaria os usuários do banco
         model.addAttribute("currentPage", "/admin/usuarios");
         return "admin/usuarios/lista";
     }
 
-    @GetMapping("/usuarios/novo")
+    @GetMapping(value = "/usuarios/novo", name = "ADMIN#USUARIOS_NOVO")
     public String novoUsuario() {
         return "admin/usuarios/formulario";
     }
 
-    @PostMapping("/usuarios/salvar")
+    @PostMapping(value = "/usuarios/salvar", name = "ADMIN#USUARIOS_SALVAR")
     public String salvarUsuario(@RequestParam String nome,
                                @RequestParam String email,
                                @RequestParam String senha,
@@ -51,12 +51,12 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/relatorios")
+    @GetMapping(value = "/relatorios", name = "ADMIN#RELATORIOS")
     public String relatorios(Model model) {
         return "admin/relatorios/index";
     }
 
-    @GetMapping("/configuracoes")
+    @GetMapping(value = "/configuracoes", name = "ADMIN#CONFIGURACOES")
     public String configuracoes(Model model) {
         return "admin/configuracoes/index";
     }

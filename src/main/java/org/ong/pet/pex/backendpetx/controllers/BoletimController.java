@@ -34,7 +34,7 @@ public class BoletimController {
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping("/novo")
+    @GetMapping(value = "/novo", name = "BOLETINS#NOVO")
     public String novo(Model model) {
         BoletimDTORequisicao req = new BoletimDTORequisicao();
 
@@ -51,7 +51,7 @@ public class BoletimController {
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @PostMapping("/criar")
+    @PostMapping(value = "/criar", name = "BOLETINS#SALVAR")
     public String createBoletim(@Valid @ModelAttribute("boletim") BoletimDTORequisicao dto,
                                 BindingResult br,
                                 RedirectAttributes redirectAttrs,

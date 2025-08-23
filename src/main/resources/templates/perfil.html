@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Perfil - ONG PetX</title>
+</head>
+<body>
+<section class="perfil-page">
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButton}, ${animaisPorStatus})}"></div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card profile-card mb-4">
+                <div class="card-body text-center">
+<!--                    <img th:if="${usuario.foto}" th:src="${usuario.foto}" class="rounded-circle img-fluid mb-3" style="width: 150px;" alt="Foto de perfil">-->
+<!--                    <img th:unless="${usuario.foto}" src="/images/default-profile.png" class="rounded-circle img-fluid mb-3" style="width: 150px;" alt="Foto de perfil padrão">-->
+
+                    <h5 class="my-3" th:text="${usuario.nome}">Nome do Usuário</h5>
+                    <p class="text-muted mb-1" th:text="${usuario.cargo}">Cargo</p>
+                    <p class="text-muted mb-4" th:text="${usuario.departamento}">Departamento</p>
+
+                    <div class="d-flex justify-content-center mb-2">
+                        <button type="button" class="btn btn-primary me-2">Editar Perfil</button>
+                        <button type="button" class="btn btn-outline-primary">Alterar Senha</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Informações Pessoais</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Nome Completo</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${usuario.nomeCompleto}">Nome Completo</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Email</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${usuario.email}">exemplo@email.com</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Telefone</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${usuario.telefone}">Telefone</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <p class="mb-0">Último Acesso</p>
+                        </div>
+                        <div class="col-sm-9">
+                            <p class="text-muted mb-0" th:text="${#temporals.format(usuario.ultimoAcesso, 'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Atividades Recentes</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(atividades)}" class="text-center py-3">
+                        <p class="text-muted">Nenhuma atividade recente para mostrar.</p>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(atividades)}" class="timeline">
+                        <div class="timeline-item" th:each="atividade : ${atividades}">
+                            <div class="timeline-marker" th:classappend="${atividade.tipo == 'animal' ? 'bg-primary' : (atividade.tipo == 'adocao' ? 'bg-success' : 'bg-info')}"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-0" th:text="${atividade.descricao}">Descrição da atividade</h6>
+                                <p class="small text-muted" th:text="${#temporals.format(atividade.data, 'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

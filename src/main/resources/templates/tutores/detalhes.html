@@ -117,7 +117,7 @@
                         <td th:text="${animal.porteEnum}"></td>
                         <td th:text="${animal.statusEnum}"></td>
                         <td>
-                            <a class="btn btn-sm btn-info" th:href="@{/animais/{id}(id=${animal.id})}">
+                            <a class="btn btn-sm btn-info" th:href="${#mvc.url('ANIMAIS#DETALHAR').arg(0, animal.id).build()}">
                                 <i class="fas fa-eye"></i>
                             </a>
                         </td>

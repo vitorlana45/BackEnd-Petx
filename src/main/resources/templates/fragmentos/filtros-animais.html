@@ -128,7 +128,7 @@
           <button type="submit" class="btn btn-primary" th:aria-label="#{botao.buscar}">
             <i class="fas fa-search me-2" aria-hidden="true"></i><span th:text="#{botao.buscar}">Buscar</span>
           </button>
-          <a th:href="@{/animais}" class="btn btn-secondary" th:aria-label="#{botao.limpar}">
+          <a th:href="${#mvc.url('ANIMAIS.LISTAR').build()}" class="btn btn-secondary" th:aria-label="#{botao.limpar}">
             <i class="fas fa-times me-2" aria-hidden="true"></i><span th:text="#{botao.limpar}">Limpar</span>
           </a>
         </div>

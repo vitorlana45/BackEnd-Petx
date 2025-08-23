@@ -1,10 +1,12 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.bean.StatsCardBean;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
+import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
@@ -41,7 +43,7 @@ public class AnimalController extends PageControl {
     /**
      * Lista todos os animais com paginação e filtros
      */
-    @GetMapping
+    @GetMapping(name = "ANIMAIS.LISTAR")
     public String listarAnimais(Model model,
                                 @RequestParam(required = false) String nome,
                                 @RequestParam(required = false) String raca,
@@ -66,11 +68,13 @@ public class AnimalController extends PageControl {
         );
 
         carregarComboFiltros(model, nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo);
+
         montarComboStatusEnum(model);
 
         model.addAttribute("page", page);
         model.addAttribute("currentPage", "/animais");
         model.addAttribute("animais", page.getContent());
+        model.addAttribute("statsCard", montarStatsCard());
 
         // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
         if ("true".equalsIgnoreCase(htmx)) {
@@ -80,11 +84,41 @@ public class AnimalController extends PageControl {
         return "animais/lista";
     }
 
+    public List<StatsCardBean> montarStatsCard() {
+        List<StatsCardBean> statsCards = new ArrayList<>();
+        statsCards.add(
+                new StatsCardBean("fas fa-paw","Total de Animais",
+                String.valueOf(animalService.contarQuantidadeAnimais()),
+                        "primary")
+        );
+
+        statsCards.add(
+                new StatsCardBean("fas fa-check", "Animais Disponíveis",
+                String.valueOf(10L), // animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.DISPONIVEL)),
+                "success")
+        );
+
+        statsCards.add(
+                new StatsCardBean("fas fa-home", "Animais Adotados",
+                String.valueOf(10L), // animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.ADOTADO)),
+               "info")
+        );
+
+        statsCards.add(
+                new StatsCardBean( "fas fa-procedures", "Animais em Tratamento",
+                String.valueOf(2L), // animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.EM_TRATAMENTO)),
+               "warning")
+        );
+
+        return statsCards;
+    }
+
+
 
     private static List<ActionButtonDTO> getActionButtonDTOS() {
         ActionButtonDTO actionButton = ActionButtonDTO.createCustom(
                 "Novo Animal",
-                "/animais/novo",
+                "ANIMAIS.FORM",
                 "fas fa-plus",
                 "btn-primary"
         );
@@ -107,7 +141,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe detalhes de um animal específico
      */
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", name = "ANIMAIS#DETALHAR")
     public String detalhesAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
@@ -117,7 +151,7 @@ public class AnimalController extends PageControl {
     /**
      * Atualiza bloco PERFIL via formulário parcial (POST simples por enquanto)
      */
-    @PostMapping("/{id}/atualizar/perfil")
+    @PostMapping(value = "/{id}/atualizar/perfil", name = "ANIMAIS#ATUALIZAR_PERFIL")
     public String atualizarPerfil(@PathVariable Long id,
                                   @RequestParam(required = false) String nome,
                                   @RequestParam(required = false) String raca,
@@ -140,7 +174,7 @@ public class AnimalController extends PageControl {
     /**
      * Atualiza bloco SAÚDE resumida
      */
-    @PostMapping("/{id}/atualizar/saude")
+    @PostMapping(value = "/{id}/atualizar/saude", name = "ANIMAIS#ATUALIZAR_SAUDE")
     public String atualizarSaude(@PathVariable Long id,
                                  @RequestParam(required = false) String doencas,
                                  RedirectAttributes ra) {
@@ -156,7 +190,7 @@ public class AnimalController extends PageControl {
     /**
      * Endpoint JSON compacto para modal de detalhes via AJAX
      */
-    @GetMapping(value = "/{id}/detalhes.json", produces = "application/json")
+    @GetMapping(value = "/{id}/detalhes.json", name = "ANIMAIS#DETALHES_JSON", produces = "application/json")
     @ResponseBody
     public Map<String,Object> detalhesAnimalJson(@PathVariable Long id){
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
@@ -182,7 +216,7 @@ public class AnimalController extends PageControl {
     /**
      * Busca animal por chip
      */
-    @GetMapping("/chip/{chip}")
+    @GetMapping(value = "/chip/{chip}", name = "ANIMAIS#BUSCAR_POR_CHIP")
     public String buscarAnimalPorChip(@PathVariable String chip, Model model, RedirectAttributes redirectAttributes) {
         try {
             AnimalGenericoResposta animal = animalService.buscarAnimalPorChip(chip);
@@ -195,9 +229,9 @@ public class AnimalController extends PageControl {
     }
     
     /**
-     * Exibe o formulário para criar novo animal
+     * Exibe o formulário para criar novo animal1
      */
-    @GetMapping("/novo")
+    @GetMapping(value = "/animais/form", name = "ANIMAIS.FORM")
     public String formNovoAnimal(Model model) {
         model.addAttribute("animal", new AnimalGenericoRequisicao());
         montarComboStatusEnum(model);
@@ -207,7 +241,7 @@ public class AnimalController extends PageControl {
     /**
      * Processa o formulário de criação de animal
      */
-    @PostMapping("/novo")
+    @PostMapping(name="ANIMAIS.SALVAR")
     public String salvarNovoAnimal(@Valid @ModelAttribute("animal") AnimalGenericoRequisicao animal, 
                                   BindingResult result, 
                                   RedirectAttributes redirectAttributes,
@@ -227,7 +261,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe o formulário para editar um animal existente
      */
-    @GetMapping("/{id}/editar")
+    @GetMapping(value = "/{id}/editar", name = "ANIMAIS#EDITAR")
     public String formEditarAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
@@ -238,7 +272,7 @@ public class AnimalController extends PageControl {
     /**
      * Processa o formulário de edição de animal
      */
-    @PostMapping("/{id}/editar")
+    @PostMapping(value = "/{id}/editar", name = "ANIMAIS#ATUALIZAR")
     public String atualizarAnimal(@PathVariable Long id,
                                  @Valid @ModelAttribute("animal") AnimalGenericoRequisicao animal,
                                  BindingResult result,
@@ -248,7 +282,7 @@ public class AnimalController extends PageControl {
             montarComboStatusEnum(model);
             return "animais/editar";
         }
-        
+
         animalService.atualizarAnimal(id, animal);
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Animal atualizado com sucesso!");
         return "redirect:/animais/" + id;
@@ -257,7 +291,7 @@ public class AnimalController extends PageControl {
     /**
      * Exclui um animal
      */
-    @PostMapping("/{id}/excluir")
+    @PostMapping(value = "/{id}/excluir", name = "ANIMAIS#EXCLUIR")
     public String excluirAnimal(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             animalService.deletarPorId(id);
@@ -271,7 +305,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe formulário para registrar óbito
      */
-    @GetMapping("/{id}/obito")
+    @GetMapping(value = "/{id}/obito", name = "ANIMAIS#OBITO_FORM")
     public String formObito(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animalId", id);
@@ -282,7 +316,7 @@ public class AnimalController extends PageControl {
     /**
      * Processa o registro de óbito
      */
-    @PostMapping("/{id}/obito")
+    @PostMapping(value = "/{id}/obito", name = "ANIMAIS#REGISTRAR_OBITO")
     public String registrarObito(@PathVariable Long id,
                                @RequestParam String chipId,
                                @RequestParam String motivoObito,

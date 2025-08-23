@@ -1,9 +1,7 @@
 package org.ong.pet.pex.backendpetx.controllers.auth;
 
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
-import org.ong.pet.pex.backendpetx.service.DashboardService;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
-import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
 //import org.petx.dto.SmartPageBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -25,24 +23,19 @@ public class AuthWebController {
     private final AuthenticationTrustResolver trust = new AuthenticationTrustResolverImpl();
     private final UsuarioService usuarioService;
 
-    private final DashboardService dashboardService;
-
-    public AuthWebController(UsuarioService usuarioService, DashboardService dashboardService) {
+    public AuthWebController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        this.dashboardService = dashboardService;
-
     }
 
     /** Home: manda pro lugar certo conforme estado de login */
-    @GetMapping("/")
+    @GetMapping(value = "/", name = "AUTH#HOME")
     public String home(Authentication auth) {
         return (auth != null && auth.isAuthenticated() && !trust.isAnonymous(auth))
-                ? "index"
+                ? "redirect:/home"
                 : "redirect:/login";
     }
-
     /** Página de login (GET). O POST /login é tratado pelo Spring Security. */
-    @GetMapping("/login")
+    @GetMapping(value = "/login", name = "AUTH#LOGIN")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
                             Authentication auth,
@@ -50,9 +43,8 @@ public class AuthWebController {
 
 
         if (auth != null && auth.isAuthenticated() && !trust.isAnonymous(auth)) {
-            return "index";
+            return "redirect:/home";
         }
-
 
         if (error != null)   model.addAttribute("errorMessage",  "Credenciais inválidas!");
         if (logout != null)  model.addAttribute("logoutMessage", "Logout realizado com sucesso!");
@@ -61,12 +53,12 @@ public class AuthWebController {
     }
 
     /** Registro — placeholder por enquanto */
-    @GetMapping("/register")
+    @GetMapping(value = "/register", name = "AUTH#REGISTRO")
     public String registerPage() {
         return "auth/register";
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", name = "AUTH#PROCESSAR_REGISTRO")
     public String processRegister(@RequestParam String nome,
                                   @RequestParam String email,
                                   @RequestParam String senha,
@@ -82,12 +74,12 @@ public class AuthWebController {
     }
 
     /** Recuperação de senha — placeholder */
-    @GetMapping("/forgot-password")
+    @GetMapping(value = "/forgot-password", name = "AUTH#ESQUECI_SENHA")
     public String forgotPasswordPage() {
         return "auth/forgot-password";
     }
 
-    @PostMapping("/forgot-password")
+    @PostMapping(value = "/forgot-password", name = "AUTH#PROCESSAR_ESQUECI_SENHA")
     public String processForgotPassword(@RequestParam String email, Model model) {
         // TODO: implementar envio de email/token
         model.addAttribute("successMessage",
@@ -95,24 +87,18 @@ public class AuthWebController {
         return "auth/forgot-password";
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping(value = "/dashboard", name = "AUTH#DASHBOARD")
     public String dashboard(Model model, Principal principal) {
         try {
             RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
             model.addAttribute("username", usuario.nome());
             model.addAttribute("currentPage", "/Home");
 
+            System.out.println("entrou aqui!!");
 
-            Long totalAnimais = dashboardService.getTotalAnimais();
-            Long totalTutores = dashboardService.getTotalTutores();
-            Long totalConsumo = dashboardService.totalConsumo();
 
 //            SmartPageBuilder.homePage();
-            SmartPageHelper.setupHome(model, totalAnimais, totalTutores, totalConsumo);
-
-            model.addAttribute("animaisPorStatus", obterAnimaisPorStatusMock());
-            model.addAttribute("crescimentoMensal", obterCrescimentoMensalMock());
-            model.addAttribute("notification", true);
+//            SmartPageHelper.setupHome(model, totalAnimais, totalTutores, totalConsumo);
 
             return "index";
         } catch (Exception e) {
@@ -120,30 +106,6 @@ public class AuthWebController {
             model.addAttribute("error", "Ocorreu um erro ao carregar o dashboard: " + e.getMessage());
             return "error/generic";
         }
-    }
-
-    /**
-     * Mock para animais por status até implementarmos corretamente
-     */
-    private java.util.Map<String, Long> obterAnimaisPorStatusMock() {
-        java.util.Map<String, Long> statusMap = new java.util.HashMap<>();
-        statusMap.put("SAUDAVEL", 25L);
-        statusMap.put("DOENTE", 8L);
-        statusMap.put("ADOTADO", 45L);
-        statusMap.put("FALECIDO", 3L);
-        return statusMap;
-    }
-
-    /**
-     * Mock para crescimento mensal até implementarmos corretamente
-     */
-    private java.util.Map<String, Object> obterCrescimentoMensalMock() {
-        java.util.Map<String, Object> crescimento = new java.util.HashMap<>();
-        crescimento.put("novosAnimaisMes", 12L);
-        crescimento.put("novosTutoresMes", 8L);
-        crescimento.put("adocoesMes", 15L);
-        crescimento.put("boletinsMes", 5L);
-        return crescimento;
     }
 
     /** Página para 403 */

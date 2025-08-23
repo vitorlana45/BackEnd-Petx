@@ -1,86 +1,88 @@
-<!--&lt;!&ndash;-->
-<!--  Fragmento para a barra de navegação principal-->
-<!--  Uso: th:replace="~{fragmentos/menu :: menu}"-->
-<!--&ndash;&gt;-->
-<!--<nav xmlns:th="http://www.thymeleaf.org" -->
-<!--     xmlns:sec="http://www.thymeleaf.org/extras/spring-security" -->
-<!--     th:fragment="menu" -->
-<!--     class="navbar navbar-expand-lg navbar-dark"-->
-<!--     aria-label="Navegação principal">-->
-<!--    <div class="container-fluid container-max">-->
-<!--        &lt;!&ndash; Logo e nome do sistema &ndash;&gt;-->
-<!--        <a class="navbar-brand d-flex align-items-center" href="#" th:href="@{/dashboard}">-->
-<!--            <img th:src="@{/images/logo-petx-branco.svg}" alt="ONG PetX" class="navbar-brand-img me-2" width="32" height="32">-->
-<!--            <span class="d-none d-sm-inline">ONG PetX</span>-->
-<!--        </a>-->
+<!--
+  Fragmento para a barra de navegação principal
+  Uso: th:replace="~{fragmentos/menu :: menu}"
+-->
+<nav xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     th:fragment="menu"
+     class="navbar navbar-expand-lg navbar-dark"
+     aria-label="Navegação principal">
+    <div class="container-fluid container-max">
 
-<!--        &lt;!&ndash; Botão do menu mobile &ndash;&gt;-->
-<!--        <button class="navbar-toggler border-0" -->
-<!--                type="button" -->
-<!--                data-bs-toggle="collapse" -->
-<!--                data-bs-target="#navbarNav"-->
-<!--                aria-controls="navbarNav" -->
-<!--                aria-expanded="false" -->
-<!--                aria-label="Alternar menu">-->
-<!--            <span class="navbar-toggler-icon"></span>-->
-<!--        </button>-->
 
-<!--        &lt;!&ndash; Conteúdo do menu colapsável &ndash;&gt;-->
-<!--        <div class="collapse navbar-collapse" id="navbarNav">-->
-<!--            <ul class="navbar-nav me-auto">-->
-<!--                &lt;!&ndash; Dashboard &ndash;&gt;-->
-<!--                <li class="nav-item">-->
-<!--                    <a class="nav-link" th:href="@{/dashboard}">-->
-<!--                        <i class="fas fa-tachometer-alt me-1"></i>Dashboard-->
-<!--                    </a>-->
-<!--                </li>-->
+        <!-- Logo e nome do sistema -->
+        <a class="navbar-brand d-flex align-items-center" href="#" th:href="@{/home}">
+            <img th:src="@{/images/logo-petx-branco.svg}" alt="ONG PetX" class="navbar-brand-img me-2" width="32" height="32">
+            <span class="d-none d-sm-inline">ONG PetX</span>
+        </a>
 
-<!--                &lt;!&ndash; Animais &ndash;&gt;-->
-<!--                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">-->
-<!--                    <a class="nav-link" th:href="@{/animais}">-->
-<!--                        <i class="fas fa-paw me-1"></i>Animais-->
-<!--                    </a>-->
-<!--                </li>-->
+        <!-- Botão do menu mobile -->
+        <button class="navbar-toggler border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Alternar menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<!--                &lt;!&ndash; Tutores &ndash;&gt;-->
-<!--                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">-->
-<!--                    <a class="nav-link" th:href="@{/tutores}">-->
-<!--                        <i class="fas fa-user-friends me-1"></i>Tutores-->
-<!--                    </a>-->
-<!--                </li>-->
+        <!-- Conteúdo do menu colapsável -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/home}">
+                        <i class="fas fa-tachometer-alt me-1"></i>Visão Geral
+                    </a>
+                </li>
 
-<!--                &lt;!&ndash; Boletins &ndash;&gt;-->
-<!--                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">-->
-<!--                    <a class="nav-link" th:href="@{/boletins}">-->
-<!--                        <i class="fas fa-clipboard-list me-1"></i>Boletins-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--            </ul>-->
+                <!-- Animais -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
+                    <a class="nav-link" th:href="${#mvc.url('ANIMAIS.LISTAR').build()}">
+                        <i class="fas fa-paw me-1"></i>Animais
+                    </a>
+                </li>
 
-<!--            &lt;!&ndash; Menu do usuário &ndash;&gt;-->
-<!--            <ul class="navbar-nav">-->
-<!--                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">-->
-<!--                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">-->
-<!--                        <i class="fas fa-user me-1"></i>-->
-<!--                        <span sec:authentication="name">Usuário</span>-->
-<!--                    </a>-->
-<!--                    <ul class="dropdown-menu dropdown-menu-end">-->
-<!--                        <li>-->
-<!--                            <a class="dropdown-item" th:href="@{/perfil}">-->
-<!--                                <i class="fas fa-user-edit me-2"></i>Perfil-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li><hr class="dropdown-divider"></li>-->
-<!--                        <li>-->
-<!--                            <form th:action="@{/logout}" method="post" class="d-inline">-->
-<!--                                <button type="submit" class="dropdown-item text-danger">-->
-<!--                                    <i class="fas fa-sign-out-alt me-2"></i>Sair-->
-<!--                                </button>-->
-<!--                            </form>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</nav>-->
+                <!-- Tutores -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
+                    <a class="nav-link" th:href="@{/tutores}">
+                        <i class="fas fa-user-friends me-1"></i>Tutores
+                    </a>
+                </li>
+
+                <!-- Boletins -->
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
+                    <a class="nav-link" th:href="@{/boletins}">
+                        <i class="fas fa-clipboard-list me-1"></i>Boletins
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Menu do usuário -->
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i>
+                        <span sec:authentication="name">Usuário</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" th:href="@{/perfil}">
+                                <i class="fas fa-user-edit me-2"></i>Perfil
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
+                                <button type="submit" class="dropdown-item text-danger">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
