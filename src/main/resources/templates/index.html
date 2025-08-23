@@ -57,7 +57,7 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <a th:href="${#mvc.url('ANIMAIS.FORM').build()}" class="quick-action-card">
+                            <a th:href="@{/animais/form}" class="quick-action-card">
                                 <div class="qa-icon qa-primary">
                                     <i class="fas fa-plus"></i>
                                 </div>
@@ -79,7 +79,7 @@
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a th:href="@{/tutores/novo}" class="quick-action-card">
+                            <a th:href="@{/tutores/form}" class="quick-action-card">
                                 <div class="qa-icon qa-success">
                                     <i class="fas fa-user-plus"></i>
                                 </div>
@@ -90,7 +90,7 @@
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a th:href="${#mvc.url('ANIMAIS.LISTAR').build()}" class="quick-action-card">
+                            <a th:href="@{/animais}" class="quick-action-card">
                                 <div class="qa-icon qa-info">
                                     <i class="fas fa-search"></i>
                                 </div>
@@ -176,9 +176,9 @@
                                 <div class="nav-content">
                                     <h4>Animais</h4>
                                     <ul class="nav-links">
-                                        <li><a th:href="${#mvc.url('ANIMAIS.LISTAR').build()}">Ver todos</a></li>
-                                        <li><a th:href="${#mvc.url('ANIMAIS.FORM').build()}">Cadastrar novo</a></li>
-                                        <li><a th:href="${#mvc.url('ANIMAIS.LISTAR').build()}">Disponíveis</a></li>
+                                        <li><a th:href="@{/animais}">Ver todos</a></li>
+                                        <li><a th:href="@{animais/form}">Cadastrar novo</a></li>
+                                        <li><a th:href="@{/animais}">Disponíveis</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -193,7 +193,7 @@
                                     <h4>Tutores</h4>
                                     <ul class="nav-links">
                                         <li><a th:href="@{/tutores}">Ver todos</a></li>
-                                        <li><a th:href="@{/novo}">Cadastrar novo</a></li>
+                                        <li><a th:href="@{tutores/form}">Cadastrar novo</a></li>
                                     </ul>
                                 </div>
                             </div>

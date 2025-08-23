@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="ms-lg-auto d-flex flex-wrap gap-2">
-            <a class="btn btn-outline-secondary btn-sm" th:href="${#mvc.url('ANIMAIS.LISTAR').build()}"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/animais}"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
             <a class="btn btn-outline-primary btn-sm" th:href="@{'/animais/' + ${a != null ? a.id : 0} + '/editar'}">Editar</a>
             <button class="btn btn-outline-success btn-sm d-none" id="btnSalvarAlteracoes" type="button">Salvar</button>
             <button class="btn btn-outline-secondary btn-sm d-none" id="btnCancelarAlteracoes" type="button">Cancelar</button>

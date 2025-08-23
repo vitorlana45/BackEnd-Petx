@@ -39,7 +39,7 @@
 
                 <!-- Animais -->
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'COLABORADOR')">
-                    <a class="nav-link" th:href="${#mvc.url('ANIMAIS.LISTAR').build()}">
+                    <a class="nav-link" th:href="@{/animais}">
                         <i class="fas fa-paw me-1"></i>Animais
                     </a>
                 </li>

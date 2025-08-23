@@ -87,7 +87,7 @@ public class SmartPageBuilder {
                 .subtitle("Administre e acompanhe todos os animais da ONG")
                 .icon("fas fa-paw")
                 .addBreadcrumb("Animais")
-                .primaryAction("Novo Animal", "ANIMAIS.FORM", "fas fa-plus");
+                .primaryAction("Novo Animal", "/animais/form", "fas fa-plus");
     }
 
     /**
@@ -109,7 +109,7 @@ public class SmartPageBuilder {
                 .subtitle("Administre e acompanhe todos os tutores cadastrados")
                 .icon("fas fa-users")
                 .addBreadcrumb("Tutores")
-                .primaryAction("Novo Tutor", "/tutores/novo", "fas fa-user-plus");
+                .primaryAction("Novo Tutor", "/tutores/form", "fas fa-user-plus");
     }
 
     // === MÉTODO DE BUILD ===

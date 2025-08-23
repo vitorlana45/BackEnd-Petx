@@ -8,7 +8,7 @@
 <section>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Tutores</h2>
-        <a class="btn btn-success" th:href="@{/tutores/novo}">
+        <a class="btn btn-success" th:href="@{/tutores/form">
             <i class="fas fa-user-plus me-2"></i>Novo Tutor
         </a>
     </div>
@@ -19,23 +19,23 @@
             <form method="get" th:action="@{/tutores}" class="row g-2 align-items-end">
                 <div class="col-12 col-sm-6 col-md-3">
                     <label class="form-label" for="nome">Nome</label>
-                    <input id="nome" name="nome" class="form-control" th:value="${fNome}">
+                    <input id="nome" class="form-control" th:value="${fNome}">
                 </div>
                 <div class="col-6 col-sm-4 col-md-2">
                     <label class="form-label" for="cep">CEP</label>
-                    <input id="cep" name="cep" class="form-control" th:value="${fCep}">
+                    <input id="cep" class="form-control" th:value="${fCep}">
                 </div>
                 <div class="col-6 col-sm-4 col-md-2">
                     <label class="form-label" for="cidade">Cidade</label>
-                    <input id="cidade" name="cidade" class="form-control" th:value="${fCidade}">
+                    <input id="cidade" class="form-control" th:value="${fCidade}">
                 </div>
                 <div class="col-6 col-sm-4 col-md-2">
                     <label class="form-label" for="estado">Estado</label>
-                    <input id="estado" name="estado" class="form-control" th:value="${fEstado}">
+                    <input id="estado" class="form-control" th:value="${fEstado}">
                 </div>
                 <div class="col-6 col-sm-4 col-md-2">
                     <label class="form-label" for="idade">Idade</label>
-                    <input id="idade" name="idade" type="number" class="form-control" th:value="${fIdade}">
+                    <input id="idade" type="number" class="form-control" th:value="${fIdade}">
                 </div>
                 <div class="col-12 col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary"><i class="fas fa-search me-2"></i>Buscar</button>

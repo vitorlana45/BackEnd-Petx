@@ -32,7 +32,7 @@
         </div>
         <div class="card-body">
             <!-- Formulário tradicional com POST -->
-            <form th:action="${#mvc.url('ANIMAIS.SALVAR')}" method="post" th:object="${animal}">
+            <form th:action="@{/animais}" method="post" th:object="${animal}">
                 <div class="row">
                     <!-- Informações básicas -->
                     <div class="col-md-6">

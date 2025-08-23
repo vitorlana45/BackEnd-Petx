@@ -55,7 +55,7 @@ public class SmartPageHelper {
                 "Administre e acompanhe todos os animais da ONG",
                 "fas fa-paw",
                 "Novo Animal",
-                "ANIMAIS.FORM"
+                "/animais/form"
         ).addBreadcrumb("Lista de Animais");
 
         model.addAttribute("smartHeaderConfig", config);
@@ -72,7 +72,7 @@ public class SmartPageHelper {
         // SUPORTE A MÚLTIPLOS BOTÕES
         // Se não foi passado actionButtons pelo controller, cria um padrão
         if (!model.containsAttribute("actionButtons")) {
-            ActionButtonDTO actionButton = ActionButtonDTO.primary("Novo Animal", "ANIMAIS.FORM", "fas fa-plus");
+            ActionButtonDTO actionButton = ActionButtonDTO.primary("Novo Animal", "/animais/form", "fas fa-plus");
             // Always use list for consistency
             List<ActionButtonDTO> buttons = Arrays.asList(actionButton);
             model.addAttribute("actionButtons", buttons);
@@ -88,7 +88,7 @@ public class SmartPageHelper {
                 "Administre e acompanhe todos os animais da ONG",
                 "fas fa-paw",
                 "Novo Animal",
-                "ANIMAIS.FORM"
+                "/animais/form"
         ).addBreadcrumb("Animais");
 
         model.addAttribute("config", config);
@@ -133,7 +133,7 @@ public class SmartPageHelper {
 
         ActionButtonDTO actionButton = ActionButtonDTO.primary(
                 "Novo Tutor", 
-                "/tutores/novo", 
+                "/tutores/form",
                 "fas fa-user-plus"
         );
         // Always use list for consistency  

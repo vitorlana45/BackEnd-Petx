@@ -29,7 +29,7 @@ public class TutorController {
     /**
      * Lista tutores com filtros e paginação
      */
-    @GetMapping(name = "TUTORES#LISTAR")
+    @GetMapping()
     public String listarTutores(Model model,
                          @RequestParam(required = false) String nome,
                          @RequestParam(required = false) String cep,
@@ -52,7 +52,7 @@ public class TutorController {
     /**
      * Exibe formulário para novo tutor
      */
-    @GetMapping(value = "/form", name = "TUTORES#NOVO")
+    @GetMapping(value = "/form")
     public String formNovoTutor(Model model) {
         // Como CadastrarTutorRequisicao é um record, não podemos usar o construtor vazio
         // Vamos passar atributos individuais para o form em vez disso
@@ -72,7 +72,7 @@ public class TutorController {
     /**
      * Processa o formulário de criação de tutor
      */
-    @PostMapping(value = "/novo", name = "TUTORES#SALVAR")
+    @PostMapping(value = "/salvar")
     public String cadastrarTutor(@Valid @ModelAttribute CadastrarTutorRequisicao tutor,
                                BindingResult result,
                                RedirectAttributes redirectAttributes) {
@@ -93,7 +93,7 @@ public class TutorController {
     /**
      * Exibe detalhes de um tutor
      */
-    @GetMapping(value = "/{cpf}", name = "TUTORES#DETALHAR")
+    @GetMapping(value = "/{cpf}")
     public String detalhesTutor(@PathVariable String cpf, Model model) {
         TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
         model.addAttribute("tutor", tutor);
@@ -103,7 +103,7 @@ public class TutorController {
     /**
      * Exibe formulário para editar tutor
      */
-    @GetMapping(value = "/{cpf}/editar", name = "TUTORES#EDITAR")
+    @GetMapping(value = "/{cpf}/editar")
     public String formEditarTutor(@PathVariable String cpf, Model model) {
         TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
         model.addAttribute("tutor", tutor);
@@ -114,7 +114,7 @@ public class TutorController {
     /**
      * Processa o formulário de edição de tutor
      */
-    @PostMapping(value = "/{cpf}/editar", name = "TUTORES#ATUALIZAR")
+    @PostMapping(value = "/{cpf}/editar")
     public String atualizarTutor(@PathVariable String cpf,
                                @Valid @ModelAttribute AtualizarTutorRequisicao tutor,
                                BindingResult result,
@@ -136,7 +136,7 @@ public class TutorController {
     /**
      * Exclui um tutor
      */
-    @PostMapping(value = "/{cpf}/excluir", name = "TUTORES#EXCLUIR")
+    @PostMapping(value = "/{cpf}/excluir")
     public String excluirTutor(@PathVariable String cpf, RedirectAttributes redirectAttributes) {
         try {
             tutorService.deletarTutorPorCpf(cpf);
@@ -147,15 +147,4 @@ public class TutorController {
         return "redirect:/tutores";
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 

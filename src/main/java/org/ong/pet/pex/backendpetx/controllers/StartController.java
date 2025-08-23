@@ -68,7 +68,7 @@ public class StartController {
 
             // actionButtons (plural)
             List<ActionButtonDTO> actionButtons = List.of(
-                    new ActionButtonDTO("Novo Animal", "ANIMAIS.FORM", "fas fa-plus","btn-primary")
+                    new ActionButtonDTO("Novo Animal", "/animais/form", "fas fa-plus","btn-primary")
             );
             model.addAttribute("actionButtons", actionButtons);
 

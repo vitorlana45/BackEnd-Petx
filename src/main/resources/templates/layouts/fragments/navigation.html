@@ -32,8 +32,8 @@
                         <li><a class="dropdown-item" th:href="@{/animais}"><i class="fas fa-list me-2"></i>Listar Animais</a></li>
                         <li><a class="dropdown-item" th:href="@{/animais/cadastro.html}"><i class="fas fa-plus me-2"></i>Cadastrar Animal</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" th:href="${#mvc.url('ANIMAIS#ADOCAO').build()}"><i class="fas fa-heart me-2"></i>Para Adoção</a></li>
-                        <li><a class="dropdown-item" th:href="${#mvc.url('ANIMAIS#TRATAMENTO').build()}"><i class="fas fa-stethoscope me-2"></i>Em Tratamento</a></li>
+                        <li><a class="dropdown-item" th:href="@{/animais/adocao}"><i class="fas fa-heart me-2"></i>Para Adoção</a></li>
+                        <li><a class="dropdown-item" th:href="@{/animais/tratamento}"><i class="fas fa-stethoscope me-2"></i>Em Tratamento</a></li>
                     </th:block>
                 </li>
                 <li th:replace="~{layouts/fragments/navigation :: nav-dropdown('adocoes', 'Adoções', 'home', ~{:: adocoes-menu})}">
@@ -41,19 +41,19 @@
                         <li><a class="dropdown-item" th:href="@{/adocoes}"><i class="fas fa-list me-2"></i>Processos</a></li>
                         <li><a class="dropdown-item" th:href="@{/adocoes/nova}"><i class="fas fa-plus me-2"></i>Nova Adoção</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" th:href="${#mvc.url('TUTORES#LISTAR').build()}"><i class="fas fa-users me-2"></i>Tutores</a></li>
+                        <li><a class="dropdown-item" th:href="@{/tutores/listar}"><i class="fas fa-users me-2"></i>Tutores</a></li>
                     </th:block>
                 </li>
                 <li th:replace="~{layouts/fragments/navigation :: nav-dropdown('veterinario', 'Veterinário', 'stethoscope', ~{:: vet-menu})}">
                     <th:block th:ref="vet-menu">
                         <li><a class="dropdown-item" th:href="@{/consultas}"><i class="fas fa-calendar me-2"></i>Consultas</a></li>
-                        <li><a class="dropdown-item" th:href="${#mvc.url('BOLETINS#NOVO').build()}"><i class="fas fa-file-medical me-2"></i>Boletins Médicos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/boletins/novo}"><i class="fas fa-file-medical me-2"></i>Boletins Médicos</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:href="@{/vacinas}"><i class="fas fa-syringe me-2"></i>Vacinas</a></li>
                         <li><a class="dropdown-item" th:href="@{/medicamentos}"><i class="fas fa-pills me-2"></i>Medicamentos</a></li>
                     </th:block>
                 </li>
-                <li th:replace="~{layouts/fragments/navigation :: nav-item(${#mvc.url('RESGATES#LISTAR').build()}, 'Resgates', 'life-ring')}"></li>
+                <li th:replace="~{layouts/fragments/navigation :: nav-item(@{/resgates/listar}, 'Resgates', 'life-ring')}"></li>
             </ul>
 
             <!-- Menu de Usuário e Configurações -->
@@ -194,7 +194,7 @@
         <li><a class="dropdown-item" th:href="@{/settings}"><i class="fas fa-cog me-2"></i>Configurações</a></li>
         <li><hr class="dropdown-divider"></li>
         <li sec:authorize="hasRole('ADMIN')">
-            <a class="dropdown-item" th:href="${#mvc.url('ADMIN#DASHBOARD').build()}"><i class="fas fa-shield-alt me-2"></i>Administração</a>
+            <a class="dropdown-item" th:href="@{/admin/dashboard}"><i class="fas fa-shield-alt me-2"></i>Administração</a>
         </li>
         <li sec:authorize="hasRole('ADMIN')"><hr class="dropdown-divider"></li>
         <li>

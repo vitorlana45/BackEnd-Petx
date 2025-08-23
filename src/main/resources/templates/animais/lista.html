@@ -15,144 +15,125 @@
         </div>
     </div>
 
-    <!-- Filtros -->
-    <div class="card mb-3 shadow-sm">
-        <div class="card-header py-2 d-flex align-items-center gap-2">
-            <i class="fas fa-filter"></i>
+    <div class="card mb-3 shadow-sm" id="filtros-card">
+        <div class="card-header py-2 d-flex align-items-center">
+            <i class="fas fa-filter me-2"></i>
             <h3 class="h6 mb-0">Filtros de Pesquisa</h3>
+
+            <!-- Botão de mostrar/esconder -->
+            <button id="btn-toggle-filtros"
+                    class="btn btn-sm btn-info ms-auto d-inline-flex align-items-center gap-1"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#filtros-collapse" aria-expanded="true" aria-controls="filtros-collapse">
+                <i class="fas fa-chevron-up"></i>
+                <span class="label-text">Esconder filtros</span>
+            </button>
         </div>
-        <div class="card-body py-3">
+
+
+        <!-- Container colapsável -->
+        <div id="filtros-collapse" class="collapse show">
+            <div class="card-body py-3">
+
             <form method="get" class="row g-3">
-                <!-- Linha 1: Filtros principais -->
-                <div class="col-md-3">
+                <!-- Linha 1 -->
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Nome do Animal</label>
                     <input type="text" class="form-control form-control-sm" name="nome"
                            th:value="${filtroNome}" placeholder="Digite o nome...">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Raça</label>
                     <input type="text" class="form-control form-control-sm" name="raca"
                            th:value="${filtroRaca}" placeholder="Digite a raça...">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Espécie</label>
                     <select class="form-select form-select-sm" name="especie">
                         <option value="">Todas as espécies</option>
-                        <option th:each="esp : ${especies}"
-                                th:value="${esp}"
-                                th:text="${esp.especie}"
-                                th:selected="${esp == filtroEspecie}">Espécie</option>
+                        <option th:each="esp : ${especies}" th:value="${esp}"
+                                th:text="${esp.especie}" th:selected="${esp == filtroEspecie}">Espécie</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Status</label>
                     <select class="form-select form-select-sm" name="status">
                         <option value="">Todos os status</option>
-                        <option th:each="st : ${statusEnum}"
-                                th:value="${st}"
-                                th:text="${st.status}"
-                                th:selected="${st == filtroStatus}">Status</option>
+                        <option th:each="st : ${statusEnum}" th:value="${st}"
+                                th:text="${st.status}" th:selected="${st == filtroStatus}">Status</option>
                     </select>
                 </div>
 
-                <!-- Linha 2: Filtros secundários -->
-                <div class="col-md-3">
+                <!-- Linha 2 -->
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Porte</label>
                     <select class="form-select form-select-sm" name="porte">
                         <option value="">Todos os portes</option>
-                        <option th:each="p : ${portes}"
-                                th:value="${p}"
-                                th:text="${p.porte}"
-                                th:selected="${p == filtroPorte}">Porte</option>
+                        <option th:each="p : ${portes}" th:value="${p}"
+                                th:text="${p.porte}" th:selected="${p == filtroPorte}">Porte</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Sexo</label>
                     <select class="form-select form-select-sm" name="sexo">
                         <option value="">Todos os sexos</option>
-                        <option th:each="s : ${sexos}"
-                                th:value="${s}"
-                                th:text="${s.sexo}"
-                                th:selected="${s == filtroSexo}">Sexo</option>
+                        <option th:each="s : ${sexos}" th:value="${s}"
+                                th:text="${s.sexo}" th:selected="${s == filtroSexo}">Sexo</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Origem</label>
                     <select class="form-select form-select-sm" name="origem">
                         <option value="">Todas as origens</option>
-                        <option th:each="o : ${origens}"
-                                th:value="${o}"
-                                th:text="${o.OrigemAnimal}"
-                                th:selected="${o == filtroOrigem}">Origem</option>
+                        <option th:each="o : ${origens}" th:value="${o}"
+                                th:text="${o.OrigemAnimal}" th:selected="${o == filtroOrigem}">Origem</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-6 mb-2">
                     <label class="form-label small">Chip ID</label>
                     <input type="text" class="form-control form-control-sm" name="chipId"
                            th:value="${filtroChipId}" placeholder="Digite o chip ID...">
                 </div>
 
-                <!-- Botões de ação -->
-                <div class="col-12 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary btn-sm">
+                <!-- Botões -->
+                <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                    <button type="submit" class="btn btn-success btn-sm px-4">
                         <i class="fas fa-search me-1"></i>Buscar
                     </button>
-                    <a th:href="${#mvc.url('ANIMAIS.LISTAR').build()}" class="btn btn-outline-secondary btn-sm">
+                    <a th:href="@{/animais}" class="btn btn-danger btn-sm px-4">
                         <i class="fas fa-times me-1"></i>Limpar Filtros
                     </a>
                 </div>
             </form>
         </div>
     </div>
+    </div>
+
+    <!-- Lista (HTMX-ready) -->
     <div id="lista-animais" th:replace="~{animais/fragmentos :: lista}"></div>
 </section>
 
 <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+<!-- Certifique-se que Bootstrap JS está carregado no layout/base -->
 <script>
-    (function() {
-        // Persistir visualização escolhida (cards/tabela)
-        const group = document.querySelector('.btn-group[role="group"]');
-        const cardsView = document.getElementById('cards-view');
-        const tableView = document.getElementById('table-view');
-        const STORAGE_KEY = 'animais:view';
+(function(){
+    // Atualiza texto/ícone conforme colapso Bootstrap
+    const btn = document.getElementById('btn-toggle-filtros');
+    const collapse = document.getElementById('filtros-collapse');
+    if(!btn || !collapse) return;
+    const label = btn.querySelector('.label-text');
+    const icon  = btn.querySelector('i');
 
-        function setView(v){
-            if(v === 'table'){
-                cardsView.classList.add('d-none');
-                tableView.classList.remove('d-none');
-                document.getElementById('view-table').checked = true;
-            } else {
-                tableView.classList.add('d-none');
-                cardsView.classList.remove('d-none');
-                document.getElementById('view-cards').checked = true;
-            }
-            try { localStorage.setItem(STORAGE_KEY, v); } catch(_) {}
-        }
-
-        // Inicialização com preferência salva
-        const saved = (function(){ try { return localStorage.getItem(STORAGE_KEY); } catch(_) { return null; } })();
-        setView(saved === 'table' ? 'table' : 'cards');
-
-        // Delegação de eventos
-        if(group){
-            group.addEventListener('click', function(e){
-                const btn = e.target.closest('label[data-view]');
-                if(!btn) return;
-                setView(btn.getAttribute('data-view'));
-            });
-        }
-
-        // Acessibilidade/teclado nos cards
-        document.querySelectorAll('.animal-card').forEach(function(card){
-            card.addEventListener('keydown', function(e){
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    const link = card.closest('a');
-                    if(link) link.click();
-                }
-            });
-        });
-    })();
+    collapse.addEventListener('show.bs.collapse', function(){
+        btn.setAttribute('aria-expanded', 'true');
+        if(label) label.textContent = 'Esconder filtros';
+        if(icon)  icon.className = 'fas fa-chevron-up';
+    });
+    collapse.addEventListener('hide.bs.collapse', function(){
+        btn.setAttribute('aria-expanded', 'false');
+        if(label) label.textContent = 'Mostrar filtros';
+        if(icon)  icon.className = 'fas fa-chevron-down';
+    });
+})();
 </script>
 
 </body>

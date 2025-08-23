@@ -43,7 +43,7 @@ public class AnimalController extends PageControl {
     /**
      * Lista todos os animais com paginação e filtros
      */
-    @GetMapping(name = "ANIMAIS.LISTAR")
+    @GetMapping()
     public String listarAnimais(Model model,
                                 @RequestParam(required = false) String nome,
                                 @RequestParam(required = false) String raca,
@@ -78,7 +78,7 @@ public class AnimalController extends PageControl {
 
         // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
         if ("true".equalsIgnoreCase(htmx)) {
-            return "animais/fragmentos :: lista";
+            return "animais/fragmentos";
         }
 
         return "animais/lista";
@@ -118,7 +118,7 @@ public class AnimalController extends PageControl {
     private static List<ActionButtonDTO> getActionButtonDTOS() {
         ActionButtonDTO actionButton = ActionButtonDTO.createCustom(
                 "Novo Animal",
-                "ANIMAIS.FORM",
+                "/animais/form",
                 "fas fa-plus",
                 "btn-primary"
         );
@@ -141,7 +141,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe detalhes de um animal específico
      */
-    @GetMapping(value = "/{id}", name = "ANIMAIS#DETALHAR")
+    @GetMapping(value = "/{id}")
     public String detalhesAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
@@ -151,7 +151,7 @@ public class AnimalController extends PageControl {
     /**
      * Atualiza bloco PERFIL via formulário parcial (POST simples por enquanto)
      */
-    @PostMapping(value = "/{id}/atualizar/perfil", name = "ANIMAIS#ATUALIZAR_PERFIL")
+    @PostMapping(value = "/{id}/atualizar/perfil")
     public String atualizarPerfil(@PathVariable Long id,
                                   @RequestParam(required = false) String nome,
                                   @RequestParam(required = false) String raca,
@@ -174,7 +174,7 @@ public class AnimalController extends PageControl {
     /**
      * Atualiza bloco SAÚDE resumida
      */
-    @PostMapping(value = "/{id}/atualizar/saude", name = "ANIMAIS#ATUALIZAR_SAUDE")
+    @PostMapping(value = "/{id}/atualizar/saude")
     public String atualizarSaude(@PathVariable Long id,
                                  @RequestParam(required = false) String doencas,
                                  RedirectAttributes ra) {
@@ -190,7 +190,7 @@ public class AnimalController extends PageControl {
     /**
      * Endpoint JSON compacto para modal de detalhes via AJAX
      */
-    @GetMapping(value = "/{id}/detalhes.json", name = "ANIMAIS#DETALHES_JSON", produces = "application/json")
+    @GetMapping(value = "/{id}/detalhes.json", produces = "application/json")
     @ResponseBody
     public Map<String,Object> detalhesAnimalJson(@PathVariable Long id){
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
@@ -216,7 +216,7 @@ public class AnimalController extends PageControl {
     /**
      * Busca animal por chip
      */
-    @GetMapping(value = "/chip/{chip}", name = "ANIMAIS#BUSCAR_POR_CHIP")
+    @GetMapping(value = "/chip/{chip}")
     public String buscarAnimalPorChip(@PathVariable String chip, Model model, RedirectAttributes redirectAttributes) {
         try {
             AnimalGenericoResposta animal = animalService.buscarAnimalPorChip(chip);
@@ -231,7 +231,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe o formulário para criar novo animal1
      */
-    @GetMapping(value = "/animais/form", name = "ANIMAIS.FORM")
+    @GetMapping(value = "/form")
     public String formNovoAnimal(Model model) {
         model.addAttribute("animal", new AnimalGenericoRequisicao());
         montarComboStatusEnum(model);
@@ -241,7 +241,7 @@ public class AnimalController extends PageControl {
     /**
      * Processa o formulário de criação de animal
      */
-    @PostMapping(name="ANIMAIS.SALVAR")
+    @PostMapping("/salvar")
     public String salvarNovoAnimal(@Valid @ModelAttribute("animal") AnimalGenericoRequisicao animal, 
                                   BindingResult result, 
                                   RedirectAttributes redirectAttributes,
@@ -261,7 +261,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe o formulário para editar um animal existente
      */
-    @GetMapping(value = "/{id}/editar", name = "ANIMAIS#EDITAR")
+    @GetMapping(value = "/{id}/editar")
     public String formEditarAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animal", animal);
@@ -272,7 +272,7 @@ public class AnimalController extends PageControl {
     /**
      * Processa o formulário de edição de animal
      */
-    @PostMapping(value = "/{id}/editar", name = "ANIMAIS#ATUALIZAR")
+    @PostMapping(value = "/{id}/editar")
     public String atualizarAnimal(@PathVariable Long id,
                                  @Valid @ModelAttribute("animal") AnimalGenericoRequisicao animal,
                                  BindingResult result,
@@ -291,7 +291,7 @@ public class AnimalController extends PageControl {
     /**
      * Exclui um animal
      */
-    @PostMapping(value = "/{id}/excluir", name = "ANIMAIS#EXCLUIR")
+    @PostMapping(value = "/{id}/excluir")
     public String excluirAnimal(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             animalService.deletarPorId(id);
@@ -305,7 +305,7 @@ public class AnimalController extends PageControl {
     /**
      * Exibe formulário para registrar óbito
      */
-    @GetMapping(value = "/{id}/obito", name = "ANIMAIS#OBITO_FORM")
+    @GetMapping(value = "/{id}/obito")
     public String formObito(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         model.addAttribute("animalId", id);
@@ -316,7 +316,7 @@ public class AnimalController extends PageControl {
     /**
      * Processa o registro de óbito
      */
-    @PostMapping(value = "/{id}/obito", name = "ANIMAIS#REGISTRAR_OBITO")
+    @PostMapping(value = "/{id}/obito")
     public String registrarObito(@PathVariable Long id,
                                @RequestParam String chipId,
                                @RequestParam String motivoObito,
