@@ -944,6 +944,17 @@ footer {
     color: #065f46 !important;
 }
 
+   /* estado inicial (aberto) */
+ #btn-toggle-filtros .chevron-down,
+ #btn-toggle-filtros .txt-show { display: none; }
+
+/* quando fechar (aria-expanded = false), inverte */
+#btn-toggle-filtros[aria-expanded="false"] .chevron-up,
+#btn-toggle-filtros[aria-expanded="false"] .txt-hide { display: none; }
+
+#btn-toggle-filtros[aria-expanded="false"] .chevron-down,
+#btn-toggle-filtros[aria-expanded="false"] .txt-show { display: inline; }
+
 /* Aumentando o tamanho e destaque dos badges de status */
 .badge.fs-6 {
     font-size: 0.85rem !important;
