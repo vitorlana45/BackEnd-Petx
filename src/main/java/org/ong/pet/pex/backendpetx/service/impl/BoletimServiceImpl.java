@@ -23,6 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
+@Transactional
 public class BoletimServiceImpl implements BoletimService {
 
     private final BoletimRepository boletimRepository;

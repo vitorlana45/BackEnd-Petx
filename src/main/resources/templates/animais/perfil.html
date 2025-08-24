@@ -16,12 +16,13 @@
                      class="w-100 h-100" style="object-fit: cover;">
                 <div th:unless="${a != null and a.imagemPrincipalPerfil != null and !#strings.isEmpty(a.imagemPrincipalPerfil)}"
                      style="font-size:3rem;"
-                     th:text="${a != null && a.especie != null ? (a.especie.toLowerCase().contains('gato') ? '🐱' : (a.especie.toLowerCase().contains('cão') || a.especie.toLowerCase().contains('cao') ? '🐶' : '🐾')) : '🐾'}">🐾</div>
+                     th:text="${a != null && a.especie != null ? (a.especie.toString().toLowerCase().contains('gato') ? '🐱' : (a.especie.toString().toLowerCase().contains('cão') || a.especie.toString().toLowerCase().contains('cao') ? '🐶' : '🐾')) : '🐾'}">🐾</div>
             </div>
             <div>
                 <h2 class="mb-2 d-flex align-items-center gap-2">
                     <span th:text="${a != null ? a.nome : 'Animal'}">Animal</span>
-                    <span class="badge rounded-pill" th:classappend="${a != null && a.status != null ? (a.status.toLowerCase().contains('adot') ? ' bg-success text-white' : (a.status.toLowerCase().contains('dispon') ? ' bg-primary text-white' : ' bg-secondary text-white')) : ' bg-secondary text-white'}"
+                    <span class="badge rounded-pill"
+                          th:classappend="${a != null && a.status != null ? (a.status.toString().toLowerCase().contains('adot') ? ' bg-success text-white' : (a.status.toString().toLowerCase().contains('dispon') ? ' bg-primary text-white' : ' bg-secondary text-white')) : ' bg-secondary text-white'}"
                           th:text="${a != null ? a.status : 'SEM STATUS'}">STATUS</span>
                 </h2>
                 <div class="d-flex flex-wrap gap-2 small">
@@ -35,13 +36,23 @@
                 </div>
             </div>
         </div>
+
         <div class="ms-lg-auto d-flex flex-wrap gap-2">
-            <a class="btn btn-outline-secondary btn-sm" th:href="@{/animais}"><i class="fas fa-arrow-left me-1"></i> Voltar</a>
-            <a class="btn btn-outline-primary btn-sm" th:href="@{'/animais/' + ${a != null ? a.id : 0} + '/editar'}">Editar</a>
-            <button class="btn btn-outline-success btn-sm d-none" id="btnSalvarAlteracoes" type="button">Salvar</button>
-            <button class="btn btn-outline-secondary btn-sm d-none" id="btnCancelarAlteracoes" type="button">Cancelar</button>
+            <a class="btn btn-outline-secondary btn-sm" th:href="@{/animais}">
+                <i class="fas fa-arrow-left me-1"></i> Voltar
+            </a>
+
+            <!-- abre o modal de edição -->
+            <button class="btn btn-outline-primary btn-sm"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editarPerfilModal">
+                Editar
+            </button>
+
             <button class="btn btn-outline-warning btn-sm" type="button">Registrar Vacina</button>
             <button class="btn btn-outline-danger btn-sm" type="button">Tratamento</button>
+
             <button class="btn btn-outline-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalExcluirAnimal">
                 <i class="fas fa-trash me-1"></i> Excluir
             </button>
@@ -52,11 +63,10 @@
     <div class="row g-4">
         <!-- COL ESQUERDA -->
         <div class="col-12 col-lg-8 d-flex flex-column gap-4">
-            <!-- PERFIL -->
+            <!-- PERFIL (somente visualização) -->
             <div class="modal-animal modal-section p-3" id="blocoPerfil">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Perfil</h6>
-                    <button class="btn btn-sm btn-outline-primary btn-inline-edit d-none" data-bloco="perfil" type="button">Editar</button>
                 </div>
                 <div class="row small" data-view="perfil">
                     <div class="col-6 mb-2"><strong>Nome:</strong> <span th:text="${a != null ? a.nome : '—'}">—</span></div>
@@ -68,90 +78,21 @@
                     <div class="col-6 mb-2"><strong>Origem:</strong> <span th:text="${a != null ? a.origem : '—'}">—</span></div>
                     <div class="col-6 mb-2"><strong>Cor/Pelagem:</strong> <span th:text="${a != null ? a.corPelagem : '—'}">—</span></div>
                     <div class="col-12 mb-2"><strong>Condição Inicial:</strong> <span th:text="${a != null ? a.condicaoAnimal : '—'}">—</span></div>
-<!--                    <div class="col-12 mb-2"><strong>Descrição Divulgação:</strong> <span th:text="${a != null && a.descricaoDivulgacao != null ? a.descricaoDivulgacao : '—'}">—</span></div>-->
                 </div>
-                <form data-edit="perfil" class="d-none" method="post" th:action="@{'/animais/' + ${a.id} + '/atualizar/perfil'}">
-                    <div class="row g-3 small">
-                        <div class="col-md-6">
-                            <label class="form-label">Nome</label>
-                            <input type="text" name="nome" class="form-control" th:value="${a != null ? a.nome : ''}" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Raça</label>
-                            <input type="text" name="raca" class="form-control" th:value="${a != null ? a.raca : ''}" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Espécie</label>
-                            <input type="text" name="especie" class="form-control" th:value="${a != null ? a.especie : ''}" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Porte</label>
-                            <input type="text" name="porte" class="form-control" th:value="${a != null ? a.porte : ''}" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Sexo</label>
-                            <input type="text" name="sexo" class="form-control" th:value="${a != null ? a.sexo : ''}" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Maturidade</label>
-                            <input type="text" name="maturidade" class="form-control" th:value="${a != null ? a.maturidade : ''}" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Origem</label>
-                            <input type="text" name="origem" class="form-control" th:value="${a != null ? a.origem : ''}" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cor/Pelagem</label>
-                            <input type="text" name="corPelagem" class="form-control" th:value="${a != null ? a.corPelagem : ''}" />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Descrição Divulgação</label>
-                            <!-- textarea opcional -->
-                        </div>
-                        <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-sm btn-primary">Salvar Perfil</button>
-                        </div>
-                    </div>
-                </form>
             </div>
 
-            <!-- SAUDE SIMPLIFICADA -->
+            <!-- SAÚDE (resumo) -->
             <div class="modal-animal modal-section p-3" id="blocoSaude">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Saúde (Resumo)</h6>
-                    <button class="btn btn-sm btn-outline-primary btn-inline-edit d-none" data-bloco="saude" type="button">Editar</button>
                 </div>
                 <div class="small" data-view="saude">
                     <div><strong>Doenças:</strong> <span th:text="${doencas != null && !#lists.isEmpty(doencas) ? #strings.arrayJoin(doencas, ', ') : 'Nenhuma'}">Nenhuma</span></div>
                     <div><strong>Vacinas:</strong> <span th:text="${vacinasResumo != null ? vacinasResumo : '—'}">—</span></div>
-<!--                    <div><strong>Castrado:</strong> <span th:text="${a != null && a.castrado != null ? (a.castrado ? 'Sim' : 'Não') : '—'}">—</span></div>-->
                 </div>
-                <form data-edit="saude" class="d-none" method="post" th:action="@{'/animais/' + ${a.id} + '/atualizar/saude'}">
-                    <div class="row g-3 small">
-                        <div class="col-md-6">
-                            <label class="form-label">Doenças (lista separada por vírgula)</label>
-                            <input type="text" name="doencas" class="form-control" th:value="${doencasTexto != null ? doencasTexto : ''}" />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Castrado?</label>
-                            <select name="castrado" class="form-select">
-                                <option value="">—</option>
-<!--                                <option value="true" th:selected="${a != null && a.castrado}">Sim</option>-->
-<!--                                <option value="false" th:selected="${a != null && a.castrado != null && !a.castrado}">Não</option>-->
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Data Castração</label>
-<!--                            <input type="date" name="dataCastracao" class="form-control" th:value="${a != null && a.dataCastracao != null ? a.dataCastracao : ''}" />-->
-                        </div>
-                        <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-sm btn-primary">Salvar Saúde</button>
-                        </div>
-                    </div>
-                </form>
             </div>
 
-            <!-- TIMELINE PLACEHOLDER -->
+            <!-- TIMELINE -->
             <div class="modal-animal modal-section p-3" id="blocoTimeline">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Linha do Tempo</h6>
@@ -186,7 +127,6 @@
 
         <!-- COL DIREITA -->
         <div class="col-12 col-lg-4 d-flex flex-column gap-4">
-            <!-- STATUS SIMPLES -->
             <div class="modal-animal modal-section p-3" id="blocoStatus">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Status do Animal</h6>
@@ -198,7 +138,6 @@
                 </div>
             </div>
 
-            <!-- DOCUMENTOS -->
             <div class="modal-animal modal-section p-3" id="blocoDocs">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Documentos</h6>
@@ -209,7 +148,6 @@
                 </ul>
             </div>
 
-            <!-- MÉTRICAS / RESUMO -->
             <div class="modal-animal modal-section p-3" id="blocoMetricas">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="modal-section-title mb-0">Métricas</h6>
@@ -246,6 +184,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <form th:action="@{'/animais/' + ${a != null ? a.id : 0} + '/excluir'}" method="post">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <input type="hidden" th:if="${_csrf != null}"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
                         <button type="submit" class="btn btn-danger">Excluir</button>
                     </form>
                 </div>
@@ -253,29 +195,111 @@
         </div>
     </div>
 
-    <!-- JS Inline para modo edição básico -->
+    <!-- Modal Editar Perfil -->
+    <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <form class="modal-content"
+                  method="post"
+                  th:action="@{/animais/{id}/editar(id=${animal.id})}"
+                  hx-target="#"
+                  th:object="${animal}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar animal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- override PUT DENTRO do form -->
+
+                    <input type="hidden" name="_method" value="put"/>
+                    <input type="hidden" th:field="*{id}"/>
+
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nome</label>
+                            <input class="form-control" th:field="*{nome}"/>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Chip</label>
+                            <input class="form-control" th:field="*{chipId}"/>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Raça</label>
+                            <input class="form-control" th:field="*{raca}"/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Espécie</label>
+                            <select class="form-select" th:field="*{especie}">
+                                <option th:each="esp : ${especies}"
+                                        th:value="${esp}"
+                                        th:text="${esp}"></option>
+                                <!-- se a propriedade 'especie' for String, troque th:value="${esp}" por th:value="${esp.name()}" -->
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Porte</label>
+                            <select class="form-select" th:field="*{porte}">
+                                <option th:each="p : ${portes}" th:value="${p}" th:text="${p}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Sexo</label>
+                            <select class="form-select" th:field="*{sexo}">
+                                <option th:each="s : ${sexos}" th:value="${s}" th:text="${s}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Maturidade</label>
+                            <select class="form-select" th:field="*{maturidade}">
+                                <option th:each="m : ${maturidades}" th:value="${m}" th:text="${m}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Origem</label>
+                            <select class="form-select" th:field="*{origem}">
+                                <option th:each="o : ${origens}" th:value="${o}" th:text="${o}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" th:field="*{status}">
+                                <option th:each="st : ${status}" th:value="${st}" th:text="${st}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Cor/Pelagem</label>
+                            <input class="form-control" th:field="*{corPelagem}"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <!-- CSRF (se usa Spring Security) -->
+                    <input type="hidden" th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"/>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JS pequeno para notas (opcional) -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         (function(){
-            const pagina = document.getElementById('paginaAnimal');
-            if(!pagina) return;
-            const btnModo = document.getElementById('btnModoEdicao');
-            const btnSalvar = document.getElementById('btnSalvarAlteracoes');
-            const btnCancelar = document.getElementById('btnCancelarAlteracoes');
-            const inlineBtns = document.querySelectorAll('.btn-inline-edit');
-            let globalEdit = false;
-            function setEdit(on){
-                globalEdit = on;
-                inlineBtns.forEach(b=>b.classList.toggle('d-none', !on));
-                document.querySelectorAll('[data-view]').forEach(v=>v.classList.toggle('d-none', on));
-                document.querySelectorAll('[data-edit]').forEach(f=>f.classList.toggle('d-none', !on));
-                if(document.getElementById('btnModoEdicao')) document.getElementById('btnModoEdicao').classList.toggle('d-none', on);
-                btnSalvar && btnSalvar.classList.toggle('d-none', !on);
-                btnCancelar && btnCancelar.classList.toggle('d-none', !on);
-            }
-            btnModo && btnModo.addEventListener('click', ()=> setEdit(true));
-            btnCancelar && btnCancelar.addEventListener('click', ()=> setEdit(false));
-            // Notas
             const btnAddNota = document.getElementById('btnAdicionarNota');
             const formNota = document.getElementById('formNovaNota');
             const listaNotas = document.getElementById('listaNotas');

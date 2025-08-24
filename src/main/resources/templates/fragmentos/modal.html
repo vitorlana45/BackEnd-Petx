@@ -1,10 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<body>-->
+<!--&lt;!&ndash; Fragmento: modal genérico com slot de campos &ndash;&gt;-->
+<!--<th:block th:fragment="modal(id, titulo, action, method, objeto, campos)">-->
+<!--  <div class="modal fade" th:id="${id}" tabindex="-1" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-lg modal-dialog-centered">-->
+<!--      <form class="modal-content"-->
+<!--            th:action="${action}"-->
+<!--            method="post"-->
+<!--            th:object="${objeto}">-->
+<!--        <div class="modal-header">-->
+<!--          <h5 class="modal-title" th:text="${titulo}">Título</h5>-->
+<!--          <button class="btn-close" data-bs-dismiss="modal" type="button" aria-label="Fechar"></button>-->
+<!--        </div>-->
+
+<!--        <div class="modal-body">-->
+<!--          &lt;!&ndash; override de método se não for POST &ndash;&gt;-->
+<!--          <input type="hidden" name="_method" th:if="${method != null and method.toLowerCase() != 'post'}"-->
+<!--                 th:value="${method}"/>-->
+<!--          &lt;!&ndash; SLOT de campos &ndash;&gt;-->
+<!--          <div th:insert="${campos}"></div>-->
+<!--        </div>-->
+
+<!--        <div class="modal-footer">-->
+<!--          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancelar</button>-->
+<!--          <button class="btn btn-primary" type="submit">Salvar</button>-->
+<!--        </div>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</th:block>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+<th:block th:fragment="modal(id, titulo, action, method, objeto, campos)">
+  <div class="modal fade" th:id="${id}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <form class="modal-content"
+            th:action="${action}"
+            method="post"
+            th:object="${objeto}">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="${titulo}">Título</h5>
+          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <div class="modal-body">
+          <input type="hidden" name="_method"
+                 th:if="${method != null and method.toLowerCase() != 'post'}"
+                 th:value="${method}">
+          <!-- SLOT de campos: vai herdar o th:object do form -->
+          <div th:insert="${campos}"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" type="submit">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</th:block>
+

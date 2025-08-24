@@ -1,12 +1,13 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.bean.StatsCardBean;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
@@ -32,7 +33,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/animais")
 @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
-public class AnimalController extends PageControl {
+public class AnimalController {
 
     private final AnimalService animalService;
 
@@ -118,22 +119,22 @@ public class AnimalController extends PageControl {
     private static List<ActionButtonDTO> getActionButtonDTOS() {
         ActionButtonDTO actionButton = ActionButtonDTO.createCustom(
                 "Novo Animal",
-                "/animais/form",
+                "/boletins/form",
                 "fas fa-plus",
                 "btn-primary"
         );
 
-        ActionButtonDTO segundo = ActionButtonDTO.createCustom(
-                "Importar Animais",
-                "/animais/importar",
-                "fas fa-file-import",
-                "btn-secondary"
-        );
+//        ActionButtonDTO segundo = ActionButtonDTO.createCustom(
+//                "Importar Animais",
+//                "/animais/importar",
+//                "fas fa-file-import",
+//                "btn-secondary"
+//        );
 
 
         List<ActionButtonDTO> actionButtons = new ArrayList<>();
         actionButtons.add(actionButton);
-        actionButtons.add(segundo);
+//        actionButtons.add(segundo);
         return actionButtons;
     }
 
@@ -144,6 +145,7 @@ public class AnimalController extends PageControl {
     @GetMapping(value = "/{id}")
     public String detalhesAnimal(@PathVariable Long id, Model model) {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
+        montarComboStatusEnum(model);
         model.addAttribute("animal", animal);
         return "animais/perfil";
     }
@@ -253,22 +255,14 @@ public class AnimalController extends PageControl {
         
         // Aqui você precisará implementar o método de cadastro no seu serviço
         // Supondo que você tenha uma versão de serviço que retorne o ID
-        AnimalGenericoResposta novoAnimal = animalService.atualizarAnimal(null, animal);
+        AnimalGenericoResposta novoAnimal = animalService.salvarAnimal(animal);
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Animal cadastrado com sucesso!");
         return "redirect:/animais/" + novoAnimal.getId();
     }
-    
-    /**
-     * Exibe o formulário para editar um animal existente
-     */
-    @GetMapping(value = "/{id}/editar")
-    public String formEditarAnimal(@PathVariable Long id, Model model) {
-        AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
-        model.addAttribute("animal", animal);
-        montarComboStatusEnum(model);
-        return "animais/editar";
-    }
-    
+
+
+
+
     /**
      * Processa o formulário de edição de animal
      */
@@ -280,26 +274,43 @@ public class AnimalController extends PageControl {
                                  Model model) {
         if (result.hasErrors()) {
             montarComboStatusEnum(model);
-            return "animais/editar";
+            return "redirect:/animais/" + id;
         }
+
+        System.out.println("id passado do animal" + id);
 
         animalService.atualizarAnimal(id, animal);
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Animal atualizado com sucesso!");
         return "redirect:/animais/" + id;
     }
 
+
+
+
     /**
      * Exclui um animal
      */
-    @PostMapping(value = "/{id}/excluir")
-    public String excluirAnimal(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            animalService.deletarPorId(id);
-            redirectAttributes.addFlashAttribute("mensagemSucesso", "Animal excluído com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao excluir animal: " + e.getMessage());
+    @PostMapping("/{id}/excluir")
+    public String excluir(@PathVariable Long id,
+                          RedirectAttributes ra,
+                          HttpServletRequest req,
+                          HttpServletResponse res) {
+        // Se der problema, o service lança BaseApplicationError e o Advice cuida.
+        animalService.deletarPorId(id);
+
+        if (isHtmx(req)) {
+            res.setStatus(204);
+            res.setHeader("HX-Trigger",
+                    "{\"toast\":{\"type\":\"success\",\"text\":\"Animal excluído com sucesso!\"}}");
+            return null; // sem view (HTMX)
         }
-        return "redirect:/animais";
+
+        ra.addFlashAttribute("mensagemSucesso", "Animal excluído com sucesso!");
+        return "redirect:/animais"; // após excluir, volte para a lista
+    }
+
+    private boolean isHtmx(HttpServletRequest req) {
+        return req.getHeader("HX-Request") != null;
     }
     
     /**
@@ -390,17 +401,12 @@ public class AnimalController extends PageControl {
     }
 
     public void montarComboStatusEnum(Model model) {
-        model.addAttribute("statusEnum", StatusEnum.values());
         model.addAttribute("especies", EspecieEnum.values());
         model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("statusEnum", StatusEnum.values());
+        model.addAttribute("status", StatusEnum.values());
         model.addAttribute("maturidades", MaturidadeEnum.values());
         model.addAttribute("origens", OrigemAnimalEnum.values());
         model.addAttribute("sexos", SexoEnum.values());
     }
 
-    @Override
-    void begin() {
-
-    }
 }

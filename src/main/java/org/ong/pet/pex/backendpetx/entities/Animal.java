@@ -3,13 +3,24 @@ package org.ong.pet.pex.backendpetx.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.MaezinhaComFilhotes;
 import org.ong.pet.pex.backendpetx.enums.*;
 
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.*;
+
+
+@SQLDelete(sql = "UPDATE animal_tb SET arquivado = true, arquivado_em = CURRENT_TIMESTAMP WHERE id = ?")
+@Where(clause = "arquivado = false")
+@Audited
 @Builder
 @Entity
 @Table(name = "animal_tb", 
@@ -68,6 +79,18 @@ public class Animal extends EntidadeBase {
     @Column(name = "cor_pelagem")
     private String corPelagem;
 
+    @Column(nullable = false)
+    private boolean arquivado = false;
+
+    @Column(name = "arquivado_em")
+    private OffsetDateTime arquivadoEm;
+
+    @Column(name = "motivo_arquivamento", length = 120)
+    private String motivoArquivamento;
+
+    @Column(name = "arquivado_por", length = 100)
+    private String arquivadoPor;
+
     // Tornar LAZY para não carregar todas as doenças em listagens paginadas
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "animal_doencas", joinColumns = @JoinColumn(name = "animal_id"))
@@ -84,25 +107,23 @@ public class Animal extends EntidadeBase {
 
     private MaezinhaComFilhotes maezinhaComFilhotes;
 
-    // Evitar carregamento automático em listagens: trocar fetch padrão (EAGER em ManyToOne) para LAZY.
-    // Cascade ALL em ManyToOne tende a propagar operações indesejadas; manter apenas MERGE/PERSIST/REFRESH se necessário.
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {MERGE, PERSIST, REFRESH})
     @JoinColumn(name = "id_ong")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) // <- se Ong NÃO for @Audited
     private Ong ong;
 
-    // Este relacionamento originalmente EAGER + recíproco em Boletim gerava queries profundas repetidas.
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "id_boletim")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "boletim_id",
+            foreignKey = @ForeignKey(name = "fk_animal_boletim"))
     private Boletim boletim;
+    @ManyToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH})
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JsonIgnore
-    @JoinTable(
-            name = "animal_tutores",
+
+    @JoinTable(name = "animal_tutores",
             joinColumns = @JoinColumn(name = "animal_id"),
-            inverseJoinColumns = @JoinColumn(name = "tutor_id")
-    )
-    private Set<Tutor> tutores;
+            inverseJoinColumns = @JoinColumn(name = "tutor_id"))
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) // <- se Tutor NÃO for @Audited
+    private Set<Tutor> tutores = new HashSet<>();
 
     public void setChipId(String chipId) {
         // If chipId is null or empty, store as null

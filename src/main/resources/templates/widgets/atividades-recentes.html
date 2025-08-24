@@ -1,10 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<th:block th:fragment="root">
+    <div class="card shadow-sm">
+        <div class="card-header py-2 d-flex align-items-center gap-2">
+            <i class="fas fa-bolt"></i>
+            <h3 class="h6 mb-0">Ações recentes no sistema</h3>
+        </div>
+
+        <div class="list-group list-group-flush" th:if="${atividades.empty}">
+            <div class="list-group-item text-muted small">Nenhuma atividade recente.</div>
+        </div>
+
+        <div class="list-group list-group-flush" th:unless="${atividades.empty}">
+            <div class="list-group-item d-flex justify-content-between align-items-start"
+                 th:each="a : ${atividades.content}">
+                <div class="me-3">
+                    <div class="fw-semibold">
+                        <span th:text="${a.entidade}">ENTIDADE</span>
+                        <span class="text-muted small"> #<span th:text="${a.entidadeId}">0</span></span>
+                    </div>
+                    <div class="small text-muted">
+                        <span th:text="${#temporals.format(a.ts, 'dd/MM/yyyy HH:mm')}">data</span>
+                        • <span th:text="${a.usuario}">usuario</span>
+                    </div>
+                    <div class="mt-1" th:text="${a.mensagem}">mensagem</div>
+                </div>
+
+                <div>
+          <span th:switch="${a.acao}">
+            <span class="badge bg-success" th:case="'CRIADO'">CRIADO</span>
+            <span class="badge bg-info"    th:case="'ALTERADO'">ALTERADO</span>
+            <span class="badge bg-warning" th:case="'ARQUIVADO'">ARQUIVADO</span>
+            <span class="badge bg-danger"  th:case="'EXCLUIDO'">EXCLUÍDO</span>
+            <span class="badge bg-secondary" th:case="*"
+                  th:text="${a.acao}">AÇÃO</span>
+          </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

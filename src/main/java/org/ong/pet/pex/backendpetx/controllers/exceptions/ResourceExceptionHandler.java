@@ -1,32 +1,91 @@
 package org.ong.pet.pex.backendpetx.controllers.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.BaseApplicationError;
 import org.ong.pet.pex.backendpetx.service.exceptions.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
+import java.util.Locale;
 
+@Slf4j
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ResourceExceptionHandler {
 
-    @ExceptionHandler(PetXException.class)
-    public ResponseEntity<StandardError> manipularPetXException(PetXException pe, HttpServletRequest request) {
-        HttpStatus status = pe.getStatus();
-        StandardError error = new StandardError();
-        error.setTimestamp(Instant.now());
-        error.setStatus(pe.getStatus().value());
-        error.setError("Requisição Inválida");
-        error.setMessage(pe.getMessage());
-        error.setPath(request.getRequestURI());
-        return ResponseEntity.status(status).body(error);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceExceptionHandler.class);
+
+    private final MessageSource messages;
+
+    @ControllerAdvice
+    @RequiredArgsConstructor
+    public class GlobalExceptionHandler {
+        private final MessageSource messages;
+
+        @ExceptionHandler(BaseApplicationError.class)
+        public String handle(BaseApplicationError ex,
+                             HttpServletRequest req,
+                             HttpServletResponse res,
+                             Model model,
+                             Locale locale) {
+
+            String msg = messages.getMessage(
+                    ex.getMessageKey(), ex.getMessageArgs(), ex.getMessageKey(), locale);
+
+            boolean isHtmx = req.getHeader("HX-Request") != null;
+
+            model.addAttribute("mensagemErro", msg);
+            if (ex.getCause() != null) {
+                model.addAttribute("mensagemErroDetalhe", ex.getCause().toString());
+            }
+            res.setStatus(ex.getStatus().value());
+
+            if (isHtmx) {
+                // preenche o <div id="modalAlerts-editarPerfil"> via hx-target
+                return "fragmentos/messages :: messages";
+            }
+
+            // página normal: o base.html já inclui o slot global de mensagens
+            // retorne a view adequada (ex.: o GET do perfil) com o Model necessário
+            return "animais/perfil";
+        }
     }
+
+
+    private String viewForStatus(HttpStatus s){
+        // se você tiver templates específicos:
+//        if (s.is4xxClientError() && ViewExists.check("error/4xx")) return "error/4xx";
+//        if (s.is5xxServerError() && ViewExists.check("error/5xx")) return "error/5xx";
+        return "error/app"; // fallback
+    }
+
+
+//    @ExceptionHandler(PetXException.class)
+//    public ResponseEntity<StandardError> manipularPetXException(PetXException pe, HttpServletRequest request) {
+//        HttpStatus status = pe.getStatus();
+//        StandardError error = new StandardError();
+//        error.setTimestamp(Instant.now());
+//        error.setStatus(pe.getStatus().value());
+//        error.setError("Requisição Inválida");
+//        error.setMessage(pe.getMessage());
+//        error.setPath(request.getRequestURI());
+//        return ResponseEntity.status(status).body(error);
+//    }
 
     @ExceptionHandler(UsuarioException.class)
     public ResponseEntity<StandardError> manipularUsuarioException(UsuarioException ex, HttpServletRequest request) {

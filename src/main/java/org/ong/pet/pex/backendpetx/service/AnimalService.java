@@ -35,4 +35,7 @@ public interface AnimalService {
                                String sexo, String maturidade, String origem, String corPelagem);
 
     void atualizarResumoSaude(Long id, String doencasLista);
+
+    AnimalGenericoResposta salvarAnimal(AnimalGenericoRequisicao animalGenericoRequisicao);
+
 }

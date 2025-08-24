@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
@@ -12,6 +13,7 @@ import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.Minio;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.AnimalUtils;
+import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,16 +26,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper.converterParaRespostaAnimalComConjuntoDTO;
 
 @Service
+@Transactional
 public class AnimalServiceImpl implements AnimalService {
 
     private final AnimalRepository animalRepository;
@@ -120,9 +119,16 @@ public class AnimalServiceImpl implements AnimalService {
     public AnimalGenericoResposta atualizarAnimal(Long id, AnimalGenericoRequisicao animalSemConjuntoDTO) {
         try {
             Animal entidade = animalRepository.getReferenceById(id);
+            var animalReq = animalSemConjuntoDTO.getChipId();
+            System.out.println("chip da entidade em edicao " + animalReq);
 
-            if (animalRepository.findAnimalByChipId(animalSemConjuntoDTO.getChipId()).isPresent() && !entidade.getChipId().equals(animalSemConjuntoDTO.getChipId())) {
-                throw new PetXException("Já existe um animal com o CHIP: " + animalSemConjuntoDTO.getChipId());
+
+            System.out.println("entidade encontrada " + entidade.getId());
+
+            var existeAnimalComChipIdDaEdicao = animalRepository.findAnimalByChipId(animalSemConjuntoDTO.getChipId());
+
+            if(existeAnimalComChipIdDaEdicao.isPresent() && !Objects.equals(entidade.getId(), existeAnimalComChipIdDaEdicao.get().getId())){
+                throw AppException.chipDuplicado(animalSemConjuntoDTO.getChipId());
             }
 
             entidade.setChipId(animalSemConjuntoDTO.getChipId());
@@ -161,8 +167,6 @@ public class AnimalServiceImpl implements AnimalService {
             throw new PetXException("Erro ao salvar: dados conflitantes ou inválidos.");
         } catch (JpaSystemException e) {
             throw new PetXException("Erro de conexão com o banco de dados.");
-        } catch (RuntimeException e) {
-            throw new PetXException("Erro ao processar a solicitação: " + e.getMessage());
         }
     }
 
@@ -199,7 +203,7 @@ public class AnimalServiceImpl implements AnimalService {
 
             logger.info("Excluindo o animal");
             animalRepository.delete(animal);
-            animalRepository.flush();
+//            animalRepository.flush();
 
             logger.info("Animal excluído com sucesso");
 
@@ -366,6 +370,19 @@ public class AnimalServiceImpl implements AnimalService {
             entidade.setDoencas(novas);
         }
         animalRepository.save(entidade);
+    }
+
+    @Override
+    public AnimalGenericoResposta salvarAnimal(AnimalGenericoRequisicao animalGenericoRequisicao) {
+
+        var animal = AnimalMapper.converterParaAnimal(animalGenericoRequisicao);
+        var ong = ongRepository.findById(1L);
+        if (ong.isPresent()) {
+            animal.setOng(ong.get());
+            animal = animalRepository.save(animal);
+            return AnimalMapper.converterParaRespostaAnimalComConjuntoDTO(animal);
+        }
+        return null;
     }
 }
 

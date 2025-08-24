@@ -1,10 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Histórico do Animal</title>
 </head>
 <body>
-$END$
+<section>
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButtons})}"></div>
+
+    <div class="card shadow-sm">
+        <div class="card-header py-2 d-flex align-items-center gap-2">
+            <i class="fas fa-stream"></i>
+            <h3 class="h6 mb-0">Timeline de revisões</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>#Rev</th>
+                    <th>Quando</th>
+                    <th>Usuário</th>
+                    <th>Operação</th>
+                    <th>Nome (snapshot)</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r, it : ${page.content}">
+                    <td th:text="${r.revision}">12</td>
+                    <td th:text="${#temporals.format(r.when, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
+                    <td th:text="${r.username}">admin</td>
+                    <td>
+            <span th:switch="${r.type.name()}">
+              <span th:case="'ADD'" class="badge bg-success">CRIADO</span>
+              <span th:case="'MOD'" class="badge bg-info">ALTERADO</span>
+              <span th:case="'DEL'" class="badge bg-danger">EXCLUÍDO</span>
+              <span th:case="*"
+                    class="badge bg-secondary" th:text="${r.type}">TIPO</span>
+            </span>
+                    </td>
+                    <td th:text="${r.entityDisplay}">Rex</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary"
+                                data-bs-toggle="modal" data-bs-target="#revModal"
+                                hx-get="@{/auditoria/animais/{id}/rev/{rev}(id=${animalId},rev=${r.revision},prev=${it.index < page.content.size()-1 ? page.content[it.index+1].revision : null})}"
+                                hx-target="#revModal .modal-body"
+                                hx-swap="innerHTML">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(page.content)}">
+                    <td colspan="6" class="text-center text-muted py-4">Sem revisões registradas.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <nav th:if="${page.totalPages > 1}">
+                <ul class="pagination pagination-sm mb-0 justify-content-center">
+                    <li class="page-item" th:classappend="${page.first} ? ' disabled'">
+                        <a class="page-link" th:href="@{/auditoria/animais/{id}(id=${animalId},page=${0},size=${page.size})}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:classappend="${page.first} ? ' disabled'">
+<!--                        <a class="page-link" th:href="@{/auditoria/animais/{id}(id=${animalId},page=${page.number-1},size=${page.size})}">&lsaquo;</a>-->
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link" th:text="${page.number+1} + ' / ' + ${page.totalPages}">1 / 3</span>
+                    </li>
+<!--                    <li class="page-item" th:classappend="${page.last} ? ' disabled'">-->
+<!--                        <a class="page-link" th:href="@{/auditoria/animais/{id}(id=${animalId},page=${page.number+1},size=${page.size})}">&rsaquo;</a>-->
+<!--                    </li>-->
+<!--                    <li class="page-item" th:classappend="${page.last} ? ' disabled'">-->
+<!--                        <a class="page-link" th:href="@{/auditoria/animais/{id}(id=${animalId},page=${page;totalPages-1},size=${page.size})}">&raquo;</a>-->
+<!--                    </li>-->
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="revModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h5 class="modal-title">Detalhes da revisão</h5>
+                    <button class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body"><!-- preenchida via HTMX --></div>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>

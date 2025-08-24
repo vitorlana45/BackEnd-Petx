@@ -1,25 +1,26 @@
 package org.ong.pet.pex.backendpetx.service.exceptions;
 
 import lombok.Getter;
+import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.BaseApplicationError;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class PetXException extends RuntimeException {
+public class PetXException extends BaseApplicationError {
 
     private final Map<String, String> erros;
     private final HttpStatus status; // Adiciona o status
 
     public PetXException(String mensagem, HttpStatus status) {
-        super(mensagem);
+        super(status, mensagem, null);
         this.erros = new HashMap<>();
         this.status = status;
     }
 
     public PetXException(String mensagem) {
-        super(mensagem);
+        super(HttpStatus.BAD_REQUEST, mensagem,null);
         this.erros = new HashMap<>();
         this.status = HttpStatus.BAD_REQUEST;
     }

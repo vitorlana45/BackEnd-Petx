@@ -34,7 +34,7 @@ public class BoletimController {
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @GetMapping(value = "/novo", name = "BOLETINS#NOVO")
+    @GetMapping(value = "/form")
     public String novo(Model model) {
         BoletimDTORequisicao req = new BoletimDTORequisicao();
 
@@ -45,13 +45,13 @@ public class BoletimController {
         }
 
         model.addAttribute("boletim", req);
-        model.addAttribute("currentPage", "/boletins/novo");
+        model.addAttribute("currentPage", "/boletins/form");
         carregarCombos(model);
         return "boletim/cadastro";
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @PostMapping(value = "/criar", name = "BOLETINS#SALVAR")
+    @PostMapping(value = "/salvar")
     public String createBoletim(@Valid @ModelAttribute("boletim") BoletimDTORequisicao dto,
                                 BindingResult br,
                                 RedirectAttributes redirectAttrs,
@@ -76,7 +76,7 @@ public class BoletimController {
 
         if (br.hasErrors()) {
             carregarCombos(model);
-            model.addAttribute("currentPage", "/boletins/novo");
+            model.addAttribute("currentPage", "/boletins/form");
             return "boletim/cadastro";
         }
 

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ong.pet.pex.backendpetx.controllers.bean.StatsDTO;
 import org.ong.pet.pex.backendpetx.controllers.bean.PageInfoBean;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.entities.revision.AuditService;
 import org.ong.pet.pex.backendpetx.service.StatisticService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +18,11 @@ import java.util.*;
 public class StartController {
 
     private final StatisticService statisticService;
+    private final AuditService servicoAuditoria; // <-- injeta
 
-    public StartController(StatisticService statisticService) {
+    public StartController(StatisticService statisticService, AuditService servicoAuditoria) {
         this.statisticService = statisticService;
+        this.servicoAuditoria = servicoAuditoria;
     }
 
     @GetMapping("/home")
@@ -65,6 +68,9 @@ public class StartController {
             pageInfo.setBreadcrumbs(breadcrumbs);
 
             model.addAttribute("pageInfo", pageInfo);
+
+            var revisoesRecentes = servicoAuditoria.listarRevisoesRecentes(10);
+            model.addAttribute("revisoesRecentes", revisoesRecentes);
 
             // actionButtons (plural)
             List<ActionButtonDTO> actionButtons = List.of(

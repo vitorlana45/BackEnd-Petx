@@ -4,96 +4,106 @@
       th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Dashboard - ONG PetX</title>
+    <style>
+        /* Evita "pular" layout quando o scroll vertical aparece/desaparece */
+        html { scrollbar-gutter: stable both-edges; }
+
+        /* Quick actions – visual limpo e consistente */
+        .quick-action-card{
+            display:flex; align-items:center; gap:.75rem;
+            border:1px solid var(--bs-border-color);
+            border-radius:.75rem; padding:.75rem;
+            text-decoration:none;
+            transition:transform .08s ease, box-shadow .08s ease;
+        }
+        .quick-action-card:hover{
+            transform:translateY(-1px);
+            box-shadow:0 .25rem .75rem rgba(0,0,0,.06);
+        }
+        .qa-icon{
+            width:40px; height:40px; display:grid; place-items:center;
+            border-radius:.65rem; background: var(--bs-light);
+        }
+        .qa-primary{background: var(--bs-primary-bg-subtle); color: var(--bs-primary);}
+        .qa-warning{background: var(--bs-warning-bg-subtle); color: var(--bs-warning);}
+        .qa-success{background: var(--bs-success-bg-subtle); color: var(--bs-success);}
+        .qa-info{background: var(--bs-info-bg-subtle); color: var(--bs-info);}
+        .qa-title{font-weight:600;}
+        .qa-subtitle{font-size:.85rem; color: var(--bs-secondary-color);}
+
+        /* Mantém cabeçalhos dos cards com altura mínima */
+        .card .card-header{min-height:48px}
+
+        /* Feed com altura fixa para não mexer a coluna vizinha */
+        .feed-wrap{height:420px; overflow:auto;}
+
+        /* Indicador HTMX visível só durante requisição */
+        #feed-ind{visibility:hidden;}
+        .htmx-request #feed-ind{visibility:visible;}
+
+        /* Remove animação/opacity das abas para reduzir reflow */
+        .tab-pane { /* sem fade */ }
+    </style>
 </head>
 <body>
 <section class="dashboard">
 
-    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButton})}"></div>
+    <!-- Cabeçalho inteligente -->
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButtons})}"></div>
 
+    <!-- KPIs -->
     <div th:replace="~{fragmentos/stat-cards-index :: stats-grid(
-         ${totalAnimais},
-         ${totalAdocoes},
-         ${totalTutores},
-         ${totalBoletins},
-         ${crescimentoMensal}
-    )}"></div>
+       ${totalAnimais},
+       ${totalAdocoes},
+       ${totalTutores},
+       ${totalBoletins},
+       ${crescimentoMensal}
+  )}"></div>
 
+    <!-- Conteúdo em 2 colunas -->
+    <div class="row g-4">
 
-    <!-- Gráficos e Estatísticas -->
-    <div class="row g-4 mb-4">
-        <!-- Distribuição de Animais por Status -->
-        <div class="col-xl-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-pie me-2"></i>
-                        Distribuição por Status
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="status-chart-container">
-                        <div class="status-item" th:each="status : ${animaisPorStatus}">
-                            <div class="status-indicator"
-                                 th:class="${'status-' + status.key.toLowerCase()}"></div>
-                            <div class="status-info">
-                                <div class="status-label" th:text="${status.key}">Status</div>
-                                <div class="status-count" th:text="${status.value}">0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- COLUNA ESQUERDA (conteúdo principal) -->
+        <div class="col-12 col-xl-8 d-flex flex-column gap-4">
 
-        <!-- Ações Rápidas -->
-        <div class="col-xl-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-bolt me-2"></i>
-                        Ações Rápidas
-                    </h3>
+            <!-- Ações rápidas (sem h-100 para não "cortar") -->
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <i class="fas fa-bolt me-2"></i>
+                    <h3 class="card-title h6 mb-0">Ações Rápidas</h3>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <a th:href="@{/animais/form}" class="quick-action-card">
-                                <div class="qa-icon qa-primary">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div class="qa-content">
-                                    <div class="qa-title">Novo Animal</div>
-                                    <div class="qa-subtitle">Cadastrar animal</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a th:href="@{/boletins/novo}" class="quick-action-card">
-                                <div class="qa-icon qa-warning">
-                                    <i class="fas fa-file-medical"></i>
-                                </div>
+<!--                        <div class="col-sm-6 col-lg-3">-->
+<!--                            <a th:href="@{/animais/form}" class="quick-action-card">-->
+<!--                                <div class="qa-icon qa-primary"><i class="fas fa-plus"></i></div>-->
+<!--                                <div class="qa-content">-->
+<!--                                    <div class="qa-title">Novo Animal</div>-->
+<!--                                    <div class="qa-subtitle">Cadastrar animal</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+                        <div class="col-sm-6 col-lg-3">
+                            <a th:href="@{/boletins/form}" class="quick-action-card">
+                                <div class="qa-icon qa-warning"><i class="fas fa-file-medical"></i></div>
                                 <div class="qa-content">
                                     <div class="qa-title">Novo Boletim</div>
                                     <div class="qa-subtitle">Registrar resgate</div>
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-sm-6 col-lg-3">
                             <a th:href="@{/tutores/form}" class="quick-action-card">
-                                <div class="qa-icon qa-success">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
+                                <div class="qa-icon qa-success"><i class="fas fa-user-plus"></i></div>
                                 <div class="qa-content">
                                     <div class="qa-title">Novo Tutor</div>
                                     <div class="qa-subtitle">Cadastrar tutor</div>
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-sm-6 col-lg-3">
                             <a th:href="@{/animais}" class="quick-action-card">
-                                <div class="qa-icon qa-info">
-                                    <i class="fas fa-search"></i>
-                                </div>
+                                <div class="qa-icon qa-info"><i class="fas fa-search"></i></div>
                                 <div class="qa-content">
                                     <div class="qa-title">Ver Animais</div>
                                     <div class="qa-subtitle">Listar todos</div>
@@ -103,81 +113,23 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Informações Detalhadas -->
-    <div class="row g-4">
-        <!-- Alertas e Notificações -->
-        <div class="col-xl-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-bell me-2"></i>
-                        Alertas
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="alert-list">
-<!--                        <div class="alert-item" th:if="${animaisPorStatus?.DOENTE > 0}">-->
-<!--                            <div class="alert-icon alert-danger">-->
-<!--                                <i class="fas fa-exclamation-triangle"></i>-->
-<!--                            </div>-->
-<!--                            <div class="alert-content">-->
-<!--                                <div class="alert-title">Animais Doentes</div>-->
-<!--                                <div class="alert-text">-->
-<!--                                    <span th:text="${animaisPorStatus?.DOENTE ?: 0}">0</span> animais necessitam cuidados-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-                        <div class="alert-item">
-                            <div class="alert-icon alert-info">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="alert-content">
-                                <div class="alert-title">Consumo do Mês</div>
-                                <div class="alert-text">
-                                    Total: <span th:text="${totalConsumo ?: 0}">0</span> unidades
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="alert-item">
-                            <div class="alert-icon alert-success">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="alert-content">
-                                <div class="alert-title">Sistema Ativo</div>
-                                <div class="alert-text">Todos os serviços funcionando normalmente</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Links Úteis -->
-        <div class="col-xl-8">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-link me-2"></i>
-                        Navegação Rápida
-                    </h3>
+            <!-- Navegação Rápida / Atalhos -->
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <i class="fas fa-link me-2"></i>
+                    <h3 class="card-title h6 mb-0">Navegação Rápida</h3>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="nav-card">
-                                <div class="nav-icon">
-                                    <i class="fas fa-paw"></i>
-                                </div>
+                                <div class="nav-icon"><i class="fas fa-paw"></i></div>
                                 <div class="nav-content">
                                     <h4>Animais</h4>
                                     <ul class="nav-links">
                                         <li><a th:href="@{/animais}">Ver todos</a></li>
-                                        <li><a th:href="@{animais/form}">Cadastrar novo</a></li>
+                                        <li><a th:href="@{/animais/form}">Cadastrar novo</a></li>
                                         <li><a th:href="@{/animais}">Disponíveis</a></li>
                                     </ul>
                                 </div>
@@ -186,14 +138,12 @@
 
                         <div class="col-md-4">
                             <div class="nav-card">
-                                <div class="nav-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
+                                <div class="nav-icon"><i class="fas fa-users"></i></div>
                                 <div class="nav-content">
                                     <h4>Tutores</h4>
                                     <ul class="nav-links">
                                         <li><a th:href="@{/tutores}">Ver todos</a></li>
-                                        <li><a th:href="@{tutores/form}">Cadastrar novo</a></li>
+                                        <li><a th:href="@{/tutores/form}">Cadastrar novo</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -201,9 +151,7 @@
 
                         <div class="col-md-4">
                             <div class="nav-card">
-                                <div class="nav-icon">
-                                    <i class="fas fa-clipboard-list"></i>
-                                </div>
+                                <div class="nav-icon"><i class="fas fa-clipboard-list"></i></div>
                                 <div class="nav-content">
                                     <h4>Gestão</h4>
                                     <ul class="nav-links">
@@ -214,11 +162,169 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+        </div><!-- /col-xl-8 -->
+
+        <!-- COLUNA DIREITA (sidebar) -->
+        <div class="col-12 col-xl-4 d-flex flex-column gap-4">
+
+            <!-- FEED: Atividades + Auditoria -->
+            <div class="card">
+                <div class="card-header d-flex flex-wrap align-items-center gap-2 justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-stream"></i>
+                        <h3 class="card-title h6 mb-0">Atividade & Histórico</h3>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Filtro rápido do feed -->
+                        <select id="filtro-entidade" class="form-select form-select-sm" style="width:auto">
+                            <option value="">Tudo</option>
+                            <option value="ANIMAL">Animais</option>
+                            <option value="BOLETIM">Boletins</option>
+                        </select>
+
+                        <!-- Abas (sem "fade") -->
+                        <ul class="nav nav-pills nav-sm">
+                            <li class="nav-item">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-feed">Atividades</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-auditoria">Auditoria</button>
+                            </li>
+                        </ul>
+
+                        <!-- Atualizar manual -->
+                        <button id="btn-refresh-feed" class="btn btn-outline-secondary btn-sm" type="button" title="Atualizar">
+                            <i class="fas fa-rotate-right"></i>
+                        </button>
+
+                        <!-- Indicador global HTMX -->
+                        <div id="feed-ind" class="htmx-indicator spinner-border spinner-border-sm text-secondary" role="status"
+                             aria-hidden="true"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+
+                    <!-- Tab: Atividades (HTMX) -->
+                    <div class="tab-pane active" id="tab-feed">
+                        <div class="d-flex justify-content-between align-items-center small text-muted border-bottom px-3 py-2">
+                            <span>Atualiza automaticamente a cada 30s</span>
+                            <a th:href="@{/auditoria}" class="text-decoration-none">Ver tudo</a>
+                        </div>
+
+                        <div class="feed-wrap">
+                            <div class="list-group list-group-flush" id="feed-container"
+                                 hx-get="/_widgets/atividades/recentes?size=10"
+                                 hx-trigger="load, every 30s from:#tab-feed.active, change from:#filtro-entidade"
+                                 hx-vals='js:{"entidade": document.getElementById("filtro-entidade")?.value || "" }'
+                                 hx-target="#feed-container"
+                                 hx-swap="innerHTML"
+                                 hx-indicator="#feed-ind"
+                                 hx-on::response-error="document.getElementById('feed-error')?.classList.remove('d-none')">
+
+                                <!-- Skeleton inicial -->
+                                <div class="list-group-item">
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder col-7"></span>
+                                        <span class="placeholder col-4"></span>
+                                        <span class="placeholder col-4"></span>
+                                        <span class="placeholder col-6"></span>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder col-5"></span>
+                                        <span class="placeholder col-7"></span>
+                                        <span class="placeholder col-3"></span>
+                                        <span class="placeholder col-8"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Erro -->
+                                <div id="feed-error" class="alert alert-warning m-3 py-2 small d-none">
+                                    Não foi possível carregar o feed.
+                                    <button class="btn btn-link btn-sm p-0 align-baseline"
+                                            hx-get="/_widgets/atividades/recentes?size=10"
+                                            hx-target="#feed-container" hx-swap="innerHTML">Tentar novamente</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Auditoria (Envers) -->
+                    <div class="tab-pane" id="tab-auditoria">
+                        <div class="feed-wrap">
+                            <div class="list-group list-group-flush" th:if="${#lists.isEmpty(revisoesRecentes)}">
+                                <div class="list-group-item text-muted small">Nenhuma alteração recente encontrada.</div>
+                            </div>
+
+                            <div class="list-group list-group-flush" th:unless="${#lists.isEmpty(revisoesRecentes)}">
+                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+                                   th:each="rev : ${revisoesRecentes}"
+                                   th:href="@{'/auditoria/animais/' + ${rev.entityId()}}">
+                                    <div class="me-3">
+                                        <div class="fw-semibold text-truncate" style="max-width: 20rem">
+                                            <span th:text="${rev.entityDisplay()}">Nome do Animal</span>
+                                            <span class="text-muted small"> (#<span th:text="${rev.entityId()}">0</span>)</span>
+                                        </div>
+                                        <div class="small text-muted">
+                                            <span th:text="${#temporals != null ? #temporals.format(rev.when(), 'dd/MM/yyyy HH:mm') : rev.when()}">01/01/2025 12:00</span>
+                                            • por <span th:text="${rev.username()}">usuário</span>
+                                            • Rev <span th:text="${rev.type()}">ADD</span>
+                                        </div>
+                                    </div>
+                                    <div class="ms-3">
+                    <span th:switch="${rev.type() != null ? rev.type().name() : 'MOD'}">
+                      <span class="badge bg-success" th:case="'ADD'">CRIADO</span>
+                      <span class="badge bg-info"    th:case="'MOD'">ALTERADO</span>
+                      <span class="badge bg-danger"  th:case="'DEL'">EXCLUÍDO</span>
+                      <span class="badge bg-secondary" th:case="*" th:text="${rev.type()}">TIPO</span>
+                    </span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /tab-content -->
+            </div><!-- /card -->
+        </div><!-- /col-xl-4 -->
+    </div><!-- /row -->
+
+    <!-- Scripts específicos da página -->
+    <script>
+        (function(){
+            const KEY = 'dashboard:tab';
+
+            // Lembra a aba ativa
+            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(btn=>{
+                btn.addEventListener('shown.bs.tab', e=>{
+                    localStorage.setItem(KEY, e.target.getAttribute('data-bs-target')||'#tab-feed');
+                });
+            });
+            const last = localStorage.getItem(KEY);
+            if(last){
+                const trigger = document.querySelector(`[data-bs-target="${last}"]`);
+                if(trigger){ new bootstrap.Tab(trigger).show(); }
+            }
+
+            // Botão de refresh do feed
+            const refresh = document.getElementById('btn-refresh-feed');
+            const feed    = document.getElementById('feed-container');
+            if(refresh && window.htmx && feed){
+                refresh.addEventListener('click', ()=>{
+                    window.htmx.ajax('GET', feed.getAttribute('hx-get'), { target: feed });
+                });
+            }
+        })();
+    </script>
+
 </section>
 </body>
 </html>
