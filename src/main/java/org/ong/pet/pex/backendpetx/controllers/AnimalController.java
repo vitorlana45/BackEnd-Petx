@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.bean.StatsCardBean;
+import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
@@ -12,9 +13,11 @@ import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
 import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller para gestão de Animais
@@ -36,9 +36,10 @@ import java.util.Map;
 public class AnimalController {
 
     private final AnimalService animalService;
-
-    public AnimalController(AnimalService animalService) {
+    private final MessageSource messages;
+    public AnimalController(AnimalService animalService, MessageSource messages) {
         this.animalService = animalService;
+        this.messages = messages;
     }
 
     /**
@@ -263,26 +264,39 @@ public class AnimalController {
 
 
 
-    /**
-     * Processa o formulário de edição de animal
-     */
-    @PostMapping(value = "/{id}/editar")
-    public String atualizarAnimal(@PathVariable Long id,
-                                 @Valid @ModelAttribute("animal") AnimalGenericoRequisicao animal,
-                                 BindingResult result,
-                                 RedirectAttributes redirectAttributes,
-                                 Model model) {
-        if (result.hasErrors()) {
-            montarComboStatusEnum(model);
-            return "redirect:/animais/" + id;
+    @PostMapping("/{id}/editar")
+    public Object editar(@PathVariable Long id,
+                         @ModelAttribute("animal") AnimalGenericoRequisicao reqDTO,
+                         BindingResult br,
+                         Model model,
+                         RedirectAttributes ra,
+                         Locale locale) {
+
+        // Validação de formulário (Bean Validation)
+        if (true) {
+            montarComboStatusEnum(model);                     // especies, portes, etc.
+            model.addAttribute("reabrirModalEditar", true);
+            model.addAttribute("mensagemErro", messages.getMessage("mensagem.erro.formularioInvalido", null, locale));
+            model.addAttribute("animal", animalService.buscarAnimalPorId(id));
+            return "animais/perfil";
         }
 
-        System.out.println("id passado do animal" + id);
+        try {
+            var resp = animalService.atualizarAnimal(id, reqDTO);
+            ra.addFlashAttribute("mensagemSucesso", "Animal atualizado com sucesso!");
+            return "redirect:/animais/" + id;         // PRG
+        } catch (AppException e) {                    // suas business exceptions
+            this.montarComboStatusEnum(model);
+            System.out.println("entrou aqui!!!");
+            var animail = animalService.buscarAnimalPorId(id);
+            model.addAttribute("animal", animail);
 
-        animalService.atualizarAnimal(id, animal);
-        redirectAttributes.addFlashAttribute("mensagemSucesso", "Animal atualizado com sucesso!");
-        return "redirect:/animais/" + id;
+            model.addAttribute("reabrirModalEditar", true);
+            model.addAttribute("mensagemErro", e.getMessage());
+            return "animais/perfil";
+        }
     }
+
 
 
 

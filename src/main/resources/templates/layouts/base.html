@@ -87,6 +87,33 @@
     <script th:src="@{/js/script.js}"></script>
 
     <!-- Inicializar animações -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Anexa CSRF em toda requisição HTMX
+        document.body.addEventListener('htmx:configRequest', (evt) => {
+            const token  = document.querySelector('meta[name="_csrf"]')?.content;
+            const header = document.querySelector('meta[name="_csrf_header"]')?.content;
+            if (token && header) evt.detail.headers[header] = token;
+        });
+
+        // Ouça eventos enviados pelo servidor via HX-Trigger
+        document.body.addEventListener('closeModal', (e) => {
+            const id = e.detail?.id || 'editarPerfilModal';
+            const el = document.getElementById(id);
+            if (!el) return;
+            const modal = bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el);
+            modal.hide();
+        });
+
+        document.body.addEventListener('toast', (e) => {
+            // aqui você chama seu sistema de toast; por enquanto console:
+            console.log(`[${e.detail?.type||'info'}] ${e.detail?.text||''}`);
+        });
+    });
+</script>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Inicializar AOS animations
