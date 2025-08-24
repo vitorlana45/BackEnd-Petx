@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="revisaoDetalhe">
+    <div>
+        <div class="mb-2">
+            <div class="small text-muted">
+                Revisão <span class="fw-semibold" th:text="${rev}">0</span>
+                <span th:if="${prev != null}"> (comparando com <span th:text="${prev}">0</span>)</span>
+            </div>
+            <h6 class="mb-0" th:text="${snap.nome != null ? snap.nome : '(sem nome)'}">Animal</h6>
+        </div>
+
+        <div th:if="${diffs != null}">
+            <h6 class="text-muted mt-2">Alterações</h6>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item py-2" th:each="d : ${diffs}">
+                    <div class="small text-uppercase text-muted" th:text="${d.field}">campo</div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-secondary">de</span>
+                        <span th:text="${d.fromValue}">-</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-primary">para</span>
+                        <span th:text="${d.toValue}">-</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="mt-3">
+            <h6 class="text-muted">Snapshot</h6>
+            <div class="row row-cols-2 g-2">
+                <div><span class="text-muted small">Espécie</span><div th:text="${snap.especie}">-</div></div>
+                <div><span class="text-muted small">Raça</span><div th:text="${snap.raca}">-</div></div>
+                <div><span class="text-muted small">Sexo</span><div th:text="${snap.sexo}">-</div></div>
+                <div><span class="text-muted small">Porte</span><div th:text="${snap.porte}">-</div></div>
+                <div><span class="text-muted small">Status</span><div th:text="${snap.status}">-</div></div>
+                <div><span class="text-muted small">Chip</span><div th:text="${snap.chipId}">-</div></div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>
