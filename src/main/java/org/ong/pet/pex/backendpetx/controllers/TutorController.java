@@ -3,8 +3,12 @@ package org.ong.pet.pex.backendpetx.controllers;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
+import org.ong.pet.pex.backendpetx.enums.*;
+import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.TutorService;
+import org.ong.pet.pex.backendpetx.service.impl.AnimalServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,15 +19,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/tutores")
 @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
 public class TutorController {
 
     private final TutorService tutorService;
+    private final AnimalService animalService;
 
-    public TutorController(TutorService tutorService) {
+    public TutorController(TutorService tutorService, AnimalService animalService) {
         this.tutorService = tutorService;
+        this.animalService = animalService;
     }
 
     /**
@@ -65,9 +74,23 @@ public class TutorController {
         model.addAttribute("estado", "");
         model.addAttribute("complemento", "");
         model.addAttribute("bairro", "");
-        model.addAttribute("logradouro", "");
+        model.addAttribute("logradouros", "");
+
+        model.addAttribute("buscaAnimaisUrl", "/animais/selector");
+
+        montarComboFiltroAnimal(model);
+
+        var listaAnimais = new ArrayList<String>();
+        var tutor = new CadastrarTutorRequisicao("","","", 0,"","","","", "", listaAnimais);
+
+        model.addAttribute("tutor",tutor);
+
+
         return "tutores/formulario";
     }
+
+
+
 
     /**
      * Processa o formulário de criação de tutor
@@ -88,6 +111,41 @@ public class TutorController {
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar tutor: " + e.getMessage());
             return "tutores/formulario";
         }
+    }
+
+    @GetMapping("/selector")
+    public String selector(@RequestParam(required = false) String nome,
+                           @RequestParam(required = false) String raca,
+                           @RequestParam(required = false) EspecieEnum especie,
+                           @RequestParam(required = false) PorteEnum porte,
+                           @RequestParam(required = false) StatusEnum status,
+                           @RequestParam(required = false) String doenca,
+                           @RequestParam(required = false) String comportamento,
+                           @RequestParam(required = false) MaturidadeEnum maturidade,
+                           @RequestParam(required = false) OrigemAnimalEnum origem,
+                           @RequestParam(required = false) SexoEnum sexo,
+                           @PageableDefault(size = 8) Pageable pageable,
+                           Model model) {
+
+        var page = this.animalService.paginarAnimais(nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable);
+
+        model.addAttribute("page", page);
+        model.addAttribute("currentPage", "/animais");
+        model.addAttribute("animais", page.getContent());
+        montarComboStatusEnum(model);
+
+        return "animais/selector :: selector";
+
+    }
+
+
+    public void montarComboStatusEnum(Model model) {
+        model.addAttribute("especies", EspecieEnum.values());
+        model.addAttribute("portes", PorteEnum.values());
+        model.addAttribute("status", StatusEnum.values());
+        model.addAttribute("maturidades", MaturidadeEnum.values());
+        model.addAttribute("origens", OrigemAnimalEnum.values());
+        model.addAttribute("sexos", SexoEnum.values());
     }
 
     /**
@@ -146,5 +204,15 @@ public class TutorController {
         }
         return "redirect:/tutores";
     }
+
+    private void montarComboFiltroAnimal(Model model){
+        model.addAttribute("filtroNome", "");
+        model.addAttribute("portes", PorteEnum.values());
+        model.addAttribute("especies", EspecieEnum.values());
+        model.addAttribute("sexos", SexoEnum.values());
+        model.addAttribute("status", List.of(StatusEnum.SAUDAVEL, StatusEnum.DOENTE));
+        model.addAttribute("origens", OrigemAnimalEnum.values());
+    }
+
 }
 

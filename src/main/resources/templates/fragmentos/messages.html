@@ -1,9 +1,69 @@
 <!-- fragmentos/messages.html -->
+
+<!-- Fragmento específico para mensagens em modais -->
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="modalMessages(sucesso, erro, aviso, info, detalhe)">
+
+    <!-- Sucesso -->
+    <div th:if="${sucesso}" class="alert alert-soft-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-circle-check me-2 text-success-emphasis" aria-hidden="true"></i>
+        <strong class="me-1">Sucesso:</strong>
+        <span th:text="${sucesso}">Operação realizada com sucesso.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <!-- Erro -->
+    <div th:if="${erro}" class="alert alert-soft-danger alert-dismissible fade show" role="alert" aria-live="assertive">
+        <div class="d-flex align-items-start">
+            <i class="fas fa-triangle-exclamation me-2 text-danger-emphasis mt-1" aria-hidden="true"></i>
+            <div class="flex-grow-1">
+                <div>
+                    <strong class="me-1">Erro:</strong>
+                    <span th:text="${erro}">Ocorreu um erro ao processar sua solicitação.</span>
+                </div>
+
+                <div th:if="${detalhe}" class="mt-2">
+                    <button class="btn btn-link btn-sm p-0" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#modal-erro-detalhe" aria-expanded="false" aria-controls="modal-erro-detalhe">
+                        Ver detalhes técnicos
+                    </button>
+                    <pre id="modal-erro-detalhe" class="collapse mt-2 small bg-body-secondary p-2 rounded border"
+                         th:text="${detalhe}" style="white-space:pre-wrap; word-break:break-word;"></pre>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <!-- Aviso -->
+    <div th:if="${aviso}" class="alert alert-soft-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-circle-exclamation me-2 text-warning-emphasis" aria-hidden="true"></i>
+        <span th:text="${aviso}">Aviso importante.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <!-- Informativo -->
+    <div th:if="${info}" class="alert alert-soft-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-circle-info me-2 text-info-emphasis" aria-hidden="true"></i>
+        <span th:text="${info}">Informação.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <!-- Validação de formulário (se você usar #fields no modal) -->
+    <div th:if="${#ctx.containsVariable('__thymeleafFields') and #fields.hasErrors()}"
+         class="alert alert-soft-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-circle-info me-2 text-warning-emphasis" aria-hidden="true"></i>
+        <strong>Há problemas no formulário:</strong>
+        <ul class="mb-0 ps-4 mt-2">
+            <li th:each="e: ${#fields.errors()}" th:text="${e}">Erro</li>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+</div>
+
+
+
 <div xmlns:th="http://www.thymeleaf.org" th:fragment="messages">
-
-
-
-
 
     <!-- Sucesso -->
     <div th:if="${mensagemSucesso}" class="alert alert-soft-success alert-dismissible fade show" role="alert"

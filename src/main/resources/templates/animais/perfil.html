@@ -60,7 +60,7 @@
 
                 <button class="btn btn-outline-danger btn-sm" type="button" data-bs-toggle="modal"
                     data-bs-target="#modalExcluirAnimal">
-                    <i class="fas fa-trash me-1"></i> Excluir
+                    <i class="fas fa-trash me-1"></i> Arquivar
                 </button>
             </div>
         </div>
@@ -195,11 +195,11 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirmar Exclusão</h5>
+                        <h5 class="modal-title">Confirmar Arquivamento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body">
-                        Tem certeza que deseja excluir o animal <strong th:text="${a != null ? a.nome : ''}"></strong>?
+                        Tem certeza que deseja arquivar este animal ele fiará indisponível<strong th:text="${a != null ? a.nome : ''}"></strong>?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -207,7 +207,7 @@
                             <input type="hidden" name="_method" value="delete" />
                             <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}"
                                 th:value="${_csrf.token}" />
-                            <button type="submit" class="btn btn-danger">Excluir</button>
+                            <button type="submit" class="btn btn-danger">Confirmar</button>
                         </form>
                     </div>
                 </div>
@@ -222,13 +222,19 @@
                     hx-target="#modalAlerts-editarPerfil" hx-swap="innerHTML" th:object="${animal}">
                     <div class="modal-header">
                         <h5 class="modal-title">Editar animal</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fe\char"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
 
                     <div class="modal-body">
                         <!-- Container específico para mensagens do modal -->
                         <div id="modalAlerts-editarPerfil">
-                                <div th:replace="~{fragmentos/messages :: modalMessages}"></div>
+                            <div th:replace="~{fragmentos/messages :: modalMessages(
+                                sucesso=${modalMensagemSucesso},
+                                erro=${modalMensagemErro},
+                                aviso=${modalMensagemAviso},
+                                info=${modalMensagemInfo},
+                                detalhe=${modalMensagemErroDetalhe}
+                            )}"></div>
                         </div>
 
                         <!-- override PUT DENTRO do form -->

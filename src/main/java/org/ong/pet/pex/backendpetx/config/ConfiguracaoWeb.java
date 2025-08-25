@@ -1,7 +1,10 @@
 package org.ong.pet.pex.backendpetx.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,6 +18,12 @@ public class ConfiguracaoWeb implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT")
                 .allowedHeaders("*");
     }
+
+
+//    @Bean
+//    public SecurityContext securityContext() {
+//        return SecurityContextHolder.;
+//    }
     
     // Removendo configuração que causa problema de download do HTML
     /*

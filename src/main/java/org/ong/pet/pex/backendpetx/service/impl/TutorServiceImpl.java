@@ -67,6 +67,7 @@ public class TutorServiceImpl implements TutorService {
             throw TutorException.cpfNaoPodeSerVazioOuNulo();
         }
 
+        // TODO:  B.O nao so tem como adicionar um tutor se ele tiver um animal
         // Verifica se todos os animais da lista de chips existem
         List<Animal> pets = cadastrarTutorRequisicao.animalChips().stream()
                 .map(chip -> animalRepository.findAnimalByChipId(chip)

@@ -9,6 +9,8 @@ import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.entities.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repositories.*;
+import org.ong.pet.pex.backendpetx.security.utils.CurrentUser;
+import org.ong.pet.pex.backendpetx.security.utils.SecurityUtils;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.Minio;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,11 +48,13 @@ public class AnimalServiceImpl implements AnimalService {
     private static final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
     private final AnimalUtils animalUtils;
     private final Minio minioService;
+    private final LogAtividadeService logAtividadeService ;
+    private final CurrentUser currentUser;
 
     @Value("${minio.bucket:petx}")
     private String animalBucketName;
 
-    public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService) {
+        public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService, LogAtividadeService logAtividadeService, CurrentUser currentUser) {
         this.animalRepository = animalRepository;
         this.ongRepository = ongRepository;
         this.animalConjuntoRepository = animalConjuntoRepository;
@@ -57,7 +62,10 @@ public class AnimalServiceImpl implements AnimalService {
         this.obitoRepository = obitoRepository;
         this.animalUtils = animalUtils;
         this.minioService = minioService;
+        this.logAtividadeService = logAtividadeService;
+            this.currentUser = currentUser;
     }
+
 
 
 
@@ -198,12 +206,22 @@ public class AnimalServiceImpl implements AnimalService {
             logger.info("Limpando referências do animal");
             animal.setTutores(new HashSet<>());
 
-            // o flush ele da um reload no banco de dados
-            animalRepository.flush();
+            var entidadeArquivada = animal.getId();
+            var chipIdArquivado = animal.getChipId() != null ? animal.getChipId() : "N/A";
 
             logger.info("Excluindo o animal");
             animalRepository.delete(animal);
-//            animalRepository.flush();
+            animalRepository.flush();
+
+            logger.info("Iniciando o salvamento do log de atividade");
+            this.logAtividadeService.log(
+                    "Animal",
+                    "DELETE",
+                    animal.getId(),
+                    "Animal excluído: " + animal.getNome() + " (ID: " + animal.getId() + ")",
+                    SecurityUtils.requireUsername(),
+                    Map.of("animalId", entidadeArquivada, "chipId", chipIdArquivado)
+            );
 
             logger.info("Animal excluído com sucesso");
 

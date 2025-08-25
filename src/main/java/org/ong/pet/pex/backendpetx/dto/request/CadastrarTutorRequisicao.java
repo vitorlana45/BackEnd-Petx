@@ -21,6 +21,7 @@ public record CadastrarTutorRequisicao(
         String estado,
         String bairro,
         String rua,
+        // to passando os chips
         List<String> animalChips
 
 ) {

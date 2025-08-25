@@ -1,0 +1,53 @@
+<!-- templates/animais/selector.html -->
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="selector">
+
+    <!-- Vazio -->
+    <div class="list-group-item small text-muted" th:if="${page.totalElements == 0}" aria-live="polite">
+        Nenhum animal encontrado.
+    </div>
+
+    <!-- Itens -->
+    <div class="list-group-item d-flex align-items-center justify-content-between"
+         th:each="a : ${page.content}">
+        <div class="me-2">
+            <div class="fw-semibold" th:text="${a.nome}">Nome</div>
+            <div class="small text-muted">
+                <span th:text="${a.especie}">Espécie</span> •
+                <span th:text="${a.sexo}">Sexo</span> •
+                <span th:text="${a.status}">Status</span>
+            </div>
+        </div>
+
+        <button type="button"
+                class="btn btn-sm btn-outline-primary btn-add-animal"
+                th:attr="data-id=${a.id},data-name=${a.nome}">
+            <i class="fas fa-plus me-1"></i>Selecionar
+        </button>
+    </div>
+
+    <!-- Paginação -->
+    <div class="list-group-item d-flex justify-content-between align-items-center"
+         th:if="${page.totalPages > 1}">
+        <a class="btn btn-sm btn-outline-secondary"
+           th:if="${!page.first}"
+           th:attr="hx-get=@{/tutores/selector(page=${page.number-1},size=${page.size})}"
+           hx-target="#resultado-animais"
+           hx-include="#form-filtros-animais"
+           hx-push-url="false">
+            « Anterior
+        </a>
+
+        <span class="small">
+      Página <span th:text="${page.number+1}">1</span>/<span th:text="${page.totalPages}">1</span>
+    </span>
+
+        <a class="btn btn-sm btn-outline-secondary"
+           th:if="${!page.last}"
+           th:attr="hx-get=@{/tutores/selector(page=${page.number+1},size=${page.size})}"
+           hx-target="#resultado-animais"
+           hx-include="#form-filtros-animais"
+           hx-push-url="false">
+            Próxima »
+        </a>
+    </div>
+</th:block>

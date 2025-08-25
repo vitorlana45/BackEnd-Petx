@@ -3,10 +3,13 @@ package org.ong.pet.pex.backendpetx.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.br.CPF;
 import org.ong.pet.pex.backendpetx.bean.StatsCardBean;
 import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
+import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.enums.*;
@@ -17,7 +20,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,17 +67,7 @@ public class AnimalController {
         List<ActionButtonDTO> actionButtons = getActionButtonDTOS();
         model.addAttribute("actionButtons", actionButtons);
 
-        Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
-                nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
-        );
-
-        carregarComboFiltros(model, nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo);
-
-        montarComboStatusEnum(model);
-
-        model.addAttribute("page", page);
-        model.addAttribute("currentPage", "/animais");
-        model.addAttribute("animais", page.getContent());
+        this.getPaginacaoAniamis(nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable, model);
         model.addAttribute("statsCard", montarStatsCard());
 
         // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
@@ -115,6 +107,21 @@ public class AnimalController {
         return statsCards;
     }
 
+
+
+    private void getPaginacaoAniamis(@RequestParam(required = false) String nome, @RequestParam(required = false) String raca, @RequestParam(required = false) EspecieEnum especie, @RequestParam(required = false) PorteEnum porte, @RequestParam(required = false) StatusEnum status, @RequestParam(required = false) String doenca, @RequestParam(required = false) String comportamento, @RequestParam(required = false) MaturidadeEnum maturidade, @RequestParam(required = false) OrigemAnimalEnum origem, @RequestParam(required = false) SexoEnum sexo, @PageableDefault(size = 8) Pageable pageable, Model model) {
+        Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
+                nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
+        );
+
+        carregarComboFiltros(model, nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo);
+
+        montarComboStatusEnum(model);
+
+        model.addAttribute("page", page);
+        model.addAttribute("currentPage", "/animais");
+        model.addAttribute("animais", page.getContent());
+    }
 
 
     private static List<ActionButtonDTO> getActionButtonDTOS() {
@@ -272,30 +279,34 @@ public class AnimalController {
                          RedirectAttributes ra,
                          Locale locale) {
 
-        // Validação de formulário (Bean Validation)
-        if (true) {
-            montarComboStatusEnum(model);                     // especies, portes, etc.
+        // Exemplo: validação falhou
+        if (br.hasErrors()) {
+            montarComboStatusEnum(model);
             model.addAttribute("reabrirModalEditar", true);
-            model.addAttribute("mensagemErro", messages.getMessage("mensagem.erro.formularioInvalido", null, locale));
+            model.addAttribute("modalMensagemErro",
+                    messages.getMessage("mensagem.erro.formularioInvalido", null, locale));
             model.addAttribute("animal", animalService.buscarAnimalPorId(id));
             return "animais/perfil";
         }
 
         try {
-            var resp = animalService.atualizarAnimal(id, reqDTO);
-            ra.addFlashAttribute("mensagemSucesso", "Animal atualizado com sucesso!");
-            return "redirect:/animais/" + id;         // PRG
-        } catch (AppException e) {                    // suas business exceptions
-            this.montarComboStatusEnum(model);
-            System.out.println("entrou aqui!!!");
-            var animail = animalService.buscarAnimalPorId(id);
-            model.addAttribute("animal", animail);
+            var response = animalService.atualizarAnimal(id, reqDTO);
+
+            ra.addFlashAttribute("mensagemSucesso", messages.getMessage("mensagem.sucesso.salvar", null, locale));
+            model.addAttribute("animal", response);
+            return "redirect:/animais/" + id;
+        } catch (AppException e) {
+            montarComboStatusEnum(model);
+            model.addAttribute("animal", animalService.buscarAnimalPorId(id));
 
             model.addAttribute("reabrirModalEditar", true);
-            model.addAttribute("mensagemErro", e.getMessage());
+            model.addAttribute("modalMensagemErro",
+                    messages.getMessage(e.getMessage(), e.getMessageArgs(), locale)); // ou e.getMessage()
+            // model.addAttribute("modalMensagemErroDetalhe", e.toString()); // se quiser detalhes
             return "animais/perfil";
         }
     }
+
 
 
 
@@ -308,7 +319,8 @@ public class AnimalController {
     public String excluir(@PathVariable Long id,
                           RedirectAttributes ra,
                           HttpServletRequest req,
-                          HttpServletResponse res) {
+                          HttpServletResponse res
+    ) {
         // Se der problema, o service lança BaseApplicationError e o Advice cuida.
         animalService.deletarPorId(id);
 

@@ -35,7 +35,7 @@ public class AuthWebController {
                 : "redirect:/login";
     }
     /** Página de login (GET). O POST /login é tratado pelo Spring Security. */
-    @GetMapping(value = "/login", name = "AUTH#LOGIN")
+    @GetMapping(value = "/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
                             Authentication auth,
@@ -53,7 +53,7 @@ public class AuthWebController {
     }
 
     /** Registro — placeholder por enquanto */
-    @GetMapping(value = "/register", name = "AUTH#REGISTRO")
+    @GetMapping(value = "/register")
     public String registerPage() {
         return "auth/register";
     }
@@ -74,7 +74,7 @@ public class AuthWebController {
     }
 
     /** Recuperação de senha — placeholder */
-    @GetMapping(value = "/forgot-password", name = "AUTH#ESQUECI_SENHA")
+    @GetMapping(value = "/forgot-password")
     public String forgotPasswordPage() {
         return "auth/forgot-password";
     }
@@ -87,7 +87,7 @@ public class AuthWebController {
         return "auth/forgot-password";
     }
 
-    @GetMapping(value = "/dashboard", name = "AUTH#DASHBOARD")
+    @GetMapping(value = "/dashboard")
     public String dashboard(Model model, Principal principal) {
         try {
             RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());

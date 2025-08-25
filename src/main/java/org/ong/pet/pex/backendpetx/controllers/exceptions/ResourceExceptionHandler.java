@@ -18,7 +18,6 @@
 //import org.springframework.web.bind.MethodArgumentNotValidException;
 //import org.springframework.web.bind.annotation.ControllerAdvice;
 //import org.springframework.web.bind.annotation.ExceptionHandler;
-//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 //
 //import java.time.Instant;
 //import java.util.Locale;
@@ -26,45 +25,40 @@
 //@Slf4j
 //@ControllerAdvice
 //@RequiredArgsConstructor
-//public class ResourceExceptionHandler {
+//public class resourceExceptionHandler {
 //
-//    private static final Logger logger = LoggerFactory.getLogger(ResourceExceptionHandler.class);
+//    private static final Logger logger = LoggerFactory.getLogger(resourceExceptionHandler.class);
 //
 //    private final MessageSource messages;
 //
-//    @ControllerAdvice
-//    @RequiredArgsConstructor
-//    public class GlobalExceptionHandler {
-//        private final MessageSource messages;
+//        @ExceptionHandler(BaseApplicationError.class)
+//        public String handle(BaseApplicationError ex,
+//                             HttpServletRequest req,
+//                             HttpServletResponse res,
+//                             Model model,
+//                             Locale locale) {
 //
-////        @ExceptionHandler(BaseApplicationError.class)
-////        public String handle(BaseApplicationError ex,
-////                             HttpServletRequest req,
-////                             HttpServletResponse res,
-////                             Model model,
-////                             Locale locale) {
-////
-////            String msg = messages.getMessage(
-////                    ex.getMessageKey(), ex.getMessageArgs(), ex.getMessageKey(), locale);
-////
-////            boolean isHtmx = req.getHeader("HX-Request") != null;
-////
-////            model.addAttribute("mensagemErro", msg);
-////            if (ex.getCause() != null) {
-////                model.addAttribute("mensagemErroDetalhe", ex.getCause().toString());
-////            }
-////            res.setStatus(ex.getStatus().value());
-////
-////            if (isHtmx) {
-////                // preenche o <div id="modalAlerts-editarPerfil"> via hx-target
-////                return "fragmentos/messages :: messages";
-////            }
-////
-////            // página normal: o base.html já inclui o slot global de mensagens
-////            // retorne a view adequada (ex.: o GET do perfil) com o Model necessário
-////            return "animais/perfil";
-////        }
-////    }
+//            String msg = messages.getMessage(
+//                    ex.getMessageKey(), ex.getMessageArgs(), ex.getMessageKey(), locale);
+//
+//            boolean isHtmx = req.getHeader("HX-Request") != null;
+//
+//            model.addAttribute("mensagemErro", msg);
+//            if (ex.getCause() != null) {
+//                model.addAttribute("mensagemErroDetalhe", ex.getCause().toString());
+//            }
+//            res.setStatus(ex.getStatus().value());
+//
+//            if (isHtmx) {
+//                // preenche o <div id="modalAlerts-editarPerfil"> via hx-target
+//                return "fragmentos/messages :: messages";
+//            }
+//
+//            // página normal: o base.html já inclui o slot global de mensagens
+//            // retorne a view adequada (ex.: o GET do perfil) com o Model necessário
+//            return "animais/perfil";
+//        }
+//    }
 //
 //
 //    private String viewForStatus(HttpStatus s){
