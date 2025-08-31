@@ -370,3 +370,16 @@
 .btn-group .btn:hover {
     transform: scale(1.05);
 }
+
+/* grid mais compacto */
+.animais-grid{ --gap: 14px; display:grid; gap: var(--gap); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+.animal-card{
+    border:1px solid var(--border-color, #e5e7eb);
+    background: var(--card-bg, #fff);
+    border-radius: 14px; padding: 14px;
+    transition: transform .15s, box-shadow .15s;
+}
+.animal-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow, 0 4px 12px -2px rgba(0,0,0,.08)); }
+
+.animal-chip{ font-size: 12px; padding: 4px 8px; border-radius: 999px; border:1px solid var(--border-color, #e5e7eb); background: var(--bg-secondary, #f1f5f9); }

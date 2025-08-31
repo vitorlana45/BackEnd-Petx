@@ -441,3 +441,12 @@
 [data-theme="dark"] .card-header {
     border-bottom-color: var(--border-color);
 }
+
+/* espaçamento geral do conteúdo */
+.page-header { margin-bottom: 1rem; }
+.dashboard-row { row-gap: 1rem; }
+
+/* cards de “Ações rápidas / Navegação rápida” */
+.action-card{ border-radius: 12px; transition: transform .15s ease, box-shadow .15s ease; }
+.action-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-lg, 0 12px 24px -6px rgba(0,0,0,.12)); }
+.action-icon{ width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; }

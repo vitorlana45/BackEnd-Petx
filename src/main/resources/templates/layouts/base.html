@@ -44,7 +44,7 @@
     <link rel="stylesheet" th:href="@{/css/components/smart-header.css}">   <!-- 3. Smart Header (padrão global) -->
     <link rel="stylesheet" th:href="@{/css/navigation.css}">                <!-- 4. Navegação específica -->
     <link rel="stylesheet" th:href="@{/css/animais.css}">                   <!-- 5. Página de animais -->
-<!--    <link rel="stylesheet" th:href="@{/css/resgates.css}">                  &lt;!&ndash; 6. Página de resgates &ndash;&gt;-->
+    <link rel="stylesheet" th:href="@{/css/resgates.css}">                  <!-- 6. Página de resgates -->
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">                 <!-- 7. Dashboard (overrides) -->
 
     <!-- Animation CSS - AOS Library -->
@@ -64,7 +64,7 @@
     )}"></aside>
 
     <!-- CONTEÚDO -->
-    <main class="app-content">
+    <main class="app-content " id="main-content">
         <div class="container-max">
             <div th:replace="${content}" class="animate-fade-in"></div>
         </div>

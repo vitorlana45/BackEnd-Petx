@@ -442,3 +442,99 @@ body.px-collapsed .px-footer{ justify-content:center; }
 ::-webkit-scrollbar-track{ background: var(--scroll-track); }
 ::-webkit-scrollbar-thumb{ background: var(--scroll-thumb); border-radius:5px; }
 ::-webkit-scrollbar-thumb:hover{ background: var(--text-muted); }
+
+
+/* ====== PETX • Tokens visuais base (claros/escuros) ====== */
+:root {
+  --px-sidebar-w: 248px;
+  --px-sidebar-w-collapsed: 76px;
+
+  /* cores do sidebar “mint” */
+  --px-bg: #E8F6F2;
+  --px-bg-strong: #D9EFE8;
+  --px-pill: #D1EEE7;
+  --px-text: #123;
+  --px-muted: #678;
+  --px-primary: #0BA68B;
+  --px-white: #fff;
+  --px-border: #cfe7e1;
+}
+
+/* ====== Sidebar PETX (expande/colapsa) ====== */
+.px-sidebar{
+  width: var(--px-sidebar-w);
+  min-height: 100vh;
+  background: var(--px-bg);
+  border-right: 1px solid var(--px-border);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 10px;
+}
+.px-nav{ flex: 1; overflow-y: auto; }
+.px-menu{ list-style: none; margin: 0; padding: 0; }
+.px-link{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; text-decoration: none;
+  color: var(--px-text); font-weight: 500; margin: 4px 6px;
+}
+.px-link:hover{ background: var(--px-bg-strong); }
+.px-link.is-active{ background: var(--px-pill); box-shadow: inset 0 0 0 1px rgba(0,0,0,.03); }
+.px-ico{ width: 20px; text-align:center; font-size: 14px; color: var(--px-primary); }
+.px-text{ flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.px-badge{
+  background: var(--px-white); border: 1px solid var(--px-border);
+  padding: 2px 8px; border-radius: 999px; font-size: 11px; color: var(--px-muted);
+}
+.px-shortcuts{ padding: 8px 12px 12px; }
+.px-shortcuts-title{
+  font-size: 12px; color: var(--px-muted); margin: 8px 6px;
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.px-shortcuts-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 6px; }
+.px-chip{
+  display: inline-block; text-align: center; text-decoration: none;
+  background: var(--px-white); border: 1px solid var(--px-border);
+  padding: 6px 8px; border-radius: 10px; font-size: 12px; color: var(--px-text);
+}
+.px-chip:hover{ background: #f9fffe; }
+.px-footer{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding: 10px; border-top: 1px solid var(--px-border);
+}
+.px-user{ display: flex; align-items: center; gap: 8px; }
+.px-user-ico{ font-size: 22px; color: var(--px-muted); }
+.px-user-info{ line-height: 1.1; }
+.px-user-name{ font-size: 12px; color: var(--px-text); display: block; }
+.px-user-role{ font-size: 11px; color: var(--px-muted); display: block; }
+.px-toggle{
+  border: 1px solid var(--px-border); background: var(--px-white);
+  width: 34px; height: 30px; border-radius: 8px; cursor: pointer;
+}
+.px-toggle:hover{ background: #f7fffd; }
+
+/* ====== Layout: recuo do conteúdo quando sidebar existe ====== */
+/*#main-content {*/
+/*  padding-left: var(--px-sidebar-w);*/
+/*  transition: padding-left .25s ease;*/
+/*}*/
+
+/* ====== Estado colapsado (apenas ícones) ====== */
+body.px-collapsed .px-sidebar{ width: var(--px-sidebar-w-collapsed); }
+body.px-collapsed .px-text,
+body.px-collapsed .px-badge,
+body.px-collapsed .px-shortcuts,
+body.px-collapsed .px-user-info{ display: none; }
+body.px-collapsed .px-link{ justify-content: center; }
+body.px-collapsed .px-footer{ justify-content: center; }
+/*body.px-collapsed #main-content { padding-left: var(--px-sidebar-w-collapsed); }*/
+
+/* dark mode opcional para o sidebar mint (opcional) */
+[data-theme="dark"] .px-sidebar{
+  background: #0f1b18;
+  border-right-color: rgba(255,255,255,.06);
+}
+[data-theme="dark"] .px-link{ color: #e6f3f0; }
+[data-theme="dark"] .px-link:hover{ background:#122621; }
+[data-theme="dark"] .px-link.is-active{ background:#15312b; }
+[data-theme="dark"] .px-badge{ background: transparent; border-color: rgba(255,255,255,.12); color:#a7c6bf; }
+[data-theme="dark"] .px-user-ico{ color:#9dcfc5; }

@@ -310,3 +310,12 @@ label {
   font-weight: 500;
   display: inline-block;
 }
+/* botões coerentes com as cores PETX */
+.btn{ border-radius: 10px; font-weight: 600; }
+.btn-primary{ background: var(--petx-primary); border-color: var(--petx-primary); }
+.btn-primary:hover{ background: var(--petx-primary-dark, #3a56d4); border-color: var(--petx-primary-dark, #3a56d4); }
+.btn-outline-primary{ color: var(--petx-primary); border-color: var(--petx-primary); }
+.btn-outline-primary:hover{ background: var(--petx-primary); color:#fff; }
+
+/* badges */
+.badge{ border-radius: 8px; font-weight: 600; letter-spacing: .2px; }
