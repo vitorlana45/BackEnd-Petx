@@ -97,9 +97,7 @@
 <!-- Item de Menu Simples -->
 <li th:fragment="nav-item(url, text, icon)" class="nav-item">
     <a class="nav-link"
-       th:href="@{${url}}"
-       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.startsWith(url) ? 'active' : ''}"
-       th:aria-current="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.startsWith(url) ? 'page' : null}">
+       th:href="@{${url}}">
         <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
         <span th:text="${text}">Menu Item</span>
     </a>
@@ -111,8 +109,7 @@
        href="#"
        role="button"
        data-bs-toggle="dropdown"
-       aria-expanded="false"
-       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #httpServletRequest.requestURI.contains(section) ? 'active' : ''}">
+       aria-expanded="false">
         <i th:class="${'fas fa-' + icon + ' me-2'}"></i>
         <span th:text="${text}">Dropdown</span>
     </a>

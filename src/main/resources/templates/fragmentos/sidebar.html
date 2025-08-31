@@ -1,0 +1,158 @@
+<!-- Sidebar (Thymeleaf fragment) -->
+<aside xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+       th:fragment="sidebar(uri)"
+       class="px-sidebar" aria-label="Menu lateral">
+
+  <nav class="px-nav">
+    <ul class="px-menu">
+
+      <!-- Dashboard -->
+      <li>
+        <a class="px-link"
+           th:href="@{/home}"
+           th:classappend="${uri != null and uri == '/home' ? ' is-active' : ''}"
+           title="Dashboard">
+          <i class="px-ico fas fa-th-large"></i>
+          <span class="px-text">Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Animais -->
+      <li>
+        <a class="px-link"
+           th:href="@{/animais}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/animais') ? ' is-active' : ''}"
+           title="Animais">
+          <i class="px-ico fas fa-paw"></i>
+          <span class="px-text">Animais</span>
+
+        </a>
+      </li>
+
+      <!-- Clínica -->
+      <li>
+        <a class="px-link"
+           th:href="@{/clinica}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/clinica') ? ' is-active' : ''}"
+           title="Clínica">
+          <i class="px-ico fas fa-stethoscope"></i>
+          <span class="px-text">Clínica</span>
+        </a>
+      </li>
+
+      <!-- Estoque -->
+      <li>
+        <a class="px-link"
+           th:href="@{/estoque}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/estoque') ? ' is-active' : ''}"
+           title="Estoque">
+          <i class="px-ico fas fa-box-open"></i>
+          <span class="px-text">Estoque</span>
+        </a>
+      </li>
+
+      <!-- Tutores -->
+      <li>
+        <a class="px-link"
+           th:href="@{/tutores}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/tutores') ? ' is-active' : ''}"
+           title="Tutores">
+          <i class="px-ico fas fa-user-friends"></i>
+          <span class="px-text">Tutores</span>
+        </a>
+      </li>
+
+      <!-- Relatórios -->
+      <li>
+        <a class="px-link"
+           th:href="@{/relatorios}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/relatorios') ? ' is-active' : ''}"
+           title="Relatórios">
+          <i class="px-ico fas fa-chart-bar"></i>
+          <span class="px-text">Relatórios</span>
+        </a>
+      </li>
+
+      <!-- Configurações -->
+      <li>
+        <a class="px-link"
+           th:href="@{/config}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/config') ? ' is-active' : ''}"
+           title="Configurações">
+          <i class="px-ico fas fa-cog"></i>
+          <span class="px-text">Configurações</span>
+        </a>
+      </li>
+
+      <!-- Obituário -->
+      <li>
+        <a class="px-link"
+           th:href="@{/obituario}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/obituario') ? ' is-active' : ''}"
+           title="Obituário">
+          <i class="px-ico fas fa-cross"></i>
+          <span class="px-text">Obituário</span>
+        </a>
+      </li>
+
+      <!-- Doadores -->
+      <li>
+        <a class="px-link"
+           th:href="@{/doadores}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/doadores') ? ' is-active' : ''}"
+           title="Doadores">
+          <i class="px-ico fas fa-hand-holding-heart"></i>
+          <span class="px-text">Doadores</span>
+        </a>
+      </li>
+
+      <!-- Registro de Doadores -->
+      <li>
+        <a class="px-link"
+           th:href="@{/registro-doadores}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/registro-doadores') ? ' is-active' : ''}"
+           title="Registro de Doadores">
+          <i class="px-ico fas fa-id-card-alt"></i>
+          <span class="px-text">Registro de Doadores</span>
+        </a>
+      </li>
+
+      <!-- Despesas -->
+      <li>
+        <a class="px-link"
+           th:href="@{/despesas}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/despesas') ? ' is-active' : ''}"
+           title="Despesas">
+          <i class="px-ico fas fa-receipt"></i>
+          <span class="px-text">Despesas</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Atalhos -->
+  <div class="px-shortcuts">
+    <div class="px-shortcuts-title">Atalhos</div>
+    <div class="px-shortcuts-grid">
+      <a th:href="@{/animais/form}" class="px-chip">Novo animal</a>
+      <a th:href="@{/importar}" class="px-chip">Importar</a>
+      <a th:href="@{/exportar}" class="px-chip">Exportar</a>
+      <a th:href="@{/ajuda}" class="px-chip">Ajuda</a>
+    </div>
+  </div>
+
+  <!-- Rodapé (usuário) -->
+  <div class="px-footer">
+    <div class="px-user">
+      <i class="fas fa-user-circle px-user-ico"></i>
+      <div class="px-user-info">
+        <span class="px-user-name" sec:authentication="name">Usuário</span>
+        <span class="px-user-role" sec:authentication="principal.authorities">Função</span>
+      </div>
+    </div>
+    <button id="pxSidebarToggle" class="px-toggle" type="button" title="Recolher/Expandir">
+      <i class="fas fa-angle-double-left"></i>
+    </button>
+  </div>
+</aside>
+

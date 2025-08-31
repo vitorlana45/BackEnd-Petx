@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+
+<head>
+  <title>Formulário Moderno - ONG PetX</title>
+</head>
+
+<body>
+  <section class="form-modern">
+    <!-- Cabeçalho da página -->
+    <div class="page-header">
+      <div class="page-header-content">
+        <div class="page-title">
+          <h1>Cadastrar Novo Animal</h1>
+          <p class="text-muted">Preencha as informações do animal</p>
+        </div>
+        <div class="page-actions">
+          <a th:href="@{/animais}" class="btn btn-outline-light">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+          <div class="card modern-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-paw me-2"></i>
+                Informações do Animal
+              </h3>
+            </div>
+            <div class="card-body">
+              <form th:action="@{/api/boletim}" method="post" id="formPet" class="modern-form">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+                <!-- Seção: Boletim de Entrada -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <h4 class="section-title">
+                      <i class="fas fa-file-medical me-2"></i>
+                      Boletim de Entrada
+                    </h4>
+                    <p class="section-description">Informações sobre o resgate do animal</p>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="dataAtendimento" class="form-label">Data de Atendimento</label>
+                        <input type="datetime-local" class="form-control modern-input" id="dataAtendimento"
+                          name="dataAtendimento" required>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="destino" class="form-label">Destino</label>
+                        <select class="form-select modern-select" id="destino" name="destino" required>
+                          <option value="">Selecione o destino</option>
+                          <option th:each="d : ${T(org.ong.pet.pex.backendpetx.enums.Destino).values()}" th:value="${d}"
+                            th:text="${d}"></option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="ocorrencia" class="form-label">Ocorrência</label>
+                        <textarea class="form-control modern-textarea" id="ocorrencia" name="ocorrencia" rows="3"
+                          placeholder="Descreva a ocorrência do resgate..." required></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Seção: Dados do Animal -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <h4 class="section-title">
+                      <i class="fas fa-paw me-2"></i>
+                      Dados do Animal
+                    </h4>
+                    <p class="section-description">Informações básicas do animal</p>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="nome" class="form-label">Nome</label>
+                        <input type="text" class="form-control modern-input" id="nome" name="animal.nome"
+                          placeholder="Nome do animal" required>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="chipId" class="form-label">ID do Chip</label>
+                        <input type="text" class="form-control modern-input" id="chipId" name="animal.chipId"
+                          placeholder="Código do chip (opcional)">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="raca" class="form-label">Raça</label>
+                        <input type="text" class="form-control modern-input" id="raca" name="animal.raca"
+                          placeholder="Raça do animal" required>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="especie" class="form-label">Espécie</label>
+                        <select class="form-select modern-select" id="especie" name="animal.especieEnum" required>
+                          <option value="">Selecione a espécie</option>
+                          <option th:each="e : ${T(org.ong.pet.pex.backendpetx.enums.EspecieEnum).values()}"
+                            th:value="${e}" th:text="${e}"></option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="sexo" class="form-label">Sexo</label>
+                        <select class="form-select modern-select" id="sexo" name="animal.sexoEnum" required>
+                          <option value="">Selecione</option>
+                          <option th:each="s : ${T(org.ong.pet.pex.backendpetx.enums.SexoEnum).values()}"
+                            th:value="${s}" th:text="${s}"></option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="maturidade" class="form-label">Maturidade</label>
+                        <select class="form-select modern-select" id="maturidade" name="animal.maturidadeEnum" required>
+                          <option value="">Selecione</option>
+                          <option th:each="m : ${T(org.ong.pet.pex.backendpetx.enums.MaturidadeEnum).values()}"
+                            th:value="${m}" th:text="${m}"></option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="porte" class="form-label">Porte</label>
+                        <select class="form-select modern-select" id="porte" name="animal.porteEnum" required>
+                          <option value="">Selecione</option>
+                          <option th:each="p : ${T(org.ong.pet.pex.backendpetx.enums.PorteEnum).values()}"
+                            th:value="${p}" th:text="${p}"></option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Seção: Informações Adicionais -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <h4 class="section-title">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Informações Adicionais
+                    </h4>
+                    <p class="section-description">Detalhes complementares sobre o animal</p>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="cor" class="form-label">Cor</label>
+                        <input type="text" class="form-control modern-input" id="cor" name="animal.cor"
+                          placeholder="Cor do animal">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="peso" class="form-label">Peso (kg)</label>
+                        <input type="number" step="0.1" class="form-control modern-input" id="peso" name="animal.peso"
+                          placeholder="0.0">
+                      </div>
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="observacoes" class="form-label">Observações</label>
+                        <textarea class="form-control modern-textarea" id="observacoes" name="animal.observacoes"
+                          rows="3" placeholder="Observações adicionais sobre o animal..."></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ações do formulário -->
+                <div class="form-actions">
+                  <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Salvar Animal
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* ===== FORMULÁRIO MODERNO ===== */
+    .form-modern {
+      padding: 0;
+    }
+
+    .form-container {
+      margin-top: 2rem;
+    }
+
+    /* ===== FORM SECTIONS ===== */
+    .form-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .section-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-description {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    /* ===== FORM GROUPS ===== */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    /* ===== MODERN INPUTS ===== */
+    .modern-input,
+    .modern-select,
+    .modern-textarea {
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      background-color: var(--input-bg);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .modern-input:focus,
+    .modern-select:focus,
+    .modern-textarea:focus {
+      border-color: var(--petx-primary);
+      box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+      outline: none;
+    }
+
+    .modern-input::placeholder,
+    .modern-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .modern-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* ===== FORM ACTIONS ===== */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 2rem;
+    }
+
+    .form-actions .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .form-actions .btn-primary {
+      background: var(--petx-primary);
+      border-color: var(--petx-primary);
+    }
+
+    .form-actions .btn-primary:hover {
+      background: var(--petx-primary-dark);
+      border-color: var(--petx-primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .form-actions .btn-outline-secondary {
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .form-actions .btn-outline-secondary:hover {
+      background: var(--hover-bg);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 768px) {
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .form-actions .btn {
+        width: 100%;
+      }
+
+      .section-title {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Validação do formulário
+      const form = document.getElementById('formPet');
+
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          const requiredFields = form.querySelectorAll('[required]');
+          let isValid = true;
+
+          requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+              field.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              field.classList.remove('is-invalid');
+            }
+          });
+
+          if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, preencha todos os campos obrigatórios.');
+          }
+        });
+
+        // Remover classe de erro quando o usuário começar a digitar
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+          input.addEventListener('input', function () {
+            if (this.classList.contains('is-invalid')) {
+              this.classList.remove('is-invalid');
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
