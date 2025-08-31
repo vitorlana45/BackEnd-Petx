@@ -1,0 +1,12 @@
+<!-- templates/fragmentos/media-grid.html -->
+<div class="row row-cols-2 row-cols-md-4 g-3" th:fragment="mediaGrid(itens)">
+  <div class="col" th:each="m : ${itens}">
+    <div class="card h-100 shadow-sm">
+      <img th:src="${m.url}" class="card-img-top" alt="foto do animal">
+      <div class="card-body p-2 d-flex justify-content-between align-items-center">
+        <span class="badge bg-primary" th:text="${m.usage}">GALERIA</span>
+        <small class="text-muted" th:text="${m.name}">nome.jpg</small>
+      </div>
+    </div>
+  </div>
+</div>

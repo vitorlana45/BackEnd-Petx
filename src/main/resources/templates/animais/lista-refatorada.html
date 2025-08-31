@@ -81,7 +81,7 @@
                     <div th:replace="~{components/badges :: gender-badge(${animal.genero})}"></div>
                 </td>
                 <td>
-                    <div th:replace="~{components/badges :: status-badge(${animal.status})}"></div>
+                    <div th:replace="~{components/badges :: status-badge(${animal.saude})}"></div>
                     <br>
                     <div th:if="${animal.disponibilidadeAdocao}" 
                          th:replace="~{components/badges :: adoption-badge(${animal.disponibilidadeAdocao})}"></div>

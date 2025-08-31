@@ -33,7 +33,7 @@ public class ConfiguracaoJackson {
         registerEnumDeserializer(enumModule, SexoEnum.class);
         registerEnumDeserializer(enumModule, PorteEnum.class);
         registerEnumDeserializer(enumModule, StatusDespesaEnum.class);
-        registerEnumDeserializer(enumModule, StatusEnum.class);
+        registerEnumDeserializer(enumModule, SaudeEnum.class);
         registerEnumDeserializer(enumModule, TipoProduto.class);
         registerEnumDeserializer(enumModule, UnidadeDeMedidaEnum.class);
         registerEnumDeserializer(enumModule, Destino.class);

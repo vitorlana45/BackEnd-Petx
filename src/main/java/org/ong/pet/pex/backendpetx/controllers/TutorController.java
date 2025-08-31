@@ -63,25 +63,14 @@ public class TutorController {
      */
     @GetMapping(value = "/form")
     public String formNovoTutor(Model model) {
-        // Como CadastrarTutorRequisicao é um record, não podemos usar o construtor vazio
-        // Vamos passar atributos individuais para o form em vez disso
-        model.addAttribute("cpf", "");
-        model.addAttribute("nome", "");
-        model.addAttribute("cep", "");
-        model.addAttribute("idade", "");
-        model.addAttribute("telefone", "");
-        model.addAttribute("cidade", "");
-        model.addAttribute("estado", "");
-        model.addAttribute("complemento", "");
-        model.addAttribute("bairro", "");
-        model.addAttribute("logradouros", "");
 
         model.addAttribute("buscaAnimaisUrl", "/animais/selector");
 
         montarComboFiltroAnimal(model);
 
-        var listaAnimais = new ArrayList<String>();
-        var tutor = new CadastrarTutorRequisicao("","","", 0,"","","","", "", listaAnimais);
+        var animalChips = new ArrayList<String>();
+
+        var tutor = new CadastrarTutorRequisicao("","","", 0,"","","","", "", animalChips);
 
         model.addAttribute("tutor",tutor);
 
@@ -90,16 +79,17 @@ public class TutorController {
     }
 
 
-
-
     /**
      * Processa o formulário de criação de tutor
      */
     @PostMapping(value = "/salvar")
     public String cadastrarTutor(@Valid @ModelAttribute CadastrarTutorRequisicao tutor,
-                               BindingResult result,
-                               RedirectAttributes redirectAttributes) {
+                                 BindingResult result,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
+            model.addAttribute("tutor", tutor);
+            montarComboFiltroAnimal(model);
             return "tutores/formulario";
         }
 
@@ -108,6 +98,8 @@ public class TutorController {
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Tutor cadastrado com sucesso!");
             return "redirect:/tutores";
         } catch (Exception e) {
+            model.addAttribute("tutor", tutor);
+            montarComboFiltroAnimal(model);
             redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar tutor: " + e.getMessage());
             return "tutores/formulario";
         }
@@ -118,8 +110,7 @@ public class TutorController {
                            @RequestParam(required = false) String raca,
                            @RequestParam(required = false) EspecieEnum especie,
                            @RequestParam(required = false) PorteEnum porte,
-                           @RequestParam(required = false) StatusEnum status,
-                           @RequestParam(required = false) String doenca,
+                           @RequestParam(required = false) SaudeEnum saude,
                            @RequestParam(required = false) String comportamento,
                            @RequestParam(required = false) MaturidadeEnum maturidade,
                            @RequestParam(required = false) OrigemAnimalEnum origem,
@@ -127,10 +118,10 @@ public class TutorController {
                            @PageableDefault(size = 8) Pageable pageable,
                            Model model) {
 
-        var page = this.animalService.paginarAnimais(nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable);
+        var page = this.animalService.paginarAnimaisParaAdocao(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, pageable);
 
         model.addAttribute("page", page);
-        model.addAttribute("currentPage", "/animais");
+        model.addAttribute("currentPage", "/tutores");
         model.addAttribute("animais", page.getContent());
         montarComboStatusEnum(model);
 
@@ -142,7 +133,7 @@ public class TutorController {
     public void montarComboStatusEnum(Model model) {
         model.addAttribute("especies", EspecieEnum.values());
         model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("status", StatusEnum.values());
+        model.addAttribute("status", SaudeEnum.values());
         model.addAttribute("maturidades", MaturidadeEnum.values());
         model.addAttribute("origens", OrigemAnimalEnum.values());
         model.addAttribute("sexos", SexoEnum.values());
@@ -152,7 +143,11 @@ public class TutorController {
      * Exibe detalhes de um tutor
      */
     @GetMapping(value = "/{cpf}")
-    public String detalhesTutor(@PathVariable String cpf, Model model) {
+    public String detalhesTutor(@PathVariable String cpf, Model model, RedirectAttributes redirectAttributes) {
+        if (cpf == null || cpf.isBlank() || cpf.equalsIgnoreCase("salvar")) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "CPF inválido ou não encontrado.");
+            return "redirect:/tutores";
+        }
         TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
         model.addAttribute("tutor", tutor);
         return "tutores/detalhes";
@@ -210,9 +205,8 @@ public class TutorController {
         model.addAttribute("portes", PorteEnum.values());
         model.addAttribute("especies", EspecieEnum.values());
         model.addAttribute("sexos", SexoEnum.values());
-        model.addAttribute("status", List.of(StatusEnum.SAUDAVEL, StatusEnum.DOENTE));
+        model.addAttribute("status", List.of(SaudeEnum.SAUDAVEL, SaudeEnum.DOENTE));
         model.addAttribute("origens", OrigemAnimalEnum.values());
     }
 
 }
-

@@ -15,6 +15,7 @@ public class AnimalPaginadoResposta {
     private Long id;
     private String chipId;
     private String nome;
+    private String imagemPrincipalPerfil;
     private String raca;
     private String maturidade;
     private String sexo;
@@ -23,6 +24,6 @@ public class AnimalPaginadoResposta {
     private String comportamento;
     private String especie;
     private Set<String> doencas;
-    private String status;
-    private List<AnimalPaginadoResposta> listaAnimaisConjunto;
+    private String saude;
+    private String adotado;
 }

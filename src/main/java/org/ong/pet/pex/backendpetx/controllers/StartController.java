@@ -29,6 +29,7 @@ public class StartController {
     public String init(Model model, Principal principal) {
         try {
             long totalAnimais = statisticService.getQuantidadeAnimais();
+            System.out.println("quantidaede de animais" + totalAnimais);
             long totalTutores = statisticService.getQuantidadeTutores();
             long totalAdocoes = statisticService.getQuantidadeAdocoes();
 

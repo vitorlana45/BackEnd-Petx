@@ -9,7 +9,7 @@ import org.ong.pet.pex.backendpetx.enums.MaturidadeEnum;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
-import org.ong.pet.pex.backendpetx.enums.StatusEnum;
+import org.ong.pet.pex.backendpetx.enums.SaudeEnum;
 
 import java.time.LocalDateTime;
 
@@ -38,5 +38,5 @@ public class ResgateRapidoDTO {
     private SexoEnum sexo;
     private String cor;
     private PorteEnum porte;
-    private StatusEnum statusSaude;
+    private SaudeEnum saudeEnum;
 }

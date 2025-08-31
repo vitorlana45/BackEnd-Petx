@@ -62,8 +62,8 @@
                     <label class="form-label small">Status</label>
                     <select class="form-select form-select-sm" name="status">
                         <option value="">Todos os status</option>
-                        <option th:each="st : ${statusEnum}" th:value="${st}"
-                                th:text="${st.status}" th:selected="${st == filtroStatus}">Status</option>
+                        <option th:each="st : ${saude}" th:value="${st}"
+                                th:text="${st.saude}" th:selected="${st == filtroSaude}">Saúde</option>
                     </select>
                 </div>
 

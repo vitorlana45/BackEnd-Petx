@@ -16,6 +16,7 @@ import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
 import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.service.StatisticService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,9 +40,12 @@ public class AnimalController {
 
     private final AnimalService animalService;
     private final MessageSource messages;
-    public AnimalController(AnimalService animalService, MessageSource messages) {
+    private final StatisticService statisticService;
+
+    public AnimalController(AnimalService animalService, MessageSource messages, StatisticService statisticService) {
         this.animalService = animalService;
         this.messages = messages;
+        this.statisticService = statisticService;
     }
 
     /**
@@ -53,12 +57,13 @@ public class AnimalController {
                                 @RequestParam(required = false) String raca,
                                 @RequestParam(required = false) EspecieEnum especie,
                                 @RequestParam(required = false) PorteEnum porte,
-                                @RequestParam(required = false) StatusEnum status,
+                                @RequestParam(required = false) SaudeEnum status,
                                 @RequestParam(required = false) String doenca,
                                 @RequestParam(required = false) String comportamento,
                                 @RequestParam(required = false) MaturidadeEnum maturidade,
                                 @RequestParam(required = false) OrigemAnimalEnum origem,
                                 @RequestParam(required = false) SexoEnum sexo,
+                                @RequestParam(required = false) AdocaoEnum adotado,
                                 @PageableDefault(size = 12) Pageable pageable,
                                 @RequestHeader(value = "HX-Request", required = false) String htmx) {
 
@@ -67,7 +72,7 @@ public class AnimalController {
         List<ActionButtonDTO> actionButtons = getActionButtonDTOS();
         model.addAttribute("actionButtons", actionButtons);
 
-        this.getPaginacaoAniamis(nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable, model);
+        this.getPaginacaoAniamis(nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, adotado, pageable, model);
         model.addAttribute("statsCard", montarStatsCard());
 
         // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
@@ -82,7 +87,7 @@ public class AnimalController {
         List<StatsCardBean> statsCards = new ArrayList<>();
         statsCards.add(
                 new StatsCardBean("fas fa-paw","Total de Animais",
-                String.valueOf(animalService.contarQuantidadeAnimais()),
+                String.valueOf(statisticService.getQuantidadeAnimais()),
                         "primary")
         );
 
@@ -109,14 +114,30 @@ public class AnimalController {
 
 
 
-    private void getPaginacaoAniamis(@RequestParam(required = false) String nome, @RequestParam(required = false) String raca, @RequestParam(required = false) EspecieEnum especie, @RequestParam(required = false) PorteEnum porte, @RequestParam(required = false) StatusEnum status, @RequestParam(required = false) String doenca, @RequestParam(required = false) String comportamento, @RequestParam(required = false) MaturidadeEnum maturidade, @RequestParam(required = false) OrigemAnimalEnum origem, @RequestParam(required = false) SexoEnum sexo, @PageableDefault(size = 8) Pageable pageable, Model model) {
+    private void getPaginacaoAniamis(@RequestParam(required = false) String nome,
+                                     @RequestParam(required = false) String raca,
+                                     @RequestParam(required = false) EspecieEnum especie,
+                                     @RequestParam(required = false) PorteEnum porte,
+                                     @RequestParam(required = false) SaudeEnum saude,
+                                     @RequestParam(required = false) String doenca,
+                                     @RequestParam(required = false) String comportamento,
+                                     @RequestParam(required = false) MaturidadeEnum maturidade,
+                                     @RequestParam(required = false) OrigemAnimalEnum origem,
+                                     @RequestParam(required = false) SexoEnum sexo,
+                                     @RequestParam(required = false) AdocaoEnum adotado,
+                                     @PageableDefault(size = 8) Pageable pageable, Model model) {
+
         Page<AnimalPaginadoResposta> page = animalService.paginarAnimais(
-                nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, pageable
+                nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, adotado, pageable
         );
 
-        carregarComboFiltros(model, nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo);
+        carregarComboFiltros(model, nome, raca, especie, porte, saude, doenca, comportamento, maturidade, origem, sexo, adotado);
 
         montarComboStatusEnum(model);
+
+        if(page == null || page.getContent().isEmpty()){
+            page = Page.empty(pageable);
+        }
 
         model.addAttribute("page", page);
         model.addAttribute("currentPage", "/animais");
@@ -407,32 +428,35 @@ public class AnimalController {
                                      String raca,
                                      EspecieEnum especie,
                                      PorteEnum porte,
-                                     StatusEnum status,
+                                     SaudeEnum saude,
                                      String doenca,
                                      String comportamento,
                                      MaturidadeEnum maturidade,
                                      OrigemAnimalEnum origem,
-                                     SexoEnum sexo) {
+                                     SexoEnum sexo,
+                                     AdocaoEnum adotado
+    ) {
 
         model.addAttribute("filtroNome", nome);
         model.addAttribute("filtroRaca", raca);
         model.addAttribute("filtroEspecie", especie);
         model.addAttribute("filtroPorte", porte);
-        model.addAttribute("filtroStatus", status);
+        model.addAttribute("filtroSaude", saude);
         model.addAttribute("filtroDoenca", doenca);
         model.addAttribute("filtroComportamento", comportamento);
         model.addAttribute("filtroMaturidade", maturidade);
         model.addAttribute("filtroOrigem", origem);
         model.addAttribute("filtroSexo", sexo);
+        model.addAttribute("filtroAdotado", adotado);
     }
 
     public void montarComboStatusEnum(Model model) {
         model.addAttribute("especies", EspecieEnum.values());
         model.addAttribute("portes", PorteEnum.values());
-        model.addAttribute("status", StatusEnum.values());
+        model.addAttribute("status", SaudeEnum.values());
         model.addAttribute("maturidades", MaturidadeEnum.values());
         model.addAttribute("origens", OrigemAnimalEnum.values());
         model.addAttribute("sexos", SexoEnum.values());
+        model.addAttribute("adocoes", AdocaoEnum.values());
     }
-
 }

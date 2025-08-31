@@ -117,10 +117,10 @@
                 </div>
                 
                 <div class="col-md-6">
-                    <label for="status" class="form-label">Status</label>
-                    <select class="form-select" id="status" name="animal.statusEnum" required>
+                    <label for="status" class="form-label">Saúde</label>
+                    <select class="form-select" id="status" name="animal.saudeEnum" required>
                         <option value="">Selecione</option>
-                        <option th:each="st : ${T(org.ong.pet.pex.backendpetx.enums.StatusEnum).values()}"
+                        <option th:each="st : ${T(org.ong.pet.pex.backendpetx.enums.SaudeEnum).values()}"
                                 th:value="${st}"
                                 th:text="${st}"></option>
                     </select>
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
             maturidadeEnum: formData.get('animal.maturidadeEnum'),
             porteEnum: formData.get('animal.porteEnum'),
             origemEnum: formData.get('animal.origemEnum'),
-            statusEnum: formData.get('animal.statusEnum'),
+            saudeEnum: formData.get('animal.saudeEnum'),
             comportamento: formData.get('animal.comportamento'),
             corPelagem: formData.get('animal.corPelagem'),
             condicaoAnimal: formData.get('animal.condicaoAnimal')

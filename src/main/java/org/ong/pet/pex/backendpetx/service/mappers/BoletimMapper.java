@@ -47,7 +47,7 @@ public class BoletimMapper {
                         .comportamento(entidade.getAnimal().getComportamento())
                         .especie(entidade.getAnimal().getEspecieEnum() != null ? entidade.getAnimal().getEspecieEnum().toString() : null)
                         .doencas(entidade.getAnimal().getDoencas())
-                        .status(entidade.getAnimal().getStatusEnum() != null ? entidade.getAnimal().getStatusEnum().toString() : null)
+                        .status(entidade.getAnimal().getSaudeEnum() != null ? entidade.getAnimal().getSaudeEnum().toString() : null)
                         .corPelagem(entidade.getAnimal().getCorPelagem())
                         .condicaoAnimal(entidade.getAnimal().getCondicaoAnimal())
                         .maezinhaComFilhotes(entidade.getAnimal().getMaezinhaComFilhotes() != null ?

@@ -21,10 +21,10 @@
                 </div>
                 <div>
                     <h2 class="mb-2 d-flex align-items-center gap-2">
-                        <span th:text="${a != null ? a.nome : 'Animal'}">Animal</span>
-                        <span class="badge rounded-pill"
-                            th:classappend="${a != null && a.status != null ? (a.status.toString().toLowerCase().contains('adot') ? ' bg-success text-white' : (a.status.toString().toLowerCase().contains('dispon') ? ' bg-primary text-white' : ' bg-secondary text-white')) : ' bg-secondary text-white'}"
-                            th:text="${a != null ? a.status : 'SEM STATUS'}">STATUS</span>
+                        <span th:text="${a.nome != null ? a.nome : 'Animal Sem Nome'}">Animal</span>
+<!--                        <span class="badge rounded-pill"-->
+<!--                            th:classappend="${a != null && a.status != null ? (a.status.toString().toLowerCase().contains('adot') ? ' bg-success text-white' : (a.status.toString().toLowerCase().contains('dispon') ? ' bg-primary text-white' : ' bg-secondary text-white')) : ' bg-secondary text-white'}"-->
+<!--                            th:text="${a != null ? a.status : 'SEM STATUS'}">STATUS</span>-->
                     </h2>
                     <div class="d-flex flex-wrap gap-2 small">
                         <span class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis">ID: <span

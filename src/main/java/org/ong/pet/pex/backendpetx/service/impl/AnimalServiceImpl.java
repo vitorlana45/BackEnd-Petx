@@ -9,7 +9,7 @@ import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.entities.*;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repositories.*;
-import org.ong.pet.pex.backendpetx.security.utils.CurrentUser;
+import org.ong.pet.pex.backendpetx.repositories.specifcs.AnimalSpecs;
 import org.ong.pet.pex.backendpetx.security.utils.SecurityUtils;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.Minio;
@@ -19,12 +19,12 @@ import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +49,11 @@ public class AnimalServiceImpl implements AnimalService {
     private final AnimalUtils animalUtils;
     private final Minio minioService;
     private final LogAtividadeService logAtividadeService ;
-    private final CurrentUser currentUser;
 
     @Value("${minio.bucket:petx}")
     private String animalBucketName;
 
-        public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService, LogAtividadeService logAtividadeService, CurrentUser currentUser) {
+        public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService, LogAtividadeService logAtividadeService) {
         this.animalRepository = animalRepository;
         this.ongRepository = ongRepository;
         this.animalConjuntoRepository = animalConjuntoRepository;
@@ -63,8 +62,7 @@ public class AnimalServiceImpl implements AnimalService {
         this.animalUtils = animalUtils;
         this.minioService = minioService;
         this.logAtividadeService = logAtividadeService;
-            this.currentUser = currentUser;
-    }
+        }
 
 
 
@@ -179,6 +177,7 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "stats", key = "'TOTAL_ANIMAIS'")
     public void deletarPorId(Long id) {
         try {
             logger.info("Iniciando a exclusão do animal com id: {}", id);
@@ -243,11 +242,10 @@ public class AnimalServiceImpl implements AnimalService {
         animalRepository.findAnimalByChipId(obiturario.chipId())
                 .ifPresentOrElse(animal -> {
 
-                    if (animal.getStatusEnum().getStatus().equals(StatusEnum.FALECIDO.getStatus())) {
+                    if (animal.equals(true)) {
                         throw PetXException.animalJaFalecido("Animal com CHIP: " + obiturario.chipId());
                     }
 
-                    animal.setStatusEnum(StatusEnum.FALECIDO);
                     var lista = animal.getTutores();
                     if (lista == null || lista.isEmpty()) {
                         obitoRepository.save(Obito.builder()
@@ -275,73 +273,39 @@ public class AnimalServiceImpl implements AnimalService {
         return converterParaRespostaAnimalComConjuntoDTO(existeAnimal);
     }
 
-
     @Transactional(readOnly = true)
     public Page<AnimalPaginadoResposta> paginarAnimais(
-            String nome,
-            String raca,
-            EspecieEnum especie,
-            PorteEnum porte,
-            StatusEnum status,
-            String doenca,
-            String comportamento,
-            MaturidadeEnum maturidade,
-            OrigemAnimalEnum origem,
-            SexoEnum sexo,
-            Pageable pageable) {
+            String nome, String raca,
+            EspecieEnum especie, PorteEnum porte,
+            SaudeEnum saude, String comportamento,
+            MaturidadeEnum maturidade, OrigemAnimalEnum origem,
+            SexoEnum sexo, AdocaoEnum adotado,
+            Pageable pageable
+    ) {
+        var content = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(
+                animalRepository.findAll(
+                        AnimalSpecs.filtro(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, adotado),
+                        pageable
+                ).getContent()
+        );
 
-    Page<Object[]> page = animalRepository.findAllPorFiltroBasico(
-        nome,
-        raca,
-        especie != null ? especie.name() : null,
-        porte != null ? porte.name() : null,
-        status != null ? status.name() : null,
-        comportamento,
-        maturidade != null ? maturidade.name() : null,
-        origem != null ? origem.name() : null,
-        sexo != null ? sexo.name() : null,
-        pageable
-    );
+        if(content.isEmpty()){
+            content = new ArrayList<>();
+        }
 
-    List<AnimalPaginadoResposta> dtos = page.getContent().stream().map(arr -> {
-        // Ordem conforme select em findAllPorFiltroBasico
-        Long id = ((Number) arr[0]).longValue();
-        String chipId = (String) arr[1];
-        String nomeVal = (String) arr[2];
-        String maturidadeVal = (String) arr[3];
-        String racaVal = (String) arr[4];
-        String sexoVal = (String) arr[5];
-        String origemVal = (String) arr[6];
-        String porteVal = (String) arr[7];
-        String comportamentoVal = (String) arr[8];
-        String especieVal = (String) arr[9];
-        String statusVal = (String) arr[10];
-        return AnimalPaginadoResposta.builder()
-            .id(id)
-            .chipId(chipId)
-            .nome(nomeVal)
-            .maturidade(maturidadeVal)
-            .raca(racaVal)
-            .sexo(sexoVal)
-            .origem(origemVal)
-            .porte(porteVal)
-            .comportamento(comportamentoVal)
-            .especie(especieVal)
-            .status(statusVal)
-            .build();
-    }).toList();
-
-    return new PageImpl<>(dtos, pageable, page.getTotalElements());
-    }
+        return new PageImpl<>(content, pageable, content.size());
+}
 
     @Override
     public Long contarQuantidadeAnimais() {
+
+        System.out.println("qunatiadeeeeeeeeeeee" + animalRepository.count());
+
         return animalRepository.count();
     }
 
-
     private void verificarSeOAnimalNaoEstaFalecido(Animal animal) {
-        if (animal.getStatusEnum().getStatus().equals(StatusEnum.FALECIDO.getStatus())) {
+        if (obitoRepository.findByAnimalId(animal.getId()) != null) {
             throw PetXException.animalJaFalecido(animal.getChipId());
         }
     }
@@ -391,6 +355,7 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "stats", key = "'TOTAL_ANIMAIS'")
     public AnimalGenericoResposta salvarAnimal(AnimalGenericoRequisicao animalGenericoRequisicao) {
 
         var animal = AnimalMapper.converterParaAnimal(animalGenericoRequisicao);
@@ -401,6 +366,30 @@ public class AnimalServiceImpl implements AnimalService {
             return AnimalMapper.converterParaRespostaAnimalComConjuntoDTO(animal);
         }
         return null;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AnimalPaginadoResposta> paginarAnimaisParaAdocao(
+            String nome,
+            String raca,
+            EspecieEnum especie,
+            PorteEnum porte,
+            SaudeEnum saude,
+            String comportamento,
+            MaturidadeEnum maturidade,
+            OrigemAnimalEnum origem,
+            SexoEnum sexo,
+            Pageable pageable) {
+
+
+                var pageContent = animalRepository.findAll(
+                        AnimalSpecs.filtro(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, AdocaoEnum.DISPONIVEL),
+                        pageable
+                );
+
+                var converteListaAnimal = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(pageContent.getContent());
+
+        return new PageImpl<>(converteListaAnimal, pageable, pageContent.getTotalElements());
     }
 }
 

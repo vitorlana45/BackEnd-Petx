@@ -24,66 +24,20 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, JpaSpecif
     Optional<Animal> findAnimalById(Long id);
 
 
-    @Query(value = """
-    SELECT * FROM animal_tb a
-    WHERE
-        (
-            (:raca IS NULL OR LOWER(a.raca) LIKE LOWER(CONCAT('%', :raca, '%')))
-            AND
-            (:nome IS NULL OR LOWER(a.nome) LIKE LOWER(CONCAT(:nome, '%')))
-        )
-    AND (:especie IS NULL OR a.especie = :especie)
-    AND (:porte IS NULL OR a.porte = :porte)
-    AND (:status IS NULL OR a.status = :status)
-    AND (:comportamento IS NULL OR a.comportamento = :comportamento)
-    AND (:maturidade IS NULL OR a.maturidade = :maturidade)
-    AND (:origem IS NULL OR a.origem = :origem)
-    AND (:sexo IS NULL OR a.sexo = :sexo)
-""",
-            countQuery = """
-    SELECT COUNT(*) FROM animal_tb a
-    WHERE
-        (
-            (:raca IS NULL OR LOWER(a.raca) LIKE LOWER(CONCAT('%', :raca, '%')))
-            AND
-            (:nome IS NULL OR LOWER(a.nome) LIKE LOWER(CONCAT(:nome, '%')))
-        )
-    AND (:especie IS NULL OR a.especie = :especie)
-    AND (:porte IS NULL OR a.porte = :porte)
-    AND (:status IS NULL OR a.status = :status)
-    AND (:comportamento IS NULL OR a.comportamento = :comportamento)
-    AND (:maturidade IS NULL OR a.maturidade = :maturidade)
-    AND (:origem IS NULL OR a.origem = :origem)
-    AND (:sexo IS NULL OR a.sexo = :sexo)
-""",
-            nativeQuery = true)
-    Page<Animal> findAllPorFiltro(
-            @Param("nome") String nome,
-            @Param("raca") String raca,
-            @Param("especie") String especie,
-            @Param("porte") String porte,
-            @Param("status") String status,
-            @Param("comportamento") String comportamento,
-            @Param("maturidade") String maturidade,
-            @Param("origem") String origem,
-            @Param("sexo") String sexo,
-            Pageable pageable);
-
-    // Consulta simplificada apenas com campos básicos evitando carregar relacionamentos (para paginação rápida)
-    @Query(value = "SELECT a.id, a.chip_id, a.nome, a.maturidade, a.raca, a.sexo, a.origem, a.porte, a.comportamento, a.especie, a.status FROM animal_tb a WHERE (:raca IS NULL OR LOWER(a.raca) LIKE LOWER(CONCAT('%', :raca, '%'))) AND (:nome IS NULL OR LOWER(a.nome) LIKE LOWER(CONCAT(:nome, '%'))) AND (:especie IS NULL OR a.especie = :especie) AND (:porte IS NULL OR a.porte = :porte) AND (:status IS NULL OR a.status = :status) AND (:comportamento IS NULL OR a.comportamento = :comportamento) AND (:maturidade IS NULL OR a.maturidade = :maturidade) AND (:origem IS NULL OR a.origem = :origem) AND (:sexo IS NULL OR a.sexo = :sexo)",
-        countQuery = "SELECT COUNT(*) FROM animal_tb a WHERE (:raca IS NULL OR LOWER(a.raca) LIKE LOWER(CONCAT('%', :raca, '%'))) AND (:nome IS NULL OR LOWER(a.nome) LIKE LOWER(CONCAT(:nome, '%'))) AND (:especie IS NULL OR a.especie = :especie) AND (:porte IS NULL OR a.porte = :porte) AND (:status IS NULL OR a.status = :status) AND (:comportamento IS NULL OR a.comportamento = :comportamento) AND (:maturidade IS NULL OR a.maturidade = :maturidade) AND (:origem IS NULL OR a.origem = :origem) AND (:sexo IS NULL OR a.sexo = :sexo)",
-        nativeQuery = true)
-    Page<Object[]> findAllPorFiltroBasico(
-        @Param("nome") String nome,
-        @Param("raca") String raca,
-        @Param("especie") String especie,
-        @Param("porte") String porte,
-        @Param("status") String status,
-        @Param("comportamento") String comportamento,
-        @Param("maturidade") String maturidade,
-        @Param("origem") String origem,
-        @Param("sexo") String sexo,
-        Pageable pageable);
+//    @Query("""
+//select a.id as id,
+//       a.nome as nome,
+//       a.raca as raca,
+//       cast(a.especieEnum as string) as especieEnum,
+//       cast(a.porteEnum as string) as porteEnum,
+//       mf.objectKey as thumbKey
+//from Animal a
+//left join AnimalPhoto ap on ap.animal = a and ap.featured = true and ap.archived = false
+//left join MediaFile mf on mf = ap.media
+//where a.arquivado = false
+//  and (:nome is null or lower(a.nome) like lower(concat(:nome, '%')))
+//""")
+//    Page<AnimalCardProjection> listarAnimaisComThumb(@Param("nome") String nome, Pageable pageable);
 
     // Estatística direta por origem garantindo que só conte animais com origem definida
     @Query("SELECT a.origemEnum as label, COUNT(a) as total FROM Animal a GROUP BY a.origemEnum")

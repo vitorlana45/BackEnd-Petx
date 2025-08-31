@@ -6,6 +6,8 @@ import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Tutor;
 import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
+import org.ong.pet.pex.backendpetx.enums.AdocaoEnum;
+import org.ong.pet.pex.backendpetx.enums.SaudeEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalConjuntoRepository;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.TutorRepository;
@@ -92,7 +94,10 @@ public class TutorServiceImpl implements TutorService {
             animais.forEach(animal -> verificarSeTutorJaTemEsteAnimal(animal, tutor));
 
             tutor.getAnimais().addAll(animais);
-            animais.forEach(animal -> animal.getTutores().add(tutor));
+            animais.forEach(animal -> {
+                animal.getTutores().add(tutor);
+                animal.setAdotado(AdocaoEnum.ADOTADO);
+            });
 
             tutorRepository.save(tutor);
             animalRepository.saveAllAndFlush(animais);

@@ -79,6 +79,10 @@ public class Animal extends EntidadeBase {
     @Column(name = "cor_pelagem")
     private String corPelagem;
 
+    @Column(name = "adotado", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AdocaoEnum adotado = AdocaoEnum.DISPONIVEL;
+
     @Column(nullable = false)
     private boolean arquivado = false;
 
@@ -99,8 +103,8 @@ public class Animal extends EntidadeBase {
     private Set<String> doencas = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private StatusEnum statusEnum;
+    @Column(name = "saude")
+    private SaudeEnum saudeEnum;
 
     @Column(name = "condicao_animal")
     private String condicaoAnimal;

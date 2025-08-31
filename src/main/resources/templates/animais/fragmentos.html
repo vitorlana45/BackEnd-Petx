@@ -39,11 +39,9 @@
 
                                 <div class="ratio ratio-1x1 p-3">
                                     <img th:src="@{/images/icon-dog.svg}" alt="" class="img-fluid object-fit-contain" loading="lazy">
-                                    <span class="badge ms-2" th:switch="${animal.status}">
-                                          <span class="badge bg-success" th:case="'SAUDAVEL'" th:text="${animal.status}">SAUDAVEL</span>
-                                          <span class="badge bg-danger" th:case="'DOENTE'" th:text="${animal.status}">DOENTE</span>
-                                          <span class="badge bg-info" th:case="'ADOTADO'" th:text="${animal.status}">ADOTADO</span>
-                                          <span class="badge bg-secondary" th:case="*" th:text="${animal.status}">STATUS</span>
+                                    <span class="badge ms-2" th:switch="${animal.saude}">
+                                          <span class="badge bg-success" th:case="'SAUDAVEL'" th:text="${animal.saude}">SAUDAVEL</span>
+                                          <span class="badge bg-danger" th:case="'DOENTE'" th:text="${animal.saude}">DOENTE</span>
                                     </span>
                                 </div>
                                 <div class="d-flex align-items-start justify-content-between gap-2 mb-1">
@@ -113,11 +111,9 @@
                             <td th:text="${animal.porte}">Porte</td>
                             <td th:text="${animal.sexo}">Sexo</td>
                             <td>
-                                <span th:switch="${animal.status}">
-                                  <span class="badge bg-success"   th:case="'SAUDAVEL'" th:text="${animal.status}">SAUDAVEL</span>
-                                  <span class="badge bg-danger"    th:case="'DOENTE'"   th:text="${animal.status}">DOENTE</span>
-                                  <span class="badge bg-info"      th:case="'ADOTADO'"  th:text="${animal.status}">ADOTADO</span>
-                                  <span class="badge bg-secondary" th:case="*"          th:text="${animal.status}">STATUS</span>
+                                <span th:switch="${animal.saude}">
+                                  <span class="badge bg-success"   th:case="'SAUDAVEL'" th:text="${animal.saude}">SAUDAVEL</span>
+                                  <span class="badge bg-danger"    th:case="'DOENTE'"   th:text="${animal.saude}">DOENTE</span>
                                 </span>
                             </td>
                             <td th:text="${animal.chipId ?: '-'}">Chip</td>

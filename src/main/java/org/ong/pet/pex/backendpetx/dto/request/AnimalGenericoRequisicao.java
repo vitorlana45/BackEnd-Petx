@@ -55,8 +55,8 @@ public class AnimalGenericoRequisicao {
 
     private String condicaoAnimal;
 
-    @NotNull(message = "O status de vida é obrigatório")
-    private StatusEnum status;
+    @NotNull(message = "O estado de saúde é obrigatório")
+    private SaudeEnum saude;
 
     // Arquivo da imagem principal do perfil (multipart)
     private MultipartFile imagemPrincipalPerfil;

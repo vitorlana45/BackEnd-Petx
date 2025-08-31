@@ -13,26 +13,26 @@ import org.slf4j.LoggerFactory;
  * tornando-as disponíveis imediatamente para todas as partes do sistema.
  */
 @Configuration
-public class EstatisticasInitializr implements ApplicationRunner {
+public class EstatisticasInitializr {
 
     private static final Logger logger = LoggerFactory.getLogger(EstatisticasInitializr.class);
 
-    private final StatisticServiceImpl statisticService;
+//    private final StatisticServiceImpl statisticService;
 
-    public EstatisticasInitializr(StatisticServiceImpl statisticService) {
-        this.statisticService = statisticService;
-    }
+//    public EstatisticasInitializr(StatisticServiceImpl statisticService) {
+//        this.statisticService = statisticService;
+//    }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        logger.info("Iniciando carregamento das estatísticas do sistema...");
-
-        try {
-            // Carrega todas as estatísticas no cache
-            statisticService.carregarTodasEstatisticas();
-            logger.info("Estatísticas do sistema carregadas com sucesso!");
-        } catch (Exception e) {
-            logger.error("Erro ao carregar estatísticas do sistema: {}", e.getMessage(), e);
-        }
-    }
+//    @Override
+//    public void run(ApplicationArguments args) throws Exception {
+//        logger.info("Iniciando carregamento das estatísticas do sistema...");
+//
+//        try {
+//            // Carrega todas as estatísticas no cache
+//            statisticService.recarregarEstatisticas();
+//            logger.info("Estatísticas do sistema carregadas com sucesso!");
+//        } catch (Exception e) {
+//            logger.error("Erro ao carregar estatísticas do sistema: {}", e.getMessage(), e);
+//        }
+//    }
 }

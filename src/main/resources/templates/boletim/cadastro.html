@@ -30,8 +30,12 @@
             <!-- summary de erros globais -->
 
 
-            <form th:action="@{/boletins/salvar}" th:object="${boletim}" method="post" class="row g-3" id="formBoletim">
+            <form th:action="@{/boletins/salvar}"
+                  th:object="${boletim}" method="post"
+                  class="row g-3" id="formBoletim"
+                  enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
                 <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
                     <ul class="mb-0">
                         <!--                    <li th:each="ge : ${#fields.globalErrors()}" th:text="${ge}"></li>-->
@@ -209,11 +213,11 @@
 
                 <div class="col-md-6">
                     <label class="form-label">Status <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{animal.status}" required>
+                    <select class="form-select" th:field="*{animal.saude}" required>
                         <option value="">Selecione</option>
                         <option th:each="st : ${statusEnum}" th:value="${st.name()}" th:text="${st}"></option>
                     </select>
-                    <div class="text-danger" th:errors="*{animal.status}"></div>
+                    <div class="text-danger" th:errors="*{animal.saude}"></div>
                 </div>
 
                 <!-- Mãezinha -->
@@ -254,6 +258,17 @@
                     <label class="form-label">Condição do Animal</label>
                     <textarea class="form-control" rows="3" th:field="*{animal.condicaoAnimal}"></textarea>
                     <div class="text-danger" th:errors="*{animal.condicaoAnimal}"></div>
+                </div>
+
+
+                <div class="col-12">
+                    <label class="form-label">Fotos do Resgate</label>
+                    <!-- repare no name explicitamente prefixado -->
+                    <input type="file" class="form-control"
+                           name="arquivos"
+                           accept="image/*"
+                           multiple>
+                    <small class="text-muted">JPG/PNG, até 10MB por arquivo.</small>
                 </div>
 
                 <div class="col-12 mt-3">

@@ -1,13 +1,17 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.dto.file.FotosBean;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
+import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
+import org.ong.pet.pex.backendpetx.service.impl.MediaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,20 +21,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 @Controller
 @RequestMapping("/boletins")
 public class BoletimController {
 
     private final BoletimService boletimService;
+    private final MediaService mediaService;
 
-    public BoletimController(BoletimService boletimService) {
+    public BoletimController(BoletimService boletimService, MediaService mediaService) {
         this.boletimService = boletimService;
+        this.mediaService = mediaService;
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
@@ -38,12 +46,15 @@ public class BoletimController {
     public String novo(Model model) {
         BoletimDTORequisicao req = new BoletimDTORequisicao();
 
-        // evita NPE no binding aninhado
+        // evita NPE no
+        // binding aninhado
         if (req.getAnimal() == null) req.setAnimal(new AnimalDTO());
         if (req.getAnimal().getMaezinhaComFilhotes() == null) {
             req.getAnimal().setMaezinhaComFilhotes(new MaezinhaComFilhotesDTO());
         }
 
+        FotosBean FotosBean = new FotosBean(List.of());
+        model.addAttribute("fotos", FotosBean);
         model.addAttribute("boletim", req);
         model.addAttribute("currentPage", "/boletins/form");
         carregarCombos(model);
@@ -55,6 +66,7 @@ public class BoletimController {
     public String createBoletim(@Valid @ModelAttribute("boletim") BoletimDTORequisicao dto,
                                 BindingResult br,
                                 RedirectAttributes redirectAttrs,
+                                @ModelAttribute("fotos") FotosBean fotos,
                                 Model model) {
         // Regras de negócio de "mãezinha"
 
@@ -73,16 +85,30 @@ public class BoletimController {
                 a.setMaezinhaComFilhotes(null);
             }
         }
-
         if (br.hasErrors()) {
             carregarCombos(model);
             model.addAttribute("currentPage", "/boletins/form");
             return "boletim/cadastro";
         }
 
-        boletimService.createBoletim(dto);
+        var boletim = boletimService.createBoletim(dto);
+
+        if (fotos != null && fotos.getArquivos() != null) {
+            fotos.getArquivos().stream()
+                    .filter(f -> f != null && !f.isEmpty())
+                    .forEach(file -> {
+                        mediaService.uploadAndLink(
+                                file,
+                                MediaTargetType.ANIMAL,
+                                boletim.getAnimal().getId(),
+                                MediaUsage.RESGATE,
+                                0
+                        );
+                    });
+        }
+
         redirectAttrs.addFlashAttribute("cadastroSucesso", true);
-        return "redirect:/animais"; // PRG
+        return "redirect:/animais/" + boletim.getAnimal().getId();
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
@@ -148,8 +174,8 @@ public class BoletimController {
                 .toArray(PorteEnum[]::new));
         
         // Sort StatusEnum values alphabetically by status property
-        model.addAttribute("statusEnum", Arrays.stream(StatusEnum.values())
-                .sorted(Comparator.comparing(StatusEnum::getStatus))
-                .toArray(StatusEnum[]::new));
+        model.addAttribute("statusEnum", Arrays.stream(SaudeEnum.values())
+                .sorted(Comparator.comparing(SaudeEnum::getStatus))
+                .toArray(SaudeEnum[]::new));
     }
 }

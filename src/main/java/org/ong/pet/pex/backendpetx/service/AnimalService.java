@@ -24,9 +24,9 @@ public interface AnimalService {
 
     AnimalGenericoResposta buscarAnimalPorChip(String chip);
 
-    Page<AnimalPaginadoResposta> paginarAnimais(String nome, String raca, EspecieEnum especie, PorteEnum porte, StatusEnum status,
-                                                String doenca, String comportamento, MaturidadeEnum maturidade,
-                                                OrigemAnimalEnum origem, SexoEnum sexo, Pageable pageable);
+    Page<AnimalPaginadoResposta> paginarAnimais(String nome, String raca, EspecieEnum especie, PorteEnum porte, SaudeEnum saudeEnum,
+                                                String comportamento, MaturidadeEnum maturidade,
+                                                OrigemAnimalEnum origem, SexoEnum sexo, AdocaoEnum adocaoEnum, Pageable pageable);
 
     Long contarQuantidadeAnimais();
 
@@ -37,5 +37,9 @@ public interface AnimalService {
     void atualizarResumoSaude(Long id, String doencasLista);
 
     AnimalGenericoResposta salvarAnimal(AnimalGenericoRequisicao animalGenericoRequisicao);
+
+    Page<AnimalPaginadoResposta> paginarAnimaisParaAdocao(String nome, String raca, EspecieEnum especie, PorteEnum porte, SaudeEnum saudeEnum,
+                                               String comportamento, MaturidadeEnum maturidade,
+                                                OrigemAnimalEnum origem, SexoEnum sexo, Pageable pageable);
 
 }

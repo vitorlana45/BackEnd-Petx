@@ -6,7 +6,7 @@ import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.ResgateRapidoDTO;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.enums.Destino;
-import org.ong.pet.pex.backendpetx.enums.StatusEnum;
+import org.ong.pet.pex.backendpetx.enums.SaudeEnum;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.ong.pet.pex.backendpetx.service.mappers.ResgateRapidoMapper;
 import org.springframework.data.domain.Page;
@@ -72,7 +72,7 @@ public class ResgateController {
     model.addAttribute("destinoFiltro", destino);
     model.addAttribute("numeroFiltro", numeroOcorrencia);
     model.addAttribute("origens", Destino.values());
-    model.addAttribute("statusList", StatusEnum.values()); // placeholder para futura filtragem por status
+    model.addAttribute("statusList", SaudeEnum.values()); // placeholder para futura filtragem por status
 
     // Determina aba ativa: prioridade para parâmetro explícito; senão inferir se há filtros/paginação
     String activeTab = (tab != null && !tab.isBlank()) ? tab : "recentes";

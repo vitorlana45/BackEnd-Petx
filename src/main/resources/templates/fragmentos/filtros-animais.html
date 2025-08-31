@@ -71,10 +71,10 @@
           </select>
         </div>
         <div class="col-6 col-sm-4 col-md-2">
-          <label class="form-label" for="status" th:text="#{animal.status}">Status</label>
-          <select id="status" name="status" class="form-select" th:aria-label="'Filtrar por ' + #{animal.status}">
+          <label class="form-label" for="status" th:text="#{animal.saude}">Saude</label>
+          <select id="status" name="status" class="form-select" th:aria-label="'Filtrar por ' + #{animal.saude}">
             <option th:selected="${status == null}" value="">Todos</option>
-            <option th:each="s : ${T(org.ong.pet.pex.backendpetx.enums.StatusEnum).values()}"
+            <option th:each="s : ${T(org.ong.pet.pex.backendpetx.enums.SaudeEnum).values()}"
                     th:value="${s}"
                     th:text="#{${'status.' + s}}"
                     th:selected="${status == s}"></option>

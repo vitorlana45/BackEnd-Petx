@@ -137,7 +137,7 @@ body {
 
 /* Container com largura máxima para melhor visualização em telas grandes */
 .container-max {
-  max-width: 1400px;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }

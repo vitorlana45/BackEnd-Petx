@@ -4,6 +4,7 @@ import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Boletim;
+import org.ong.pet.pex.backendpetx.enums.AdocaoEnum;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
@@ -13,6 +14,8 @@ import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
 import org.ong.pet.pex.backendpetx.service.mappers.BoletimMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,7 @@ public class BoletimServiceImpl implements BoletimService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = {"stats"}, key = "'TOTAL_ANIMAIS'", allEntries = false)
     public BoletimDTOResposta createBoletim(BoletimDTORequisicao boletimDTO) {
 
 
@@ -61,6 +65,7 @@ public class BoletimServiceImpl implements BoletimService {
 
         Animal newAnimal = AnimalMapper.converterParaAnimal(boletimDTO.getAnimal());
         newAnimal.setOng(ongRepository.findById(1L).orElse(null));
+        newAnimal.setAdotado(AdocaoEnum.DISPONIVEL);
         newAnimal = animalRepository.save(newAnimal);
         
         boletim.setAnimal(newAnimal);

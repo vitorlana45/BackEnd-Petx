@@ -42,7 +42,7 @@ public class ResgateRapidoMapper {
         animalDTO.setSexo(resgateRapido.getSexo());
         animalDTO.setCorPelagem(resgateRapido.getCor());
         animalDTO.setPorte(resgateRapido.getPorte());
-        animalDTO.setStatus(resgateRapido.getStatusSaude());
+        animalDTO.setSaude(resgateRapido.getStatusSaude());
         animalDTO.setRaca("SRD"); // Padrão para cadastro rápido
         animalDTO.setOrigem(resgateRapido.getOrigem());
         animalDTO.setDestino(Destino.ABRIGO);

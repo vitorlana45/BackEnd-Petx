@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      lang="pt-BR"
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<link rel="stylesheet" th:href="@{/css/estilo.css}">
 <head>
     <title>Novo Tutor - PetX</title>
 </head>
 <body>
-<section class="container-xl">
+<section class="container-xxl">
 
-    <!-- Mensagens globais (opcional)
-    <div class="mt-3" th:replace="~{fragmentos/messages :: messages}"></div> -->
-
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center my-3">
         <h2 class="mb-0">Cadastrar Novo Tutor</h2>
         <a class="btn btn-outline-secondary" th:href="@{/tutores}">
@@ -18,83 +16,152 @@
         </a>
     </div>
 
+    <!-- Grade 3 colunas: Filtro | Form | Resultados -->
     <div class="row g-4 mb-4">
-        <!-- FORM -->
-        <div class="col-12 col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0">Formulário de Cadastro</h5>
+
+        <!-- COLUNA 1: FILTRO -->
+        <aside class="col-12 col-xl-3">
+            <div class="card shadow-sm sticky-top" style="top:1rem;">
+                <div class="card-header py-2">
+                    <h5 class="h6 mb-0"><i class="fas fa-filter me-2"></i>Filtros de Busca de Animais</h5>
                 </div>
+
                 <div class="card-body">
-                    <form method="post"
-                          th:action="@{/tutores/salvar}"
-                          class="row g-3"
-                          id="form-tutor"
-                          th:object="${tutor}"
-                          novalidate>
+                    <form id="form-filtros-animais" class="row g-2" method="get"
+                          th:attr="hx-get=@{/tutores/selector}"
+                          hx-target="#resultado-animais"
+                          hx-include="#form-filtros-animais"
+                          hx-push-url="false"
+                          hx-trigger="submit, keyup changed delay:400ms from:#form-filtros-animais">
+
+                        <div class="col-12">
+                            <label class="form-label small">Nome</label>
+                            <input name="nome" class="form-control form-control-sm" placeholder="Digite...">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small">Chip ID</label>
+                            <input name="chipId" class="form-control form-control-sm" placeholder="Chip...">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small">Espécie</label>
+                            <select name="especie" class="form-select form-select-sm">
+                                <option value="">Todas</option>
+                                <option th:each="esp : ${especies}" th:value="${esp}" th:text="${esp.especie}">Espécie</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small">Status</label>
+                            <select name="status" class="form-select form-select-sm">
+                                <option value="">Todos</option>
+                                <option th:each="st : ${status}" th:value="${st}" th:text="${st.status}">Status</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small">Porte</label>
+                            <select name="porte" class="form-select form-select-sm">
+                                <option value="">Todos</option>
+                                <option th:each="p : ${portes}" th:value="${p}" th:text="${p.porte}">Porte</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small">Sexo</label>
+                            <select name="sexo" class="form-select form-select-sm">
+                                <option value="">Todos</option>
+                                <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.sexo}">Sexo</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small">Origem</label>
+                            <select name="origem" class="form-select form-select-sm">
+                                <option value="">Todas</option>
+                                <option th:each="o : ${origens}" th:value="${o}" th:text="${o.origemAnimal}">Origem</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                            <button type="submit" class="btn btn-success btn-sm px-3">
+                                <i class="fas fa-search me-1"></i>Buscar
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm px-3"
+                                    onclick="document.getElementById('form-filtros-animais').reset();
+                                    htmx.trigger('#form-filtros-animais','submit')">
+                                <i class="fas fa-times me-1"></i>Limpar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- COLUNA 2: FORMULÁRIO (MEIO) -->
+        <main class="col-12 col-xl-5">
+            <div class="card shadow-sm">
+                <div class="card-header py-2 d-flex align-items-center justify-content-between">
+                    <h5 class="h6 mb-0"><i class="fas fa-user-plus me-2"></i>Formulário de Cadastro</h5>
+                    <small class="text-muted">Selecione ao menos 1 animal ➜</small>
+                </div>
+
+                <div class="card-body">
+                    <form method="post" th:action="@{/tutores/salvar}" class="row g-3" id="form-tutor" th:object="${tutor}" novalidate>
                         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                        <div class="col-9">
+                            <label class="form-label" for="nome">Nome *</label>
+                            <input class="form-control" id="nome" th:field="*{nome}" required>
+                        </div>
+
+                        <div class="col-3">
+                            <label class="form-label small">idade *</label>
+                            <input name="idade" type="number" min="17" th:field="*{idade}" class="form-control form-control-sm" placeholder="Idade">
+                        </div>
 
                         <div class="col-md-6">
                             <label class="form-label" for="cpf">CPF *</label>
-                            <input type="text" class="form-control" id="cpf" th:field="*{cpf}" required
-                                   placeholder="000.000.000-00"
-                                   pattern="\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11}">
-                            <div class="form-text">Digite apenas os números ou use 000.000.000-00</div>
+                            <input class="form-control" id="cpf" th:field="*{cpf}" required placeholder="000.000.000-00">
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="nome">Nome *</label>
-                            <input type="text" class="form-control" id="nome" th:field="*{nome}" required>
-                        </div>
-
-                        <div class="col-md-4">
                             <label class="form-label" for="telefone">Telefone *</label>
-                            <input type="text" class="form-control" id="telefone" th:field="*{telefone}" required
+                            <input class="form-control" id="telefone" th:field="*{telefone}" required
                                    placeholder="(00) 00000-0000"
                                    pattern="\(\d{2}\) \d{5}-\d{4}|\d{11}|\d{10}">
-                            <div class="form-text">Apenas números ou (00) 00000-0000</div>
-                        </div>
-
-                        <div class="col-md-2">
-                            <label class="form-label" for="idade">Idade *</label>
-                            <input type="number" class="form-control" id="idade" th:field="*{idade}" min="18" max="120" required>
                         </div>
 
                         <div class="col-12"><hr class="my-2"></div>
-                        <div class="col-12"><h5 class="mb-0">Endereço</h5></div>
+                        <div class="col-12"><h6 class="mb-0">Endereço</h6></div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label" for="cep">CEP *</label>
-                            <input type="text" class="form-control" id="cep" th:field="*{cep}" required
-                                   placeholder="00000-000" pattern="\d{5}-\d{3}|\d{8}">
+                            <input class="form-control" id="cep" th:field="*{cep}" required placeholder="00000-000" pattern="\d{5}-\d{3}|\d{8}">
                         </div>
 
-                        <div class="col-md-7">
+                        <div class="col-md-8">
                             <label class="form-label" for="logradouro">Rua *</label>
-                            <input type="text" class="form-control" id="logradouro" th:field="*{rua}" required>
+                            <input class="form-control" id="logradouro" th:field="*{rua}" required>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label" for="bairro">Bairro *</label>
+                            <input class="form-control" id="bairro" th:field="*{bairro}" required>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label" for="cidade">Cidade *</label>
+                            <input class="form-control" id="cidade" th:field="*{cidade}" required>
                         </div>
 
                         <div class="col-md-2">
-                            <label class="form-label" for="numero">Telefone</label>
-                            <input type="text" class="form-control" id="numero" th:field="*{telefone}">
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label" for="bairro">Bairro *</label>
-                            <input type="text" class="form-control" id="bairro" th:field="*{bairro}" required>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label" for="cidade">Cidade *</label>
-                            <input type="text" class="form-control" id="cidade" th:field="*{cidade}" required>
-                        </div>
-
-                        <div class="col-md-1">
                             <label class="form-label" for="estado">UF *</label>
-                            <input type="text" class="form-control text-uppercase" id="estado" th:field="*{estado}" maxlength="2" required>
+                            <input class="form-control text-uppercase" id="estado" th:field="*{estado}" maxlength="2" required>
                         </div>
 
-                        <!-- Hidden inputs dos animais selecionados -->
+                        <!-- Hidden inputs dos animais (preenchidos pelo JS no painel da direita) -->
                         <div id="animal-ids-container"></div>
 
                         <div class="col-12 mt-2 d-flex gap-2">
@@ -108,140 +175,56 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <!-- SIDEBAR: seletor de animais -->
-        <div class="col-12 col-md-4">
-            <div class="card shadow-sm sticky-md-top" style="top:1rem;">
-                <div class="card-header py-2 d-flex align-items-center">
-                    <i class="fas fa-paw me-2"></i>
-                    <h3 class="h6 mb-0">Buscar e associar animais</h3>
-                    <button id="btn-toggle-filtros" class="btn btn-sm btn-outline-info ms-auto d-inline-flex align-items-center gap-1"
-                            type="button" data-bs-toggle="collapse" data-bs-target="#filtros-collapse"
-                            aria-expanded="true" aria-controls="filtros-collapse">
-                        <i class="fas fa-chevron-up chevron-up"></i>
-                        <i class="fas fa-chevron-down chevron-down d-none"></i>
-                        <span class="txt-hide">Esconder filtros</span>
-                        <span class="txt-show d-none">Mostrar filtros</span>
-                    </button>
+        <!-- COLUNA 3: RESULTADOS + CHIPS DE SELEÇÃO -->
+        <aside class="col-12 col-xl-4">
+            <div class="card shadow-sm sticky-top" style="top:1rem;">
+                <div class="card-header py-2 d-flex align-items-center justify-content-between">
+                    <h5 class="h6 mb-0"><i class="fas fa-paw me-2"></i>Animais</h5>
+                    <span class="small text-muted">
+            <span id="count-selecionados">0</span> selecionado(s)
+          </span>
                 </div>
 
-                <div id="filtros-collapse" class="collapse show">
-                    <div class="card-body py-3">
-                        <!-- O FORM é o motor do HTMX -->
-                        <form id="form-filtros-animais"
-                              method="get"
-                              class="row g-3"
-                              th:attr="hx-get=@{/tutores/selector}"
-                              hx-target="#resultado-animais"
-                              hx-include="#form-filtros-animais"
-                              hx-push-url="false"
-                              hx-trigger="submit, keyup changed delay:400ms from:#form-filtros-animais">
+                <div class="card-body pt-3">
+                    <!-- Chips -->
+                    <div id="chips-selecionados" class="mb-2 d-flex flex-wrap gap-2"></div>
 
-                            <div class="col-12 col-sm-6">
-                                <label class="form-label small">Nome</label>
-                                <input name="nome" class="form-control form-control-sm" placeholder="Digite...">
-                            </div>
-
-                            <div class="col-12 col-sm-6">
-                                <label class="form-label small">Chip ID</label>
-                                <input name="chipId" class="form-control form-control-sm" placeholder="Chip...">
-                            </div>
-
-                            <div class="col-12 col-sm-6">
-                                <label class="form-label small">Espécie</label>
-                                <select name="especie" class="form-select form-select-sm">
-                                    <option value="">Todas</option>
-                                    <option th:each="esp : ${especies}" th:value="${esp}" th:text="${esp.especie}">Espécie</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12 col-sm-6">
-                                <label class="form-label small">Status</label>
-                                <select name="status" class="form-select form-select-sm">
-                                    <option value="">Todos</option>
-                                    <option th:each="st : ${status}" th:value="${st}" th:text="${st.status}">Status</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12 col-sm-6">
-                                <label class="form-label small">Porte</label>
-                                <select name="porte" class="form-select form-select-sm">
-                                    <option value="">Todos</option>
-                                    <option th:each="p : ${portes}" th:value="${p}" th:text="${p.porte}">Porte</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12 col-sm-6">
-                                <label class="form-label small">Sexo</label>
-                                <select name="sexo" class="form-select form-select-sm">
-                                    <option value="">Todos</option>
-                                    <option th:each="s : ${sexos}" th:value="${s}" th:text="${s.sexo}">Sexo</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12">
-                                <label class="form-label small">Origem</label>
-                                <select name="origem" class="form-select form-select-sm">
-                                    <option value="">Todas</option>
-                                    <option th:each="o : ${origens}" th:value="${o}" th:text="${o.origemAnimal}">Origem</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12 d-flex justify-content-end gap-2 pt-2">
-                                <button type="submit" class="btn btn-success btn-sm px-4">
-                                    <i class="fas fa-search me-1"></i>Buscar
-                                </button>
-
-                                <a href="#"
-                                   class="btn btn-outline-danger btn-sm px-4"
-                                   onclick="document.getElementById('form-filtros-animais').reset(); return false;"
-                                   th:attr="hx-get=@{/tutores/selector}"
-                                   hx-target="#resultado-animais"
-                                   hx-include="#form-filtros-animais"
-                                   hx-push-url="false">
-                                    <i class="fas fa-times me-1"></i>Limpar
-                                </a>
-                            </div>
-                        </form>
+                    <!-- Lista HTMX -->
+                    <div id="resultado-animais"
+                         class="list-group border rounded overflow-auto"
+                         style="max-height: calc(100vh - 320px);"
+                         aria-live="polite">
+                        <div class="list-group-item small text-muted">
+                            Use os filtros à esquerda…
+                        </div>
                     </div>
-                </div>
-
-                <div class="px-3 pt-2">
-                    <div class="small text-muted mb-1">
-                        Selecionados: <strong id="count-selecionados">0</strong>
-                    </div>
-                    <div id="chips-selecionados" class="d-flex flex-wrap gap-2 mb-2"></div>
-                </div>
-
-                <div id="resultado-animais" class="list-group list-group-flush" aria-live="polite">
-                    <div class="list-group-item small text-muted">Use os filtros acima para buscar animais…</div>
-                    <!-- Se quiser carregar a 1ª página no load, no controller da página preencha 'page' e:
-                    th:replace="~{animais/selector :: selector}" -->
                 </div>
             </div>
-        </div>
+        </aside>
+
     </div>
 
+    <!-- Alerts -->
     <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="fas fa-check-circle me-2"></i><span th:text="${mensagemSucesso}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-
     <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="fas fa-exclamation-circle me-2"></i><span th:text="${mensagemErro}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <!-- ViaCEP + Seletor -->
+    <!-- Scripts -->
     <script th:inline="javascript">
+        // ViaCEP
         document.addEventListener('DOMContentLoaded', function () {
             const cepInput = document.getElementById('cep');
             const logradouro = document.getElementById('logradouro');
             const bairro = document.getElementById('bairro');
             const cidade = document.getElementById('cidade');
             const estado = document.getElementById('estado');
-            const numero = document.getElementById('numero');
 
             cepInput.addEventListener('blur', function () {
                 const cep = this.value.replace(/\D/g, '');
@@ -254,102 +237,92 @@
                                 bairro.value = data.bairro || '';
                                 cidade.value = data.localidade || '';
                                 estado.value = data.uf || '';
-                                numero.focus();
                             }
                         })
                         .catch(()=>{});
                 }
             });
-
-            // Toggle do botão de filtros
-            const btn = document.getElementById('btn-toggle-filtros');
-            const up = btn.querySelector('.chevron-up');
-            const down = btn.querySelector('.chevron-down');
-            const txtHide = btn.querySelector('.txt-hide');
-            const txtShow = btn.querySelector('.txt-show');
-            const col = document.getElementById('filtros-collapse');
-
-            col.addEventListener('shown.bs.collapse', () => {
-                up.classList.remove('d-none'); down.classList.add('d-none');
-                txtHide.classList.remove('d-none'); txtShow.classList.add('d-none');
-            });
-            col.addEventListener('hidden.bs.collapse', () => {
-                up.classList.add('d-none'); down.classList.remove('d-none');
-                txtHide.classList.add('d-none'); txtShow.classList.remove('d-none');
-            });
         });
 
-        // === Seletor de Animais ===
+        // Seleção: controla chips + hidden inputs + contador + habilita submit
         (function () {
             const idsContainer = document.getElementById('animal-ids-container');
             const chips = document.getElementById('chips-selecionados');
             const count = document.getElementById('count-selecionados');
             const btnSubmit = document.getElementById('btn-submit');
-            const btnLimpar = document.getElementById('btn-limpar-selecao'); // opcional se tiver botão
             const resultados = document.getElementById('resultado-animais');
 
-            const selecionados = new Map(); // id -> name
+            // id -> nome
+            const selecionados = new Map();
 
-            function render() {
-                chips.innerHTML = '';
+            function syncHiddenInputs() {
                 idsContainer.innerHTML = '';
+                selecionados.forEach((_, id) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'animalChips';
+                    input.value = id;
+                    idsContainer.appendChild(input);
+                });
+            }
 
+            function renderChips() {
+                chips.innerHTML = '';
                 selecionados.forEach((name, id) => {
                     const chip = document.createElement('span');
                     chip.className = 'badge rounded-pill bg-primary d-inline-flex align-items-center gap-1';
                     chip.innerHTML = `<i class="fas fa-paw"></i> ${name}
-                        <button type="button" class="btn-close btn-close-white ms-2 btn-remove-chip" aria-label="Remover" data-id="${id}"></button>`;
+            <button type="button" class="btn-close btn-close-white ms-2" aria-label="Remover" data-id="${id}"></button>`;
                     chips.appendChild(chip);
-
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'animalIds';
-                    input.value = id;
-                    idsContainer.appendChild(input);
                 });
-
                 count.textContent = selecionados.size;
                 btnSubmit.disabled = selecionados.size === 0;
+            }
 
-                resultados.querySelectorAll('.btn-add-animal').forEach(btn => {
-                    const id = btn.dataset.id;
-                    const isSel = selecionados.has(id);
-                    btn.classList.toggle('btn-outline-primary', !isSel);
-                    btn.classList.toggle('btn-outline-danger', isSel);
-                    btn.innerHTML = isSel
-                        ? '<i class="fas fa-times me-1"></i>Remover'
-                        : '<i class="fas fa-plus me-1"></i>Selecionar';
+            function reflectCheckboxes() {
+                resultados.querySelectorAll('input[type="checkbox"][data-animal-id]').forEach(cb => {
+                    const id = cb.dataset.animalId;
+                    cb.checked = selecionados.has(id);
+                    cb.closest('.list-group-item')?.classList.toggle('active', cb.checked);
                 });
             }
 
-            resultados.addEventListener('click', (e) => {
-                const btn = e.target.closest('.btn-add-animal');
+            function renderAll() {
+                syncHiddenInputs();
+                renderChips();
+                reflectCheckboxes();
+            }
+
+            // Clique nos checkboxes (lista)
+            resultados.addEventListener('change', (e) => {
+                const cb = e.target.closest('input[type="checkbox"][data-animal-id]');
+                if (!cb) return;
+                const id = cb.dataset.animalId;
+                const name = cb.dataset.animalName || 'Animal';
+                if (cb.checked) selecionados.set(id, name);
+                else selecionados.delete(id);
+                renderAll();
+            });
+
+            // Remover via chip
+            chips.addEventListener('click', (e) => {
+                const btn = e.target.closest('.btn-close[data-id]');
                 if (!btn) return;
                 const id = btn.dataset.id;
-                const name = btn.dataset.name || 'Animal';
-                if (selecionados.has(id)) selecionados.delete(id);
-                else selecionados.set(id, name);
-                render();
-            });
-
-            chips.addEventListener('click', (e) => {
-                const close = e.target.closest('.btn-remove-chip');
-                if (!close) return;
-                const id = close.dataset.id;
                 selecionados.delete(id);
-                render();
+                renderAll();
             });
 
-            if (btnLimpar) btnLimpar.addEventListener('click', () => { selecionados.clear(); render(); });
-
+            // Após HTMX atualizar a lista, refletir estado
             document.body.addEventListener('htmx:afterSwap', (e) => {
-                if (e.target && e.target.id === 'resultado-animais') { render(); }
+                if (e.target && e.target.id === 'resultado-animais') {
+                    reflectCheckboxes();
+                }
             });
 
-            render();
+            renderAll();
         })();
     </script>
-
 </section>
 </body>
 </html>
