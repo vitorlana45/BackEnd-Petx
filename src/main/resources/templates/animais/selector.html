@@ -72,48 +72,63 @@
 
 
 <th:block xmlns:th="http://www.thymeleaf.org" th:fragment="selector">
+
     <!-- Vazio -->
-    <div class="list-group-item small text-muted" th:if="${page.totalElements == 0}">
-        Nenhum animal encontrado.
+    <div class="text-center p-4 card" th:if="${page.totalElements == 0}">
+        <h5 class="mb-1">Nenhum animal encontrado</h5>
+        <p class="text-muted mb-0">Tente ajustar os filtros de busca.</p>
     </div>
 
-    <!-- Itens -->
-    <div class="list-group-item d-flex align-items-center justify-content-between"
-         th:each="a : ${animais}">
-        <div class="me-2">
-            <div class="fw-semibold" th:text="${a.nome}">Nome</div>
-            <div class="small text-muted">
-                <span th:text="${a.especie}">Espécie</span> •
-                <span th:text="${a.sexo}">Sexo</span> •
-                <span th:text="${a.porte}">Porte</span>
-                <span th:if="${a.chipId != null}"> • Chip: <span th:text="${a.chipId}">000</span></span>
+    <!-- Grid de Animais -->
+    <div class="row g-3" th:if="${page.totalElements > 0}">
+        <div class="col-12 col-md-6 col-lg-4" th:each="a : ${animais}">
+            <div class="card h-100 animal-selector-card">
+                <input class="form-check-input" type="checkbox" th:id="'animal-check-' + ${a.id}" th:attr="data-animal-id=${a.id},data-animal-name=${a.nome}">
+
+                <img th:src="@{${a.imagemPrincipalPerfil != null ? a.imagemPrincipalPerfil : '/img/placeholder.png'}}" class="card-img-top" alt="Foto do animal">
+
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title mb-1" th:text="${(a.nome != null and !a.nome.isEmpty()) ? a.nome : 'Animal Sem Nome'}">Nome do Animal</h6>
+                    <small class="card-subtitle mb-2 text-body-secondary" th:if="${a.chipId != null}">Chip: <span th:text="${a.chipId}">12345</span></small>
+
+                    <div class="mt-2">
+                        <div class="d-flex align-items-center text-body-secondary small mb-2">
+                            <i class="fas fa-paw fa-fw me-2"></i>
+                            <span th:text="${a.especie}">Espécie</span>
+                        </div>
+                        <div class="d-flex align-items-center text-body-secondary small mb-2">
+                            <i class="fas fa-ruler-combined fa-fw me-2"></i>
+                            <span th:text="${a.porte}">Porte</span>
+                        </div>
+                        <div class="d-flex align-items-center text-body-secondary small">
+                            <i th:class="'fas fa-fw me-2 ' + (${a.sexo.toString() == 'MACHO'} ? 'fa-mars' : 'fa-venus')"></i>
+                            <span th:text="${a.sexo}">Sexo</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-3">
+                        <label th:for="'animal-check-' + ${a.id}" class="btn btn-sm btn-outline-primary w-100 stretched-link">Selecionar</label>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- Checkbox de seleção (mais acessível) -->
-        <div class="form-check ms-2">
-            <input class="form-check-input"
-                   type="checkbox"
-                   th:attr="data-animal-id=${a.id},data-animal-name=${a.nome}">
-        </div>
     </div>
 
-    <!-- Paginação opcional (se quiser reaproveitar seu fragmento padrão) -->
-    <div class="list-group-item">
+    <!-- Paginação -->
+    <div class="mt-4" th:if="${page.totalPages > 1}">
         <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-sm btn-outline-secondary"
-                    th:if="${page.number > 0}"
-                    th:attr="hx-get=@{/tutores/selector(page=${page.number - 1})}"
-                    hx-target="#resultado-animais" hx-swap="innerHTML">
+            <button class="btn btn-sm btn-outline-secondary" th:if="${page.number > 0}" th:hx-get="@{/tutores/selector(page=${page.number - 1}, size=${page.size})}" hx-include="#form-filtros-animais" hx-target="#resultado-animais" hx-swap="innerHTML">
                 <i class="fas fa-chevron-left me-1"></i>Anterior
             </button>
+            <div th:unless="${page.number > 0}"></div> <!-- Placeholder -->
+
             <small class="text-muted">Página <span th:text="${page.number + 1}">1</span> de <span th:text="${page.totalPages}">1</span></small>
-            <button class="btn btn-sm btn-outline-secondary"
-                    th:if="${page.number + 1 < page.totalPages}"
-                    th:attr="hx-get=@{/tutores/selector(page=${page.number + 1})}"
-                    hx-target="#resultado-animais" hx-swap="innerHTML">
+
+            <button class="btn btn-sm btn-outline-secondary" th:if="${page.number + 1 < page.totalPages}" th:hx-get="@{/tutores/selector(page=${page.number + 1}, size=${page.size})}" hx-include="#form-filtros-animais" hx-target="#resultado-animais" hx-swap="innerHTML">
                 Próxima<i class="fas fa-chevron-right ms-1"></i>
             </button>
+            <div th:unless="${page.number + 1 < page.totalPages}"></div> <!-- Placeholder -->
         </div>
     </div>
+
 </th:block>

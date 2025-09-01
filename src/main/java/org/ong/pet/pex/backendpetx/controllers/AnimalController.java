@@ -57,14 +57,14 @@ public class AnimalController {
                                 @RequestParam(required = false) String raca,
                                 @RequestParam(required = false) EspecieEnum especie,
                                 @RequestParam(required = false) PorteEnum porte,
-                                @RequestParam(required = false) SaudeEnum status,
+                                @RequestParam(required = false) SaudeEnum saude,
                                 @RequestParam(required = false) String doenca,
                                 @RequestParam(required = false) String comportamento,
                                 @RequestParam(required = false) MaturidadeEnum maturidade,
                                 @RequestParam(required = false) OrigemAnimalEnum origem,
                                 @RequestParam(required = false) SexoEnum sexo,
                                 @RequestParam(required = false) AdocaoEnum adotado,
-                                @PageableDefault(size = 12) Pageable pageable,
+                                @PageableDefault(size = 10) Pageable pageable,
                                 @RequestHeader(value = "HX-Request", required = false) String htmx) {
 
         SmartPageHelper.setupAnimalsPage(model);
@@ -72,12 +72,12 @@ public class AnimalController {
         List<ActionButtonDTO> actionButtons = getActionButtonDTOS();
         model.addAttribute("actionButtons", actionButtons);
 
-        this.getPaginacaoAniamis(nome, raca, especie, porte, status, doenca, comportamento, maturidade, origem, sexo, adotado, pageable, model);
+        this.getPaginacaoAniamis(nome, raca, especie, porte, saude, doenca, comportamento, maturidade, origem, sexo, adotado, pageable, model);
         model.addAttribute("statsCard", montarStatsCard());
 
         // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
         if ("true".equalsIgnoreCase(htmx)) {
-            return "animais/fragmentos";
+            return "animais/fragmentos :: lista";
         }
 
         return "animais/lista";

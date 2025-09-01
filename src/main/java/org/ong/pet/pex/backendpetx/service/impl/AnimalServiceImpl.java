@@ -282,18 +282,16 @@ public class AnimalServiceImpl implements AnimalService {
             SexoEnum sexo, AdocaoEnum adotado,
             Pageable pageable
     ) {
-        var content = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(
-                animalRepository.findAll(
-                        AnimalSpecs.filtro(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, adotado),
-                        pageable
-                ).getContent()
+        var pageResult = animalRepository.findAll(
+                AnimalSpecs.filtro(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, adotado),
+                pageable
         );
 
-        if(content.isEmpty()){
-            content = new ArrayList<>();
-        }
+        var content = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(
+                pageResult.getContent()
+        );
 
-        return new PageImpl<>(content, pageable, content.size());
+        return new PageImpl<>(content, pageable, pageResult.getTotalElements());
 }
 
     @Override

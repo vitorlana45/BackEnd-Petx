@@ -3,6 +3,15 @@
        th:fragment="sidebar(uri)"
        class="px-sidebar" aria-label="Menu lateral">
 
+  <div class="px-header">
+      <a th:href="@{/home}" class="px-logo-link">
+          <!-- Seu logo aqui, se desejar -->
+      </a>
+      <button id="pxSidebarToggle" class="px-toggle" type="button" title="Recolher/Expandir">
+          <i class="fas fa-angle-double-left"></i>
+      </button>
+  </div>
+
   <nav class="px-nav">
     <ul class="px-menu">
 
@@ -150,9 +159,7 @@
         <span class="px-user-role" sec:authentication="principal.authorities">Função</span>
       </div>
     </div>
-    <button id="pxSidebarToggle" class="px-toggle" type="button" title="Recolher/Expandir">
-      <i class="fas fa-angle-double-left"></i>
-    </button>
   </div>
 </aside>
+<!-- ENCODING FIX -->
 

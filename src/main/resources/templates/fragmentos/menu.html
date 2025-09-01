@@ -60,7 +60,13 @@
             </ul>
 
             <!-- Menu do usuário -->
-            <ul class="navbar-nav">
+            <ul class="navbar-nav align-items-center">
+                <!-- Botão de Tema -->
+                <li class="nav-item me-2">
+                    <button id="theme-toggle" class="btn nav-link" type="button" title="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                         <i class="fas fa-user me-1"></i>

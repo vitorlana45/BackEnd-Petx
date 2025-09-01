@@ -139,7 +139,8 @@ public class GlobalExceptionHandler {
         // Para requisições normais, redireciona para a página de origem
         String referer = req.getHeader("Referer");
         if (referer != null) {
-            return "redirect:" + referer + "?erro=" + java.net.URLEncoder.encode(msg, java.nio.charset.StandardCharsets.UTF_8);
+            String separator = referer.contains("?") ? "&" : "?";
+            return "redirect:" + referer + separator + "erro=" + java.net.URLEncoder.encode(msg, java.nio.charset.StandardCharsets.UTF_8);
         }
         return "redirect:/animais?erro=" + java.net.URLEncoder.encode(msg, java.nio.charset.StandardCharsets.UTF_8);
     }
