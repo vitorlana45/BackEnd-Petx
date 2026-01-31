@@ -1,7 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
+import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamicaDTO;
 import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDinamicaDTO;
 import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
 import org.ong.pet.pex.backendpetx.entities.Despesa;
@@ -86,19 +86,25 @@ public class DespesaServiceImpl implements DespesaService {
         return new PageImpl<>(dtos, pageable, despesas.getTotalElements());
     }
 
-    @Override
+
     @Transactional
     public DespesaDTORespota atualizarDespesaDinamicamente(final Long id, final DespesaRequisicaoDinamicaDTO dto) {
         var entidade = despesaRepository.findById(id).orElseThrow(DespesaException::despesaNaoEncontrada);
 
-        if (dto.descricao() != null) entidade.setDescricao(dto.descricao());
-        if (dto.valor() != null) entidade.setValor(dto.valor());
-        if (dto.categoria() != null) entidade.setCategoria(dto.categoria());
-        if (dto.formaPagamento() != null) entidade.setFormaPagamento(dto.formaPagamento());
-        if (dto.dataPrevistaPagamento() != null) entidade.setDataPrevistaPagamento(dto.dataPrevistaPagamento());
-        if (dto.dataPagamento() != null) entidade.setDataPagamento(dto.dataPagamento());
-        if (dto.statusDespesa() != null) entidade.setStatusDespesa(dto.statusDespesa());
+//        if (dto.descricao() != null) entidade.setDescricao(dto.descricao());
+//        if (dto.valor() != null) entidade.setValor(dto.valor());
+//        if (dto.categoria() != null) entidade.setCategoria(dto.categoria());
+//        if (dto.formaPagamento() != null) entidade.setFormaPagamento(dto.formaPagamento());
+//        if (dto.dataPrevistaPagamento() != null) entidade.setDataPrevistaPagamento(dto.dataPrevistaPagamento());
+//        if (dto.dataPagamento() != null) entidade.setDataPagamento(dto.dataPagamento());
+//        if (dto.statusDespesa() != null) entidade.setStatusDespesa(dto.statusDespesa());
 
         return despesaMapper.mapearParaDTO(entidade);
     }
+
+    @Override
+    public Despesa buscarDespesaPorId(Long id) {
+        return despesaRepository.findById(id).orElseThrow(DespesaException::despesaNaoEncontrada);
+    }
+
 }

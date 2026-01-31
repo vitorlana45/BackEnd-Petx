@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Despesas Financeiras - PetX</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary mb-0">
+                    <i class="fas fa-file-invoice-dollar"></i> Gestão de Despesas
+                </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Despesas</li>
+                    </ol>
+                </nav>
+            </div>
+            <a href="/financeiro/despesas/nova" class="btn btn-danger">
+                <i class="fas fa-plus-circle me-2"></i> Nova Despesa
+            </a>
+        </div>
+
+        <!-- Cards de Resumo -->
+        <div class="row mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Total Pago (Mês)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">R$ <span th:text="${totalMes != null ? #numbers.formatDecimal(totalMes, 1, 'POINT', 2, 'COMMA') : '0,00'}">0,00</span></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Filtros de Pesquisa</h6>
+            </div>
+            <div class="card-body">
+                <form method="get" th:action="@{/financeiro/despesas}" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Descrição</label>
+                        <input type="text" class="form-control" name="descricao" th:value="${param.descricao}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Categoria</label>
+                        <select class="form-select" name="categoria">
+                            <option value="">Todas</option>
+                            <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}" th:selected="${param.categoria == cat.name()}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                         <select class="form-select" name="status">
+                            <option value="">Todos</option>
+                            <option th:each="st : ${statusList}" th:value="${st}" th:text="${st}" th:selected="${param.status == st.name()}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 align-self-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Filtrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Listagem de Despesas</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Vencimento</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Pagamento</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="despesa : ${despesas.content}">
+                                <td th:text="${#temporals.format(despesa.dataPrevistaPagamento, 'dd/MM/yyyy')}">01/01/2024</td>
+                                <td th:text="${despesa.descricao}">Compra de Ração</td>
+                                <td>
+                                    <span class="badge bg-warning-subtle text-dark" th:text="${despesa.categoria}">Ração</span>
+                                </td>
+                                <td class="text-danger font-weight-bold">
+                                    R$ <span th:text="${#numbers.formatDecimal(despesa.valor, 1, 'POINT', 2, 'COMMA')}">100,00</span>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${despesa.statusDespesa.name() == 'PAGO' ? 'bg-success' : (despesa.statusDespesa.name() == 'PENDENTE' ? 'bg-warning' : 'bg-danger')}"
+                                          th:text="${despesa.statusDespesa}">PAGO</span>
+                                </td>
+                                <td th:text="${despesa.formaPagamento}">PIX</td>
+                                <td>
+                                    <a th:href="@{/financeiro/despesas/{id}/editar(id=${despesa.id})}" class="btn btn-sm btn-info text-white" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form th:action="@{/financeiro/despesas/{id}/excluir(id=${despesa.id})}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                             <tr th:if="${despesas.empty}">
+                                <td colspan="7" class="text-center text-muted">Nenhuma despesa encontrada.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                 <!-- Paginação Simplificada -->
+                <div th:if="${despesas.totalPages > 1}" class="d-flex justify-content-center mt-3">
+                    <nav aria-label="Navegação de página">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${despesas.first ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/financeiro/despesas(page=${despesas.number - 1}, size=${despesas.size})}">Anterior</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link" th:text="'Página ' + ${despesas.number + 1} + ' de ' + ${despesas.totalPages}"></span>
+                            </li>
+                            <li class="page-item" th:classappend="${despesas.last ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/financeiro/despesas(page=${despesas.number + 1}, size=${despesas.size})}">Próximo</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

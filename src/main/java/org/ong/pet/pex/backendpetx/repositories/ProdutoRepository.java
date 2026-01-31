@@ -13,14 +13,14 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 @Query(value = """
         SELECT * FROM Produto p
         WHERE (:nome IS NULL OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-        AND (:tipoProduto IS NULL OR p.tipo_produto = :tipoProduto)
+        AND (:tipoProduto IS NULL)
         AND (:quantidade IS NULL OR p.quantidade = :quantidade)
         AND (:unidadeDeMedida IS NULL OR p.unidade_de_medida = :unidadeDeMedida)
     """,
         countQuery = """
          SELECT * FROM Produto p
         WHERE (:nome IS NULL OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
-        AND (:tipoProduto IS NULL OR p.tipo_produto = :tipoProduto)
+        AND (:tipoProduto IS NULL)
         AND (:quantidade IS NULL OR p.quantidade = :quantidade)
         AND (:unidadeDeMedida IS NULL OR p.unidade_de_medida = :unidadeDeMedida)
     """,nativeQuery = true)

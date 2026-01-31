@@ -68,6 +68,8 @@ public class SecurityConfigurations {
 
                         .requestMatchers("/boletins/**").hasAnyRole("ADMIN", "COLABORADOR")
 
+                        .requestMatchers("/estoque/**").hasAnyRole("ADMIN", "COLABORADOR")
+
                         // Todas as outras páginas precisam de autenticação
                         .anyRequest().authenticated()
                 )

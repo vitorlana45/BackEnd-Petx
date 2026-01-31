@@ -12,24 +12,24 @@
                     <i th:class="${pageInfo.icon}" class="me-2"></i>
                     <span th:text="${pageInfo.title}">Título da Página</span>
                 </h1>
-                
+
                 <!-- Subtítulo com mensagem personalizada -->
                 <p class="page-subtitle">
                     <!-- Mensagem especial para dashboard -->
-                    <span th:if="${pageInfo.title == 'Dashboard'}" 
+                    <span th:if="${pageInfo.title == 'Dashboard'}"
                           sec:authorize="isAuthenticated()">
-                        Bem-vindo de volta, <span sec:authentication="name" class="fw-semibold"></span>! 
+                        Bem-vindo de volta, <span sec:authentication="name" class="fw-semibold"></span>!
                         <span th:text="${pageInfo.subtitle}"></span>
                     </span>
                     <!-- Subtítulo padrão para outras páginas -->
-                    <span th:unless="${pageInfo.title == 'Dashboard'}" 
+                    <span th:unless="${pageInfo.title == 'Dashboard'}"
                           th:text="${pageInfo.subtitle}">Subtítulo da página</span>
                 </p>
 
                 <!-- Breadcrumb dinâmico -->
                 <div class="breadcrumb-wrapper">
                     <a th:href="@{/home}" class="breadcrumb-item">
-                        <i class="fas fa-home me-1"></i>Visão Geral
+                        <i class="fas fa-home me-1 "></i>Visão Geral
                     </a>
                     <th:block th:if="${pageInfo.breadcrumbs != null and !#lists.isEmpty(pageInfo.breadcrumbs)}" th:each="crumb, crumbStat : ${pageInfo.breadcrumbs}">
                         <span class="breadcrumb-separator">/</span>

@@ -34,9 +34,9 @@ public class Produto extends EntidadeBase {
     @Column(nullable = false, name = "unidade_de_medida")
     private UnidadeDeMedidaEnum unidadeDeMedida;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "tipo_produto")
-    private TipoProduto tipoProduto;
+//    @Enumerated(EnumType.STRING)
+//    @Column(nullable = false, name = "tipo_produto")
+//    private TipoProduto tipoProduto;
 
     // Atributos específicos armazenados como chave-valor
     @ElementCollection
@@ -45,9 +45,18 @@ public class Produto extends EntidadeBase {
     @Column(name = "atributo_valor")
     private Map<String, String> atributosEspecificos;
 
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_estoque_id", nullable = false)
+    private CategoriaEstoque categoriaEstoque;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "estoque_id", nullable = false)
     private Estoque estoque;
+
+    // Método de conveniência para obter o nome da categoria
+    public String getCategoria() {
+        return categoriaEstoque != null ? categoriaEstoque.getNome() : null;
+    }
 
     public void adicionarAtributo(String chave, String valor) {
         atributosEspecificos.put(chave, valor);

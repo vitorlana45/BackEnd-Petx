@@ -1,0 +1,58 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="render(layout)">
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+
+
+            <!-- Título + subtítulo + ações -->
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="mb-1">
+                        <i th:if="${layout.icon}" th:class="${layout.icon} + ' me-2'"></i>
+                        <span th:text="${layout.title()}">Título</span>
+                    </h2>
+                    <p class="text-muted mb-0" th:text="${layout.subtitle}">Subtítulo</p>
+                </div>
+
+                <!-- Breadcrumbs -->
+                <nav aria-label="breadcrumb" class="mb-2" th:if="${layout.breadcrumbs != null and !layout.breadcrumbs.isEmpty()}">
+                    <ol class="breadcrumb small mb-0">
+                        <li th:each="bc : ${layout.breadcrumbs}"
+                            class="breadcrumb-item"
+                            th:classappend="${bc.href} == null ? 'active'">
+                            <a th:if="${bc.href} != null" th:href="${bc.href}" th:text="${bc.label}">Link</a>
+                            <span th:if="${bc.href} == null" th:text="${bc.label}">Atual</span>
+                        </li>
+                    </ol>
+                </nav>
+
+
+                <div class="d-flex gap-2" th:if="${layout.actions != null}">
+                    <a th:each="btn : ${layout.actions}"
+                       th:href="${btn.href}"
+                       th:class="${btn.style.css} + ' ' + (${btn.small} ? 'btn-sm' : '')"
+                       th:title="${btn.label}">
+                        <i th:class="${btn.icon}" aria-hidden="true"></i>
+                        <span class="ms-1 d-none d-sm-inline" th:text="${btn.label}">Ação</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats (opcional) -->
+            <div class="row g-3 mt-3" th:if="${layout.stats != null and !layout.stats.isEmpty()}">
+                <div class="col-12 col-sm-6 col-lg-3" th:each="s : ${layout.stats}">
+                    <div class="card h-100 border-0"
+                         th:classappend="${'bg-' + s.tone.token + '-subtle border-' + s.tone.token + '-subtle'}">
+                        <div class="card-body d-flex align-items-center gap-3">
+                            <i th:class="${s.icon}"></i>
+                            <div>
+                                <div class="h5 mb-0" th:text="${s.value}">0</div>
+                                <div class="small text-muted" th:text="${s.label}">Label</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>

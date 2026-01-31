@@ -24,4 +24,11 @@ public interface StatisticService {
     long getQuantidadeAdocoes();
 
 
+    /**
+     * Retorna a quantidade de boletins cadastrados.
+     *
+     * @return A quantidade de boletins.
+     */
+    long getTotalBoletins();
+
 }

@@ -42,4 +42,6 @@ public interface AnimalService {
                                                String comportamento, MaturidadeEnum maturidade,
                                                 OrigemAnimalEnum origem, SexoEnum sexo, Pageable pageable);
 
+    long getTotalAdocoes();
+
 }

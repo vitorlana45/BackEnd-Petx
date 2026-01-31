@@ -1,0 +1,91 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="toastStack(sucesso, erro, delay)">
+
+    <div id="toast-stack" class="toast-container position-fixed top-0 end-0 p-3" style="z-index:2000;">
+        <!-- Sucesso -->
+        <div th:if="${sucesso}" class="toast text-bg-success border-0"
+             role="status" aria-live="polite" aria-atomic="true"
+             data-bs-autohide="true"
+             th:attr="data-bs-delay=${delay != null ? delay : 7000}">
+            <div class="toast-header text-bg-success border-0">
+                <i class="fas fa-circle-check me-2"></i>
+                <strong class="me-auto">Sucesso</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+            <div class="toast-body" th:text="${sucesso}">Operação realizada com sucesso.</div>
+        </div>
+
+        <!-- Erro -->
+        <div th:if="${erro}" class="toast text-bg-danger border-0"
+             role="alert" aria-live="assertive" aria-atomic="true"
+             data-bs-autohide="true"
+             th:attr="data-bs-delay=${delay != null ? delay : 15000}">
+            <div class="toast-header text-bg-danger border-0">
+                <i class="fas fa-triangle-exclamation me-2"></i>
+                <strong class="me-auto">Erro</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+            <div class="toast-body">
+                <div th:text="${erro}">Ocorreu um erro.</div>
+                <div th:if="${detalhe}" class="mt-2">
+                    <button class="btn btn-link btn-sm p-0 text-white" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#toast-erro-detalhe"
+                            aria-expanded="false" aria-controls="toast-erro-detalhe">
+                        Ver detalhes técnicos
+                    </button>
+                    <pre id="toast-erro-detalhe" class="collapse small bg-body-secondary p-2 rounded border mt-2"
+                         th:text="${detalhe}" style="white-space:pre-wrap; word-break:break-word;"></pre>
+                </div>
+            </div>
+        </div>
+
+<!--        &lt;!&ndash; Aviso &ndash;&gt;-->
+<!--        <div th:if="${aviso}" class="toast text-bg-warning border-0"-->
+<!--             role="status" aria-live="polite" aria-atomic="true"-->
+<!--             data-bs-autohide="true"-->
+<!--             th:attr="data-bs-delay=${delay != null ? delay : 15000}">-->
+<!--            <div class="toast-header text-bg-warning border-0">-->
+<!--                <i class="fas fa-circle-exclamation me-2"></i>-->
+<!--                <strong class="me-auto">Aviso</strong>-->
+<!--                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>-->
+<!--            </div>-->
+<!--            <div class="toast-body" th:text="${aviso}">Aviso importante.</div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Info &ndash;&gt;-->
+<!--        <div th:if="${info}" class="toast text-bg-info border-0"-->
+<!--             role="status" aria-live="polite" aria-atomic="true"-->
+<!--             data-bs-autohide="true"-->
+<!--             th:attr="data-bs-delay=${delay != null ? delay : 15000}">-->
+<!--            <div class="toast-header text-bg-info border-0">-->
+<!--                <i class="fas fa-circle-info me-2"></i>-->
+<!--                <strong class="me-auto">Info</strong>-->
+<!--                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>-->
+<!--            </div>-->
+<!--            <div class="toast-body" th:text="${info}">Informação.</div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- Init embutido, com proteção para executar só uma vez por página -->
+    <script>
+        (function () {
+            if (window.__toastInitDone) return;
+            window.__toastInitDone = true;
+
+            const initToasts = () => {
+                document.querySelectorAll('#toast-stack .toast')
+                    .forEach(el => bootstrap.Toast.getOrCreateInstance(el).show());
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initToasts, { once: true });
+            } else {
+                initToasts();
+            }
+
+            // opcional: se você usa HTMX/Turbo ou injeta HTML depois
+            document.addEventListener('htmx:afterOnLoad', initToasts);
+            document.addEventListener('turbo:load', initToasts);
+        })();
+    </script>
+</div>

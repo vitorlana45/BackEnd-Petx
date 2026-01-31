@@ -1,8 +1,8 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
 import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamicaDTO;
 import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDinamicaDTO;
 import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
 import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/despesa")
+@RequestMapping("/despesas")
 public class DespesaController {
 
     private final DespesaService despesaService;

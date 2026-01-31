@@ -1,0 +1,63 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="campos(formObj)">
+    <div th:object="${formObj}">
+        <div class="row g-3">
+
+            <!-- Pessoais -->
+            <div class="col-md-6">
+                <label class="form-label">Nome</label>
+                <input class="form-control" th:field="*{nome}" autocomplete="name">
+                <small class="text-danger" th:errors="*{nome}">Erro</small>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">CPF</label>
+                <input class="form-control" th:field="*{cpf}" inputmode="numeric" autocomplete="off">
+                <small class="text-danger" th:errors="*{cpf}">Erro</small>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Telefone</label>
+                <input class="form-control" th:field="*{telefone}" autocomplete="tel">
+                <small class="text-danger" th:errors="*{telefone}">Erro</small>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Idade</label>
+                <input type="number" min="0" class="form-control" th:field="*{idade}">
+                <small class="text-danger" th:errors="*{idade}">Erro</small>
+            </div>
+
+            <!-- Endereço -->
+            <div class="col-md-6">
+                <label class="form-label">Rua</label>
+                <input class="form-control" th:field="*{rua}" autocomplete="address-line1">
+                <small class="text-danger" th:errors="*{rua}">Erro</small>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Bairro</label>
+                <input class="form-control" th:field="*{bairro}" autocomplete="address-line2">
+                <small class="text-danger" th:errors="*{bairro}">Erro</small>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Cidade</label>
+                <input class="form-control" th:field="*{cidade}" autocomplete="address-level2">
+                <small class="text-danger" th:errors="*{cidade}">Erro</small>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                <input class="form-control" th:field="*{estado}" maxlength="2" autocomplete="address-level1">
+                <small class="text-danger" th:errors="*{estado}">Erro</small>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">CEP</label>
+                <input class="form-control" th:field="*{cep}" inputmode="numeric" autocomplete="postal-code">
+                <small class="text-danger" th:errors="*{cep}">Erro</small>
+            </div>
+
+        </div>
+    </div>
+</th:block>

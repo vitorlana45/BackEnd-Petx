@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.repositories;
 
 import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.enums.AdocaoEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -42,5 +43,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, JpaSpecif
     // Estatística direta por origem garantindo que só conte animais com origem definida
     @Query("SELECT a.origemEnum as label, COUNT(a) as total FROM Animal a GROUP BY a.origemEnum")
     java.util.List<Object[]> countByOrigemAnimal();
+
+    @Query("SELECT COUNT(a) FROM Animal a WHERE a.adotado = :adotado")
+    Long countByAdotado(@Param("adotado") AdocaoEnum adotado);
 
 }

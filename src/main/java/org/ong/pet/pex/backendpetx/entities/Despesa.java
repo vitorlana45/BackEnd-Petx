@@ -48,6 +48,9 @@ public class Despesa extends EntidadeBase {
     @Column(name = "status_despesa")
     private StatusDespesaEnum statusDespesa;
 
+    @Column(name = "detalhes_personalizados", columnDefinition = "TEXT")
+    private String detalhesPersonalizados; // JSON com campos extras
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Ong ong;
 

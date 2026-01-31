@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Categorias de Estoque - PetX</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="text-primary">
+                            <i class="fas fa-tags"></i> Categorias de Estoque
+                        </h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/estoque">Estoque</a></li>
+                                <li class="breadcrumb-item active">Categorias</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="btn-group">
+                        <a href="/estoque" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Voltar ao Estoque
+                        </a>
+                        <a href="/estoque/categorias/novo" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Nova Categoria
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${sucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> <span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-filter"></i> Filtros</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" th:action="@{/estoque/categorias}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">Nome da Categoria</label>
+                            <input type="text" class="form-control" id="nome" name="nome"
+                                   th:value="${nome}" placeholder="Digite o nome da categoria">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="btn-group w-100">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <a href="/estoque/categorias" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Limpar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Total de Categorias</h6>
+                                <h3 th:text="${categorias?.totalElements ?: 0}">0</h3>
+                            </div>
+                            <i class="fas fa-tags fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Categorias Ativas</h6>
+                                <h3 th:text="${categorias?.numberOfElements ?: 0}">0</h3>
+                            </div>
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-title">Página Atual</h6>
+                                <h3 th:text="${(categorias?.number ?: 0) + 1}">1</h3>
+                            </div>
+                            <i class="fas fa-file-alt fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Categorias -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Lista de Categorias</h5>
+                <small class="text-muted" th:if="${categorias}">
+                    Mostrando <span th:text="${categorias.numberOfElements}">0</span> de
+                    <span th:text="${categorias.totalElements}">0</span> categorias
+                </small>
+            </div>
+            <div class="card-body p-0">
+                <!-- Exibição em Cards para Mobile -->
+                <div class="d-md-none">
+                    <div th:if="${categorias == null or categorias.empty}" class="text-center py-5">
+                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">Nenhuma categoria encontrada</p>
+                        <a href="/estoque/categorias/novo" class="btn btn-primary btn-sm mt-2">
+                            <i class="fas fa-plus"></i> Criar Primeira Categoria
+                        </a>
+                    </div>
+
+                    <div th:each="categoria : ${categorias?.content}" class="border-bottom p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-1 text-primary" th:text="${categoria.nome}">Nome da Categoria</h6>
+                            <div class="btn-group btn-group-sm">
+                                <a th:href="@{/estoque/categorias/{id}/editar(id=${categoria.id})}"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-danger btn-sm"
+                                        th:data-categoria-id="${categoria.id}"
+                                        th:data-categoria-nome="${categoria.nome}"
+                                        onclick="confirmarExclusao(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-1" th:text="${categoria.descricao ?: 'Sem descrição'}">Descrição</p>
+                        <small class="text-muted">
+                            ID: <span th:text="${categoria.id}">1</span>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Tabela para Desktop -->
+                <div class="d-none d-md-block">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="80">ID</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th width="120">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${categorias == null or categorias.empty}">
+                                    <td colspan="4" class="text-center py-5">
+                                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted mb-0">Nenhuma categoria encontrada</p>
+                                        <a href="/estoque/categorias/novo" class="btn btn-primary btn-sm mt-2">
+                                            <i class="fas fa-plus"></i> Criar Primeira Categoria
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:each="categoria : ${categorias?.content}">
+                                    <td>
+                                        <span class="badge bg-secondary" th:text="${categoria.id}">1</span>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary" th:text="${categoria.nome}">Nome da Categoria</strong>
+                                    </td>
+                                    <td>
+                                        <span th:text="${categoria.descricao ?: 'Sem descrição'}"
+                                              class="text-muted">Descrição da categoria</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a th:href="@{/estoque/categorias/{id}/editar(id=${categoria.id})}"
+                                               class="btn btn-outline-primary" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger"
+                                                    th:data-categoria-id="${categoria.id}"
+                                                    th:data-categoria-nome="${categoria.nome}"
+                                                    onclick="confirmarExclusao(this)" title="Excluir">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Paginação -->
+                <div th:if="${categorias and categorias.totalPages > 1}" class="card-footer">
+                    <nav aria-label="Navegação de páginas">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item" th:classappend="${!categorias.hasPrevious() ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/estoque/categorias(page=${categorias.number - 1}, nome=${nome})}">
+                                    <i class="fas fa-chevron-left"></i> Anterior
+                                </a>
+                            </li>
+
+                            <li th:each="pageNum : ${#numbers.sequence(0, categorias.totalPages - 1)}"
+                                class="page-item" th:classappend="${pageNum == categorias.number ? 'active' : ''}">
+                                <a class="page-link" th:href="@{/estoque/categorias(page=${pageNum}, nome=${nome})}"
+                                   th:text="${pageNum + 1}">1</a>
+                            </li>
+
+                            <li class="page-item" th:classappend="${!categorias.hasNext() ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/estoque/categorias(page=${categorias.number + 1}, nome=${nome})}">
+                                    Próxima <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="modalExcluir" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir a categoria <strong id="nomeCategoriaExcluir"></strong>?</p>
+                    <p class="text-muted small">Esta ação não pode ser desfeita e pode afetar produtos associados a esta categoria.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="formExcluir" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmarExclusao(button) {
+            const categoriaId = button.getAttribute('data-categoria-id');
+            const categoriaNome = button.getAttribute('data-categoria-nome');
+
+            document.getElementById('nomeCategoriaExcluir').textContent = categoriaNome;
+            document.getElementById('formExcluir').action = `/estoque/categorias/${categoriaId}/excluir`;
+
+            new bootstrap.Modal(document.getElementById('modalExcluir')).show();
+        }
+    </script>
+</div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.controllers.animal;
 
 import lombok.RequiredArgsConstructor;
+import org.ong.pet.pex.backendpetx.entities.media.MediaFile;
 import org.ong.pet.pex.backendpetx.entities.media.MediaItemDTO;
 import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
 import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
@@ -28,8 +29,8 @@ public class AnimalMediaController {
         mediaService.uploadAndLink(file, MediaTargetType.ANIMAL, animalId, MediaUsage.GALERIA, 0);
         // devolve o fragmento já atualizado (ótimo para HTMX)
         var itens = linkRepo.findByTarget(MediaTargetType.ANIMAL, animalId).stream().map(l -> {
-            var f = l.getMediaFile();
-            return new MediaItemDTO(storage.presignGetUrl(f.getObjectKey()), f.getOriginalFilename(), l.getUsage(), l.getSortOrder());
+            MediaFile f = l.getMediaFile();
+            return new MediaItemDTO(f.getId(),storage.presignGetUrl(f.getObjectKey()), f.getOriginalFilename(), l.getUsage(), l.getSortOrder());
         }).toList();
         model.addAttribute("itens", itens);
         return "animais/galeria :: grid";

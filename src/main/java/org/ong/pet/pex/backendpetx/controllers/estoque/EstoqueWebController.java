@@ -1,0 +1,136 @@
+package org.ong.pet.pex.backendpetx.controllers.estoque;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.ong.pet.pex.backendpetx.dto.categoria_estoque.CreateCategoriaEstoqueRequest;
+import org.ong.pet.pex.backendpetx.dto.categoria_estoque.ListCategoriaEstoqueRequest;
+import org.ong.pet.pex.backendpetx.entities.Estoque;
+import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
+import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
+import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
+import org.ong.pet.pex.backendpetx.service.CategoriaEstoqueService;
+import org.ong.pet.pex.backendpetx.service.EstoqueService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping("/estoque")
+@RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
+@Slf4j
+public class EstoqueWebController {
+
+    private final EstoqueService estoqueService;
+    private final CategoriaEstoqueService categoriaEstoqueService;
+    private final EstoqueRepository estoqueRepository;
+    private final ProdutoRepository produtoRepository;
+
+    @GetMapping
+    public String listarEstoque(Model model,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size,
+                              @RequestParam(required = false) String nome) {
+        log.info("Acessando página de estoque - page: {}, size: {}, nome: {}", page, size, nome);
+
+        try {
+            // Buscar todos os estoques
+            List<Estoque> estoques = estoqueRepository.findAll();
+            model.addAttribute("estoques", estoques);
+
+            // Adicionar contador de produtos para cada estoque para evitar o LazyInitializationException
+            Map<Long, Long> contadorProdutos = new HashMap<>();
+            for (Estoque estoque : estoques) {
+                long count = produtoRepository.count();  // Substituir por uma consulta real que conta produtos por estoque
+                contadorProdutos.put(estoque.getId(), count);
+            }
+            model.addAttribute("contadorProdutos", contadorProdutos);
+
+            // Buscar produtos do estoque
+            Pageable pageable = PageRequest.of(page, size);
+            var produtos = estoqueService.paginarProdutoEstoque(null, nome, null, null, null, pageable);
+            model.addAttribute("produtos", produtos);
+
+            // Contadores gerais
+            model.addAttribute("totalProdutos", produtos.getTotalElements());
+            model.addAttribute("totalCategorias", estoques.stream()
+                .flatMap(e -> e.getCategorias().stream())
+                .distinct()
+                .count());
+
+            // Calcular produtos com estoque baixo/sem estoque
+            long estoqueBaixo = produtos.getContent().stream()
+                .filter(p -> p.quantidade() <= 50 && p.quantidade() > 10)
+                .count();
+            model.addAttribute("estoqueBaixo", estoqueBaixo);
+
+            long estoqueZerado = produtos.getContent().stream()
+                .filter(p -> p.quantidade() <= 10)
+                .count();
+            model.addAttribute("estoqueZerado", estoqueZerado);
+
+            model.addAttribute("unidadeMedida", UnidadeDeMedidaEnum.values());
+
+            // Dados para a seção de categorias
+            Map<String, Long> categoriasContagem = new HashMap<>();
+            estoques.stream()
+                .flatMap(e -> e.getCategorias().stream())
+                .forEach(c -> {
+                    categoriasContagem.put(c.getNome(),
+                        produtos.getContent().stream()
+                            .filter(p -> p.descricao() != null && p.descricao().equals(c.getNome()))
+                            .count());
+                });
+            model.addAttribute("categoriasContagem", categoriasContagem);
+
+        } catch (Exception e) {
+            log.error("Erro ao carregar estoque", e);
+            model.addAttribute("erro", "Erro ao carregar estoque: " + e.getMessage());
+        }
+
+        return "estoque/lista-simples";
+    }
+
+    @GetMapping("/categorias")
+    public String listarCategorias(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(required = false) String nome) {
+
+        log.info("Acessando página de categorias - page: {}, size: {}, nome: {}", page, size, nome);
+
+        try {
+            // Buscar categorias
+            var request = new ListCategoriaEstoqueRequest(
+                nome, null, page, size, "nome", "asc");
+            var categorias = categoriaEstoqueService.listCategoriaEstoque(request);
+
+            model.addAttribute("categorias", categorias);
+            model.addAttribute("nome", nome);
+
+        } catch (Exception e) {
+            log.error("Erro ao carregar categorias", e);
+            model.addAttribute("erro", "Erro ao carregar categorias: " + e.getMessage());
+            model.addAttribute("categorias", null);
+        }
+
+        return "categoria/lista";
+    }
+
+    @GetMapping("/nova-categoria")
+    public String novaCategoria(Model model) {
+        model.addAttribute("categoria", new CreateCategoriaEstoqueRequest());
+        return "categoria/formulario";
+    }
+
+
+}

@@ -195,6 +195,11 @@ public class BoletimServiceImpl implements BoletimService {
         return resultado;
     }
 
+    @Override
+    public long contarTotalBoletins() {
+        return boletimRepository.count();
+    }
+
     private List<Map<String, Object>> mapearLista(List<Object[]> rows) {
         List<Map<String, Object>> lista = new ArrayList<>();
         for (Object[] row : rows) {

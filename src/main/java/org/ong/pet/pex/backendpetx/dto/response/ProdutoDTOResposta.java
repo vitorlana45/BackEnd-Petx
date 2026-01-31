@@ -23,7 +23,9 @@ public record ProdutoDTOResposta (
 
         UnidadeDeMedidaEnum unidadeDeMedida,
 
-        List<InfoProdutoDTO> atrubutosEspecificos
+        List<InfoProdutoDTO> atrubutosEspecificos,
+
+        String categoria
 
 ) {
 

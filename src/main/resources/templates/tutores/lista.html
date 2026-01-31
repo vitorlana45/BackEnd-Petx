@@ -1,3 +1,4 @@
+<!-- templates/tutores/lista.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
@@ -6,90 +7,114 @@
 </head>
 <body>
 <section>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Tutores</h2>
-        <a class="btn btn-success" th:href="@{/tutores/form}">
-            <i class="fas fa-user-plus me-2"></i>Novo Tutor
-        </a>
-    </div>
 
-    <div class="card mb-3">
-        <div class="card-header"><h5 class="mb-0">Filtros</h5></div>
-        <div class="card-body">
-            <form method="get" th:action="@{/tutores}" class="row g-2 align-items-end">
-                <div class="col-12 col-sm-6 col-md-3">
-                    <label class="form-label" for="nome">Nome</label>
-                    <input id="nome" class="form-control" th:value="${fNome}">
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="cep">CEP</label>
-                    <input id="cep" class="form-control" th:value="${fCep}">
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="cidade">Cidade</label>
-                    <input id="cidade" class="form-control" th:value="${fCidade}">
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="estado">Estado</label>
-                    <input id="estado" class="form-control" th:value="${fEstado}">
-                </div>
-                <div class="col-6 col-sm-4 col-md-2">
-                    <label class="form-label" for="idade">Idade</label>
-                    <input id="idade" type="number" class="form-control" th:value="${fIdade}">
-                </div>
-                <div class="col-12 col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-search me-2"></i>Buscar</button>
-                    <a th:href="@{/tutores}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Limpar</a>
-                </div>
-            </form>
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButtons})}"></div>
+
+    <div class="card mb-3" id="filtros-card">
+
+        <div class="card-header py-2 d-flex align-items-center">
+            <i class="fas fa-filter me-2"></i>
+            <h3 class="h6 mb-0">Filtros de Pesquisa</h3>
+
+            <button id="btn-toggle-filtros"
+                    class="btn btn-sm btn-info ms-auto d-inline-flex align-items-center gap-1"
+                    type="button"
+                    data-bs-toggle="collapse" data-bs-target="#filtros-collapse"
+                    aria-expanded="true" aria-controls="filtros-collapse">
+                <i class="fas fa-chevron-up chevron-up"></i>
+                <i class="fas fa-chevron-down chevron-down"></i>
+                <span class="txt-hide">Esconder filtros</span>
+                <span class="txt-show">Mostrar filtros</span>
+            </button>
         </div>
-    </div>
 
-    <div class="card">
-        <div class="card-header"><h5 class="mb-0">Lista</h5></div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>CPF</th>
-                        <th>Nome</th>
-                        <th>Telefone</th>
-                        <th>CEP</th>
-                        <th>Cidade</th>
-                        <th>Estado</th>
-                        <th class="text-end">Ações</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="t : ${tutores}">
-                        <td th:text="${t.id}">1</td>
-                        <td th:text="${t.cpf}">000</td>
-                        <td th:text="${t.nome}">Nome</td>
-                        <td th:text="${t.telefone != null ? t.telefone : 'Não informado'}">-</td>
-                        <td th:text="${t.cep}">00000-000</td>
-                        <td th:text="${t.cidade}">Cidade</td>
-                        <td th:text="${t.estado}">UF</td>
-                        <td class="text-end">
-                            <div class="btn-group btn-group-sm">
-                                <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-                                <a href="#" class="btn btn-secondary"><i class="fas fa-edit"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(tutores)}">
-                        <td colspan="8" class="text-center text-muted py-4">Nenhum tutor encontrado.</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <!-- Container colapsável -->
+        <div id="filtros-collapse" class="collapse show">
+                <div class="card-body">
+                    <form method="get" th:action="@{/tutores}" class="row g-2 align-items-end">
+                        <!-- IMPORTANTE: precisa de 'name' para enviar no GET -->
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <label class="form-label" for="nome">Nome</label>
+                            <input id="nome" name="nome" class="form-control" th:value="${fNome}">
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2">
+                            <label class="form-label" for="cep">CEP</label>
+                            <input id="cep" name="cep" class="form-control" th:value="${fCep}">
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2">
+                            <label class="form-label" for="cidade">Cidade</label>
+                            <input id="cidade" name="cidade" class="form-control" th:value="${fCidade}">
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2">
+                            <label class="form-label" for="estado">Estado</label>
+                            <input id="estado" name="estado" class="form-control" th:value="${fEstado}">
+                        </div>
+                        <div class="col-6 col-sm-4 col-md-2">
+                            <label class="form-label" for="idade">Idade</label>
+                            <input id="idade" name="idade" type="number" class="form-control" th:value="${fIdade}">
+                        </div>
+                        <div class="col-12 col-md-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-search me-2"></i>Buscar</button>
+                            <a th:href="@{/tutores}" class="btn btn-secondary"><i class="fas fa-times me-2"></i>Limpar</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="card-footer">
-            <!-- Substituindo a paginação simples pelo novo componente -->
-            <div th:replace="~{fragmentos/paginacao :: pagination(${page}, '/tutores', 'nome=${fNome}, cep=${fCep}, cidade=${fCidade}, estado=${fEstado}, idade=${fIdade}')}"></div>
+    <!-- ====== AQUI É O ALVO QUE O HTMX TROCA ====== -->
+    <th:block th:fragment="lista">
+        <div class="card" id="lista-tutores">
+            <div class="card-header"><h5 class="mb-0">Lista</h5></div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>CPF</th>
+                            <th>Nome</th>
+                            <th>Telefone</th>
+                            <th>Cidade</th>
+                            <th>Estado</th>
+                            <th>CriadoEm</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="t : ${tutores}">
+                            <td th:text="${t.id}">1</td>
+                            <td th:text="${t.cpf}">000</td>
+                            <td th:text="${t.nome}">Nome</td>
+                            <td th:text="${t.telefone != null ? t.telefone : 'Não informado'}">-</td>
+                            <td th:text="${t.cidade}">Cidade</td>
+                            <td th:text="${t.estado}">UF</td>
+                            <td>
+                                <time th:datetime="${#temporals.formatISO(t.criadoEm)}"
+                                      th:text="${#temporals.format(t.criadoEm, 'dd/MM/yyyy HH:mm')}">—</time>
+                            </td>
+
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/tutores/{cpf}(cpf=${t.cpf})}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(tutores)}">
+                            <td colspan="8" class="text-center text-muted py-4">Nenhum tutor encontrado.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <!-- usa o fragmento de paginação com HTMX ligado e targetId = 'lista-tutores' -->
+                <div th:replace="~{fragmentos/paginacao :: pagination(${page}, '/tutores', ${qs}, ${true}, 'lista-tutores')}"></div>
+            </div>
         </div>
-    </div>
+    </th:block>
+
 </section>
 </body>
 </html>

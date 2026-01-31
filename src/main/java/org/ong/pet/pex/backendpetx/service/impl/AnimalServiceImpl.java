@@ -7,6 +7,7 @@ import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.entities.*;
+import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repositories.*;
 import org.ong.pet.pex.backendpetx.repositories.specifcs.AnimalSpecs;
@@ -49,11 +50,12 @@ public class AnimalServiceImpl implements AnimalService {
     private final AnimalUtils animalUtils;
     private final Minio minioService;
     private final LogAtividadeService logAtividadeService ;
+    private final MediaService mediaService;
 
     @Value("${minio.bucket:petx}")
     private String animalBucketName;
 
-        public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService, LogAtividadeService logAtividadeService) {
+        public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService, LogAtividadeService logAtividadeService, MediaService mediaService) {
         this.animalRepository = animalRepository;
         this.ongRepository = ongRepository;
         this.animalConjuntoRepository = animalConjuntoRepository;
@@ -62,6 +64,7 @@ public class AnimalServiceImpl implements AnimalService {
         this.animalUtils = animalUtils;
         this.minioService = minioService;
         this.logAtividadeService = logAtividadeService;
+            this.mediaService = mediaService;
         }
 
 
@@ -287,6 +290,8 @@ public class AnimalServiceImpl implements AnimalService {
                 pageable
         );
 
+       this.getImagemPerfilAnimal(pageResult);
+
         var content = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(
                 pageResult.getContent()
         );
@@ -380,14 +385,29 @@ public class AnimalServiceImpl implements AnimalService {
             Pageable pageable) {
 
 
-                var pageContent = animalRepository.findAll(
-                        AnimalSpecs.filtro(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, AdocaoEnum.DISPONIVEL),
-                        pageable
-                );
+            Page<Animal> pageContent = animalRepository.findAll(
+                    AnimalSpecs.filtro(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, AdocaoEnum.DISPONIVEL),
+                    pageable
+            );
 
-                var converteListaAnimal = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(pageContent.getContent());
+            this.getImagemPerfilAnimal(pageContent);
+            var converteListaAnimal = AnimalMapper.converteAnimaisParaAnimalPaginadoResposta(pageContent.getContent());
 
         return new PageImpl<>(converteListaAnimal, pageable, pageContent.getTotalElements());
     }
+
+    @Override
+    public long getTotalAdocoes() {
+        return animalRepository.countByAdotado(AdocaoEnum.ADOTADO);
+    }
+
+    private void getImagemPerfilAnimal(Page<Animal> pageContent) {
+         pageContent.getContent().forEach(animal -> {
+            String imgUrl = mediaService.getProfilePresignedUrl(MediaTargetType.ANIMAL, animal.getId());
+            animal.setImagemPrincipalPerfil(imgUrl != null ? imgUrl : "");
+        });
+
+    }
+
 }
 

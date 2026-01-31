@@ -22,4 +22,7 @@ public interface BoletimService {
     );
 
     Map<String, Object> obterEstatisticasResgates(int mesesSérieTemporal);
+
+    long contarTotalBoletins();
+
 }

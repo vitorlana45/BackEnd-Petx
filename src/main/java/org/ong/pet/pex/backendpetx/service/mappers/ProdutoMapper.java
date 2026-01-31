@@ -23,7 +23,7 @@ public class ProdutoMapper {
                 .descricao(dto.descricao())
                 .quantidade(dto.quantidade())
                 .unidadeDeMedida(dto.unidadeDeMedida())
-                .tipoProduto(dto.tipoProduto())
+//                .tipoProduto(dto.tipoProduto())
                 .estoque(estoque)
                 .atributosEspecificos(dto.atributosEspecificos().stream()
                         .collect(Collectors.toMap(InfoProdutoDTO::chave, InfoProdutoDTO::valor))
@@ -39,7 +39,7 @@ public class ProdutoMapper {
 
         return ProdutoDTOResposta.builder()
                         .produtoId(entity.getId())
-                        .tipoProduto(entity.getTipoProduto())
+//                        .tipoProduto(entity.getTipoProduto())
                         .nome(entity.getNome())
                         .descricao(entity.getDescricao())
                         .quantidade(entity.getQuantidade())
@@ -48,7 +48,7 @@ public class ProdutoMapper {
                 .build();
     }
 
-    public List<ProdutoDTOResposta> mapearListaProdutoParaDto(final Page<Produto> produtos) {
+    public List<ProdutoDTOResposta> mapearListaProdutoParaDto(final List<Produto> produtos) {
         return produtos.stream()
                 .map(this::mapearParaDto)
                 .collect(Collectors.toList());

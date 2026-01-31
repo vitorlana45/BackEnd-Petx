@@ -1,0 +1,252 @@
+<!-- templates/tutores/lista.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Categoria de Estoque - PetX</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="text-primary">
+                            <i class="fas fa-tag"></i>
+                            <span th:text="${categoriaId != null ? 'Editar Categoria' : 'Nova Categoria'}">Nova Categoria</span>
+                        </h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/estoque">Estoque</a></li>
+                                <li class="breadcrumb-item"><a href="/estoque/categorias">Categorias</a></li>
+                                <li class="breadcrumb-item active" th:text="${categoriaId != null ? 'Editar' : 'Nova'}">Nova</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <a href="/estoque/categorias" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${sucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> <span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Formulário -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-edit"></i>
+                            <span th:text="${categoriaId != null ? 'Dados da Categoria' : 'Informações da Nova Categoria'}">Dados da Categoria</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:object="${categoria}"
+                              th:action="@{/categorias/novo}"
+                              method="post" novalidate>
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+                            <!-- Nome da Categoria e Estoque na mesma linha -->
+                            <div class="row mb-3">
+                                <!-- Nome da Categoria -->
+                                <div class="col-md-7">
+                                    <label for="nome" class="form-label">
+                                        <i class="fas fa-tag text-primary"></i> Nome da Categoria *
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid' : ''"
+                                           id="nome"
+                                           th:field="*{nome}"
+                                           placeholder="Digite o nome da categoria (ex: Ração, Medicamentos, Brinquedos)"
+                                           maxlength="100"
+                                           required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">
+                                        Erro no nome
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle"></i> Nome único para identificar a categoria (máx. 100 caracteres)
+                                    </div>
+                                </div>
+
+                                <!-- Estoque -->
+                                <div class="col-md-5">
+                                    <label for="estoqueId" class="form-label">
+                                        <i class="fas fa-warehouse text-primary"></i> Estoque *
+                                    </label>
+                                    <select class="form-select"
+                                            id="estoqueId"
+                                            th:field="*{estoqueId}"
+                                            required>
+                                        <option value="">Selecione um estoque</option>
+                                        <option th:each="estoque : ${estoques}"
+                                                th:value="${estoque.id}"
+                                                th:text="${estoque.nome}"
+                                                th:selected="${categoria.estoqueId == estoque.id}">Nome Estoque</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('estoqueId')}" th:errors="*{estoqueId}">
+                                        Erro na seleção do estoque
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle"></i> Estoque ao qual a categoria pertence
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Descrição -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label for="descricao" class="form-label">
+                                        <i class="fas fa-align-left text-primary"></i> Descrição
+                                    </label>
+                                    <textarea class="form-control"
+                                              th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid' : ''"
+                                              id="descricao"
+                                              th:field="*{descricao}"
+                                              rows="4"
+                                              placeholder="Descreva o tipo de produtos que fazem parte desta categoria..."
+                                              maxlength="500"></textarea>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}">
+                                        Erro na descrição
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle"></i> Descrição opcional para detalhar a categoria (máx. 500 caracteres)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informações de Ajuda -->
+                            <div class="alert alert-info" role="alert">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-lightbulb"></i> Dicas para criar uma boa categoria:
+                                </h6>
+                                <ul class="mb-0">
+                                    <li><strong>Nome claro:</strong> Use nomes descritivos e fáceis de entender</li>
+                                    <li><strong>Organização:</strong> Agrupe produtos similares na mesma categoria</li>
+                                    <li><strong>Descrição útil:</strong> Explique que tipos de produtos pertencem à categoria</li>
+                                    <li><strong>Consistência:</strong> Mantenha um padrão de nomenclatura</li>
+                                </ul>
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <a href="/estoque/categorias" class="btn btn-secondary">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </a>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="reset" class="btn btn-outline-warning" onclick="limparFormulario()">
+                                                <i class="fas fa-eraser"></i> Limpar
+                                            </button>
+                                            <button type="submit" class="btn btn-success">
+                                                <i th:class="${categoriaId != null ? 'fas fa-save' : 'fas fa-plus'}"></i>
+                                                <span th:text="${categoriaId != null ? 'Atualizar Categoria' : 'Criar Categoria'}">Criar Categoria</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Previsualização -->
+        <div class="row justify-content-center mt-4" th:if="${categoriaId == null}">
+            <div class="col-lg-8">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-eye"></i> Prévia da Categoria
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Nome:</strong>
+                                <p id="previewNome" class="text">Digite o nome acima...</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <strong>Descrição:</strong>
+                                <p id="previewDescricao" class="text">Digite a descrição acima...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const nomeInput = document.getElementById('nome');
+            const descricaoInput = document.getElementById('descricao');
+            const previewNome = document.getElementById('previewNome');
+            const previewDescricao = document.getElementById('previewDescricao');
+
+            if (nomeInput && previewNome) {
+                nomeInput.addEventListener('input', function() {
+                    previewNome.textContent = this.value || 'Digite o nome acima...';
+                });
+            }
+
+            if (descricaoInput && previewDescricao) {
+                descricaoInput.addEventListener('input', function() {
+                    previewDescricao.textContent = this.value || 'Digite a descrição acima...';
+                });
+            }
+
+            // Validação em tempo real
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('input', function(e) {
+                    if (e.target.hasAttribute('required') && e.target.value.trim() === '') {
+                        e.target.classList.add('is-invalid');
+                    } else {
+                        e.target.classList.remove('is-invalid');
+                        e.target.classList.add('is-valid');
+                    }
+                });
+            }
+        });
+
+        function limparFormulario() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                const form = document.querySelector('form');
+                if (form) {
+                    form.reset();
+                    document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+                        el.classList.remove('is-valid', 'is-invalid');
+                    });
+
+                    // Limpar preview
+                    const previewNome = document.getElementById('previewNome');
+                    const previewDescricao = document.getElementById('previewDescricao');
+                    if (previewNome) previewNome.textContent = 'Digite o nome acima...';
+                    if (previewDescricao) previewDescricao.textContent = 'Digite a descrição acima...';
+                }
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

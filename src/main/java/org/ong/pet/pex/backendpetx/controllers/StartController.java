@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ong.pet.pex.backendpetx.controllers.bean.StatsDTO;
 import org.ong.pet.pex.backendpetx.controllers.bean.PageInfoBean;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
 import org.ong.pet.pex.backendpetx.entities.revision.AuditService;
 import org.ong.pet.pex.backendpetx.service.StatisticService;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,12 @@ public class StartController {
             System.out.println("quantidaede de animais" + totalAnimais);
             long totalTutores = statisticService.getQuantidadeTutores();
             long totalAdocoes = statisticService.getQuantidadeAdocoes();
+            long totalBoletins = statisticService.getTotalBoletins();
+
+            String username = (principal != null) ? principal.getName() : "visitante";
+
+            SmartPageHelper.setupHome(model, username);
+
 
             StatsDTO statsAnimais = StatsDTO.primary(String.valueOf(totalAnimais), "Animais", "fas fa-paw");
             StatsDTO statsTutores = StatsDTO.success(String.valueOf(totalTutores), "Tutores", "fas fa-user");
@@ -39,12 +46,12 @@ public class StartController {
 
             // mocks (considere mover para service)
             StatsDTO crescimentoMensal = StatsDTO.warning("+15%", "Crescimento Mensal", "fas fa-chart-line");
-            StatsDTO totalBoletins = StatsDTO.info("32", "Boletins", "fas fa-clipboard-list");
+            StatsDTO statsBoletins = StatsDTO.info(String.valueOf(totalBoletins), "Boletins", "fas fa-clipboard-list");
 
             model.addAttribute("totalAnimais", statsAnimais);
             model.addAttribute("totalTutores", statsTutores);
             model.addAttribute("totalAdocoes", statsAdocoes);
-            model.addAttribute("totalBoletins", totalBoletins);
+            model.addAttribute("totalBoletins", statsBoletins);
             model.addAttribute("crescimentoMensal", crescimentoMensal);
 
             Map<String, Integer> animaisPorStatus = new LinkedHashMap<>();
@@ -55,29 +62,14 @@ public class StartController {
 
             model.addAttribute("animaisPorStatus", animaisPorStatus);
 
-            String username = (principal != null) ? principal.getName() : "visitante";
-
-            // Se tiver PageInfoBean, use-o; caso contrário, mantenha Map.
-            PageInfoBean pageInfo = new PageInfoBean();
-            pageInfo.setTitle("Home");
-            pageInfo.setSubtitle("Visão geral do sistema");
-            pageInfo.setIcon("fas fa-tachometer-alt");
-            pageInfo.setSubtitle("Bem-vindo de volta, " + username + "!");
-
-            List<PageInfoBean.BreadcrumbItem> breadcrumbs = new ArrayList<>();
-            breadcrumbs.add(new PageInfoBean.BreadcrumbItem("Home", "/home"));
-            pageInfo.setBreadcrumbs(breadcrumbs);
-
-            model.addAttribute("pageInfo", pageInfo);
-
             var revisoesRecentes = servicoAuditoria.listarRevisoesRecentes(10);
             model.addAttribute("revisoesRecentes", revisoesRecentes);
 
-            // actionButtons (plural)
-            List<ActionButtonDTO> actionButtons = List.of(
-                    new ActionButtonDTO("Novo Animal", "/animais/form", "fas fa-plus","btn-primary")
-            );
-            model.addAttribute("actionButtons", actionButtons);
+//            // actionButtons (plural)
+//            List<ActionButtonDTO> actionButtons = List.of(
+//                    new ActionButtonDTO("Novo Animal", "/animais/form", "fas fa-plus","btn-primary")
+//            );
+//            model.addAttribute("actionButtons", actionButtons);
 
             log.info("Dashboard carregado com sucesso para {}", username);
             return "index";

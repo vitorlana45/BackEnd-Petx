@@ -32,28 +32,33 @@
 <!--</th:block>-->
 <!--</body>-->
 <!--</html>-->
+<!-- templates/fragmentos/modal.html -->
 
 
+<th:block xmlns:th="http://www.thymeleaf.org"
+          th:fragment="modal(id, titulo, action, objeto, method='POST')">
 
-
-<th:block th:fragment="modal(id, titulo, action, method, objeto, campos)">
-  <div class="modal fade" th:id="${id}" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" th:id="${id}" tabindex="-1" aria-hidden="true" th:aria-labelledby="${id + '_label'}">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <form class="modal-content"
-            th:action="${action}"
-            method="post"
-            th:object="${objeto}">
+      <form class="modal-content" th:action="${action}" th:object="${objeto}" method="post">
+
+        <!-- Override de método (PUT/DELETE/...) -->
+        <input type="hidden" name="_method"
+               th:if="${method != null and method.toUpperCase() != 'POST'}"
+               th:value="${method}" />
+
+        <!-- CSRF (se houver) -->
+        <input type="hidden" th:if="${_csrf != null}"
+               th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
         <div class="modal-header">
-          <h5 class="modal-title" th:text="${titulo}">Título</h5>
-          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          <h5 class="modal-title" th:id="${id + '_label'}" th:text="${titulo}">Editar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
 
         <div class="modal-body">
-          <input type="hidden" name="_method"
-                 th:if="${method != null and method.toLowerCase() != 'post'}"
-                 th:value="${method}">
-          <!-- SLOT de campos: vai herdar o th:object do form -->
-          <div th:insert="${campos}"></div>
+          <!-- Campos -->
+          <div th:replace="~{tutores/form-campos :: campos}"></div>
         </div>
 
         <div class="modal-footer">

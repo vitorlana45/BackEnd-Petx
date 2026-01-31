@@ -1,8 +1,3 @@
-/* ===== SISTEMA DE TEMAS PETX ===== */
-/*
-   Sistema de Temas Melhorado para ONG PetX
-   - Tema Claro/Escuro com tokens consistentes
-*/
 :root {
   /* Paleta de Cores PETX - Pastéis Suaves */
   --petx-primary: #8B9FFF;      /* Azul pastel suave */
@@ -140,6 +135,11 @@ body {
 [data-theme="dark"] .dropdown-item:hover{ background-color: #334155; color: #fff; }
 [data-theme="dark"] .dropdown-divider{ border-color: #475569; }
 
+
+/* ==== Cores para informações quando contem dados vazios ==== */
+[data-theme="dark"] .text-empty{ color: #A0AEC0 !important; font-style: italic; }
+
+
 /* ===== CARDS ===== */
 .card{
   background-color: var(--card-bg); border: 1px solid var(--border-color);
@@ -186,9 +186,24 @@ body {
 .form-label{ color: var(--text-secondary); font-weight: 500; margin-bottom: .5rem; }
 .form-check-input{ background-color: var(--input-bg); border: 1px solid var(--input-border); }
 .form-check-input:checked{ background-color: var(--petx-primary); border-color: var(--petx-primary); }
+
+/* ===== PLACEHOLDERS ===== */
+.form-control::placeholder, .form-select::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
 [data-theme="dark"] .form-control, [data-theme="dark"] .form-select{ background-color: rgba(30,41,59,.8); border-color:#475569; color:#f8fafc; }
 [data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus{ background-color: rgba(30,41,59,.9); border-color: var(--petx-primary); color:#f8fafc; }
 [data-theme="dark"] .form-label{ color:#e2e8f0; }
+
+/* ===== PLACEHOLDERS PARA MODO ESCURO ===== */
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] .form-select::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #B8B8D1 !important;
+  opacity: 0.9 !important;
+}
 
 /* ===== TABELAS ===== */
 .table{ color: var(--text-primary); border-color: var(--border-color); }
@@ -571,4 +586,46 @@ body.px-collapsed .px-footer{ justify-content:center; }
 
 /* ENCODING FIX */
 
+.gallery-item { border: 2px solid transparent; cursor: pointer; }
+.gallery-item:hover > div + span + div,
+.gallery-item:hover > div + div { opacity: 1 !important; } /* overlay */
+.gallery-item.selected { border-color: #20c997; box-shadow: 0 0 0 3px rgba(32,201,151,.25); }
 
+/* ===== FORMULÁRIOS E INPUTS (MODO DARK) ===== */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+  background-color: var(--sidebar-bg-strong);
+  border-color: var(--petx-primary);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 0.25rem rgba(139, 159, 255, 0.25);
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+[data-theme="dark"] .form-label {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .input-group-text {
+  background-color: var(--bg-tertiary);
+  border-color: var(--input-border);
+  color: var(--text-secondary);
+}
+
+/* Ajuste específico para data-tables em dark mode */
+[data-theme="dark"] .table {
+  color: var(--text-primary);
+  --bs-table-color: var(--text-primary);
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--border-color);
+}

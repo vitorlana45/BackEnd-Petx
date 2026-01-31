@@ -1,31 +1,33 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controllers.animal;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.br.CPF;
 import org.ong.pet.pex.backendpetx.bean.StatsCardBean;
 import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
-import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
+import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
 import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
 import org.ong.pet.pex.backendpetx.service.StatisticService;
+import org.ong.pet.pex.backendpetx.service.impl.MediaService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
@@ -41,11 +43,13 @@ public class AnimalController {
     private final AnimalService animalService;
     private final MessageSource messages;
     private final StatisticService statisticService;
+    private final MediaService mediaService;
 
-    public AnimalController(AnimalService animalService, MessageSource messages, StatisticService statisticService) {
+    public AnimalController(AnimalService animalService, MessageSource messages, StatisticService statisticService, MediaService mediaService) {
         this.animalService = animalService;
         this.messages = messages;
         this.statisticService = statisticService;
+        this.mediaService = mediaService;
     }
 
     /**
@@ -77,7 +81,7 @@ public class AnimalController {
 
         // Se a requisição veio do HTMX, devolve só o fragmento da tabela/lista
         if ("true".equalsIgnoreCase(htmx)) {
-            return "animais/fragmentos :: lista";
+            return "animais/fragmentos";
         }
 
         return "animais/lista";
@@ -176,6 +180,8 @@ public class AnimalController {
         AnimalGenericoResposta animal = animalService.buscarAnimalPorId(id);
         montarComboStatusEnum(model);
         model.addAttribute("animal", animal);
+        model.addAttribute("profileUrl", mediaService.getProfilePresignedUrl(MediaTargetType.ANIMAL, id));
+        model.addAttribute("fotos", mediaService.listWithUrls(MediaTargetType.ANIMAL, id));
         return "animais/perfil";
     }
 
@@ -300,6 +306,8 @@ public class AnimalController {
                          RedirectAttributes ra,
                          Locale locale) {
 
+        var fotos = mediaService.list(MediaTargetType.ANIMAL, id);
+
         // Exemplo: validação falhou
         if (br.hasErrors()) {
             montarComboStatusEnum(model);
@@ -307,14 +315,17 @@ public class AnimalController {
             model.addAttribute("modalMensagemErro",
                     messages.getMessage("mensagem.erro.formularioInvalido", null, locale));
             model.addAttribute("animal", animalService.buscarAnimalPorId(id));
+            model.addAttribute("fotos", fotos);
             return "animais/perfil";
         }
 
         try {
             var response = animalService.atualizarAnimal(id, reqDTO);
 
+
             ra.addFlashAttribute("mensagemSucesso", messages.getMessage("mensagem.sucesso.salvar", null, locale));
             model.addAttribute("animal", response);
+            model.addAttribute("fotos", fotos);
             return "redirect:/animais/" + id;
         } catch (AppException e) {
             montarComboStatusEnum(model);
@@ -328,9 +339,65 @@ public class AnimalController {
         }
     }
 
+    @PostMapping(value = "/{id}/atualizar/foto-perfil", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String alterarFotoPerfil(@PathVariable Long id,
+                                    @RequestParam("file") MultipartFile file,
+                                    RedirectAttributes ra) {
+        try {
+            if (file.isEmpty()) throw new IllegalArgumentException("Nenhum arquivo foi enviado");
+            if (file.getContentType() == null || !file.getContentType().startsWith("image/"))
+                throw new IllegalArgumentException("Apenas imagens são aceitas");
+            if (file.getSize() > 5 * 1024 * 1024)
+                throw new IllegalArgumentException("Arquivo muito grande (máx. 5MB)");
+
+            mediaService.uploadAndLink(file, MediaTargetType.ANIMAL, id, MediaUsage.PERFIL, 0);
+            ra.addFlashAttribute("mensagemSucesso", "Foto de perfil atualizada com sucesso!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensagemErro", "Erro ao salvar foto: " + e.getMessage());
+        }
+        return "redirect:/animais/" + id;
+    }
 
 
+    @PostMapping(value = "/{id}/atualizar/definir-foto-perfil")
+    public String definirFotoPerfil(@PathVariable Long id,
+                                   @RequestParam("mediaId") Long mediaId,
+                                   RedirectAttributes ra) {
+        try {
+            mediaService.markAsProfile(mediaId, MediaTargetType.ANIMAL, id);
+            ra.addFlashAttribute("mensagemSucesso", "Foto de perfil definida com sucesso!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensagemErro", "Erro ao definir foto de perfil: " + e.getMessage());
+        }
+        return "redirect:/animais/" + id;
+    }
 
+    @PostMapping(value = "/{id}/atualizar/remover-foto-perfil")
+    public String removerFotoPerfil(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            mediaService.unsetProfile(MediaTargetType.ANIMAL, id);
+            ra.addFlashAttribute("mensagemSucesso", "Foto de perfil removida com sucesso!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensagemErro", "Erro ao remover foto de perfil: " + e.getMessage());
+        }
+        return "redirect:/animais/" + id;
+    }
+
+    /**
+     * Exclui uma foto específica da galeria
+     */
+    @PostMapping(value = "/{id}/excluir-foto")
+    public String excluirFoto(@PathVariable Long id,
+                             @RequestParam("mediaId") Long mediaId,
+                             RedirectAttributes ra) {
+        try {
+            mediaService.deleteMedia(mediaId);
+            ra.addFlashAttribute("mensagemSucesso", "Foto excluída com sucesso!");
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensagemErro", "Erro ao excluir foto: " + e.getMessage());
+        }
+        return "redirect:/animais/" + id;
+    }
 
 
     /**

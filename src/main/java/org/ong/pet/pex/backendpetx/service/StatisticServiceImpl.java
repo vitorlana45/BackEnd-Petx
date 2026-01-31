@@ -11,6 +11,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final AnimalService animalService;
     private final TutorService tutorService;
+    private final BoletimService boletimService;
 
 
     @Override
@@ -21,7 +22,13 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public long getQuantidadeAdocoes() {
-        return 0;
+        return animalService.getTotalAdocoes();
+    }
+
+    @Override
+    @Cacheable(cacheNames = "stats", key = "'TOTAL_BOLETINS'")
+    public long getTotalBoletins() {
+        return boletimService.contarTotalBoletins();
     }
 
     @Override

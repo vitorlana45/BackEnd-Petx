@@ -6,138 +6,226 @@
 </head>
 <body>
 <section>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Detalhes do Tutor</h2>
+    <!-- Alerts -->
+    <th:block th:replace="~{fragmentos/toast :: toastStack(${mensagemSucesso}, ${mensagemErro}, ${10000})}"></th:block>
+
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb small mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/tutores}">Tutores</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detalhes</li>
+        </ol>
+    </nav>
+
+    <!-- Header com avatar, meta e ações -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="d-flex align-items-center gap-3">
+            <!-- Avatar com inicial -->
+            <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
+                 style="width:48px;height:48px;font-weight:700;">
+                <span th:text="${#strings.toUpperCase(#strings.substring(tutor.nome,0,1))}">T</span>
+            </div>
+
+            <div>
+                <h2 class="mb-1" th:text="${tutor.nome}">Nome do Tutor</h2>
+
+                <!-- Meta: CPF + criado em -->
+                <div class="small text-muted">
+                    <i class="fas fa-id-card me-1" aria-hidden="true"></i>
+                    <span th:text="${tutor.cpf}">000.000.000-00</span>
+
+                    <span class="mx-2">•</span>
+
+                    <i class="far fa-clock me-1" aria-hidden="true"></i>
+                    <time th:datetime="${#temporals.formatISO(tutor.criadoEm)}"
+                          th:title="${#temporals.formatISO(tutor.criadoEm)}"
+                          th:text="${#temporals.format(tutor.criadoEm, 'dd/MM/yyyy HH:mm')}">—</time>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações -->
         <div class="d-flex gap-2">
-            <a class="btn btn-primary" th:href="@{/tutores}">
-                <i class="fas fa-arrow-left me-2"></i>Voltar
+            <a class="btn btn-sm btn-outline-primary" th:href="@{/tutores}" aria-label="Voltar para a lista">
+                <i class="fas fa-arrow-left me-2" aria-hidden="true"></i>Voltar
             </a>
-            <a class="btn btn-warning" th:href="@{/tutores/{cpf}/editar(cpf=${tutor.cpf})}">
-                <i class="fas fa-edit me-2"></i>Editar
-            </a>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="fas fa-trash-alt me-2"></i>Excluir
+
+            <!-- Botão que abre o modal -->
+            <button type="button" class="btn btn-warning btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editTutorModal">
+                <i class="fas fa-edit me-1"></i>Editar
+            </button>
+
+
+            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" aria-label="Excluir tutor">
+                <i class="fas fa-trash-alt me-2" aria-hidden="true"></i>Excluir
             </button>
         </div>
     </div>
-    
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header"><h5 class="mb-0">Informações Pessoais</h5></div>
+
+
+
+    <!-- Cards de informações -->
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        <!-- Informações Pessoais -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header d-flex align-items-center">
+                    <h5 class="mb-0">Informações Pessoais</h5>
+                </div>
                 <div class="card-body">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <th style="width: 30%">Nome:</th>
-                                <td th:text="${tutor.nome}"></td>
-                            </tr>
-                            <tr>
-                                <th>CPF:</th>
-                                <td th:text="${tutor.cpf}"></td>
-                            </tr>
-                            <tr>
-                                <th>Telefone:</th>
-                                <td th:text="${tutor.telefone}"></td>
-                            </tr>
-                            <tr>
-                                <th>Idade:</th>
-                                <td th:text="${tutor.idade}"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Ficha técnica com DL -->
+                    <dl class="row mb-0">
+                        <dt class="col-4 col-lg-3">Nome</dt>
+                        <dd class="col-8 col-lg-9" th:text="${tutor.nome}">—</dd>
+
+                        <dt class="col-4 col-lg-3">CPF</dt>
+                        <dd class="col-8 col-lg-9">
+                            <div class="d-flex align-items-center gap-2">
+                                <span th:text="${tutor.cpf}">000.000.000-00</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent)"
+                                        aria-label="Copiar CPF">
+                                    <i class="far fa-copy" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </dd>
+
+                        <dt class="col-4 col-lg-3">Telefone</dt>
+                        <dd class="col-8 col-lg-9" th:text="${tutor.telefone} ?: 'Não informado'">—</dd>
+
+                        <dt class="col-4 col-lg-3">Idade</dt>
+                        <dd class="col-8 col-lg-9">
+              <span class="badge bg-secondary-subtle text-secondary"
+                    th:text="${tutor.idade} ?: '—'">—</span>
+                        </dd>
+                    </dl>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-header"><h5 class="mb-0">Endereço</h5></div>
+
+        <!-- Endereço -->
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Endereço</h5>
+                </div>
                 <div class="card-body">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <th style="width: 30%">CEP:</th>
-                                <td th:text="${tutor.endereco?.cep}"></td>
-                            </tr>
-                            <tr>
-                                <th>Logradouro:</th>
-                                <td th:text="${tutor.endereco?.logradouro}"></td>
-                            </tr>
-                            <tr>
-                                <th>Complemento:</th>
-                                <td th:text="${tutor.endereco?.complemento}"></td>
-                            </tr>
-                            <tr>
-                                <th>Bairro:</th>
-                                <td th:text="${tutor.endereco?.bairro}"></td>
-                            </tr>
-                            <tr>
-                                <th>Cidade:</th>
-                                <td th:text="${tutor.endereco?.cidade}"></td>
-                            </tr>
-                            <tr>
-                                <th>Estado:</th>
-                                <td th:text="${tutor.endereco?.estado}"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Linha compacta -->
+                    <p class="text-muted small mb-3">
+                        <i class="fas fa-map-marker-alt me-1" aria-hidden="true"></i>
+                        <span th:text="${tutor.rua}">Rua</span>, <span th:text="${tutor.bairro}">Bairro</span> —
+                        <span th:text="${tutor.cidade}">Cidade</span>/<span th:text="${tutor.estado}">UF</span>
+                        • <span th:text="${tutor.cep}">00000-000</span>
+                    </p>
+
+                    <dl class="row mb-0">
+                        <dt class="col-4 col-lg-3">CEP</dt>
+                        <dd class="col-8 col-lg-9" th:text="${tutor.cep} ?: '—'">—</dd>
+
+                        <dt class="col-4 col-lg-3">Bairro</dt>
+                        <dd class="col-8 col-lg-9" th:text="${tutor.bairro} ?: '—'">—</dd>
+
+                        <dt class="col-4 col-lg-3">Cidade</dt>
+                        <dd class="col-8 col-lg-9" th:text="${tutor.cidade} ?: '—'">—</dd>
+
+                        <dt class="col-4 col-lg-3">Estado</dt>
+                        <dd class="col-8 col-lg-9">
+                            <span class="badge bg-primary-subtle text-primary" th:text="${tutor.estado} ?: '—'">—</span>
+                        </dd>
+                    </dl>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Animais do Tutor -->
-    <div class="card mb-3">
-        <div class="card-header">
-            <h5 class="mb-0">Animais deste Tutor</h5>
+    <div class="card mt-3 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                Animais deste Tutor
+                <span class="badge bg-primary-subtle text-primary ms-2"
+                      th:text="${tutor.listaDeAnimais != null ? #lists.size(tutor.listaDeAnimais) : 0} + ' itens'">0 itens</span>
+            </h5>
+
+            <!-- Filtro local da tabela -->
+            <input class="form-control form-control-sm" placeholder="Filtrar…"
+                   oninput="
+               const q=this.value.toLowerCase();
+               this.closest('.card').querySelectorAll('tbody tr').forEach(tr=>{
+                 tr.style.display = tr.textContent.toLowerCase().includes(q)?'':'none';
+               });
+             ">
         </div>
+
         <div class="card-body p-0">
-            <div th:if="${tutor.animais == null || tutor.animais.isEmpty()}" class="p-3 text-center">
-                <p class="mb-0 text-muted">Este tutor não possui animais cadastrados</p>
+            <div th:if="${tutor.listaDeAnimais == null || tutor.listaDeAnimais.isEmpty()}" class="p-4 text-center text-muted">
+                <i class="fas fa-box-open mb-2 d-block" aria-hidden="true"></i>
+                Este tutor não possui animais cadastrados.
             </div>
-            <table th:if="${tutor.animais != null && !tutor.animais.isEmpty()}" class="table table-hover table-striped mb-0">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Chip ID</th>
-                        <th>Espécie</th>
-                        <th>Raça</th>
-                        <th>Porte</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
+
+            <table th:if="${tutor.listaDeAnimais != null && !tutor.listaDeAnimais.isEmpty()}"
+                   class="table table-hover table-striped table-sm align-middle mb-0">
+                <thead class="small text-muted">
+                <tr>
+                    <th>Nome</th>
+                    <th>Chip</th>
+                    <th>Espécie</th>
+                    <th>Raça</th>
+                    <th>Porte</th>
+                    <th>Status</th>
+                    <th class="text-end">Ações</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="animal : ${tutor.animais}">
-                        <td th:text="${animal.nome}"></td>
-                        <td th:text="${animal.chipId}"></td>
-                        <td th:text="${animal.especieEnum}"></td>
-                        <td th:text="${animal.raca}"></td>
-                        <td th:text="${animal.porteEnum}"></td>
-                        <td th:text="${animal.saude}"></td>  <!-- conferir -->
-                        <td>
-                            <a class="btn btn-sm btn-info" th:href="@{/animais/detalhar/{id}(id=${animal.id})}">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                        </td>
-                    </tr>
+                <tr th:each="animal : ${tutor.listaDeAnimais}">
+                    <td class="fw-medium" th:text="${animal.nome}">—</td>
+                    <td class="text-nowrap" th:text="${animal.chipId}">—</td>
+                    <td><span class="badge bg-secondary-subtle text-secondary" th:text="${animal.especie}">—</span></td>
+                    <td th:text="${animal.raca}">—</td>
+                    <td th:text="${animal.porte}">—</td>
+                    <td>
+            <span class="badge"
+                  th:classappend="${
+                     animal.status =='SAUDAVEL' ? ' bg-success-subtle text-success' :
+                     (animal.status =='DOENTE'   ? ' bg-warning-subtle text-warning' :
+                                                         ' bg-secondary-subtle text-secondary')
+                  }"
+                  th:text="${animal.status}">—</span>
+                    </td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-info"
+                           th:href="@{/animais/{id}(id=${animal.id})}"
+                           aria-label="Ver animal">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    
+
     <!-- Modal de exclusão -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteModalLabel">Confirmar Exclusão</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Tem certeza que deseja excluir o tutor <strong th:text="${tutor.nome}"></strong>?</p>
-                    <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Esta ação não pode ser desfeita.</p>
+                    <p>Tem certeza que deseja excluir o tutor <strong th:text="${tutor.nome}">—</strong>?</p>
+                    <p class="small text-muted">
+                        <i class="fas fa-id-card me-1" aria-hidden="true"></i>
+                        <span th:text="${tutor.cpf}">000.000.000-00</span>
+                    </p>
+                    <p class="text-danger mb-0">
+                        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
+                        Esta ação não pode ser desfeita.
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -148,16 +236,17 @@
             </div>
         </div>
     </div>
-    
-    <!-- Alertas -->
-    <div th:if="${mensagemSucesso != null}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle me-2"></i><span th:text="${mensagemSucesso}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div th:if="${mensagemErro != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fas fa-exclamation-circle me-2"></i><span th:text="${mensagemErro}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+
+    <!-- Include do modal (PARAMS NOMEADOS!) -->
+    <th:block th:replace="~{tutores/modal-editar :: modal(
+          id='editTutorModal',
+          titulo='Editar Tutor',
+          action=@{/tutores/{cpf}/editar(cpf=${tutor.cpf})},
+          method='POST',
+          tutorForm=${tutorForm}
+    )}"></th:block>
+
+
 </section>
 </body>
 </html>

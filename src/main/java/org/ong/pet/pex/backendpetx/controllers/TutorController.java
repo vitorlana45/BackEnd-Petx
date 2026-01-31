@@ -1,6 +1,10 @@
 package org.ong.pet.pex.backendpetx.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
@@ -13,12 +17,18 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/tutores")
@@ -33,26 +43,59 @@ public class TutorController {
         this.animalService = animalService;
     }
 
-    /**
-     * Lista tutores com filtros e paginação
-     */
-    @GetMapping()
+
+    private static List<ActionButtonDTO> getActionButtonDTOS(){
+        List<ActionButtonDTO> actionButtons = new ArrayList<>();
+        actionButtons.add(new ActionButtonDTO(
+                "Novo Tutor",
+                "/tutores/form",
+                "fas fa-user-plus me-2",
+                "btn btn-primary"));
+        return actionButtons;
+    }
+
+
+    @GetMapping
     public String listarTutores(Model model,
-                         @RequestParam(required = false) String nome,
-                         @RequestParam(required = false) String cep,
-                         @RequestParam(required = false) String cidade,
-                         @RequestParam(required = false) String estado,
-                         @RequestParam(required = false) Integer idade,
-                         @PageableDefault(size = 10) Pageable pageable) {
-        Page<TutorDTOResposta> page = tutorService.findAllTutorPaginacao(nome, cep, cidade, estado, idade, pageable);
+                                @RequestParam(required = false) String nome,
+                                @RequestParam(required = false) String cep,
+                                @RequestParam(required = false) String cidade,
+                                @RequestParam(required = false) String estado,
+                                @RequestParam(required = false) Integer idade,
+                                @RequestHeader(value = "HX-Request", defaultValue = "false") boolean htmx,
+                                @PageableDefault(size = 10) Pageable pageable,
+                                HttpServletResponse resp) {
+
+        SmartPageHelper.setupTutorsPage(model);
+        List<ActionButtonDTO> actionButtons = getActionButtonDTOS();
+        model.addAttribute("actionButtons", actionButtons);
+        // 🔧 Normalização
+        nome   = StringUtils.hasText(nome) ? nome : null;
+        cep    = StringUtils.hasText(cep) ? cep : null;
+        cidade = StringUtils.hasText(cidade) ? cidade : null;
+        estado = StringUtils.hasText(estado) ? estado : null;
+        // idade: se não veio, já é null (ok)
+
+        model.addAttribute("campos", "clientes/campos :: campos"); // aponta para templates/clientes/campos.html, fragmento "campos"
+
+
+        Page<TutorDTOResposta> page = tutorService.findAllTutorPaginacao(
+                nome, cep, cidade, estado, idade, pageable);
+
         model.addAttribute("page", page);
-        model.addAttribute("currentPage", "/tutores");
         model.addAttribute("tutores", page.getContent());
-        model.addAttribute("filtroNome", nome);
-        model.addAttribute("filtroCep", cep);
-        model.addAttribute("filtroCidade", cidade);
-        model.addAttribute("filtroEstado", estado);
-        model.addAttribute("filtroIdade", idade);
+        model.addAttribute("fNome", nome);
+        model.addAttribute("fCep", cep);
+        model.addAttribute("fCidade", cidade);
+        model.addAttribute("fEstado", estado);
+        model.addAttribute("fIdade", idade);
+
+
+
+        if (htmx) {
+            // Se usar HTMX, devolva só o fragmento da lista
+            return "tutores/lista :: lista";
+        }
         return "tutores/lista";
     }
 
@@ -118,6 +161,7 @@ public class TutorController {
 
         var page = this.animalService.paginarAnimaisParaAdocao(nome, raca, especie, porte, saude, comportamento, maturidade, origem, sexo, pageable);
 
+
         model.addAttribute("page", page);
         model.addAttribute("currentPage", "/tutores");
         model.addAttribute("animais", page.getContent());
@@ -140,14 +184,38 @@ public class TutorController {
     /**
      * Exibe detalhes de um tutor
      */
-    @GetMapping(value = "/{cpf}")
+    @GetMapping("/{cpf}")
     public String detalhesTutor(@PathVariable String cpf, Model model, RedirectAttributes redirectAttributes) {
         if (cpf == null || cpf.isBlank() || cpf.equalsIgnoreCase("salvar")) {
             redirectAttributes.addFlashAttribute("mensagemErro", "CPF inválido ou não encontrado.");
             return "redirect:/tutores";
         }
-        TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
-        model.addAttribute("tutor", tutor);
+
+        // DTO para exibição
+        TutorDTOResposta dto = tutorService.buscarTutorPorCpf(cpf);
+        model.addAttribute("tutor", dto);
+
+        // Preenche o form com os dados atuais (mapeie conforme seu DTO/Requisicao)
+
+        List<String> arraysId = new ArrayList<>();
+
+        dto.listaDeAnimais().forEach(an -> arraysId.add(String.valueOf(an.getId())));
+
+        AtualizarTutorRequisicao form = new AtualizarTutorRequisicao(
+                dto.cpf(),
+                dto.nome(),
+                dto.cep(),
+                dto.idade(),
+                dto.telefone(),
+                dto.cidade(),
+                dto.bairro(),
+                dto.estado(),
+                dto.rua(),
+                arraysId
+        );
+
+        model.addAttribute("tutorForm", form);
+
         return "tutores/detalhes";
     }
 
@@ -161,28 +229,48 @@ public class TutorController {
         model.addAttribute("cpf", cpf);
         return "tutores/editar";
     }
-
     /**
      * Processa o formulário de edição de tutor
      */
-    @PostMapping(value = "/{cpf}/editar")
+    @PostMapping("/{cpf}/editar")
     public String atualizarTutor(@PathVariable String cpf,
-                               @Valid @ModelAttribute AtualizarTutorRequisicao tutor,
-                               BindingResult result,
-                               RedirectAttributes redirectAttributes) {
+                                 @Valid @ModelAttribute("tutorForm") AtualizarTutorRequisicao tutorForm,
+                                 BindingResult result,
+                                 Model model,
+                                 RedirectAttributes ra) {
+
         if (result.hasErrors()) {
-            return "tutores/editar";
+            // Garante que o mesmo objeto esteja no model para o BindingResult
+            model.addAttribute("tutorForm", tutorForm);
+
+            // Recarrega DTO de exibição
+            TutorDTOResposta dto = tutorService.buscarTutorPorCpf(cpf);
+            model.addAttribute("tutor", dto);
+
+            // Reabre modal na renderização completa
+            model.addAttribute("openEditModal", true);
+            return "tutores/detalhes";
         }
 
         try {
-            String novoCpf = tutorService.atualizarDadosTutor(cpf, tutor);
-            redirectAttributes.addFlashAttribute("mensagemSucesso", "Tutor atualizado com sucesso!");
+            String novoCpf = tutorService.atualizarDadosTutor(cpf, tutorForm);
+            ra.addFlashAttribute("mensagemSucesso", "Tutor atualizado com sucesso!");
             return "redirect:/tutores/" + novoCpf;
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao atualizar tutor: " + e.getMessage());
-            return "tutores/editar";
+            result.reject(null, "Erro ao atualizar tutor: " + e.getMessage());
+
+            // Mantém o form com os erros + reabre modal
+            model.addAttribute("tutorForm", tutorForm);
+            model.addAttribute("openEditModal", true);
+
+            TutorDTOResposta dto = tutorService.buscarTutorPorCpf(cpf);
+            model.addAttribute("tutor", dto);
+
+            return "tutores/detalhes";
         }
     }
+
 
     /**
      * Exclui um tutor

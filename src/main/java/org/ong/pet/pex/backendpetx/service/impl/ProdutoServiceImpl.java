@@ -18,8 +18,10 @@ import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -38,11 +40,17 @@ public class ProdutoServiceImpl implements ProdutoService {
         var ong = ongRepository.findById(ONG).orElseThrow(PetXException::ongNaoEncontrada);
 
         if (ong.getEstoque() == null) {
-            ong = criarEstoque(ong);
+            ong.setEstoque(new ArrayList<>());
         }
 
-        var produto = produtoMapper.mapearParaEntidade(dto, ong.getEstoque());
-        ong.getEstoque().getProdutos().add(produto);
+
+        Estoque estoque = ong.getEstoque().stream()
+                .filter(e -> Objects.equals(e.getId(), dto.estoqueId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Estoque não pertence à ONG"));
+
+        var produto = produtoMapper.mapearParaEntidade(dto, estoque);
+
         produto = produtoRepository.save(produto);
         ongRepository.save(ong);
         return produto.getId();
@@ -67,7 +75,7 @@ public class ProdutoServiceImpl implements ProdutoService {
         if (dto.descricao() != null) produtoExistente.setDescricao(dto.descricao());
         if (dto.quantidade() != null) produtoExistente.setQuantidade(dto.quantidade());
         if (dto.unidadeDeMedida() != null) produtoExistente.setUnidadeDeMedida(dto.unidadeDeMedida());
-        if (dto.tipoProduto() != null) produtoExistente.setTipoProduto(dto.tipoProduto());
+//        if (dto.tipoProduto() != null) produtoExistente.setTipoProduto(dto.tipoProduto());
         if (dto.atributosEspecificos() != null) {
             dto.atributosEspecificos().forEach(produto -> {
                 validarCamposDinamicos(dto.tipoProduto(), dto.atributosEspecificos());
@@ -104,13 +112,5 @@ public class ProdutoServiceImpl implements ProdutoService {
             });
         }
 
-    }
-
-    private Ong criarEstoque(final Ong ong) {
-        Estoque estoque = new Estoque();
-        estoque.setOng(ong);
-        Estoque savedEstoque = estoqueRepository.save(estoque);
-        ong.setEstoque(savedEstoque);
-        return ongRepository.save(ong);
     }
 }

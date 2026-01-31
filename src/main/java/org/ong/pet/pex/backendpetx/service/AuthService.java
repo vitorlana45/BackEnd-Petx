@@ -1,10 +1,8 @@
 package org.ong.pet.pex.backendpetx.service;
 
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.EmailDTO;
 import org.ong.pet.pex.backendpetx.dto.request.NovaSenhaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
 
 public interface AuthService {
 

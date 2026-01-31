@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,7 @@ public class TutorServiceImpl implements TutorService {
                 .bairro(tutor.getEndereco().getBairro())
                 .estado(tutor.getEndereco().getEstado())
                 .rua(tutor.getEndereco().getRua())
+                .criadoEm(tutor.getCriadoEm())
                 .listaDeAnimais(animais)
                 .build();
     }
@@ -69,10 +71,11 @@ public class TutorServiceImpl implements TutorService {
             throw TutorException.cpfNaoPodeSerVazioOuNulo();
         }
 
+        System.out.println(cadastrarTutorRequisicao.animalChips());
         // TODO:  B.O nao so tem como adicionar um tutor se ele tiver um animal
         // Verifica se todos os animais da lista de chips existem
         List<Animal> pets = cadastrarTutorRequisicao.animalChips().stream()
-                .map(chip -> animalRepository.findAnimalByChipId(chip)
+                .map(chip -> animalRepository.findAnimalById(Long.valueOf(chip))
                         .orElseThrow(() -> PetXException.animalNaoEncontrado(chip)))
                 .toList();
 
@@ -104,6 +107,11 @@ public class TutorServiceImpl implements TutorService {
 
             return tutor;
         }).orElseGet(() -> {
+
+            animais.forEach(animal -> {
+                animal.setAdotado(AdocaoEnum.ADOTADO);
+            });
+
             // Cria um novo tutor
             Tutor novoTutor = Tutor.builder()
                     .idade(cadastrarTutorRequisicao.idade())
@@ -120,6 +128,8 @@ public class TutorServiceImpl implements TutorService {
                     .ong(pets.getFirst().getOng())
                     .animais(animais)
                     .build();
+
+
 
             // Adiciona o tutor aos animais
             animais.forEach(animal -> animal.getTutores().add(novoTutor));
@@ -207,6 +217,7 @@ public class TutorServiceImpl implements TutorService {
                 .bairro(tutor.getEndereco().getBairro())
                 .estado(tutor.getEndereco().getEstado())
                 .rua(tutor.getEndereco().getRua())
+                .criadoEm(tutor.getCriadoEm())
                 .listaDeAnimais(AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO(tutor.getAnimais()))
                 .build()).collect(Collectors.toList()), pageable,tutores.getTotalElements());
     }

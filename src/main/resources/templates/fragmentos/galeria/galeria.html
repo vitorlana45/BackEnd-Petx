@@ -1,0 +1,11 @@
+<div class="row g-2">
+    <div class="col-6 col-md-3" th:each="foto : ${fotos}">
+      <a th:href="@{/animais/{id}/foto/{fotoId}(id=${animal.id}, fotoId=${foto.id})}" target="_blank">
+        <img class="img-thumbnail w-100"
+             th:src="@{/animais/{id}/foto/{fotoId}(id=${animal.id}, fotoId=${foto.id})}"
+             th:alt="${animal.nome}"
+             loading="lazy">
+      </a>
+    </div>
+  </div>
+  

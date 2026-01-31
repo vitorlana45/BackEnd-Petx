@@ -1,9 +1,10 @@
 package org.ong.pet.pex.backendpetx.service;
 
+import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamicaDTO;
 import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDinamicaDTO;
 import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
+import org.ong.pet.pex.backendpetx.entities.Despesa;
 import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
 import org.ong.pet.pex.backendpetx.enums.FormaPagamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.StatusDespesaEnum;
@@ -33,4 +34,6 @@ public interface DespesaService {
     );
 
     DespesaDTORespota atualizarDespesaDinamicamente(Long id, DespesaRequisicaoDinamicaDTO dto);
+
+    Despesa buscarDespesaPorId(Long id);
 }

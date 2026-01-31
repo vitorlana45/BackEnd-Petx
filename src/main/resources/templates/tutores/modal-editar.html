@@ -1,0 +1,145 @@
+<!-- CASCO do modal -->
+<th:block xmlns:th="http://www.thymeleaf.org"
+          th:fragment="modal(id, titulo, action, method, tutorForm)">
+
+    <div class="modal fade"
+         th:id="${id}"
+         tabindex="-1"
+         aria-hidden="true"
+         th:attr="aria-labelledby=${id + '_label'}"
+         data-bs-backdrop="true"
+         data-bs-keyboard="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <th:block th:replace="~{this :: content(id=${id}, titulo=${titulo}, action=${action}, method=${method}, tutorForm=${tutorForm})}"></th:block>
+        </div>
+    </div>
+</th:block>
+
+<!-- CONTEÚDO do modal (somente .modal-content) -->
+<th:block xmlns:th="http://www.thymeleaf.org"
+          th:fragment="content(id, titulo, action, method, tutorForm)">
+
+    <form class="modal-content"
+          th:action="${action}"
+          th:object="${tutorForm}"
+          th:method="${method != null ? method : 'post'}">
+        <div class="modal-header">
+            <h5 class="modal-title" th:id="${id + '_label'}" th:text="${titulo}">Editar Tutor</h5>
+            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <div class="modal-body">
+            <!-- PUT/DELETE override (quando necessário) -->
+            <input type="hidden" name="_method"
+                   th:if="${method != null and method.toUpperCase() != 'POST'}"
+                   th:value="${method}"/>
+
+            <!-- CSRF -->
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <!-- Erros globais -->
+            <div class="alert alert-danger py-2 mb-3" th:if="${#fields.hasGlobalErrors()}" role="alert">
+                <div th:each="e : ${#fields.globalErrors()}" th:text="${e}">Erro global</div>
+            </div>
+
+            <div class="row g-3">
+                <!-- Pessoais -->
+                <div class="col-md-6">
+                    <label class="form-label" for="nome">Nome</label>
+                    <input id="nome" class="form-control" th:field="*{nome}" autocomplete="name" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="cpf">CPF</label>
+                    <input id="cpf" class="form-control" th:field="*{cpf}" inputmode="numeric" autocomplete="off" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}">Erro</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="telefone">Telefone</label>
+                    <input id="telefone" class="form-control" th:field="*{telefone}" autocomplete="tel" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}">Erro</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label" for="idade">Idade</label>
+                    <input id="idade" type="number" min="0" class="form-control" th:field="*{idade}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('idade')}" th:errors="*{idade}">Erro</div>
+                </div>
+
+                <!-- Endereço -->
+                <div class="col-md-6">
+                    <label class="form-label" for="rua">Rua</label>
+                    <input id="rua" class="form-control" th:field="*{rua}" autocomplete="address-line1" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('rua')}" th:errors="*{rua}">Erro</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="bairro">Bairro</label>
+                    <input id="bairro" class="form-control" th:field="*{bairro}" autocomplete="address-line2" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('bairro')}" th:errors="*{bairro}">Erro</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="cidade">Cidade</label>
+                    <input id="cidade" class="form-control" th:field="*{cidade}" autocomplete="address-level2" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cidade')}" th:errors="*{cidade}">Erro</div>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label" for="estado">Estado</label>
+                    <input id="estado" class="form-control" th:field="*{estado}" maxlength="2" autocomplete="address-level1" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}">Erro</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label" for="cep">CEP</label>
+                    <input id="cep" class="form-control" th:field="*{cep}" inputmode="numeric" autocomplete="postal-code" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cep')}" th:errors="*{cep}">Erro</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+            <button class="btn btn-primary" type="submit">Salvar</button>
+        </div>
+    </form>
+    <script th:if="${openEditModal}">
+        // Use 'load' para garantir que o Bootstrap já está carregado e o modal já existe no DOM
+        window.addEventListener('load', function () {
+            const el = document.getElementById('editTutorModal');
+            if (!el) return;
+            console.log("passou aqui podendo abrir o modal")
+            const m = bootstrap.Modal.getOrCreateInstance(el);
+            m.show();
+            const firstInvalid = el.querySelector('.is-invalid');
+            if (firstInvalid) firstInvalid.focus();
+        });
+    </script>
+
+    <script>
+        (function () {
+            const modalEl = document.getElementById('editTutorModal');
+            if (!modalEl) return;
+
+            // Ao fechar: opcionalmente dá dispose pra “reconstruir” a instância ao abrir de novo
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                // (extra) limpa qualquer estado remanescente
+                const form = modalEl.querySelector('form');
+                if (form) form.reset();
+
+                // Remove classes de validação (garante visual limpo no próximo open)
+                modalEl.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                modalEl.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+
+                // Destroi a instância do Bootstrap (opcional, mas deixa 100% “reconstruído” a cada abertura)
+                const instance = bootstrap.Modal.getInstance(modalEl);
+                if (instance) instance.dispose();
+            });
+        })();
+    </script>
+
+</th:block>

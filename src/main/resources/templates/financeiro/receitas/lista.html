@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Receitas Financeiras - PetX</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <!-- Cabeçalho -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary mb-0">
+                    <i class="fas fa-hand-holding-usd"></i> Gestão de Receitas
+                </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Receitas</li>
+                    </ol>
+                </nav>
+            </div>
+            <a href="/financeiro/receitas/nova" class="btn btn-success">
+                <i class="fas fa-plus-circle me-2"></i> Nova Receita
+            </a>
+        </div>
+
+        <!-- Cards de Resumo (Simulado para frontend, necessita backend calculation) -->
+        <div class="row mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Total Recebido (Mês)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">R$ <span th:text="${totalMes != null ? #numbers.formatDecimal(totalMes, 1, 'POINT', 2, 'COMMA') : '0,00'}">0,00</span></div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Filtros de Pesquisa</h6>
+            </div>
+            <div class="card-body">
+                <form method="get" th:action="@{/financeiro/receitas}" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Descrição</label>
+                        <input type="text" class="form-control" name="descricao" th:value="${filtroDescricao}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Categoria</label>
+                        <input type="text" class="form-control" name="categoria" placeholder="Ex: Doação" th:value="${param.categoria}">
+                    </div>
+                    <div class="col-md-2 align-self-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Filtrar
+                        </button>
+                    </div>
+                    <div class="col-md-2 align-self-end">
+                        <a href="/financeiro/receitas" class="btn btn-outline-secondary w-100">Limpar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Listagem de Receitas</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Origem</th>
+                                <th>Valor</th>
+                                <th>Pagamento</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="receita : ${receitas.content}">
+                                <td th:text="${#temporals.format(receita.dataRecebimento, 'dd/MM/yyyy')}">01/01/2024</td>
+                                <td th:text="${receita.descricao}">Doação Anônima</td>
+                                <td>
+                                    <span class="badge bg-info-subtle text-primary" th:text="${receita.categoria}">Doação</span>
+                                </td>
+                                <td th:text="${receita.origem ?: '-'}">-</td>
+                                <td class="text-success font-weight-bold">
+                                    R$ <span th:text="${#numbers.formatDecimal(receita.valor, 1, 'POINT', 2, 'COMMA')}">100,00</span>
+                                </td>
+                                <td th:text="${receita.formaPagamento}">PIX</td>
+                                <td>
+                                    <a th:href="@{/financeiro/receitas/{id}/editar(id=${receita.id})}" class="btn btn-sm btn-info text-white" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form th:action="@{/financeiro/receitas/{id}/excluir(id=${receita.id})}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${receitas.empty}">
+                                <td colspan="7" class="text-center text-muted">Nenhuma receita encontrada.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginação Simplificada -->
+                <div th:if="${receitas.totalPages > 1}" class="d-flex justify-content-center mt-3">
+                    <nav aria-label="Navegação de página">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${receitas.first ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/financeiro/receitas(page=${receitas.number - 1}, size=${receitas.size})}">Anterior</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link" th:text="'Página ' + ${receitas.number + 1} + ' de ' + ${receitas.totalPages}"></span>
+                            </li>
+                            <li class="page-item" th:classappend="${receitas.last ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{/financeiro/receitas(page=${receitas.number + 1}, size=${receitas.size})}">Próximo</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

@@ -23,7 +23,7 @@ public class EstoqueMapper {
 
         return ProdutoDTOResposta.builder()
                 .produtoId(entity.getId())
-                .tipoProduto(entity.getTipoProduto())
+//                .tipoProduto(entity.getTipoProduto())
                 .nome(entity.getNome())
                 .descricao(entity.getDescricao())
                 .quantidade(entity.getQuantidade())

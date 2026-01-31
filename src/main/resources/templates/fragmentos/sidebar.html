@@ -60,6 +60,18 @@
         </a>
       </li>
 
+      <!-- Financeiro (Novo) -->
+      <li>
+        <a class="px-link"
+           th:href="@{/financeiro/despesas}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/financeiro') ? ' is-active' : ''}"
+           title="Financeiro">
+          <i class="px-ico fas fa-wallet"></i>
+          <span class="px-text">Financeiro</span>
+        </a>
+        <!-- Submenu simples se desejar, ou apenas link direto para despesas que tem tabs -->
+      </li>
+
       <!-- Tutores -->
       <li>
         <a class="px-link"
@@ -162,4 +174,3 @@
   </div>
 </aside>
 <!-- ENCODING FIX -->
-
