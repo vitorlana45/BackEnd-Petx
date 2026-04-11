@@ -53,11 +53,20 @@ public class DespesaServiceImpl implements DespesaService {
     @Override
     @Transactional
     public DespesaDTORespota atualizarDespesa(final Long id, final DespesaRequisicaoDTO dto) {
-        if (despesaRepository.existsById(id)) {
-            Despesa despesa = despesaRepository.save(despesaMapper.mapearParaEntidade(dto));
-            return despesaMapper.mapearParaDTO(despesa);
-        }
-        throw new DespesaException("Despesa nao encontrado", HttpStatus.NOT_FOUND);
+        Despesa despesaBanco = despesaRepository.findById(id)
+                .orElseThrow(() -> new DespesaException("Despesa nao encontrada", HttpStatus.NOT_FOUND));
+
+        // Atualiza os dados da entidade existente
+        despesaBanco.setDescricao(dto.descricao());
+        despesaBanco.setValor(dto.valor());
+        despesaBanco.setCategoria(dto.categoria());
+        despesaBanco.setFormaPagamento(dto.formaPagamento());
+        despesaBanco.setDataPrevistaPagamento(dto.dataPrevistaPagamento());
+        despesaBanco.setDataPagamento(dto.dataPagamento());
+        despesaBanco.setStatusDespesa(dto.statusDespesa());
+
+        Despesa despesaSalva = despesaRepository.save(despesaBanco);
+        return despesaMapper.mapearParaDTO(despesaSalva);
     }
 
     @Override

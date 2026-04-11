@@ -18,6 +18,8 @@ import org.ong.pet.pex.backendpetx.service.DespesaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +32,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/financeiro/despesas")
@@ -119,7 +122,7 @@ public class FinanceiroWebController {
                 // Atualização
                 Despesa despesaExistente = despesaService.buscarDespesaPorId(despesa.getId());
                 // Atualiza campos extras que não estão no DTO padrão
-                despesaExistente.setDetalhesPersonalizados(despesa.getDetalhesPersonalizados());
+                despesaExistente.setObservacoes(despesa.getObservacoes());
                 despesaRepository.save(despesaExistente);
 
                 despesaService.atualizarDespesa(despesa.getId(), dto);
@@ -127,10 +130,10 @@ public class FinanceiroWebController {
             } else {
                 // Criação
                 DespesaDTORespota resposta = despesaService.cadastrarDespesa(dto);
-                // Se precisar salvar o JSON customizado, faz update logo em seguida pois o DTO não suporta ainda
-                if (despesa.getDetalhesPersonalizados() != null && !despesa.getDetalhesPersonalizados().isEmpty()) {
+                // Salvar observações
+                if (despesa.getObservacoes() != null && !despesa.getObservacoes().isEmpty()) {
                    Despesa d = despesaRepository.findById(resposta.id()).orElseThrow();
-                   d.setDetalhesPersonalizados(despesa.getDetalhesPersonalizados());
+                   d.setObservacoes(despesa.getObservacoes());
                    despesaRepository.save(d);
                 }
 

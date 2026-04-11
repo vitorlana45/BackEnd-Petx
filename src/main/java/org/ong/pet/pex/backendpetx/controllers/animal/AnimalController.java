@@ -16,6 +16,7 @@ import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
 import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
 import org.ong.pet.pex.backendpetx.service.StatisticService;
+import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.ong.pet.pex.backendpetx.service.impl.MediaService;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -44,12 +45,14 @@ public class AnimalController {
     private final MessageSource messages;
     private final StatisticService statisticService;
     private final MediaService mediaService;
+    private final TutorService tutorService;
 
-    public AnimalController(AnimalService animalService, MessageSource messages, StatisticService statisticService, MediaService mediaService) {
+    public AnimalController(AnimalService animalService, MessageSource messages, StatisticService statisticService, MediaService mediaService, TutorService tutorService) {
         this.animalService = animalService;
         this.messages = messages;
         this.statisticService = statisticService;
         this.mediaService = mediaService;
+        this.tutorService = tutorService;
     }
 
     /**
@@ -97,21 +100,21 @@ public class AnimalController {
 
         statsCards.add(
                 new StatsCardBean("fas fa-check", "Animais Disponíveis",
-                String.valueOf(10L), // animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.DISPONIVEL)),
+                 String.valueOf(animalService.getQuantidadeAnimaisDisponiveisParaAdocao()),
                 "success")
         );
 
         statsCards.add(
                 new StatsCardBean("fas fa-home", "Animais Adotados",
-                String.valueOf(10L), // animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.ADOTADO)),
+                String.valueOf(animalService.getTotalAdocoes()),
                "info")
         );
 
-        statsCards.add(
-                new StatsCardBean( "fas fa-procedures", "Animais em Tratamento",
-                String.valueOf(2L), // animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.EM_TRATAMENTO)),
-               "warning")
-        );
+//        statsCards.add(
+//                new StatsCardBean( "fas fa-procedures", "Animais em Tratamento",
+//                String.valueOf(animalService.contarQuantidadeAnimaisPorStatus(StatusEnum.EM_TRATAMENTO)),
+//               "warning")
+//        );
 
         return statsCards;
     }

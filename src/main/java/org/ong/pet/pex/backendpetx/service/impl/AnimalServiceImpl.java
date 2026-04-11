@@ -401,6 +401,12 @@ public class AnimalServiceImpl implements AnimalService {
         return animalRepository.countByAdotado(AdocaoEnum.ADOTADO);
     }
 
+    @Override
+    public long getQuantidadeAnimaisDisponiveisParaAdocao() {
+        return animalRepository.countByAdotado(AdocaoEnum.DISPONIVEL);
+    }
+
+
     private void getImagemPerfilAnimal(Page<Animal> pageContent) {
          pageContent.getContent().forEach(animal -> {
             String imgUrl = mediaService.getProfilePresignedUrl(MediaTargetType.ANIMAL, animal.getId());

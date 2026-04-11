@@ -1,37 +1,29 @@
+<!-- ARQUIVO OBSOLETO - REDIRECIONAMENTO PARA A PÁGINA CORRETA -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
 <head>
-    <title>Controle de Estoque - PetX</title>
-    <!-- CSS específico do estoque para suporte completo ao sistema de temas -->
-    <link rel="stylesheet" th:href="@{/css/estoque.css}">
+    <title>Redirecionando... - PetX</title>
 </head>
 <body>
 <div th:fragment="content">
     <div class="container-fluid">
-        <!-- Cabeçalho com breadcrumb -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="text-primary mb-0">
-                    <i class="fas fa-boxes"></i> Controle de Estoque
-                </h2>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Estoque</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="btn-group">
-                <a th:href="@{/estoque/novo}" class="btn btn-primary me-2">
-                    <i class="fas fa-warehouse"></i> Novo Estoque
-                </a>
-
-                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCadastroProduto">
-                    <i class="fas fa-plus-circle"></i> Novo Produto
-                </button>
+        <div class="alert alert-info text-center">
+            <h3><i class="fas fa-info-circle"></i> Redirecionando...</h3>
+            <p>Esta página foi movida. Você será redirecionado para a lista de estoques.</p>
+            <div class="spinner-border text-primary mt-3" role="status">
+                <span class="visually-hidden">Carregando...</span>
             </div>
         </div>
+    </div>
+
+    <script>
+        // Redirecionamento imediato para a página correta
+        window.location.href = '/estoque';
+    </script>
+</div>
+</body>
+</html>
 
         <!-- Alertas -->
         <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -317,22 +309,24 @@
                         <!-- Atributos específicos do produto -->
                         <div class="mb-3">
                             <label class="form-label">Atributos Específicos</label>
+                            <input type="hidden" id="atributosJson" name="atributosJson">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="row mb-2" id="atributos">
+                                    <div id="atributos">
                                         <!-- Template para atributo -->
-                                        <div class="col-md-6 mb-2 atributo-row">
+                                        <div class="atributo-row mb-2">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" name="atributoChave[]" placeholder="Chave (ex: Marca)">
-                                                <input type="text" class="form-control" name="atributoValor[]" placeholder="Valor (ex: PetFood)">
-                                                <button type="button" class="btn btn-outline-danger remover-atributo">
+                                                <input type="text" class="form-control" name="atributoChave[]" placeholder="Chave (ex: Marca)" aria-label="Chave do atributo">
+                                                <input type="text" class="form-control" name="atributoValor[]" placeholder="Valor (ex: PetFood)" aria-label="Valor do atributo">
+                                                <button type="button" class="btn btn-outline-danger remover-atributo" title="Remover atributo" aria-label="Remover este atributo">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" id="adicionar-atributo" class="btn btn-sm btn-outline-secondary">
+                                    <button type="button" id="adicionar-atributo" class="btn btn-sm btn-outline-primary mt-2" title="Clique para duplicar os campos de atributo">
                                         <i class="fas fa-plus-circle"></i> Adicionar Atributo
+                                        <small class="d-block text-muted" style="font-size: 0.7rem;">Duplica os campos acima</small>
                                     </button>
                                 </div>
                             </div>
@@ -367,53 +361,5 @@
     </div>
 </div>
 
-
-
-<script>
-    document.getElementById('formEstoque').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.currentTarget;
-        const err  = document.getElementById('estoque-error');
-
-        // validações simples
-        const nome = document.getElementById('nomeEstoque').value.trim();
-        const descricao = document.getElementById('descricaoEstoque').value.trim();
-        if (nome.length < 2) { document.getElementById('nomeEstoque').classList.add('is-invalid'); return; }
-        document.getElementById('nomeEstoque').classList.remove('is-invalid');
-        if (descricao.length > 200) { document.getElementById('descricaoEstoque').classList.add('is-invalid'); return; }
-        document.getElementById('descricaoEstoque').classList.remove('is-invalid');
-
-        // loading
-        const btn = document.getElementById('btnSalvarEstoque');
-        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Salvando...';
-        err.classList.add('d-none'); err.innerHTML = '';
-
-        const obj = { nome: nome, descricao: descricao }
-
-        try {
-            const resp = await fetch(form.action, { method: 'POST', body: obj });
-            const data = await resp.json();
-
-            if (resp.ok && data.sucesso) {
-                bootstrap.Modal.getInstance(document.getElementById('modalCadastroEstoque'))?.hide();
-                const msg = document.createElement('div');
-                msg.className = 'alert alert-success alert-dismissible fade show mt-3';
-                msg.innerHTML = `<i class="fas fa-check-circle me-2"></i>${data.mensagem}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
-                document.querySelector('.container-fluid').prepend(msg);
-                setTimeout(() => window.location.reload(), 1200);
-            } else {
-                err.classList.remove('d-none');
-                err.innerHTML = `<div class="alert alert-danger">${data.mensagem || 'Falha ao salvar.'}</div>`;
-            }
-        } catch (ex) {
-            console.error(ex);
-            err.classList.remove('d-none');
-            err.innerHTML = `<div class="alert alert-danger">Erro inesperado ao salvar.</div>`;
-        } finally {
-            btn.disabled = false; btn.innerHTML = '<i class="fas fa-save me-1"></i>Salvar';
-        }
-    });
-</script>
 </body>
 </html>

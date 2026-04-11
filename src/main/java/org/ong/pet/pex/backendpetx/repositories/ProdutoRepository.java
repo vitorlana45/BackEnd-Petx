@@ -31,4 +31,15 @@ Page<Produto> findAllProdutos(
         @Param("unidadeDeMedida") String unidadeDeMedida,
         Pageable pageable);
 
+    /**
+     * Conta produtos por estoque
+     */
+    @Query("SELECT COUNT(p) FROM Produto p WHERE p.estoque.id = :estoqueId")
+    long countByEstoqueId(@Param("estoqueId") Long estoqueId);
+
+    /**
+     * Busca pelo nome que contém o texto no estoque específico
+     */
+    @Query("SELECT p FROM Produto p WHERE p.estoque.id = :estoqueId AND (:nome IS NULL OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%')))" )
+    Page<Produto> findByEstoqueIdAndNomeContaining(@Param("estoqueId") Long estoqueId, @Param("nome") String nome, Pageable pageable);
 }

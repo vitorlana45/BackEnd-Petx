@@ -5,13 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.ong.pet.pex.backendpetx.dto.categoria_estoque.CreateCategoriaEstoqueRequest;
 import org.ong.pet.pex.backendpetx.dto.categoria_estoque.ListCategoriaEstoqueRequest;
 import org.ong.pet.pex.backendpetx.entities.Estoque;
-import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
 import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.CategoriaEstoqueService;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,68 +33,57 @@ public class EstoqueWebController {
     private final ProdutoRepository produtoRepository;
 
     @GetMapping
-    public String listarEstoque(Model model,
-                              @RequestParam(defaultValue = "0") int page,
-                              @RequestParam(defaultValue = "10") int size,
-                              @RequestParam(required = false) String nome) {
-        log.info("Acessando página de estoque - page: {}, size: {}, nome: {}", page, size, nome);
+    public String listarEstoques(Model model,
+                                @RequestParam(required = false) String nome) {
+        log.info("Acessando lista de estoques - filtro nome: {}", nome);
 
         try {
-            // Buscar todos os estoques
-            List<Estoque> estoques = estoqueRepository.findAll();
-            model.addAttribute("estoques", estoques);
-
-            // Adicionar contador de produtos para cada estoque para evitar o LazyInitializationException
-            Map<Long, Long> contadorProdutos = new HashMap<>();
-            for (Estoque estoque : estoques) {
-                long count = produtoRepository.count();  // Substituir por uma consulta real que conta produtos por estoque
-                contadorProdutos.put(estoque.getId(), count);
+            // Buscar estoques
+            List<Estoque> estoques;
+            if (nome != null && !nome.trim().isEmpty()) {
+                // Temporariamente usar findAll e filtrar até o método ser criado
+                estoques = estoqueRepository.findAll().stream()
+                    .filter(e -> e.getNome().toLowerCase().contains(nome.toLowerCase()))
+                    .toList();
+            } else {
+                estoques = estoqueRepository.findAll();
             }
+
+            // Adicionar contador de produtos para cada estoque
+            Map<Long, Long> contadorProdutos = new HashMap<>();
+            Map<Long, Long> contadorCategorias = new HashMap<>();
+
+            for (Estoque estoque : estoques) {
+                // Contar produtos por estoque (temporário até criar o método específico)
+                long produtosCount = produtoRepository.count();
+                contadorProdutos.put(estoque.getId(), produtosCount);
+
+                // Contar categorias do estoque
+                long categoriasCount = estoque.getCategorias() != null ? estoque.getCategorias().size() : 0;
+                contadorCategorias.put(estoque.getId(), categoriasCount);
+            }
+
+            model.addAttribute("estoques", estoques);
             model.addAttribute("contadorProdutos", contadorProdutos);
+            model.addAttribute("contadorCategorias", contadorCategorias);
+            model.addAttribute("filtroNome", nome);
 
-            // Buscar produtos do estoque
-            Pageable pageable = PageRequest.of(page, size);
-            var produtos = estoqueService.paginarProdutoEstoque(null, nome, null, null, null, pageable);
-            model.addAttribute("produtos", produtos);
+            // Estatísticas gerais
+            long totalEstoques = estoques.size();
+            long totalProdutos = contadorProdutos.values().stream().mapToLong(Long::longValue).sum();
+            long totalCategorias = contadorCategorias.values().stream().mapToLong(Long::longValue).sum();
 
-            // Contadores gerais
-            model.addAttribute("totalProdutos", produtos.getTotalElements());
-            model.addAttribute("totalCategorias", estoques.stream()
-                .flatMap(e -> e.getCategorias().stream())
-                .distinct()
-                .count());
-
-            // Calcular produtos com estoque baixo/sem estoque
-            long estoqueBaixo = produtos.getContent().stream()
-                .filter(p -> p.quantidade() <= 50 && p.quantidade() > 10)
-                .count();
-            model.addAttribute("estoqueBaixo", estoqueBaixo);
-
-            long estoqueZerado = produtos.getContent().stream()
-                .filter(p -> p.quantidade() <= 10)
-                .count();
-            model.addAttribute("estoqueZerado", estoqueZerado);
-
-            model.addAttribute("unidadeMedida", UnidadeDeMedidaEnum.values());
-
-            // Dados para a seção de categorias
-            Map<String, Long> categoriasContagem = new HashMap<>();
-            estoques.stream()
-                .flatMap(e -> e.getCategorias().stream())
-                .forEach(c -> {
-                    categoriasContagem.put(c.getNome(),
-                        produtos.getContent().stream()
-                            .filter(p -> p.descricao() != null && p.descricao().equals(c.getNome()))
-                            .count());
-                });
-            model.addAttribute("categoriasContagem", categoriasContagem);
+            model.addAttribute("totalEstoques", totalEstoques);
+            model.addAttribute("totalProdutos", totalProdutos);
+            model.addAttribute("totalCategorias", totalCategorias);
 
         } catch (Exception e) {
-            log.error("Erro ao carregar estoque", e);
-            model.addAttribute("erro", "Erro ao carregar estoque: " + e.getMessage());
+            log.error("Erro ao carregar lista de estoques", e);
+            model.addAttribute("erro", "Erro ao carregar estoques: " + e.getMessage());
+            model.addAttribute("estoques", List.of());
         }
 
-        return "estoque/lista-simples";
+        return "estoque/lista";
     }
 
     @GetMapping("/categorias")
@@ -131,6 +117,5 @@ public class EstoqueWebController {
         model.addAttribute("categoria", new CreateCategoriaEstoqueRequest());
         return "categoria/formulario";
     }
-
 
 }

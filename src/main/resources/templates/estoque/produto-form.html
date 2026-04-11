@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="'Novo Produto - ' + ${estoque.nome} + ' - PetX'">Novo Produto - PetX</title>
+    <link rel="stylesheet" th:href="@{/css/estoque.css}">
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <!-- Cabeçalho com breadcrumb -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary mb-0">
+                    <i class="fas fa-plus-circle"></i> Novo Produto
+                </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="/estoque">Estoques</a></li>
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/estoque/detalhes/{id}(id=${estoque.id})}" th:text="${estoque.nome}">Estoque</a>
+                        </li>
+                        <li class="breadcrumb-item active">Novo Produto</li>
+                    </ol>
+                </nav>
+            </div>
+            <a th:href="@{/estoque/detalhes/{id}(id=${estoque.id})}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar ao Estoque
+            </a>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i><span th:text="${sucesso}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i><span th:text="${erro}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Informações do Estoque -->
+        <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-warehouse"></i> Estoque: <span th:text="${estoque.nome}">Nome do Estoque</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0 text-muted" th:text="${estoque.descricao}">Descrição do estoque</p>
+            </div>
+        </div>
+
+        <!-- Formulário de Produto -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-box"></i> Dados do Produto
+                </h6>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/estoque/{id}/produtos/salvar(id=${estoque.id})}" th:object="${produto}" method="post">
+                    <input type="hidden" th:field="*{id}" />
+                    <input type="hidden" th:value="${estoque.id}" name="estoqueId" />
+
+                    <div class="row g-3">
+                        <!-- Nome do Produto -->
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">Nome do Produto <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nome" th:field="*{nome}" required
+                                   placeholder="Ex: Ração Premium para Cães" maxlength="100">
+                            <div class="invalid-feedback">O nome do produto é obrigatório</div>
+                        </div>
+
+                        <!-- Categoria -->
+                        <div class="col-md-6">
+                            <label for="categoria" class="form-label">Categoria <span class="text-danger">*</span></label>
+                            <select class="form-select" id="categoria" th:field="*{categoriaEstoque}" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option th:each="categoria : ${categorias}"
+                                        th:value="${categoria.id}"
+                                        th:text="${categoria.nome}">Nome da Categoria</option>
+                            </select>
+                            <div class="invalid-feedback">Selecione uma categoria</div>
+                        </div>
+
+                        <!-- Descrição -->
+                        <div class="col-12">
+                            <label for="descricao" class="form-label">Descrição <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="descricao" th:field="*{descricao}" rows="3" required
+                                      placeholder="Descreva o produto detalhadamente"></textarea>
+                            <div class="invalid-feedback">A descrição é obrigatória</div>
+                        </div>
+
+                        <!-- Quantidade e Unidade -->
+                        <div class="col-md-6">
+                            <label for="quantidade" class="form-label">Quantidade <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="quantidade" th:field="*{quantidade}"
+                                   step="0.01" min="0" required>
+                            <div class="invalid-feedback">Informe uma quantidade válida</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="unidadeDeMedida" class="form-label">Unidade de Medida <span class="text-danger">*</span></label>
+                            <select class="form-select" id="unidadeDeMedida" th:field="*{unidadeDeMedida}" required>
+                                <option value="">Selecione</option>
+                                <option th:each="unidade : ${unidadesDeMedida}"
+                                        th:value="${unidade}"
+                                        th:text="${unidade}">UN</option>
+                            </select>
+                            <div class="invalid-feedback">Selecione uma unidade de medida</div>
+                        </div>
+
+                        <!-- Tipo de Produto -->
+                        <div class="col-md-6">
+                            <label for="tipoProduto" class="form-label">Tipo do Produto</label>
+                            <select class="form-select" id="tipoProduto" th:field="*{tipoProduto}">
+                                <option value="">Selecione</option>
+                                <option value="ALIMENTACAO">Alimentação</option>
+                                <option value="MEDICAMENTO">Medicamento</option>
+                                <option value="HIGIENE">Higiene</option>
+                                <option value="ACESSORIO">Acessório</option>
+                                <option value="BRINQUEDO">Brinquedo</option>
+                                <option value="OUTRO">Outro</option>
+                            </select>
+                        </div>
+
+                        <!-- Preço -->
+                        <div class="col-md-6">
+                            <label for="preco" class="form-label">Preço Unitário (R$)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" class="form-control" id="preco" th:field="*{preco}"
+                                       step="0.01" min="0" placeholder="0,00">
+                            </div>
+                        </div>
+
+                        <!-- Atributos específicos do produto -->
+                        <div class="col-12 mt-4">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted">
+                                        <i class="fas fa-list"></i> Atributos Específicos
+                                    </h6>
+                                    <small class="text-muted d-block mb-3">
+                                        Adicione informações extras sobre o produto (marca, validade, lote, etc.).
+                                    </small>
+
+                                    <div id="atributos">
+                                        <!-- Template para atributo -->
+                                        <div class="atributo-row mb-2">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="atributoChave[]"
+                                                       placeholder="Chave (ex: Marca)" aria-label="Chave do atributo">
+                                                <input type="text" class="form-control" name="atributoValor[]"
+                                                       placeholder="Valor (ex: PetFood)" aria-label="Valor do atributo">
+                                                <button type="button" class="btn btn-outline-danger remover-atributo"
+                                                        title="Remover atributo" aria-label="Remover este atributo">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" id="adicionar-atributo" class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="fas fa-plus-circle"></i> Adicionar Atributo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="mt-4">
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/estoque/detalhes/{id}(id=${estoque.id})}" class="btn btn-outline-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="fas fa-save"></i> Salvar Produto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript para atributos específicos -->
+<script th:src="@{/js/atributos-estoque.js}"></script>
+
+</body>
+</html>

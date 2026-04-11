@@ -44,4 +44,5 @@ public interface AnimalService {
 
     long getTotalAdocoes();
 
+    long getQuantidadeAnimaisDisponiveisParaAdocao();
 }

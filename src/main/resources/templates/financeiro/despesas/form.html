@@ -33,7 +33,7 @@
         </div>
 
         <!-- Formulário -->
-        <div class="card shadow mb-4 container-max w-75">
+        <div class="card shadow mb-4">
             <div class="card-header py-3 bg-danger text-white">
                 <h6 class="m-0 font-weight-bold">Dados da Despesa</h6>
             </div>
@@ -90,19 +90,15 @@
                             </select>
                         </div>
 
-                        <!-- Campos Personalizados (JSON) -->
+                        <!-- Observações / Detalhes Adicionais -->
                         <div class="col-12 mt-4">
-                            <div class="card bg-light border-0">
+                            <div class="card border-0">
                                 <div class="card-body">
-                                    <h6 class="card-title text-muted"><i class="fas fa-list"></i> Detalhes Personalizados</h6>
-                                    <small class="text-muted d-block mb-2">Adicione campos extras como JSON (Ex: consumo de Kwh, marca da ração, etc)</small>
+                                    <h6 class="card-title text-muted"><i class="fas fa-list"></i> Observações / Detalhes Adicionais</h6>
+                                    <small class="text-muted d-block mb-2">Adicione informações extras sobre a despesa (texto livre).</small>
 
-                                    <textarea class="form-control font-monospace" id="detalhesPersonalizados" th:field="*{detalhesPersonalizados}"
-                                              rows="4" placeholder='{
-    "consumo_kwh": 350,
-    "leitura_anterior": 1200,
-    "marca_racao": "Pedigree"
-}'></textarea>
+                                    <textarea class="form-control" id="observacoes" th:field="*{observacoes}"
+                                              rows="4" placeholder="Ex: Consumo de 350 kWh, Ração marca Pedigree..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -121,4 +117,3 @@
 </div>
 </body>
 </html>
-

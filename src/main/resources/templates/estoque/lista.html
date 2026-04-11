@@ -2,38 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
 <head>
-    <title>Estoque - PetX</title>
+    <title>Controle de Estoques - PetX</title>
+    <link rel="stylesheet" th:href="@{/css/estoque.css}">
 </head>
 <body>
 <div th:fragment="content">
     <div class="container-fluid">
+
         <!-- Cabeçalho -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="text-primary">
-                        <i class="fas fa-boxes"></i> Controle de Estoque
-                    </h2>
-                    <div class="btn-group">
-                        <a href="/estoque/categorias" class="btn btn-outline-primary">
-                            <i class="fas fa-tags"></i> Gerenciar Categorias
-                        </a>
-                        <a href="/produtos/novo" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Novo Produto
-                        </a>
-                    </div>
-                </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary mb-0">
+                    <i class="fas fa-warehouse"></i> Controle de Estoques
+                </h2>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Estoques</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="btn-group">
+                <a th:href="@{/estoque/novo}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle"></i> Novo Estoque
+                </a>
+                <a href="/estoque/categorias" class="btn btn-outline-secondary">
+                    <i class="fas fa-tags"></i> Categorias
+                </a>
             </div>
         </div>
 
         <!-- Alertas -->
         <div th:if="${sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i> <span th:text="${sucesso}">Mensagem de sucesso</span>
+            <i class="fas fa-check-circle me-2"></i><span th:text="${sucesso}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
         <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle"></i> <span th:text="${erro}">Mensagem de erro</span>
+            <i class="fas fa-exclamation-triangle me-2"></i><span th:text="${erro}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
@@ -45,15 +51,10 @@
             <div class="card-body">
                 <form method="get" th:action="@{/estoque}">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="nome" class="form-label">Nome do Produto</label>
+                        <div class="col-md-8">
+                            <label for="nome" class="form-label">Nome do Estoque</label>
                             <input type="text" class="form-control" id="nome" name="nome"
-                                   th:value="${nome}" placeholder="Digite o nome do produto">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="categoria" class="form-label">Categoria</label>
-                            <input type="text" class="form-control" id="categoria" name="categoria"
-                                   th:value="${categoria}" placeholder="Digite a categoria">
+                                   th:value="${filtroNome}" placeholder="Digite o nome do estoque">
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
                             <div class="btn-group w-100">
@@ -70,199 +71,133 @@
             </div>
         </div>
 
-        <!-- Resumo do Estoque - Valores fixos para evitar NullPointer -->
+        <!-- Estatísticas Gerais -->
         <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card bg-primary text-white">
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Total de Produtos</h6>
-                                <h3 th:text="${produtos != null ? produtos.totalElements : 0}">0</h3>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total de Estoques</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalEstoques ?: 0}">0</div>
                             </div>
-                            <i class="fas fa-box fa-2x opacity-75"></i>
+                            <div class="col-auto">
+                                <i class="fas fa-warehouse fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-success text-white">
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Itens em Estoque</h6>
-                                <h3 th:text="${produtos != null ? produtos.numberOfElements : 0}">0</h3>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Total de Produtos</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalProdutos ?: 0}">0</div>
                             </div>
-                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                            <div class="col-auto">
+                                <i class="fas fa-box-open fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-white">
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Estoque Baixo</h6>
-                                <h3>0</h3>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Total de Categorias</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${totalCategorias ?: 0}">0</div>
                             </div>
-                            <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-danger text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title">Sem Estoque</h6>
-                                <h3>0</h3>
+                            <div class="col-auto">
+                                <i class="fas fa-tags fa-2x text-gray-300"></i>
                             </div>
-                            <i class="fas fa-times-circle fa-2x opacity-75"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabela de Produtos - Com proteções contra valores nulos -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-list"></i> Lista de Produtos</h5>
-                <small class="text-muted" th:if="${produtos != null}">
-                    Mostrando <span th:text="${produtos.numberOfElements}">0</span> de
-                    <span th:text="${produtos.totalElements}">0</span> produtos
-                </small>
+        <!-- Lista de Estoques -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-warehouse"></i> Lista de Estoques
+                </h6>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Nome</th>
-                                <th>Descrição</th>
-                                <th>Quantidade</th>
-                                <th>Unidade</th>
-                                <th>Status</th>
-                                <th width="150">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:if="${produtos == null or (produtos.content != null and produtos.content.isEmpty())}">
-                                <td colspan="6" class="text-center py-4">
-                                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted mb-0">Nenhum produto encontrado no estoque</p>
-                                    <a href="/produtos/novo" class="btn btn-primary btn-sm mt-2">
-                                        <i class="fas fa-plus"></i> Adicionar Primeiro Produto
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr th:if="${produtos != null and produtos.content != null}"
-                                th:each="produto : ${produtos.content}">
-                                <td>
-                                    <strong th:text="${produto.nome}">Nome do Produto</strong>
-                                </td>
-                                <td th:text="${produto.descricao}">Descrição do produto</td>
-                                <td>
-                                    <span class="fw-bold" th:text="${produto.quantidade}">0</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary" th:text="${produto.unidadeDeMedida}">UN</span>
-                                </td>
-                                <td>
-                                    <span th:if="${produto.quantidade > 50}" class="badge bg-success">
-                                        <i class="fas fa-check"></i> Disponível
-                                    </span>
-                                    <span th:if="${produto.quantidade <= 50 and produto.quantidade > 10}" class="badge bg-warning">
-                                        <i class="fas fa-exclamation-triangle"></i> Baixo
-                                    </span>
-                                    <span th:if="${produto.quantidade <= 10}" class="badge bg-danger">
-                                        <i class="fas fa-times"></i> Crítico
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a th:href="@{/produtos/{id}/editar(id=${produto.id})}"
-                                           class="btn btn-outline-primary" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-outline-danger"
-                                                th:data-produto-id="${produto.id}"
-                                                th:data-produto-nome="${produto.nome}"
-                                                onclick="confirmarExclusao(this)" title="Excluir">
-                                            <i class="fas fa-trash"></i>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(estoques)}" class="text-center py-4">
+                    <i class="fas fa-warehouse fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Nenhum estoque encontrado.</p>
+                    <a th:href="@{/estoque/novo}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Criar Primeiro Estoque
+                    </a>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(estoques)}" class="row">
+                    <div class="col-lg-4 col-md-6 mb-4" th:each="estoque : ${estoques}">
+                        <div class="card h-100 shadow-sm estoque-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0" th:text="${estoque.nome}">Nome do Estoque</h5>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link btn-sm text-muted" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
                                         </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" th:href="@{/estoque/detalhes/{id}(id=${estoque.id})}">
+                                                <i class="fas fa-eye"></i> Ver Detalhes
+                                            </a></li>
+                                            <li><a class="dropdown-item" th:href="@{/estoque/{id}/editar(id=${estoque.id})}">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item text-danger" href="#"
+                                                   onclick="if(confirm('Tem certeza que deseja excluir este estoque?')) { /* implementar exclusão */ }">
+                                                <i class="fas fa-trash"></i> Excluir
+                                            </a></li>
+                                        </ul>
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
 
-                <!-- Paginação - Com proteções contra valores nulos -->
-                <div th:if="${produtos != null && produtos.totalPages > 1}" class="card-footer">
-                    <nav aria-label="Navegação de páginas">
-                        <ul class="pagination justify-content-center mb-0">
-                            <li class="page-item" th:classappend="${produtos.number <= 0 ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/estoque(page=${produtos.number - 1}, nome=${nome}, categoria=${categoria})}">
-                                    <i class="fas fa-chevron-left"></i> Anterior
-                                </a>
-                            </li>
+                                <p class="card-text text-muted mb-3" th:text="${estoque.descricao}">Descrição do estoque</p>
 
-                            <li th:each="pageNum : ${#numbers.sequence(0, produtos.totalPages - 1)}"
-                                class="page-item" th:classappend="${pageNum == produtos.number ? 'active' : ''}">
-                                <a class="page-link" th:href="@{/estoque(page=${pageNum}, nome=${nome}, categoria=${categoria})}"
-                                   th:text="${pageNum + 1}">1</a>
-                            </li>
+                                <div class="row text-center mb-3">
+                                    <div class="col-6">
+                                        <div class="border-end">
+                                            <div class="fw-bold text-primary fs-5"
+                                                 th:text="${contadorProdutos[estoque.id] ?: 0}">0</div>
+                                            <small class="text-muted">Produtos</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="fw-bold text-success fs-5"
+                                             th:text="${contadorCategorias[estoque.id] ?: 0}">0</div>
+                                        <small class="text-muted">Categorias</small>
+                                    </div>
+                                </div>
 
-                            <li class="page-item" th:classappend="${produtos.number + 1 >= produtos.totalPages ? 'disabled' : ''}">
-                                <a class="page-link" th:href="@{/estoque(page=${produtos.number + 1}, nome=${nome}, categoria=${categoria})}">
-                                    Próxima <i class="fas fa-chevron-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="modalExcluir" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmar Exclusão</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Tem certeza que deseja excluir o produto <strong id="nomeProdutoExcluir"></strong>?</p>
-                    <p class="text-muted small">Esta ação não pode ser desfeita.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <form id="formExcluir" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </form>
+                                <div class="d-grid gap-2">
+                                    <a th:href="@{/estoque/detalhes/{id}(id=${estoque.id})}"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> Ver Detalhes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        function confirmarExclusao(button) {
-            // const produtoId = button.getAttribute('data-produto-id');
-            // const produtoNome = button.getAttribute('data-produto-nome');
-            //
-            // document.getElementById('nomeProdutoExcluir').textContent = produtoNome || 'selecionado';
-            // document.getElementById('formExcluir').action = `/produtos/${produtoId}/excluir`;
-            //
-            // new bootstrap.Modal(document.getElementById('modalExcluir')).show();
-        }
-    </script>
 </div>
 </body>
 </html>

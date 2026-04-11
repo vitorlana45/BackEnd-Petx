@@ -8,8 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ong.pet.pex.backendpetx.entities.CategoriaEstoque;
+import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,10 @@ public class ProdutoDTO {
 
     @NotNull(message = "A categoria é obrigatória")
     private CategoriaEstoque categoriaEstoque;
+
+    private TipoProduto tipoProduto;
+
+    private BigDecimal preco;
 
     private Long estoqueId;
 

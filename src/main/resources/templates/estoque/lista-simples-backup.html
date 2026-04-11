@@ -1,0 +1,27 @@
+<!-- ARQUIVO OBSOLETO - USO DESCONTINUADO -->
+<!-- Use /estoque/lista.html para lista de estoques -->
+<!-- Use /estoque/detalhes/{id} para ver produtos de um estoque específico -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Arquivo Obsoleto - PetX</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <div class="alert alert-warning text-center">
+            <h3><i class="fas fa-exclamation-triangle"></i> Arquivo Obsoleto</h3>
+            <p>Esta página não é mais utilizada.</p>
+            <p>Você será redirecionado para a página correta de estoques.</p>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            window.location.href = '/estoque';
+        }, 2000);
+    </script>
+</div>
+</body>
+</html>

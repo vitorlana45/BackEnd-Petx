@@ -39,5 +39,10 @@ public interface ReceitaRepository extends JpaRepository<Receita, Long> {
             @Param("categoria") String categoria,
             @Param("formaPagamento") String formaPagamento,
             Pageable pageable);
-}
 
+    @Query("SELECT SUM(r.valor) FROM Receita r WHERE r.dataRecebimento BETWEEN :inicio AND :fim")
+    BigDecimal somarReceitasPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+
+    @Query("SELECT SUM(r.valor) FROM Receita r")
+    BigDecimal somarTotalReceitas();
+}

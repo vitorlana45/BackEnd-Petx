@@ -63,7 +63,7 @@
       <!-- Financeiro (Novo) -->
       <li>
         <a class="px-link"
-           th:href="@{/financeiro/despesas}"
+           th:href="@{/financeiro}"
            th:classappend="${uri != null and #strings.startsWith(uri,'/financeiro') ? ' is-active' : ''}"
            title="Financeiro">
           <i class="px-ico fas fa-wallet"></i>
@@ -138,7 +138,8 @@
         </a>
       </li>
 
-      <!-- Despesas -->
+      <!-- Despesas (Antigo - Removido em favor do Financeiro) -->
+      <!--
       <li>
         <a class="px-link"
            th:href="@{/despesas}"
@@ -148,6 +149,7 @@
           <span class="px-text">Despesas</span>
         </a>
       </li>
+      -->
     </ul>
   </nav>
 

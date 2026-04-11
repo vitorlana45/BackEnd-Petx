@@ -54,4 +54,7 @@ public interface DespesaRepository extends JpaRepository<Despesa, Long> {
 
     @Query("SELECT SUM(d.valor) FROM Despesa d WHERE d.categoria = :categoria AND d.dataPagamento BETWEEN :inicio AND :fim")
     BigDecimal somarDespesasPorCategoriaEPeriodo(@Param("categoria") org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum categoria, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+
+    @Query("SELECT SUM(d.valor) FROM Despesa d")
+    BigDecimal somarTotalDespesas();
 }

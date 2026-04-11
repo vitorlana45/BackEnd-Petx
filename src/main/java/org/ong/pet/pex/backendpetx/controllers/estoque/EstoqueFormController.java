@@ -249,4 +249,42 @@ public class EstoqueFormController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/{id}/produtos/salvar")
+    public String salvarProdutoEstoque(@PathVariable Long id,
+                                      @Valid @ModelAttribute("produto") ProdutoDTO produtoDTO,
+                                      BindingResult result,
+                                      Model model,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            log.info("Salvando produto no estoque id: {}", id);
+
+            if (result.hasErrors()) {
+                log.error("Erros de validação: {}", result.getAllErrors());
+                Estoque estoque = estoqueRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Estoque não encontrado"));
+
+                model.addAttribute("estoque", estoque);
+                model.addAttribute("categorias", estoque.getCategorias());
+                model.addAttribute("unidadesDeMedida", UnidadeDeMedidaEnum.values());
+                model.addAttribute("erro", "Verifique os campos do formulário.");
+
+                return "estoque/produto-form";
+            }
+
+            // Definir o ID do estoque no DTO
+            produtoDTO.setEstoqueId(id);
+
+            // Salvar produto
+            estoqueService.salvarProduto(produtoDTO);
+
+            redirectAttributes.addFlashAttribute("sucesso", "Produto salvo com sucesso!");
+            return "redirect:/estoque/detalhes/" + id;
+
+        } catch (Exception e) {
+            log.error("Erro ao salvar produto no estoque", e);
+            redirectAttributes.addFlashAttribute("erro", "Erro ao salvar produto: " + e.getMessage());
+            return "redirect:/estoque/detalhes/" + id;
+        }
+    }
 }

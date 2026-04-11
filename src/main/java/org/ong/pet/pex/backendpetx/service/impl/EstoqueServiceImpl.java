@@ -1,6 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.controllers.estoque.EstoqueDTO;
+import org.ong.pet.pex.backendpetx.dto.produto.ProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
 import org.ong.pet.pex.backendpetx.entities.*;
@@ -196,5 +197,52 @@ public class EstoqueServiceImpl implements EstoqueService {
         );
 
         return new PageImpl<>(produtosDoEstoque, pageable, produtosDoEstoque.size());
+    }
+
+    @Override
+    @Transactional
+    public Produto salvarProduto(ProdutoDTO produtoDTO) {
+        logger.info("Salvando produto: {}", produtoDTO.getNome());
+
+        // Buscar o estoque
+        Estoque estoque = estoqueRepository.findById(produtoDTO.getEstoqueId())
+                .orElseThrow(() -> new RuntimeException("Estoque não encontrado com ID: " + produtoDTO.getEstoqueId()));
+
+        // Validar se a categoria foi informada
+        if (produtoDTO.getCategoriaEstoque() == null) {
+            throw new RuntimeException("A categoria do produto é obrigatória");
+        }
+
+        // Criar ou atualizar o produto
+        Produto produto;
+        if (produtoDTO.getId() != null) {
+            produto = produtoRepository.findById(produtoDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("Produto não encontrado com ID: " + produtoDTO.getId()));
+            logger.info("Atualizando produto existente ID: {}", produtoDTO.getId());
+        } else {
+            produto = new Produto();
+            logger.info("Criando novo produto");
+        }
+
+        // Mapear dados do DTO para a entidade
+        produto.setNome(produtoDTO.getNome());
+        produto.setDescricao(produtoDTO.getDescricao());
+        produto.setQuantidade(produtoDTO.getQuantidade());
+        produto.setUnidadeDeMedida(produtoDTO.getUnidadeDeMedida());
+        produto.setTipoProduto(produtoDTO.getTipoProduto());
+        produto.setPreco(produtoDTO.getPreco());
+        produto.setEstoque(estoque);
+        produto.setCategoriaEstoque(produtoDTO.getCategoriaEstoque());
+
+        // Atributos específicos
+        if (produtoDTO.getAtributosEspecificos() != null) {
+            produto.setAtributosEspecificos(produtoDTO.getAtributosEspecificos());
+        }
+
+        // Salvar
+        Produto produtoSalvo = produtoRepository.save(produto);
+        logger.info("Produto salvo com sucesso. ID: {}", produtoSalvo.getId());
+
+        return produtoSalvo;
     }
 }

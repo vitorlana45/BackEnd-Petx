@@ -41,8 +41,8 @@ public class Receita extends EntidadeBase {
     @Column(name = "origem")
     private String origem; // Ex: Nome do Doador, Empresa X
 
-    @Column(name = "detalhes_personalizados", columnDefinition = "TEXT")
-    private String detalhesPersonalizados; // JSON com campos extras
+    @Column(name = "observacoes", columnDefinition = "TEXT")
+    private String observacoes; // Substitui o antigo json detalhesPersonalizados
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Ong ong;
@@ -59,4 +59,3 @@ public class Receita extends EntidadeBase {
         return Objects.hashCode(id);
     }
 }
-

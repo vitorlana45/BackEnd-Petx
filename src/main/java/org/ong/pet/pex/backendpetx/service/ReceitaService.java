@@ -37,7 +37,7 @@ public class ReceitaService {
         receita.setOrigem(dadosAtualizados.getOrigem());
         receita.setDataRecebimento(dadosAtualizados.getDataRecebimento());
         receita.setFormaPagamento(dadosAtualizados.getFormaPagamento());
-        receita.setDetalhesPersonalizados(dadosAtualizados.getDetalhesPersonalizados());
+        receita.setObservacoes(dadosAtualizados.getObservacoes());
 
         return receitaRepository.save(receita);
     }
@@ -56,4 +56,3 @@ public class ReceitaService {
         receitaRepository.deleteById(id);
     }
 }
-

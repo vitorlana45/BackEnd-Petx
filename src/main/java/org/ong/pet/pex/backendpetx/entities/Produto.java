@@ -34,9 +34,12 @@ public class Produto extends EntidadeBase {
     @Column(nullable = false, name = "unidade_de_medida")
     private UnidadeDeMedidaEnum unidadeDeMedida;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false, name = "tipo_produto")
-//    private TipoProduto tipoProduto;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_produto")
+    private TipoProduto tipoProduto;
+
+    @Column(name = "preco", precision = 10, scale = 2)
+    private java.math.BigDecimal preco;
 
     // Atributos específicos armazenados como chave-valor
     @ElementCollection

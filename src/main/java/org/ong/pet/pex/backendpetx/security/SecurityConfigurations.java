@@ -51,26 +51,6 @@ public class SecurityConfigurations {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/usuarios/**").hasRole("ADMIN")
 
-                        // Gestão de Animais - ADMIN e COLABORADOR
-                        .requestMatchers("/animais/**").hasAnyRole("ADMIN", "COLABORADOR")
-
-                        // Gestão de Tutores - ADMIN e COLABORADOR (substitui Clientes)
-                        .requestMatchers("/tutores/**").hasAnyRole("ADMIN", "COLABORADOR")
-
-                        // Consultas - ADMIN e COLABORADOR
-                        .requestMatchers("/consultas/**").hasAnyRole("ADMIN", "COLABORADOR")
-
-                        // Relatórios - APENAS ADMIN
-                        .requestMatchers("/relatorios/**").hasRole("ADMIN")
-
-                        // Configurações - APENAS ADMIN
-                        .requestMatchers("/configuracoes/**").hasRole("ADMIN")
-
-                        .requestMatchers("/boletins/**").hasAnyRole("ADMIN", "COLABORADOR")
-
-                        .requestMatchers("/estoque/**").hasAnyRole("ADMIN", "COLABORADOR")
-
-                        // Todas as outras páginas precisam de autenticação
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
