@@ -8,41 +8,42 @@
         /* Evita "pular" layout quando o scroll vertical aparece/desaparece */
         html { scrollbar-gutter: stable both-edges; }
 
-        /* Quick actions – visual limpo e consistente */
-        .quick-action-card{
-            display:flex; align-items:center; gap:.75rem;
-            border:1px solid var(--bs-border-color);
-            border-radius:.75rem; padding:.75rem;
-            text-decoration:none;
-            transition:transform .08s ease, box-shadow .08s ease;
+        /* Quick actions – usa variáveis PetX (funciona em dark/light mode) */
+        .quick-action-card {
+            display: flex; align-items: center; gap: .75rem;
+            border: 1px solid var(--border-color);
+            border-radius: .75rem; padding: .75rem;
+            text-decoration: none; color: var(--text-primary);
+            background: var(--card-bg);
+            transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
         }
-        .quick-action-card:hover{
-            transform:translateY(-1px);
-            box-shadow:0 .25rem .75rem rgba(0,0,0,.06);
+        .quick-action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 .35rem 1rem rgba(0,0,0,.08);
+            border-color: var(--petx-primary);
+            color: var(--text-primary);
+            text-decoration: none;
         }
-        .qa-icon{
-            width:40px; height:40px; display:grid; place-items:center;
-            border-radius:.65rem; background: var(--bs-light);
+        .qa-icon {
+            width: 40px; height: 40px; display: grid; place-items: center;
+            border-radius: .65rem; flex-shrink: 0; color: #fff;
         }
-        .qa-primary{background: var(--bs-primary-bg-subtle); color: var(--bs-primary);}
-        .qa-warning{background: var(--bs-warning-bg-subtle); color: var(--bs-warning);}
-        .qa-success{background: var(--bs-success-bg-subtle); color: var(--bs-success);}
-        .qa-info{background: var(--bs-info-bg-subtle); color: var(--bs-info);}
-        .qa-title{font-weight:600;}
-        .qa-subtitle{font-size:.85rem; color: var(--bs-secondary-color);}
+        .qa-primary { background: var(--petx-primary); }
+        .qa-warning { background: var(--petx-warning); }
+        .qa-success { background: var(--petx-success); }
+        .qa-info    { background: var(--petx-info); }
+        .qa-title   { font-weight: 600; color: var(--text-primary); margin-bottom: .1rem; }
+        .qa-subtitle{ font-size: .82rem; color: var(--text-secondary); }
 
         /* Mantém cabeçalhos dos cards com altura mínima */
-        .card .card-header{min-height:48px}
+        .card .card-header { min-height: 48px; }
 
         /* Feed com altura fixa para não mexer a coluna vizinha */
-        .feed-wrap{height:420px; overflow:auto;}
+        .feed-wrap { height: 420px; overflow: auto; }
 
         /* Indicador HTMX visível só durante requisição */
-        #feed-ind{visibility:hidden;}
-        .htmx-request #feed-ind{visibility:visible;}
-
-        /* Remove animação/opacity das abas para reduzir reflow */
-        .tab-pane { /* sem fade */ }
+        #feed-ind { visibility: hidden; }
+        .htmx-request #feed-ind { visibility: visible; }
     </style>
 </head>
 <body>
@@ -74,15 +75,15 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-<!--                        <div class="col-sm-6 col-lg-3">-->
-<!--                            <a th:href="@{/animais/form}" class="quick-action-card">-->
-<!--                                <div class="qa-icon qa-primary"><i class="fas fa-plus"></i></div>-->
-<!--                                <div class="qa-content">-->
-<!--                                    <div class="qa-title">Novo Animal</div>-->
-<!--                                    <div class="qa-subtitle">Cadastrar animal</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
+                        <div class="col-sm-6 col-lg-3">
+                            <a th:href="@{/animais/form}" class="quick-action-card">
+                                <div class="qa-icon qa-primary"><i class="fas fa-paw"></i></div>
+                                <div class="qa-content">
+                                    <div class="qa-title">Novo Animal</div>
+                                    <div class="qa-subtitle">Cadastrar animal</div>
+                                </div>
+                            </a>
+                        </div>
                         <div class="col-sm-6 col-lg-3">
                             <a th:href="@{/boletins/form}" class="quick-action-card">
                                 <div class="qa-icon qa-warning"><i class="fas fa-file-medical"></i></div>
@@ -103,7 +104,7 @@
                         </div>
                         <div class="col-sm-6 col-lg-3">
                             <a th:href="@{/animais}" class="quick-action-card">
-                                <div class="qa-icon qa-info"><i class="fas fa-search"></i></div>
+                                <div class="qa-icon qa-info"><i class="fas fa-list-ul"></i></div>
                                 <div class="qa-content">
                                     <div class="qa-title">Ver Animais</div>
                                     <div class="qa-subtitle">Listar todos</div>
@@ -114,7 +115,7 @@
                 </div>
             </div>
 
-            <!-- Navegação Rápida / Atalhos -->
+            Navegação Rápida / Atalhos
             <div class="card">
                 <div class="card-header d-flex align-items-center">
                     <i class="fas fa-link me-2"></i>
@@ -122,42 +123,53 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-sm-6 col-lg-3">
                             <div class="nav-card">
                                 <div class="nav-icon"><i class="fas fa-paw"></i></div>
                                 <div class="nav-content">
                                     <h4>Animais</h4>
                                     <ul class="nav-links">
-                                        <li><a th:href="@{/animais}">Ver todos</a></li>
-                                        <li><a th:href="@{/animais/form}">Cadastrar novo</a></li>
-                                        <li><a th:href="@{/animais}">Disponíveis</a></li>
+                                        <li><a th:href="@{/animais}"><i class="fas fa-list fa-xs me-1 opacity-50"></i>Ver todos</a></li>
+                                        <li><a th:href="@{/animais/form}"><i class="fas fa-plus fa-xs me-1 opacity-50"></i>Cadastrar novo</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-sm-6 col-lg-3">
                             <div class="nav-card">
-                                <div class="nav-icon"><i class="fas fa-users"></i></div>
+                                <div class="nav-icon" style="background: var(--petx-success)"><i class="fas fa-users"></i></div>
                                 <div class="nav-content">
                                     <h4>Tutores</h4>
                                     <ul class="nav-links">
-                                        <li><a th:href="@{/tutores}">Ver todos</a></li>
-                                        <li><a th:href="@{/tutores/form}">Cadastrar novo</a></li>
+                                        <li><a th:href="@{/tutores}"><i class="fas fa-list fa-xs me-1 opacity-50"></i>Ver todos</a></li>
+                                        <li><a th:href="@{/tutores/form}"><i class="fas fa-plus fa-xs me-1 opacity-50"></i>Cadastrar novo</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-sm-6 col-lg-3">
                             <div class="nav-card">
-                                <div class="nav-icon"><i class="fas fa-clipboard-list"></i></div>
+                                <div class="nav-icon" style="background: var(--petx-warning)"><i class="fas fa-file-medical"></i></div>
                                 <div class="nav-content">
-                                    <h4>Gestão</h4>
+                                    <h4>Boletins</h4>
                                     <ul class="nav-links">
-                                        <li><a th:href="@{/boletins}">Boletins</a></li>
-                                        <li><a th:href="@{/estoque}">Estoque</a></li>
-                                        <li><a th:href="@{/despesas}">Despesas</a></li>
+                                        <li><a th:href="@{/boletins}"><i class="fas fa-list fa-xs me-1 opacity-50"></i>Ver todos</a></li>
+                                        <li><a th:href="@{/boletins/form}"><i class="fas fa-plus fa-xs me-1 opacity-50"></i>Novo resgate</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="nav-card">
+                                <div class="nav-icon" style="background: var(--petx-info)"><i class="fas fa-chart-line"></i></div>
+                                <div class="nav-content">
+                                    <h4>Financeiro</h4>
+                                    <ul class="nav-links">
+                                        <li><a th:href="@{/financeiro}"><i class="fas fa-tachometer-alt fa-xs me-1 opacity-50"></i>Dashboard</a></li>
+                                        <li><a th:href="@{/estoque}"><i class="fas fa-box-open fa-xs me-1 opacity-50"></i>Estoque</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -215,7 +227,7 @@
                     <div class="tab-pane active" id="tab-feed">
                         <div class="d-flex justify-content-between align-items-center small text-muted border-bottom px-3 py-2">
                             <span>Atualiza automaticamente a cada 30s</span>
-                            <a th:href="@{/auditoria}" class="text-decoration-none">Ver tudo</a>
+                            <a th:href="@{/boletins}" class="text-decoration-none">Ver boletins</a>
                         </div>
 
                         <div class="feed-wrap">

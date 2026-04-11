@@ -1,5 +1,6 @@
 package org.ong.pet.pex.backendpetx.controllers.auth;
 
+import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
 import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
 //import org.petx.dto.SmartPageBuilder;
@@ -38,16 +39,17 @@ public class AuthWebController {
     @GetMapping(value = "/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
+                            @RequestParam(value = "registered", required = false) String registered,
                             Authentication auth,
                             Model model) {
-
 
         if (auth != null && auth.isAuthenticated() && !trust.isAnonymous(auth)) {
             return "redirect:/home";
         }
 
-        if (error != null)   model.addAttribute("errorMessage",  "Credenciais inválidas!");
-        if (logout != null)  model.addAttribute("logoutMessage", "Logout realizado com sucesso!");
+        if (error != null)      model.addAttribute("errorMessage",   "Credenciais inválidas!");
+        if (logout != null)     model.addAttribute("logoutMessage",  "Logout realizado com sucesso!");
+        if (registered != null) model.addAttribute("successMessage", "Conta criada com sucesso! Faça login.");
 
         return "auth/login";
     }
@@ -68,9 +70,13 @@ public class AuthWebController {
             model.addAttribute("errorMessage", "Senhas não conferem!");
             return "auth/register";
         }
-        // TODO: implementar criação de usuário + encode da senha + role padrão
-        model.addAttribute("successMessage", "Usuário registrado com sucesso! Faça login.");
-        return "auth/login";
+        try {
+            usuarioService.inserirUsuario(new UsuarioDTO(nome, email, senha));
+            return "redirect:/login?registered=true";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "auth/register";
+        }
     }
 
     /** Recuperação de senha — placeholder */

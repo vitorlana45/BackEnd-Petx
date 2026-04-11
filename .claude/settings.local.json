@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw compile:*)",
+      "Bash(xargs grep:*)",
+      "Bash(xargs cat:*)",
+      "Bash(find /c/Users/vitor/ws-projetos/BackEnd-Petx/src/main/java -type f -name \"*Controller*.java\" -exec grep -l \"@RequestMapping\\\\|@GetMapping\" {} \\\\;)",
+      "Bash(find /c/Users/vitor/ws-projetos/BackEnd-Petx/src/main/java -name \"*.java\" -path \"*/controllers/*\" -type f -exec grep -l \"perfil\\\\|clinica\\\\|config\\\\|obituario\\\\|doadores\\\\|importar\\\\|exportar\\\\|ajuda\" -i {} \\\\;)",
+      "Bash(find src/main/java -name \"*.java\" -path \"*/controllers/*\" -exec grep -H \"@RequestMapping\\\\|@GetMapping\\\\|@PostMapping\" {} \\\\;)"
+    ]
+  }
+}

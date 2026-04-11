@@ -58,6 +58,18 @@ public class AnimalGenericoRequisicao {
     @NotNull(message = "O estado de saúde é obrigatório")
     private SaudeEnum saude;
 
+    /**
+     * Alias para compatibilidade com templates/formulários que usam o campo "status".
+     * No domínio, esse "status" representa o estado de saúde (SaudeEnum).
+     */
+    public SaudeEnum getStatus() {
+        return this.saude;
+    }
+
+    public void setStatus(SaudeEnum status) {
+        this.saude = status;
+    }
+
     // Arquivo da imagem principal do perfil (multipart)
     private MultipartFile imagemPrincipalPerfil;
 }

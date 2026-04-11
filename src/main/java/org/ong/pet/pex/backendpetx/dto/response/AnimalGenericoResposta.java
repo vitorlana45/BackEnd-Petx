@@ -34,4 +34,23 @@ public class AnimalGenericoResposta {
     private List<AnimalGenericoResposta> listaAnimaisConjunto = new ArrayList<>();
     private LocalDateTime dataCadastro;
 
+    // Situação de adoção
+    private String adotado;
+
+    // Boletim vinculado
+    private Long boletimId;
+    private Long boletimNumero;
+
+    // Tutores
+    private int tutoresCount;
+
+    // ONG
+    private String ongNome;
+
+    // Arquivamento
+    private boolean arquivado;
+    private LocalDateTime arquivadoEm;
+    private String arquivadoPor;
+    private String motivoArquivamento;
+
 }

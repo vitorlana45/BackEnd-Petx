@@ -24,7 +24,13 @@ public class AnimalMapper {
 
     public static AnimalGenericoResposta converterParaRespostaAnimalComConjuntoDTO(Animal animal) {
         logger.info("Iniciando a conversão para AnimalGenericoResposta para retornar ao cliente");
-        var resposta = AnimalGenericoResposta.builder()
+
+        // boletim (pode ser null)
+        Long boletimId = animal.getBoletim() != null ? animal.getBoletim().getId() : null;
+        Long boletimNumero = animal.getBoletim() != null ? animal.getBoletim().getNumeroOcorrencia() : null;
+        int tutoresCount = animal.getTutores() != null ? animal.getTutores().size() : 0;
+
+        return AnimalGenericoResposta.builder()
                 .id(animal.getId())
                 .chipId(animal.getChipId())
                 .nome(animal.getNome())
@@ -43,11 +49,15 @@ public class AnimalMapper {
                 .maezinhaComFilhotes(converteMaezinhaParaDTO(animal.getMaezinhaComFilhotes()))
                 .listaAnimaisConjunto(null)
                 .dataCadastro(animal.getCriadoEm())
+                .adotado(animal.getAdotado() != null ? animal.getAdotado().toString() : null)
+                .arquivado(animal.isArquivado())
+                .arquivadoPor(animal.getArquivadoPor())
+                .motivoArquivamento(animal.getMotivoArquivamento())
+                .arquivadoEm(animal.getArquivadoEm() != null ? animal.getArquivadoEm().toLocalDateTime() : null)
+                .tutoresCount(tutoresCount)
+                .boletimId(boletimId)
+                .boletimNumero(boletimNumero)
                 .build();
-
-        // Removido setDoencas redundante
-        return resposta;
-
     }
 
     public static Set<AnimalGenericoResposta> converterParaListaDeAnimaisComConjuntoDTO(Set<Animal> animais) {

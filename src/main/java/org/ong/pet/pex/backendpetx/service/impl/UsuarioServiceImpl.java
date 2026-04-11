@@ -35,7 +35,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public RespostaCricaoUsuario inserirUsuario(UsuarioDTO usuarioDTO) {
 
         if (usuarioRepository.findByEmail(usuarioDTO.email()) != null) {
-           UsuarioException.usuarioJaCadastrado(usuarioDTO.email());
+            throw UsuarioException.usuarioJaCadastrado(usuarioDTO.email());
         }
 
         Usuario entidade = new Usuario();

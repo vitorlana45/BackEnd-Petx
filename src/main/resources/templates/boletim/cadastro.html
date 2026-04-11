@@ -1,313 +1,825 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Cadastrar Boletim de Resgate - ONG PetX</title>
+    <style>
+        #paginaBoletim {
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        #paginaBoletim .card {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        #paginaBoletim form {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #paginaBoletim .tab-content {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        #paginaBoletim .boletim-pane {
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #paginaBoletim .boletim-pane-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: auto;
+        }
+
+        #paginaBoletim .boletim-pane-footer {
+            flex: 0 0 auto;
+        }
+
+
+        /* Mantém sempre 2 colunas lado a lado (não empilha). */
+    </style>
 </head>
 <body>
 
-<section class="smartphone:px-3 smartphone:pt-3 laptop:container laptop:pt-5">
-    <div class="alert alert-info d-flex align-items-center" role="alert">
-        <div th:fragment="~{fragmentos/page-header.html :: stats(statsData)}"></div>
-    </div>
-</section>
+<section id="paginaBoletim">
 
-<section>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Cadastrar Novo Boletim de Resgate</h2>
-        <a th:href="@{/animais}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Voltar
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-1 fw-bold" style="color: var(--text-primary);">
+                <i class="fas fa-file-medical me-2" style="color: var(--petx-primary);"></i>
+                Cadastrar Boletim de Resgate
+            </h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0" style="font-size: .85rem;">
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/}" class="text-decoration-none" style="color: var(--petx-primary);">Início</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/boletins}" class="text-decoration-none" style="color: var(--petx-primary);">Boletins</a>
+                    </li>
+                    <li class="breadcrumb-item active" style="color: var(--text-muted);">Cadastrar</li>
+                </ol>
+            </nav>
+        </div>
+        <a th:href="@{/boletins}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Voltar
         </a>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Informações do Boletim de Resgate</h5>
-            <small class="text-muted">Campos com <span class="text-danger">*</span> são obrigatórios</small>
-        </div>
-
-        <div class="card-body">
-            <!-- summary de erros globais -->
-
-
-            <form th:action="@{/boletins/salvar}"
-                  th:object="${boletim}" method="post"
-                  class="row g-3" id="formBoletim"
-                  enctype="multipart/form-data">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
-                    <ul class="mb-0">
-                        <!--                    <li th:each="ge : ${#fields.globalErrors()}" th:text="${ge}"></li>-->
-                    </ul>
-                </div>
-                <!-- Boletim -->
-                <div class="col-12">
-                    <h6 class="border-bottom pb-2">Boletim de Entrada</h6>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Nº Ocorrência</label>
-                    <input type="number" class="form-control" th:field="*{numeroOcorrencia}" min="0" placeholder="Ex: 202500123">
-                    <div class="text-danger" th:errors="*{numeroOcorrencia}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Data de Atendimento <span class="text-danger">*</span></label>
-                    <input type="datetime-local" class="form-control" th:field="*{dataAtendimento}" required>
-                    <div class="text-danger" th:errors="*{dataAtendimento}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Destino <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{destino}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="d : ${destinos}" th:value="${d.name()}" th:text="${d}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{destino}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Motivo do Recolhimento</label>
-                    <input type="text" class="form-control" th:field="*{motivoRecolhimento}">
-                    <div class="text-danger" th:errors="*{motivoRecolhimento}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Origem</label>
-                    <select class="form-select" th:field="*{origem}">
-                        <option value="">Selecione</option>
-                        <option th:each="o : ${origens}" th:value="${o.name()}" th:text="${o}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{origem}"></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Nome do Denunciante/Tutor</label>
-                    <input type="text" class="form-control" th:field="*{nomeDenuncianteOuTutor}">
-                    <div class="text-danger" th:errors="*{nomeDenuncianteOuTutor}"></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">CPF do Denunciante/Tutor</label>
-                    <input type="text" class="form-control" th:field="*{cpfDenuncianteOuTutor}">
-                    <div class="text-danger" th:errors="*{cpfDenuncianteOuTutor}"></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Telefone do Denunciante/Tutor</label>
-                    <input type="text" class="form-control" th:field="*{telefoneDenuncianteOuTutor}">
-                    <div class="text-danger" th:errors="*{telefoneDenuncianteOuTutor}"></div>
-                </div>
-
-                <!-- Endereço -->
-                <div class="col-md-3">
-                    <label class="form-label">Rua/Avenida</label>
-                    <input type="text" class="form-control" th:field="*{ruaAvenida}">
-                    <div class="text-danger" th:errors="*{ruaAvenida}"></div>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Cidade</label>
-                    <input type="text" class="form-control" th:field="*{cidade}">
-                    <div class="text-danger" th:errors="*{cidade}"></div>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Bairro</label>
-                    <input type="text" class="form-control" th:field="*{bairro}">
-                    <div class="text-danger" th:errors="*{bairro}"></div>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" th:field="*{estado}">
-                    <div class="text-danger" th:errors="*{estado}"></div>
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label">Observação sobre o estado do animal</label>
-                    <textarea class="form-control" rows="3" th:field="*{observacaoClinica}"></textarea>
-                    <div class="text-danger" th:errors="*{observacaoClinica}"></div>
-                </div>
-
-                <!-- Animal -->
-                <div class="col-12 mt-3">
-                    <h6 class="border-bottom pb-2">Dados do Animal</h6>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Nome</label>
-                    <input type="text" class="form-control" th:field="*{animal.nome}">
-                    <div class="text-danger" th:errors="*{animal.nome}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">ID do Chip</label>
-                    <input type="text" class="form-control" th:field="*{animal.chipId}">
-                    <div class="text-danger" th:errors="*{animal.chipId}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Raça <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" th:field="*{animal.raca}" required>
-                    <div class="text-danger" th:errors="*{animal.raca}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Espécie <span class="text-danger">*</span></label>
-                    <select class="form-select" id="especie" th:field="*{animal.especie}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="e : ${especies}" th:value="${e.name()}" th:text="${e}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{animal.especie}"></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Sexo <span class="text-danger">*</span></label>
-                    <select class="form-select" id="sexo" th:field="*{animal.sexo}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="s : ${sexos}" th:value="${s.name()}" th:text="${s}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{animal.sexo}"></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Maturidade <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{animal.maturidade}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="m : ${maturidades}" th:value="${m.name()}" th:text="${m}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{animal.maturidade}"></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Porte <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{animal.porte}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="p : ${portes}" th:value="${p.name()}" th:text="${p}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{animal.porte}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Origem do Animal <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{animal.origem}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="o : ${origens}" th:value="${o.name()}" th:text="${o}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{animal.origem}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Comportamento</label>
-                    <input type="text" class="form-control" th:field="*{animal.comportamento}">
-                    <div class="text-danger" th:errors="*{animal.comportamento}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Cor da Pelagem</label>
-                    <input type="text" class="form-control" th:field="*{animal.corPelagem}">
-                    <div class="text-danger" th:errors="*{animal.corPelagem}"></div>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Status <span class="text-danger">*</span></label>
-                    <select class="form-select" th:field="*{animal.saude}" required>
-                        <option value="">Selecione</option>
-                        <option th:each="st : ${statusEnum}" th:value="${st.name()}" th:text="${st}"></option>
-                    </select>
-                    <div class="text-danger" th:errors="*{animal.saude}"></div>
-                </div>
-
-                <!-- Mãezinha -->
-                <div class="col-md-6" id="maezinhaWrapper">
-                    <label class="form-label d-block">É uma fêmea com filhotes?</label>
-                    <div class="form-check">
-                        <input class="form-check-input"
-                               type="checkbox"
-                               id="animalEMaezinha"
-                               th:field="*{animal.animalEMaezinha}">
-                        <label class="form-check-label" for="animalEMaezinha">Sim</label>
-                    </div>
-                    <div class="text-danger" th:errors="*{animal.animalEMaezinha}"></div>
-                </div>
-
-                <!-- Campos condicionais -->
-                <div class="col-md-6"
-                     id="filhotesWrapper"
-                     th:with="isMae=${boletim.animal != null and boletim.animal.animalEMaezinha}"
-                     th:classappend="${isMae} ? '' : 'd-none'">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <label class="form-label">Qtde. Machos</label>
-                            <input type="number" class="form-control" min="0" step="1"
-                                   th:field="*{animal.maezinhaComFilhotes.quantidadeMacho}">
-                            <div class="text-danger" th:errors="*{animal.maezinhaComFilhotes.quantidadeMacho}"></div>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label">Qtde. Fêmeas</label>
-                            <input type="number" class="form-control" min="0" step="1"
-                                   th:field="*{animal.maezinhaComFilhotes.quantidadeFemea}">
-                            <div class="text-danger" th:errors="*{animal.maezinhaComFilhotes.quantidadeFemea}"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label">Condição do Animal</label>
-                    <textarea class="form-control" rows="3" th:field="*{animal.condicaoAnimal}"></textarea>
-                    <div class="text-danger" th:errors="*{animal.condicaoAnimal}"></div>
-                </div>
-
-
-                <div class="col-12">
-                    <label class="form-label">Fotos do Resgate</label>
-                    <!-- repare no name explicitamente prefixado -->
-                    <input type="file" class="form-control"
-                           name="arquivos"
-                           accept="image/*"
-                           multiple>
-                    <small class="text-muted">JPG/PNG, até 10MB por arquivo.</small>
-                </div>
-
-                <div class="col-12 mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Cadastrar Boletim de Resgate
-                    </button>
-                    <a th:href="@{/animais}" class="btn btn-secondary ms-2">
-                        <i class="fas fa-times me-2"></i>Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-</section>
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card shadow-sm border-0 d-flex flex-column" style="background: var(--card-bg); min-height: 0;">
+
+        <div class="card-header border-0 py-3"
+             style="background: linear-gradient(135deg, var(--petx-primary), var(--petx-info)); color: white;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-0 fw-semibold">
+                        <i class="fas fa-clipboard-list me-2"></i>Novo Boletim de Resgate
+                    </h6>
+                    <small class="opacity-75">Campos com <strong style="color: red;">*</strong> são obrigatórios</small>
+                </div>
+
+                <div class="d-flex align-items-center gap-2" id="progressIndicator">
+                    <span class="badge rounded-pill bg-white text-dark fw-semibold px-3 py-2" id="step1badge">
+                        <i class="fas fa-file-alt me-1"></i>1. Ocorrência
+                    </span>
+                    <i class="fas fa-arrow-right opacity-50" style="font-size: .75rem;"></i>
+                    <span class="badge rounded-pill px-3 py-2 fw-semibold"
+                          style="background: rgba(255,255,255,.25); color: white;" id="step2badge">
+                        <i class="fas fa-paw me-1"></i>2. Animal
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 pt-3 pb-0" style="border-bottom: 1px solid var(--border-color);">
+            <ul class="nav nav-tabs border-0" id="boletimTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-medium px-4"
+                            id="tab-ocorrencia-btn"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-ocorrencia"
+                            type="button"
+                            role="tab"
+                            aria-controls="tab-ocorrencia"
+                        th:classappend="${activeTab == null || activeTab == 'ocorrencia'} ? 'active' : ''"
+                        th:attr="aria-selected=${activeTab == null || activeTab == 'ocorrencia'}">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Dados da Ocorrência
+                        <span class="badge bg-danger rounded-pill ms-1 d-none" id="erros-tab1" title="Campos com erro">!</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-medium px-4"
+                            id="tab-animal-btn"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-animal"
+                            type="button"
+                            role="tab"
+                            aria-controls="tab-animal"
+                        th:classappend="${activeTab == 'animal'} ? 'active' : ''"
+                        th:attr="aria-selected=${activeTab == 'animal'}">
+                        <i class="fas fa-paw me-2"></i>
+                        Dados do Animal
+                        <span class="badge bg-danger rounded-pill ms-1 d-none" id="erros-tab2" title="Campos com erro">!</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <form th:action="@{/boletins/salvar}"
+              th:object="${boletim}"
+              method="post"
+              id="formBoletim"
+              enctype="multipart/form-data"
+              novalidate>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="tab-content">
+
+                 <div class="tab-pane fade boletim-pane" id="tab-ocorrencia" role="tabpanel" aria-labelledby="tab-ocorrencia-btn"
+                     th:classappend="${activeTab == null || activeTab == 'ocorrencia'} ? 'show active' : ''">
+                    <div class="card-body p-4 boletim-pane-body">
+                        <div class="row g-4">
+
+                            <!-- COLUNA ESQUERDA: Formulário -->
+                            <div id="colunaFormulario" th:classappend="${modoOcorrencia == 'existente'} ? 'col-12 col-xl-8' : 'col-12'">
+                                <div class="card shadow-sm border-0 rounded" style="border: 1px solid var(--border-color); background: var(--card-bg);">
+                                    <div class="card-body p-3 p-xl-4" style="overflow: auto;">
+
+                                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-primary); padding-left: .75rem;">
+                                            <div class="fw-semibold" style="color: var(--petx-primary); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                                <i class="fas fa-hashtag me-1"></i>Identificação
+                                            </div>
+                                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-12">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Tipo de ocorrência
+                                </label>
+
+                                <div class="d-flex flex-wrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="modoOcorrencia" id="modoNova" value="nova"
+                                               th:checked="${modoOcorrencia == null || modoOcorrencia == 'nova'}">
+                                        <label class="form-check-label" for="modoNova" style="color: var(--text-secondary);">
+                                            Nova ocorrência (gera automaticamente)
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="modoOcorrencia" id="modoExistente" value="existente"
+                                               th:checked="${modoOcorrencia == 'existente'}">
+                                        <label class="form-check-label" for="modoExistente" style="color: var(--text-secondary);">
+                                            Vincular a uma ocorrência existente
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-text" style="color: var(--text-muted);">
+                                    Use \u201cVincular\u201d quando um mesmo resgate teve múltiplos animais.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Nº Ocorrência
+                                </label>
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{numeroOcorrencia}"
+                                       th:classappend="${#fields.hasErrors('numeroOcorrencia')} ? 'is-invalid' : ''"
+                                       min="0"
+                                       placeholder="Deixe em branco para gerar automaticamente"
+                                       id="numeroOcorrenciaInput">
+                                <div class="invalid-feedback" th:errors="*{numeroOcorrencia}"></div>
+                                <div class="form-text" style="color: var(--text-muted);" id="numeroOcorrenciaHelp">
+                                    Se estiver vinculando, informe o número existente. Se for nova ocorrência, deixe em branco.
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Data de Atendimento <span class="text-danger">*</span>
+                                </label>
+                                <input type="datetime-local"
+                                       class="form-control"
+                                       th:field="*{dataAtendimento}"
+                                       th:classappend="${#fields.hasErrors('dataAtendimento')} ? 'is-invalid' : ''"
+                                       required
+                                       data-tab1-required>
+                                <div class="invalid-feedback" th:errors="*{dataAtendimento}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Destino <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{destino}"
+                                        th:classappend="${#fields.hasErrors('destino')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab1-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="d : ${destinos}" th:value="${d.name()}" th:text="${d}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{destino}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-info); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-info); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-info-circle me-1"></i>Informações da Ocorrência
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Origem</label>
+                                <select class="form-select"
+                                        th:field="*{origem}"
+                                        th:classappend="${#fields.hasErrors('origem')} ? 'is-invalid' : ''">
+                                    <option value="">Selecione</option>
+                                    <option th:each="o : ${origens}" th:value="${o.name()}" th:text="${o}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{origem}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Motivo do Recolhimento</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{motivoRecolhimento}"
+                                       th:classappend="${#fields.hasErrors('motivoRecolhimento')} ? 'is-invalid' : ''"
+                                       placeholder="Ex: Maus-tratos, abandono...">
+                                <div class="invalid-feedback" th:errors="*{motivoRecolhimento}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-secondary); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-secondary); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-user me-1"></i>Denunciante / Tutor
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Nome</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{nomeDenuncianteOuTutor}"
+                                       th:classappend="${#fields.hasErrors('nomeDenuncianteOuTutor')} ? 'is-invalid' : ''"
+                                       placeholder="Nome completo">
+                                <div class="invalid-feedback" th:errors="*{nomeDenuncianteOuTutor}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">CPF</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{cpfDenuncianteOuTutor}"
+                                       th:classappend="${#fields.hasErrors('cpfDenuncianteOuTutor')} ? 'is-invalid' : ''"
+                                       placeholder="000.000.000-00">
+                                <div class="invalid-feedback" th:errors="*{cpfDenuncianteOuTutor}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Telefone</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{telefoneDenuncianteOuTutor}"
+                                       th:classappend="${#fields.hasErrors('telefoneDenuncianteOuTutor')} ? 'is-invalid' : ''"
+                                       placeholder="(00) 90000-0000">
+                                <div class="invalid-feedback" th:errors="*{telefoneDenuncianteOuTutor}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-accent); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-accent); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-map-marker-alt me-1"></i>Localização do Resgate
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Rua / Avenida</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{ruaAvenida}"
+                                       th:classappend="${#fields.hasErrors('ruaAvenida')} ? 'is-invalid' : ''"
+                                       placeholder="Nome da rua ou avenida">
+                                <div class="invalid-feedback" th:errors="*{ruaAvenida}"></div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Bairro</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{bairro}"
+                                       th:classappend="${#fields.hasErrors('bairro')} ? 'is-invalid' : ''"
+                                       placeholder="Bairro">
+                                <div class="invalid-feedback" th:errors="*{bairro}"></div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Cidade</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{cidade}"
+                                       th:classappend="${#fields.hasErrors('cidade')} ? 'is-invalid' : ''"
+                                       placeholder="Cidade">
+                                <div class="invalid-feedback" th:errors="*{cidade}"></div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Estado</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{estado}"
+                                       th:classappend="${#fields.hasErrors('estado')} ? 'is-invalid' : ''"
+                                       maxlength="2"
+                                       placeholder="UF">
+                                <div class="invalid-feedback" th:errors="*{estado}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Observação sobre o estado do animal
+                                </label>
+                                <textarea class="form-control"
+                                          rows="3"
+                                          th:field="*{observacaoClinica}"
+                                          th:classappend="${#fields.hasErrors('observacaoClinica')} ? 'is-invalid' : ''"
+                                          placeholder="Descreva o estado clínico observado no momento do resgate..."></textarea>
+                                <div class="invalid-feedback" th:errors="*{observacaoClinica}"></div>
+                            </div>
+                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- COLUNA DIREITA: Vínculo/BUSCA de ocorrência -->
+                            <aside class="col-12 col-xl-4" id="colunaDireita"
+                                   th:classappend="${modoOcorrencia != 'existente'} ? 'd-none' : ''">
+                                <div class="card shadow-sm border-0 rounded sticky-top" style="top:1rem; border: 1px solid var(--border-color); background: var(--card-bg);">
+                                    <div class="card-header py-2 d-flex align-items-center justify-content-between"
+                                         style="background: linear-gradient(135deg, var(--petx-primary), var(--petx-info)); color: white;">
+                                        <h5 class="h6 mb-0"><i class="fas fa-link me-2"></i>Vincular ocorrência</h5>
+                                        <span class="small opacity-75">Mostra até 50 resultados</span>
+                                    </div>
+
+                                    <div class="card-body p-3">
+                                        <div class="row g-2" id="ocorrenciaFilters">
+                                            <div class="col-6">
+                                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">De</label>
+                                                <input type="date" class="form-control form-control-sm" name="buscarDataInicio" th:value="${buscarDataInicio}">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Até</label>
+                                                <input type="date" class="form-control form-control-sm" name="buscarDataFim" th:value="${buscarDataFim}">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Origem</label>
+                                                <select class="form-select form-select-sm" name="buscarOrigem">
+                                                    <option value="">Todas</option>
+                                                    <option th:each="o : ${origens}"
+                                                            th:value="${o.name()}"
+                                                            th:text="${o}"
+                                                            th:selected="${buscarOrigem != null && buscarOrigem.name() == o.name()}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Destino</label>
+                                                <select class="form-select form-select-sm" name="buscarDestino">
+                                                    <option value="">Todos</option>
+                                                    <option th:each="d : ${destinos}"
+                                                            th:value="${d.name()}"
+                                                            th:text="${d}"
+                                                            th:selected="${buscarDestino != null && buscarDestino.name() == d.name()}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-2 mt-2">
+                                            <button type="button"
+                                                    class="btn btn-outline-primary btn-sm"
+                                                    id="btnBuscarOcorrencias"
+                                                    hx-get="/boletins/selector"
+                                                    hx-target="#ocorrenciaResults"
+                                                    hx-include="#ocorrenciaFilters">
+                                                <i class="fas fa-search me-1"></i>Buscar
+                                            </button>
+                                        </div>
+
+                                        <div class="mt-3 border rounded overflow-auto" style="max-height: calc(100vh - 420px);"
+                                             id="ocorrenciaResults"
+                                             hx-get="/boletins/selector"
+                                             th:attr="hx-trigger=${modoOcorrencia == 'existente'} ? 'load, change delay:400ms from:#ocorrenciaFilters' : 'none'"
+                                             hx-target="this"
+                                             hx-include="#ocorrenciaFilters">
+                                            <div class="small p-3" style="color: var(--text-muted);">Use os filtros e clique em Buscar…</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </aside>
+
+                        </div>
+                    </div>
+
+
+                    <div class="card-footer d-flex justify-content-end gap-2 py-3 boletim-pane-footer"
+                         style="background: var(--hover-bg); border-top: 1px solid var(--border-color);">
+                        <a th:href="@{/boletins}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-sm" id="btnNextTab" name="nav" value="tab2">
+                            Dados do Animal <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                 <div class="tab-pane fade boletim-pane" id="tab-animal" role="tabpanel" aria-labelledby="tab-animal-btn"
+                     th:classappend="${activeTab == 'animal'} ? 'show active' : ''">
+                    <div class="card-body p-4 boletim-pane-body">
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-primary); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-primary); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-tag me-1"></i>Identificação do Animal
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Nome</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{animal.nome}"
+                                       th:classappend="${#fields.hasErrors('animal.nome')} ? 'is-invalid' : ''"
+                                       placeholder="Nome do animal">
+                                <div class="invalid-feedback" th:errors="*{animal.nome}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">ID do Chip</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{animal.chipId}"
+                                       th:classappend="${#fields.hasErrors('animal.chipId')} ? 'is-invalid' : ''"
+                                       placeholder="Nº do microchip (se houver)">
+                                <div class="invalid-feedback" th:errors="*{animal.chipId}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-success); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-success); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-paw me-1"></i>Características
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Raça <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{animal.raca}"
+                                       th:classappend="${#fields.hasErrors('animal.raca')} ? 'is-invalid' : ''"
+                                       placeholder="Ex: SRD, Labrador, Siamês..."
+                                       required
+                                       data-tab2-required>
+                                <div class="invalid-feedback" th:errors="*{animal.raca}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Espécie <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{animal.especie}"
+                                        th:classappend="${#fields.hasErrors('animal.especie')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab2-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="e : ${especies}" th:value="${e.name()}" th:text="${e}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{animal.especie}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Sexo <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{animal.sexo}"
+                                        th:classappend="${#fields.hasErrors('animal.sexo')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab2-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="s : ${sexos}" th:value="${s.name()}" th:text="${s}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{animal.sexo}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Maturidade <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{animal.maturidade}"
+                                        th:classappend="${#fields.hasErrors('animal.maturidade')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab2-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="m : ${maturidades}" th:value="${m.name()}" th:text="${m}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{animal.maturidade}"></div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Porte <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{animal.porte}"
+                                        th:classappend="${#fields.hasErrors('animal.porte')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab2-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="p : ${portes}" th:value="${p.name()}" th:text="${p}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{animal.porte}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Cor da Pelagem
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{animal.corPelagem}"
+                                       th:classappend="${#fields.hasErrors('animal.corPelagem')} ? 'is-invalid' : ''"
+                                       placeholder="Ex: Caramelo, Preto e branco...">
+                                <div class="invalid-feedback" th:errors="*{animal.corPelagem}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">Comportamento</label>
+                                <input type="text"
+                                       class="form-control"
+                                       th:field="*{animal.comportamento}"
+                                       th:classappend="${#fields.hasErrors('animal.comportamento')} ? 'is-invalid' : ''"
+                                       placeholder="Ex: Dócil, agressivo, assustado...">
+                                <div class="invalid-feedback" th:errors="*{animal.comportamento}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-warning); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-warning); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-heartbeat me-1"></i>Situação e Saúde
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Origem do Animal <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{animal.origem}"
+                                        th:classappend="${#fields.hasErrors('animal.origem')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab2-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="o : ${origens}" th:value="${o.name()}" th:text="${o}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{animal.origem}"></div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Status de Saúde <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select"
+                                        th:field="*{animal.saude}"
+                                        th:classappend="${#fields.hasErrors('animal.saude')} ? 'is-invalid' : ''"
+                                        required
+                                        data-tab2-required>
+                                    <option value="">Selecione</option>
+                                    <option th:each="st : ${statusEnum}" th:value="${st.name()}" th:text="${st}"></option>
+                                </select>
+                                <div class="invalid-feedback" th:errors="*{animal.saude}"></div>
+                            </div>
+
+                            <div class="col-md-6" id="maezinhaWrapper">
+                                <label class="form-label small fw-medium d-block" style="color: var(--text-secondary);">
+                                    É uma fêmea com filhotes?
+                                </label>
+                                <div class="form-check form-switch mt-1">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="animalEMaezinha"
+                                           th:field="*{animal.animalEMaezinha}"
+                                           role="switch">
+                                    <label class="form-check-label" for="animalEMaezinha" style="color: var(--text-secondary);">
+                                        Sim, é mãezinha com filhotes
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6" id="filhotesWrapper"
+                                 th:classappend="${boletim.animal != null and boletim.animal.animalEMaezinha} ? '' : 'd-none'">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Quantidade de filhotes
+                                </label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text" style="background: var(--hover-bg); color: var(--text-secondary); border-color: var(--border-color);">
+                                                <i class="fas fa-mars" style="color: var(--petx-info);"></i>
+                                            </span>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   min="0"
+                                                   step="1"
+                                                   placeholder="Machos"
+                                                   th:field="*{animal.maezinhaComFilhotes.quantidadeMacho}">
+                                        </div>
+                                        <div class="text-danger small" th:errors="*{animal.maezinhaComFilhotes.quantidadeMacho}"></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text" style="background: var(--hover-bg); color: var(--text-secondary); border-color: var(--border-color);">
+                                                <i class="fas fa-venus" style="color: var(--petx-secondary);"></i>
+                                            </span>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   min="0"
+                                                   step="1"
+                                                   placeholder="Fêmeas"
+                                                   th:field="*{animal.maezinhaComFilhotes.quantidadeFemea}">
+                                        </div>
+                                        <div class="text-danger small" th:errors="*{animal.maezinhaComFilhotes.quantidadeFemea}"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Condição do Animal
+                                </label>
+                                <textarea class="form-control"
+                                          rows="3"
+                                          th:field="*{animal.condicaoAnimal}"
+                                          th:classappend="${#fields.hasErrors('animal.condicaoAnimal')} ? 'is-invalid' : ''"
+                                          placeholder="Descreva a condição física do animal..."></textarea>
+                                <div class="invalid-feedback" th:errors="*{animal.condicaoAnimal}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-1" style="border-left: 3px solid var(--petx-accent); padding-left: .75rem;">
+                            <div class="fw-semibold" style="color: var(--petx-accent); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;">
+                                <i class="fas fa-camera me-1"></i>Registros Fotográficos
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label small fw-medium" style="color: var(--text-secondary);">
+                                    Fotos do Resgate
+                                </label>
+                                <input type="file"
+                                       class="form-control"
+                                       name="arquivos"
+                                       accept="image/*"
+                                       multiple>
+                                <div class="form-text" style="color: var(--text-muted);">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Formatos aceitos: JPG, PNG. Tamanho máximo: 10 MB por arquivo.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer d-flex justify-content-between align-items-center py-3 boletim-pane-footer"
+                         style="background: var(--hover-bg); border-top: 1px solid var(--border-color);">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm" id="btnPrevTab" name="nav" value="tab1">
+                            <i class="fas fa-arrow-left me-1"></i>Dados da Ocorrência
+                        </button>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/boletins}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-sm" id="btnSubmit">
+                                <i class="fas fa-save me-1"></i>Cadastrar Boletim
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
 
 <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        const chk    = document.getElementById('animalEMaezinha');
-        const box    = document.getElementById('filhotesWrapper');
-        const qMacho = document.querySelector('[name="animal.maezinhaComFilhotes.quantidadeMacho"]');
-        const qFemea = document.querySelector('[name="animal.maezinhaComFilhotes.quantidadeFemea"]');
+document.addEventListener('DOMContentLoaded', function () {
+    const modoNova = document.getElementById('modoNova');
+    const modoExistente = document.getElementById('modoExistente');
+    const colunaDireita = document.getElementById('colunaDireita');
+    const colunaFormulario = document.getElementById('colunaFormulario');
+    const btnBuscarOcorrencias = document.getElementById('btnBuscarOcorrencias');
+    const numeroOcorrenciaInput = document.getElementById('numeroOcorrenciaInput');
+    const chkMaezinha = document.getElementById('animalEMaezinha');
+    const filhotesWrapper = document.getElementById('filhotesWrapper');
+    const quantidadeMacho = document.querySelector('[name="animal.maezinhaComFilhotes.quantidadeMacho"]');
+    const quantidadeFemea = document.querySelector('[name="animal.maezinhaComFilhotes.quantidadeFemea"]');
 
-        function toggle() {
-            if (!chk || !box) return;
-            const show = chk.checked;
-            box.classList.toggle('d-none', !show);
-            [qMacho, qFemea].forEach(i => {
-                if (!i) return;
-                i.toggleAttribute('required', show); // exige quando visível
-                if (!show) i.value = '';             // limpa quando esconder
-            });
+    function aplicarModoOcorrencia() {
+        const isExistente = !!(modoExistente && modoExistente.checked);
+
+        // Toggle coluna direita visibility
+        if (colunaDireita) colunaDireita.classList.toggle('d-none', !isExistente);
+
+        // Toggle coluna formulário width
+        if (colunaFormulario) {
+            if (isExistente) {
+                colunaFormulario.classList.add('col-xl-8');
+            } else {
+                colunaFormulario.classList.remove('col-xl-8');
+            }
         }
 
-        if (chk && box) {
-            chk.addEventListener('change', toggle);
-            toggle(); // garante o estado inicial
+        if (!isExistente && numeroOcorrenciaInput) {
+            numeroOcorrenciaInput.value = '';
+        }
+
+        // Ao trocar para "Vincular", carrega a lista no painel da direita via HTMX.
+        if (isExistente && btnBuscarOcorrencias) {
+            btnBuscarOcorrencias.click();
+        }
+    }
+
+    if (modoNova) modoNova.addEventListener('change', aplicarModoOcorrencia);
+    if (modoExistente) modoExistente.addEventListener('change', aplicarModoOcorrencia);
+
+    // Selecionou ocorrência na lista -> preenche o Nº Ocorrência do form principal
+    document.addEventListener('change', function (ev) {
+        const t = ev.target;
+        if (!t || t.name !== 'numeroOcorrenciaSelecionada') return;
+        if (numeroOcorrenciaInput) {
+            numeroOcorrenciaInput.value = t.value || '';
         }
     });
+
+    function toggleMaezinha() {
+        if (!chkMaezinha || !filhotesWrapper) return;
+        const show = chkMaezinha.checked;
+        filhotesWrapper.classList.toggle('d-none', !show);
+        [quantidadeMacho, quantidadeFemea].forEach(function (field) {
+            if (!field) return;
+            field.required = show;
+            if (!show) field.value = '';
+        });
+    }
+
+    if (chkMaezinha) {
+        chkMaezinha.addEventListener('change', toggleMaezinha);
+    }
+    toggleMaezinha();
+    aplicarModoOcorrencia();
+});
 </script>
+
+</section>
 
 </body>
 </html>

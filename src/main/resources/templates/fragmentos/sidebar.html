@@ -34,18 +34,17 @@
            title="Animais">
           <i class="px-ico fas fa-paw"></i>
           <span class="px-text">Animais</span>
-
         </a>
       </li>
 
-      <!-- Clínica -->
+      <!-- Clínica — em breve -->
       <li>
-        <a class="px-link"
-           th:href="@{/clinica}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/clinica') ? ' is-active' : ''}"
-           title="Clínica">
+        <a class="px-link px-link--soon"
+           href="#"
+           title="Clínica — Em breve">
           <i class="px-ico fas fa-stethoscope"></i>
           <span class="px-text">Clínica</span>
+          <span class="px-badge">Em breve</span>
         </a>
       </li>
 
@@ -60,7 +59,7 @@
         </a>
       </li>
 
-      <!-- Financeiro (Novo) -->
+      <!-- Financeiro -->
       <li>
         <a class="px-link"
            th:href="@{/financeiro}"
@@ -69,7 +68,6 @@
           <i class="px-ico fas fa-wallet"></i>
           <span class="px-text">Financeiro</span>
         </a>
-        <!-- Submenu simples se desejar, ou apenas link direto para despesas que tem tabs -->
       </li>
 
       <!-- Tutores -->
@@ -83,89 +81,77 @@
         </a>
       </li>
 
-      <!-- Relatórios -->
+      <!-- Boletins -->
       <li>
         <a class="px-link"
-           th:href="@{/relatorios}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/relatorios') ? ' is-active' : ''}"
+           th:href="@{/boletins}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/boletins') ? ' is-active' : ''}"
+           title="Boletins de Resgate">
+          <i class="px-ico fas fa-clipboard-list"></i>
+          <span class="px-text">Boletins</span>
+        </a>
+      </li>
+
+      <!-- Relatórios (Admin) -->
+      <li sec:authorize="hasRole('ADMIN')">
+        <a class="px-link"
+           th:href="@{/admin/relatorios}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/admin/relatorios') ? ' is-active' : ''}"
            title="Relatórios">
           <i class="px-ico fas fa-chart-bar"></i>
           <span class="px-text">Relatórios</span>
         </a>
       </li>
 
-      <!-- Configurações -->
-      <li>
+      <!-- Configurações (Admin) -->
+      <li sec:authorize="hasRole('ADMIN')">
         <a class="px-link"
-           th:href="@{/config}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/config') ? ' is-active' : ''}"
+           th:href="@{/admin/configuracoes}"
+           th:classappend="${uri != null and #strings.startsWith(uri,'/admin/configuracoes') ? ' is-active' : ''}"
            title="Configurações">
           <i class="px-ico fas fa-cog"></i>
           <span class="px-text">Configurações</span>
         </a>
       </li>
 
-      <!-- Obituário -->
+      <!-- Obituário — em breve -->
       <li>
-        <a class="px-link"
-           th:href="@{/obituario}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/obituario') ? ' is-active' : ''}"
-           title="Obituário">
+        <a class="px-link px-link--soon"
+           href="#"
+           title="Obituário — Em breve">
           <i class="px-ico fas fa-cross"></i>
           <span class="px-text">Obituário</span>
+          <span class="px-badge">Em breve</span>
         </a>
       </li>
 
-      <!-- Doadores -->
+      <!-- Doadores — em breve -->
       <li>
-        <a class="px-link"
-           th:href="@{/doadores}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/doadores') ? ' is-active' : ''}"
-           title="Doadores">
+        <a class="px-link px-link--soon"
+           href="#"
+           title="Doadores — Em breve">
           <i class="px-ico fas fa-hand-holding-heart"></i>
           <span class="px-text">Doadores</span>
+          <span class="px-badge">Em breve</span>
         </a>
       </li>
 
-      <!-- Registro de Doadores -->
-      <li>
-        <a class="px-link"
-           th:href="@{/registro-doadores}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/registro-doadores') ? ' is-active' : ''}"
-           title="Registro de Doadores">
-          <i class="px-ico fas fa-id-card-alt"></i>
-          <span class="px-text">Registro de Doadores</span>
-        </a>
-      </li>
-
-      <!-- Despesas (Antigo - Removido em favor do Financeiro) -->
-      <!--
-      <li>
-        <a class="px-link"
-           th:href="@{/despesas}"
-           th:classappend="${uri != null and #strings.startsWith(uri,'/despesas') ? ' is-active' : ''}"
-           title="Despesas">
-          <i class="px-ico fas fa-receipt"></i>
-          <span class="px-text">Despesas</span>
-        </a>
-      </li>
-      -->
     </ul>
   </nav>
 
-  <!-- Atalhos -->
+  <!-- Atalhos
   <div class="px-shortcuts">
     <div class="px-shortcuts-title">Atalhos</div>
     <div class="px-shortcuts-grid">
       <a th:href="@{/animais/form}" class="px-chip">Novo animal</a>
-      <a th:href="@{/importar}" class="px-chip">Importar</a>
-      <a th:href="@{/exportar}" class="px-chip">Exportar</a>
-      <a th:href="@{/ajuda}" class="px-chip">Ajuda</a>
+      <a th:href="@{/boletins/form}" class="px-chip">Novo boletim</a>
+      <a th:href="@{/tutores/form}" class="px-chip">Novo tutor</a>
+      <a th:href="@{/animais}" class="px-chip">Ver animais</a>
     </div>
-  </div>
+  </div> -->
 
   <!-- Rodapé (usuário) -->
-  <div class="px-footer">
+  <!-- <div class="px-footer">
     <div class="px-user">
       <i class="fas fa-user-circle px-user-ico"></i>
       <div class="px-user-info">
@@ -173,6 +159,6 @@
         <span class="px-user-role" sec:authentication="principal.authorities">Função</span>
       </div>
     </div>
-  </div>
+  </div> -->
 </aside>
 <!-- ENCODING FIX -->

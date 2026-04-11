@@ -53,7 +53,8 @@ public class BackEndPetxApplication implements CommandLineRunner {
 			animalRepository.save(an);
 
 			Boletim boletim = new Boletim();
-			boletim.setNumeroOcorrencia(123456L);
+			long base = (long) LocalDateTime.now().getYear() * 100_000L;
+			boletim.setNumeroOcorrencia(base + 1);
 			boletim.setDataAtendimento(LocalDateTime.now());
 			boletim.setMotivoRecolhimento("Abandono");
 			boletim.setOrigem(OrigemAnimalEnum.ABANDONO);
@@ -67,9 +68,10 @@ public class BackEndPetxApplication implements CommandLineRunner {
 			boletim.setBairro("Centro");
 			boletim.setEstado("SP");
 			boletim.setDestino(Destino.ADOTACAO);
-			boletim.setAnimal(an); // Associar o boletim ao animal
+			boletim.addAnimal(an); // Associar o boletim ao animal
 			boletim.setOng(ong); // Associar o boletim à ONG
 			boletimRepository.save(boletim);
+			animalRepository.save(an);
 
 			System.out.println("nome: " + an.getNome());
 			System.out.println("maturidade: " + an.getMaturidadeEnum());

@@ -9,7 +9,11 @@ import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
 import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
+import org.ong.pet.pex.backendpetx.entities.Usuario;
 import org.ong.pet.pex.backendpetx.enums.*;
+import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controllers.bean.PageInfoBean;
+import org.ong.pet.pex.backendpetx.security.utils.SecurityUtils;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.ong.pet.pex.backendpetx.service.impl.MediaService;
 import org.springframework.data.domain.Page;
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -55,18 +61,130 @@ public class BoletimController {
         FotosBean FotosBean = new FotosBean(List.of());
         model.addAttribute("fotos", FotosBean);
         model.addAttribute("boletim", req);
+        model.addAttribute("modoOcorrencia", "nova");
+        model.addAttribute("activeTab", "ocorrencia");
         model.addAttribute("currentPage", "/boletins/form");
         carregarCombos(model);
         return "boletim/cadastro";
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
-    @PostMapping(value = "/salvar")
+    @PostMapping(value = "/salvar", params = "nav=tab1")
+    public String voltarParaOcorrencia(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+                                      BindingResult br,
+                                      @ModelAttribute("fotos") FotosBean fotos,
+                                      Model model,
+                                      @RequestParam(name = "modoOcorrencia", defaultValue = "nova") String modoOcorrencia) {
+        prepararTelaCadastro(model, dto, fotos, modoOcorrencia, "ocorrencia");
+        return "boletim/cadastro";
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @PostMapping(value = "/salvar", params = "nav=tab2")
+    public String irParaAnimal(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+                              BindingResult br,
+                              @ModelAttribute("fotos") FotosBean fotos,
+                              Model model,
+                              @RequestParam(name = "modoOcorrencia", defaultValue = "nova") String modoOcorrencia) {
+        validarTab1(dto, br, modoOcorrencia, getOngIdLogada());
+        String nextTab = br.hasErrors() ? "ocorrencia" : "animal";
+        prepararTelaCadastro(model, dto, fotos, modoOcorrencia, nextTab);
+        return "boletim/cadastro";
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @PostMapping(value = "/salvar", params = "acao=buscarOcorrencias")
+    public String buscarOcorrencias(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+                                   BindingResult br,
+                                   @ModelAttribute("fotos") FotosBean fotos,
+                                   Model model,
+                                   @RequestParam(name = "modoOcorrencia", defaultValue = "existente") String modoOcorrencia,
+                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate buscarDataInicio,
+                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate buscarDataFim,
+                                   @RequestParam(required = false) OrigemAnimalEnum buscarOrigem,
+                                   @RequestParam(required = false) Destino buscarDestino) {
+
+        Long ongId = getOngIdLogada();
+        LocalDateTime inicio = buscarDataInicio != null ? buscarDataInicio.atStartOfDay() : null;
+        LocalDateTime fim = buscarDataFim != null ? buscarDataFim.atTime(LocalTime.MAX) : null;
+
+        var ocorrencias = boletimService.buscarOcorrenciasParaVinculo(ongId, inicio, fim, buscarOrigem, buscarDestino, 50);
+
+        prepararTelaCadastro(model, dto, fotos, modoOcorrencia, "ocorrencia");
+        model.addAttribute("ocorrenciasEncontradas", ocorrencias);
+        model.addAttribute("buscarDataInicio", buscarDataInicio);
+        model.addAttribute("buscarDataFim", buscarDataFim);
+        model.addAttribute("buscarOrigem", buscarOrigem);
+        model.addAttribute("buscarDestino", buscarDestino);
+        return "boletim/cadastro";
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @GetMapping(value = "/selector")
+    public String selectorOcorrencias(Model model,
+                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate buscarDataInicio,
+                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate buscarDataFim,
+                                      @RequestParam(required = false) OrigemAnimalEnum buscarOrigem,
+                                      @RequestParam(required = false) Destino buscarDestino,
+                                      @RequestParam(required = false) Long numeroOcorrenciaSelecionada) {
+
+        Long ongId = getOngIdLogada();
+        LocalDateTime inicio = buscarDataInicio != null ? buscarDataInicio.atStartOfDay() : null;
+        LocalDateTime fim = buscarDataFim != null ? buscarDataFim.atTime(LocalTime.MAX) : null;
+
+        var ocorrencias = boletimService.buscarOcorrenciasParaVinculo(ongId, inicio, fim, buscarOrigem, buscarDestino, 50);
+        model.addAttribute("ocorrenciasEncontradas", ocorrencias);
+        model.addAttribute("numeroOcorrenciaSelecionada", numeroOcorrenciaSelecionada);
+        return "boletim/selector :: selector";
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @PostMapping(value = "/salvar", params = "acao=selecionarOcorrencia")
+    public String selecionarOcorrencia(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+                                      BindingResult br,
+                                      @ModelAttribute("fotos") FotosBean fotos,
+                                      Model model,
+                                      @RequestParam(name = "modoOcorrencia", defaultValue = "existente") String modoOcorrencia,
+                                      @RequestParam(required = false) Long numeroOcorrenciaSelecionada,
+                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate buscarDataInicio,
+                                      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate buscarDataFim,
+                                      @RequestParam(required = false) OrigemAnimalEnum buscarOrigem,
+                                      @RequestParam(required = false) Destino buscarDestino) {
+
+        Long ongId = getOngIdLogada();
+        if (numeroOcorrenciaSelecionada == null) {
+            model.addAttribute("mensagemErro", "Selecione uma ocorrência para vincular.");
+        } else if (!boletimService.existsNumeroOcorrenciaNaOng(numeroOcorrenciaSelecionada, ongId)) {
+            model.addAttribute("mensagemErro", "A ocorrência selecionada não existe (ou não pertence à sua ONG).");
+        } else {
+            dto.setNumeroOcorrencia(numeroOcorrenciaSelecionada);
+        }
+
+        // Recarrega a lista com os mesmos filtros (para não "sumir" após selecionar)
+        LocalDateTime inicio = buscarDataInicio != null ? buscarDataInicio.atStartOfDay() : null;
+        LocalDateTime fim = buscarDataFim != null ? buscarDataFim.atTime(LocalTime.MAX) : null;
+        var ocorrencias = boletimService.buscarOcorrenciasParaVinculo(ongId, inicio, fim, buscarOrigem, buscarDestino, 50);
+
+        prepararTelaCadastro(model, dto, fotos, modoOcorrencia, "ocorrencia");
+        model.addAttribute("ocorrenciasEncontradas", ocorrencias);
+        model.addAttribute("buscarDataInicio", buscarDataInicio);
+        model.addAttribute("buscarDataFim", buscarDataFim);
+        model.addAttribute("buscarOrigem", buscarOrigem);
+        model.addAttribute("buscarDestino", buscarDestino);
+        return "boletim/cadastro";
+    }
+
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @PostMapping(value = "/salvar", params = {"!nav", "!acao"})
     public String createBoletim(@Valid @ModelAttribute("boletim") BoletimDTORequisicao dto,
                                 BindingResult br,
                                 RedirectAttributes redirectAttrs,
                                 @ModelAttribute("fotos") FotosBean fotos,
-                                Model model) {
+                                Model model,
+                                @RequestParam(name = "modoOcorrencia", defaultValue = "nova") String modoOcorrencia) {
+        // validação server-side do TAB 1 (condicional por modo)
+        validarTab1(dto, br, modoOcorrencia, getOngIdLogada());
+
         // Regras de negócio de "mãezinha"
 
         AnimalGenericoRequisicao a = dto.getAnimal();
@@ -84,13 +202,27 @@ public class BoletimController {
                 a.setMaezinhaComFilhotes(null);
             }
         }
+        boolean vincularExistente = "existente".equalsIgnoreCase(modoOcorrencia);
+
         if (br.hasErrors()) {
-            carregarCombos(model);
-            model.addAttribute("currentPage", "/boletins/form");
+            // Se houver erro no TAB 1, fica nele; senão, mostra TAB 2 para corrigir o Animal.
+            String activeTab = hasTab1Errors(br) ? "ocorrencia" : "animal";
+            prepararTelaCadastro(model, dto, fotos, modoOcorrencia, activeTab);
             return "boletim/cadastro";
         }
 
-        var boletim = boletimService.createBoletim(dto);
+        BoletimDTOResposta boletim;
+        try {
+            if (vincularExistente) {
+                boletim = boletimService.adicionarAnimalEmOcorrencia(dto.getNumeroOcorrencia(), dto.getAnimal());
+            } else {
+                boletim = boletimService.createBoletim(dto);
+            }
+        } catch (Exception e) {
+            prepararTelaCadastro(model, dto, fotos, modoOcorrencia, "animal");
+            model.addAttribute("mensagemErro", e.getMessage());
+            return "boletim/cadastro";
+        }
 
         if (fotos != null && fotos.getArquivos() != null) {
             fotos.getArquivos().stream()
@@ -110,6 +242,84 @@ public class BoletimController {
         return "redirect:/animais/" + boletim.getAnimal().getId();
     }
 
+    private void prepararTelaCadastro(Model model,
+                                     BoletimDTORequisicao dto,
+                                     FotosBean fotos,
+                                     String modoOcorrencia,
+                                     String activeTab) {
+        garantirBindingAninhado(dto);
+        model.addAttribute("boletim", dto);
+        model.addAttribute("fotos", fotos != null ? fotos : new FotosBean(List.of()));
+        model.addAttribute("modoOcorrencia", modoOcorrencia);
+        model.addAttribute("activeTab", activeTab);
+        model.addAttribute("currentPage", "/boletins/form");
+        carregarCombos(model);
+    }
+
+    private void validarTab1(BoletimDTORequisicao dto, BindingResult br, String modoOcorrencia, Long ongId) {
+        boolean vincularExistente = "existente".equalsIgnoreCase(modoOcorrencia);
+        if (vincularExistente) {
+            if (dto.getNumeroOcorrencia() == null) {
+                br.rejectValue("numeroOcorrencia", "required", "Informe o número da ocorrência existente.");
+            } else if (ongId != null && !boletimService.existsNumeroOcorrenciaNaOng(dto.getNumeroOcorrencia(), ongId)) {
+                br.rejectValue("numeroOcorrencia", "notFound", "Ocorrência não encontrada para esta ONG.");
+            }
+            return;
+        }
+
+        if (dto.getDataAtendimento() == null) {
+            br.rejectValue("dataAtendimento", "required", "Data de Atendimento é obrigatória.");
+        }
+        if (dto.getDestino() == null) {
+            br.rejectValue("destino", "required", "Destino é obrigatório.");
+        }
+    }
+
+    private boolean hasTab1Errors(BindingResult br) {
+        return br.hasFieldErrors("numeroOcorrencia")
+                || br.hasFieldErrors("dataAtendimento")
+                || br.hasFieldErrors("destino")
+                || br.hasFieldErrors("origem")
+                || br.hasFieldErrors("motivoRecolhimento")
+                || br.hasFieldErrors("nomeDenuncianteOuTutor")
+                || br.hasFieldErrors("cpfDenuncianteOuTutor")
+                || br.hasFieldErrors("telefoneDenuncianteOuTutor")
+                || br.hasFieldErrors("observacaoClinica")
+                || br.hasFieldErrors("ruaAvenida")
+                || br.hasFieldErrors("bairro")
+                || br.hasFieldErrors("cidade")
+                || br.hasFieldErrors("estado")
+                || br.hasFieldErrors("municipio");
+    }
+
+    private Long getOngIdLogada() {
+        Usuario u = SecurityUtils.requirePrincipal(Usuario.class);
+        return (u.getOng() != null) ? u.getOng().getId() : null;
+    }
+
+    private void garantirBindingAninhado(BoletimDTORequisicao req) {
+        if (req == null) return;
+        if (req.getAnimal() == null) req.setAnimal(new AnimalDTO());
+        if (req.getAnimal().getMaezinhaComFilhotes() == null) {
+            req.getAnimal().setMaezinhaComFilhotes(new MaezinhaComFilhotesDTO());
+        }
+    }
+
+    /**
+     * API para anexar mais um animal ao mesmo boletim/ocorrência.
+     * Útil quando um resgate teve múltiplos animais (1 ocorrência, N animais).
+     */
+    @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
+    @PostMapping(value = "/{numeroOcorrencia}/animais")
+    public ResponseEntity<BoletimDTOResposta> adicionarAnimal(@PathVariable Long numeroOcorrencia,
+                                                             @RequestBody AnimalGenericoRequisicao animal) {
+        Long ongId = getOngIdLogada();
+        if (ongId != null && !boletimService.existsNumeroOcorrenciaNaOng(numeroOcorrencia, ongId)) {
+            throw new org.ong.pet.pex.backendpetx.service.exceptions.PetXException("Ocorrência não encontrada para esta ONG");
+        }
+        return ResponseEntity.ok(boletimService.adicionarAnimalEmOcorrencia(numeroOcorrencia, animal));
+    }
+
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<BoletimDTOResposta> getBoletim(@PathVariable Long id) {
@@ -125,16 +335,38 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<BoletimDTOResposta>> findAllBoletins(
+    public String listarBoletins(
             @RequestParam(required = false) Long numeroOcorrencia,
             @RequestParam(required = false) Destino destino,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataFim,
-            Pageable pageable) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size,
+            Model model) {
+
+        Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by("dataAtendimento").descending());
 
         Page<BoletimDTOResposta> boletins = boletimService.findAllBoletins(
                 numeroOcorrencia, destino, pageable);
-        return ResponseEntity.ok(boletins);
+
+        model.addAttribute("boletins", boletins);
+        model.addAttribute("filtroNumero", numeroOcorrencia);
+        model.addAttribute("filtroDestino", destino);
+        model.addAttribute("destinos", Destino.values());
+        model.addAttribute("currentPage", "/boletins");
+
+        PageInfoBean pageInfo = PageInfoBean.builder()
+                .title("Boletins de Resgate")
+                .subtitle("Registros de resgates e atendimentos da ONG")
+                .icon("fas fa-file-medical")
+                .addBreadcrumb("Boletins", "/boletins");
+        model.addAttribute("pageInfo", pageInfo);
+
+        List<ActionButtonDTO> buttons = List.of(
+                ActionButtonDTO.primary("Novo Boletim", "/boletins/form", "fas fa-plus")
+        );
+        model.addAttribute("actionButtons", buttons);
+
+        return "boletim/lista";
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")

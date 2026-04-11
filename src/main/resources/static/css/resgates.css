@@ -2,12 +2,12 @@
 .avatar-animal{ width: 36px; height: 36px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 1rem; }
 
 /* cores de espécie (subtis) */
-.bg-cachorro-subtle{ background-color: rgba(13,110,253,.12); color:#0d6efd; }
-.bg-gato-subtle    { background-color: rgba(102,16,242,.12); color:#6610f2; }
-.bg-ave-subtle     { background-color: rgba(255,193,7,.14); color:#f59f00; }
-.bg-roedor-subtle  { background-color: rgba(253,126,20,.12); color:#fd7e14; }
-.bg-reptil-subtle  { background-color: rgba(25,135,84,.12); color:#198754; }
-.bg-outros-subtle  { background-color: rgba(173,181,189,.12); color:#6c757d; }
+.bg-cachorro-subtle{ background-color: rgba(109,40,217,.12); color: var(--petx-dog); }
+.bg-gato-subtle    { background-color: rgba(190,24,93,.12);  color: var(--petx-cat); }
+.bg-ave-subtle     { background-color: rgba(15,118,110,.14); color: var(--petx-bird); }
+.bg-roedor-subtle  { background-color: rgba(245,158,11,.12); color: var(--petx-accent); }
+.bg-reptil-subtle  { background-color: rgba(16,185,129,.12); color: var(--petx-success); }
+.bg-outros-subtle  { background-color: rgba(194,65,12,.12);  color: var(--petx-other); }
 
 /* estados */
 .bg-SAUDAVEL{ background-color: var(--petx-success); color:#fff; }

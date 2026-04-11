@@ -21,9 +21,9 @@
 }
 
 .badge-chip-filled {
-  background-color: #ffe082;
-  color: #805500;
-  border: 1px solid #ffca28;
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
 }
 
 [data-theme="dark"] .badge-chip-filled {
@@ -97,7 +97,7 @@
   background-color: var(--input-bg);
   border-color: var(--petx-primary);
   color: var(--text-primary);
-  box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.2);
 }
 
 .form-label {
@@ -192,7 +192,7 @@
 }
 
 .pagination .page-link:focus {
-  box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.2);
   z-index: 3;
 }
 

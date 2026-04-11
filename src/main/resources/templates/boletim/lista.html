@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/base :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Boletins de Resgate - ONG PetX</title>
+</head>
+<body>
+<section class="resgates">
+
+    <div th:replace="~{fragmentos/page-header :: smart-header(${pageInfo}, ${actionButtons})}"></div>
+
+    <!-- Filtros -->
+    <div class="card mb-3 shadow-sm">
+        <div class="card-header py-2 d-flex align-items-center">
+            <i class="fas fa-filter me-2"></i>
+            <h3 class="h6 mb-0">Filtros</h3>
+            <button class="btn btn-sm btn-outline-secondary ms-auto"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#filtros-collapse">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div id="filtros-collapse" class="collapse show">
+            <div class="card-body py-3">
+                <form method="get" th:action="@{/boletins}" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label small">Nº Ocorrência</label>
+                        <input type="number" class="form-control form-control-sm" name="numeroOcorrencia"
+                               th:value="${filtroNumero}" placeholder="Ex: 1001">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Destino</label>
+                        <select class="form-select form-select-sm" name="destino">
+                            <option value="">Todos os destinos</option>
+                            <option th:each="d : ${destinos}"
+                                    th:value="${d}"
+                                    th:text="${d.name()}"
+                                    th:selected="${d == filtroDestino}">Destino</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-search me-1"></i>Buscar
+                        </button>
+                        <a th:href="@{/boletins}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-times me-1"></i>Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+        <div class="card-header d-flex align-items-center justify-content-between py-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-clipboard-list"></i>
+                <h3 class="h6 mb-0">Boletins Registrados</h3>
+            </div>
+            <span class="badge bg-primary rounded-pill"
+                  th:text="${boletins.totalElements} + ' total'">0 total</span>
+        </div>
+
+        <div class="card-body p-0">
+            <!-- Vazio -->
+            <div th:if="${boletins.empty}" class="text-center py-5 text-muted">
+                <i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i>
+                <p class="mb-2">Nenhum boletim encontrado.</p>
+                <a th:href="@{/boletins/form}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i>Registrar primeiro boletim
+                </a>
+            </div>
+
+            <!-- Tabela com dados -->
+            <div th:unless="${boletins.empty}" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-3" style="width:80px">Nº</th>
+                            <th>Animal</th>
+                            <th>Data Atendimento</th>
+                            <th>Origem</th>
+                            <th>Denunciante / Tutor</th>
+                            <th>Destino</th>
+                            <th class="text-end pe-3">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="b : ${boletins.content}">
+                            <td class="ps-3">
+                                <span class="fw-semibold small"
+                                      th:text="${b.numeroOcorrencia != null ? '#' + b.numeroOcorrencia : '#' + b.id}">
+                                    #0
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-paw opacity-50 small"></i>
+                                    <span class="fw-medium" th:text="${b.animal != null and b.animal.nome != null ? b.animal.nome : '—'}">
+                                        Animal
+                                    </span>
+                                </div>
+                                <small class="text-muted"
+                                       th:text="${b.animal != null and b.animal.especie != null ? b.animal.especie : ''}">
+                                </small>
+                            </td>
+                            <td>
+                                <span th:if="${b.dataAtendimento != null}"
+                                      th:text="${#temporals.format(b.dataAtendimento, 'dd/MM/yyyy HH:mm')}">
+                                    00/00/0000
+                                </span>
+                                <span th:unless="${b.dataAtendimento != null}" class="text-muted">—</span>
+                            </td>
+                            <td>
+                                <span th:text="${b.origem != null ? b.origem.getOrigemAnimal() : '—'}">—</span>
+                            </td>
+                            <td>
+                                <span th:text="${b.nomeDenuncianteOuTutor != null ? b.nomeDenuncianteOuTutor : '—'}">—</span>
+                            </td>
+                            <td>
+                                <span th:if="${b.destino != null}"
+                                      class="badge text-white"
+                                      th:classappend="${b.destino.name() == 'ONG' ? 'bg-success' :
+                                                       (b.destino.name() == 'ADOCAO' ? 'bg-primary' :
+                                                       (b.destino.name() == 'OBITO' ? 'bg-danger' : 'bg-secondary'))}"
+                                      th:text="${b.destino.name()}">
+                                    Destino
+                                </span>
+                                <span th:unless="${b.destino != null}" class="text-muted">—</span>
+                            </td>
+                            <td class="text-end pe-3">
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <a th:if="${b.animal != null}"
+                                       th:href="@{'/animais/' + ${b.animal.id}}"
+                                       class="btn btn-sm btn-outline-primary"
+                                       title="Ver animal">
+                                        <i class="fas fa-paw"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Paginação -->
+        <div th:unless="${boletins.empty}" class="card-footer d-flex align-items-center justify-content-between py-2">
+            <small class="text-muted">
+                Exibindo
+                <span th:text="${boletins.numberOfElements}">0</span>
+                de
+                <span th:text="${boletins.totalElements}">0</span>
+                registros
+            </small>
+            <nav th:if="${boletins.totalPages > 1}">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item" th:classappend="${boletins.first ? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{/boletins(page=${boletins.number - 1}, size=${boletins.size}, numeroOcorrencia=${filtroNumero}, destino=${filtroDestino})}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link"
+                              th:text="${boletins.number + 1} + ' / ' + ${boletins.totalPages}">
+                            1 / 1
+                        </span>
+                    </li>
+                    <li class="page-item" th:classappend="${boletins.last ? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{/boletins(page=${boletins.number + 1}, size=${boletins.size}, numeroOcorrencia=${filtroNumero}, destino=${filtroDestino})}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

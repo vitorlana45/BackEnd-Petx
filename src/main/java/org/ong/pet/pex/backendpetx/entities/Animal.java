@@ -111,9 +111,9 @@ public class Animal extends EntidadeBase {
 
     private MaezinhaComFilhotes maezinhaComFilhotes;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {MERGE, PERSIST, REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {MERGE, REFRESH})
     @JoinColumn(name = "id_ong")
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) // <- se Ong NÃO for @Audited
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Ong ong;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)

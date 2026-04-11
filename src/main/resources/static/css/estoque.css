@@ -19,45 +19,14 @@ textarea::placeholder {
 }
 
 /* Placeholder específico para tema escuro */
-[data-theme="dark"] .form-control::placeholder {
-  color: #8A8AA3 !important;
-  opacity: 0.8;
-}
-
-[data-theme="dark"] .form-select::placeholder {
-  color: #8A8AA3 !important;
-  opacity: 0.8;
-}
-
+[data-theme="dark"] .form-control::placeholder,
+[data-theme="dark"] .form-select::placeholder,
 [data-theme="dark"] textarea::placeholder {
-  color: #8A8AA3 !important;
-  opacity: 0.8;
+  color: var(--text-muted) !important;
+  opacity: 0.85;
 }
 
-/* ===== FORMULÁRIOS - MELHOR CONTRASTE ===== */
-[data-theme="dark"] .form-control {
-  background-color: var(--input-bg);
-  border-color: var(--input-border);
-  color: var(--text-primary);
-}
-
-[data-theme="dark"] .form-control:focus {
-  background-color: var(--input-bg);
-  border-color: var(--petx-primary);
-  color: var(--text-primary);
-  box-shadow: 0 0 0 0.25rem rgba(139, 159, 255, 0.25);
-}
-
-[data-theme="dark"] .form-select {
-  background-color: var(--input-bg);
-  border-color: var(--input-border);
-  color: var(--text-primary);
-}
-
-[data-theme="dark"] .form-label {
-  color: var(--text-secondary);
-  font-weight: 500;
-}
+/* Formulários: já cobertos por components.css globalmente */
 
 /* ===== CARDS DE ESTATÍSTICAS ===== */
 .border-left-primary {
@@ -157,33 +126,63 @@ textarea::placeholder {
   color: var(--text-secondary);
 }
 
-/* ===== ALERTAS ===== */
-.alert {
-  border: none;
-  border-radius: 0.75rem;
-  box-shadow: var(--shadow);
+/* ===== ALERTAS — ambos os temas ===== */
+/* Light: substitui o fundo sólido Bootstrap por versão sutil */
+[data-theme="light"] .alert-success {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  color: #065f46 !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-success) !important;
 }
 
-.alert-success {
-  background-color: rgba(134, 239, 172, 0.1);
-  color: var(--petx-success);
-  border-left: 4px solid var(--petx-success);
+[data-theme="light"] .alert-danger {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: #7f1d1d !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-danger) !important;
 }
 
-.alert-danger {
-  background-color: rgba(252, 165, 165, 0.1);
-  color: var(--petx-danger);
-  border-left: 4px solid var(--petx-danger);
+[data-theme="light"] .alert-info {
+  background-color: rgba(6, 182, 212, 0.08) !important;
+  color: #164e63 !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-info) !important;
 }
 
+[data-theme="light"] .alert-warning {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  color: #78350f !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-warning) !important;
+}
+
+/* Dark: fundo semitransparente */
 [data-theme="dark"] .alert-success {
-  background-color: rgba(67, 160, 71, 0.1);
-  border-color: var(--petx-success);
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #6ee7b7 !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-success) !important;
 }
 
 [data-theme="dark"] .alert-danger {
-  background-color: rgba(229, 57, 53, 0.1);
-  border-color: var(--petx-danger);
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  color: #fca5a5 !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-danger) !important;
+}
+
+[data-theme="dark"] .alert-info {
+  background-color: rgba(6, 182, 212, 0.12) !important;
+  color: #67e8f9 !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-info) !important;
+}
+
+[data-theme="dark"] .alert-warning {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #fcd34d !important;
+  border: none !important;
+  border-left: 4px solid var(--petx-warning) !important;
 }
 
 /* ===== CARDS DE ESTOQUE ===== */
@@ -195,26 +194,61 @@ textarea::placeholder {
   border-color: var(--petx-success) !important;
 }
 
-/* ===== ÍCONES COLORIDOS ===== */
-.text-primary {
-  color: var(--petx-primary) !important;
+/* ===== DROPDOWN THEME-AWARE ===== */
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
 }
 
-.text-success {
-  color: var(--petx-success) !important;
+[data-theme="dark"] .dropdown-item {
+  color: var(--text-primary) !important;
 }
 
-.text-warning {
-  color: var(--petx-warning) !important;
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+  background-color: var(--hover-bg) !important;
+  color: var(--text-primary) !important;
 }
 
-.text-danger {
-  color: var(--petx-danger) !important;
+[data-theme="dark"] .dropdown-divider {
+  border-color: var(--border-color) !important;
 }
 
-.text-info {
-  color: var(--petx-info) !important;
+/* ===== UTILITÁRIOS ===== */
+.min-w-0 {
+  min-width: 0;
 }
+
+/* ===== FILTROS DENTRO DE HEADER GRADIENTE ===== */
+/* Light: fundo branco semitransparente */
+[data-theme="light"] .estoque-filter-input {
+  background-color: rgba(255,255,255,.85) !important;
+  border-color: rgba(255,255,255,.6) !important;
+  color: #1C1917 !important;
+}
+
+[data-theme="light"] .estoque-filter-input::placeholder {
+  color: rgba(28,25,23,.5) !important;
+}
+
+/* Dark: fundo escuro semitransparente */
+[data-theme="dark"] .estoque-filter-input {
+  background-color: rgba(0,0,0,.3) !important;
+  border-color: rgba(255,255,255,.2) !important;
+  color: white !important;
+}
+
+[data-theme="dark"] .estoque-filter-input::placeholder {
+  color: rgba(255,255,255,.6) !important;
+}
+
+/* Dropdown options — sempre usa as cores do tema */
+.estoque-filter-input option {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Tabela e paginação: já cobertos por components.css globalmente */
 
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 768px) {

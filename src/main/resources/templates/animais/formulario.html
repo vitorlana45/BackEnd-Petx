@@ -59,6 +59,16 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="origem" class="form-label">Origem *</label>
+                            <select class="form-select" id="origem" th:field="*{origem}" required>
+                                <option value="">Selecione a origem</option>
+                                <option th:each="o : ${origens}"
+                                        th:value="${o}"
+                                        th:text="${o.name()}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="sexo" class="form-label">Sexo</label>
                             <select class="form-select" id="sexo" th:field="*{sexo}">
                                 <option value="">Selecione o sexo</option>
@@ -104,12 +114,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select class="form-select" id="status" th:field="*{status}">
-                                <option value="">Selecione o status</option>
-                                <option th:each="status : ${statusEnum}" 
-                                        th:value="${status}" 
-                                        th:text="${status.name()}"></option>
+                            <label for="saude" class="form-label">Estado de Saúde</label>
+                            <select class="form-select" id="saude" th:field="*{saude}">
+                                <option value="">Selecione o estado</option>
+                                <option th:each="s : ${status}"
+                                        th:value="${s}"
+                                        th:text="${s.name()}"></option>
                             </select>
                         </div>
 

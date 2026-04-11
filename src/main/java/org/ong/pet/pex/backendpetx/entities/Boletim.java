@@ -11,7 +11,9 @@ import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.*;
 
@@ -25,13 +27,17 @@ import static jakarta.persistence.CascadeType.*;
 @Builder
 @Getter
 @Setter
-@Table(name = "boletins")
+@Table(name = "boletins",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_boletins_numero_ocorrencia", columnNames = {"numero_ocorrencia"})
+    })
 public class Boletim extends EntidadeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "numero_ocorrencia", nullable = false, unique = true)
     private Long numeroOcorrencia;
 
     private LocalDateTime dataAtendimento;
@@ -74,16 +80,47 @@ public class Boletim extends EntidadeBase {
     @Enumerated(EnumType.STRING)
     private Destino destino;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
-    @JoinColumn(name = "animal_id")
-    private Animal animal;
+    @OneToMany(mappedBy = "boletim", cascade = {PERSIST, MERGE, REFRESH}, orphanRemoval = true)
+    @Builder.Default
+    private Set<Animal> animais = new HashSet<>();
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {MERGE, PERSIST, REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {MERGE, REFRESH})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @JoinColumn(name = "ong_id"
-    )
+    @JoinColumn(name = "ong_id")
     private Ong ong;
+
+    /**
+     * Compatibilidade com o binding atual do formulário (boletim.animal.*)
+     * sem impedir que uma ocorrência tenha múltiplos animais.
+     */
+    public Animal getAnimal() {
+        return animais.stream().findFirst().orElse(null);
+    }
+
+    /**
+     * Mantém o comportamento antigo: ao setar "animal" substitui o principal.
+     */
+    public void setAnimal(Animal animal) {
+        this.animais.clear();
+        if (animal != null) {
+            addAnimal(animal);
+        }
+    }
+
+    public void addAnimal(Animal animal) {
+        if (animal == null) return;
+        this.animais.add(animal);
+        animal.setBoletim(this);
+    }
+
+    public void removeAnimal(Animal animal) {
+        if (animal == null) return;
+        this.animais.remove(animal);
+        if (animal.getBoletim() == this) {
+            animal.setBoletim(null);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

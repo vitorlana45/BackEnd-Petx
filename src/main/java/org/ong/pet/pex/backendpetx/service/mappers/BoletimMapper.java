@@ -19,6 +19,7 @@ public class BoletimMapper {
 
     public BoletimDTOResposta converteParaDTO(Boletim entidade) {
         new AnimalGenericoResposta();
+        var animal = entidade.getAnimal();
         return BoletimDTOResposta.builder()
                 .id(entidade.getId())
                 .bairro(entidade.getBairro())
@@ -36,27 +37,27 @@ public class BoletimMapper {
                 .dataAtendimento(entidade.getDataAtendimento())
                 .dataAtendimento(entidade.getDataAtendimento())
                 .destino(entidade.getDestino())
-                .animal(AnimalGenericoResposta.builder()
-                        .id(entidade.getId())
-                        .nome(entidade.getAnimal().getNome())
-                        .maturidade(entidade.getAnimal().getMaturidadeEnum() != null ? entidade.getAnimal().getMaturidadeEnum().toString() : null)
-                        .raca(entidade.getAnimal().getRaca())
-                        .sexo(entidade.getAnimal().getSexoEnum() != null ? entidade.getAnimal().getSexoEnum().toString() : null)
-                        .origem(entidade.getAnimal().getOrigemEnum() != null ? entidade.getAnimal().getOrigemEnum().toString() : null)
-                        .porte(entidade.getAnimal().getPorteEnum() != null ? entidade.getAnimal().getPorteEnum().toString() : null)
-                        .comportamento(entidade.getAnimal().getComportamento())
-                        .especie(entidade.getAnimal().getEspecieEnum() != null ? entidade.getAnimal().getEspecieEnum().toString() : null)
-                        .doencas(entidade.getAnimal().getDoencas())
-                        .status(entidade.getAnimal().getSaudeEnum() != null ? entidade.getAnimal().getSaudeEnum().toString() : null)
-                        .corPelagem(entidade.getAnimal().getCorPelagem())
-                        .condicaoAnimal(entidade.getAnimal().getCondicaoAnimal())
-                        .maezinhaComFilhotes(entidade.getAnimal().getMaezinhaComFilhotes() != null ?
-                                MaezinhaComFilhotesDTO.builder()
-                                    .quantidadeFemea(entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeFemeas())
-                                    .quantidadeMacho(entidade.getAnimal().getMaezinhaComFilhotes().getQuantidadeMachos())
-                                    .build() 
-                                : null)
-                        .build())
+            .animal(animal == null ? null : AnimalGenericoResposta.builder()
+                .id(animal.getId())
+                .nome(animal.getNome())
+                .maturidade(animal.getMaturidadeEnum() != null ? animal.getMaturidadeEnum().toString() : null)
+                .raca(animal.getRaca())
+                .sexo(animal.getSexoEnum() != null ? animal.getSexoEnum().toString() : null)
+                .origem(animal.getOrigemEnum() != null ? animal.getOrigemEnum().toString() : null)
+                .porte(animal.getPorteEnum() != null ? animal.getPorteEnum().toString() : null)
+                .comportamento(animal.getComportamento())
+                .especie(animal.getEspecieEnum() != null ? animal.getEspecieEnum().toString() : null)
+                .doencas(animal.getDoencas())
+                .status(animal.getSaudeEnum() != null ? animal.getSaudeEnum().toString() : null)
+                .corPelagem(animal.getCorPelagem())
+                .condicaoAnimal(animal.getCondicaoAnimal())
+                .maezinhaComFilhotes(animal.getMaezinhaComFilhotes() != null ?
+                    MaezinhaComFilhotesDTO.builder()
+                        .quantidadeFemea(animal.getMaezinhaComFilhotes().getQuantidadeFemeas())
+                        .quantidadeMacho(animal.getMaezinhaComFilhotes().getQuantidadeMachos())
+                        .build()
+                    : null)
+                .build())
                 .build();
     }
 

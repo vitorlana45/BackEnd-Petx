@@ -1,11 +1,13 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
 import org.ong.pet.pex.backendpetx.entities.Animal;
 import org.ong.pet.pex.backendpetx.entities.Boletim;
 import org.ong.pet.pex.backendpetx.enums.AdocaoEnum;
 import org.ong.pet.pex.backendpetx.enums.Destino;
+import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
 import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
 import org.ong.pet.pex.backendpetx.repositories.BoletimRepository;
@@ -18,6 +20,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +52,9 @@ public class BoletimServiceImpl implements BoletimService {
     @CacheEvict(cacheNames = {"stats"}, key = "'TOTAL_ANIMAIS'", allEntries = false)
     public BoletimDTOResposta createBoletim(BoletimDTORequisicao boletimDTO) {
 
+        if (boletimDTO == null || boletimDTO.getAnimal() == null) {
+            throw new PetXException("Animal não pode ser nulo");
+        }
 
         if( boletimDTO.getAnimal().isAnimalEMaezinha() && !boletimDTO.getAnimal().getSexo().equals(SexoEnum.FEMEA))
             throw new PetXException("Animal não pode ser maezinha se não for fêmea");
@@ -59,26 +65,81 @@ public class BoletimServiceImpl implements BoletimService {
         System.out.println("BoletimDTO: " + boletimDTO);
 
         Boletim boletim = boletimMapper.converteParaEntidade(boletimDTO);
-
-        if (boletimDTO.getAnimal() == null)
-            throw new PetXException("Animal não pode ser nulo");
+        // número é sempre padronizado/gerado pelo sistema
+        boletim.setNumeroOcorrencia(null);
 
         Animal newAnimal = AnimalMapper.converterParaAnimal(boletimDTO.getAnimal());
         newAnimal.setOng(ongRepository.findById(1L).orElse(null));
         newAnimal.setAdotado(AdocaoEnum.DISPONIVEL);
-        newAnimal = animalRepository.save(newAnimal);
-        
-        boletim.setAnimal(newAnimal);
+
         boletim.setOng(newAnimal.getOng());
-        
-        // Save Boletim entity
-        boletim = boletimRepository.save(boletim);
-        
-        // Set the bidirectional relationship
-        newAnimal.setBoletim(boletim);
-        animalRepository.save(newAnimal);
+        boletim.addAnimal(newAnimal);
+
+        boletim = salvarBoletimComNumeroGerado(boletim);
         
         return boletimMapper.converteParaDTO(boletim);
+    }
+
+    @Override
+    @Transactional
+    public BoletimDTOResposta adicionarAnimalEmOcorrencia(Long numeroOcorrencia, AnimalGenericoRequisicao animalDto) {
+        if (numeroOcorrencia == null) throw new PetXException("Número da ocorrência é obrigatório");
+        if (animalDto == null) throw new PetXException("Animal não pode ser nulo");
+
+        Boletim boletim = boletimRepository.findByNumeroOcorrencia(numeroOcorrencia)
+                .orElseThrow(() -> new PetXException("Boletim não encontrado para o número informado"));
+
+        Animal novo = AnimalMapper.converterParaAnimal(animalDto);
+        novo.setAdotado(AdocaoEnum.DISPONIVEL);
+        // herda a ONG do boletim quando existir
+        novo.setOng(boletim.getOng() != null ? boletim.getOng() : ongRepository.findById(1L).orElse(null));
+
+        boletim.addAnimal(novo);
+        boletimRepository.save(boletim);
+        return boletimMapper.converteParaDTO(boletim);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsNumeroOcorrenciaNaOng(Long numeroOcorrencia, Long ongId) {
+        if (numeroOcorrencia == null || ongId == null) return false;
+        return boletimRepository.existsByNumeroOcorrenciaAndOng_Id(numeroOcorrencia, ongId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BoletimDTOResposta> buscarOcorrenciasParaVinculo(Long ongId,
+                                                                LocalDateTime inicio,
+                                                                LocalDateTime fim,
+                                                                OrigemAnimalEnum origem,
+                                                                Destino destino,
+                                                                int limit) {
+        if (ongId == null) return List.of();
+        int safeLimit = Math.max(1, Math.min(limit, 100));
+        var pageable = org.springframework.data.domain.PageRequest.of(0, safeLimit,
+                org.springframework.data.domain.Sort.by("dataAtendimento").descending());
+
+        org.springframework.data.jpa.domain.Specification<Boletim> spec =
+                (root, query, cb) -> {
+                    var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+                    predicates.add(cb.equal(root.get("ong").get("id"), ongId));
+                    if (inicio != null) {
+                        predicates.add(cb.greaterThanOrEqualTo(root.get("dataAtendimento"), inicio));
+                    }
+                    if (fim != null) {
+                        predicates.add(cb.lessThanOrEqualTo(root.get("dataAtendimento"), fim));
+                    }
+                    if (origem != null) {
+                        predicates.add(cb.equal(root.get("origem"), origem));
+                    }
+                    if (destino != null) {
+                        predicates.add(cb.equal(root.get("destino"), destino));
+                    }
+                    return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+                };
+
+        var page = boletimRepository.findAll(spec, pageable);
+        return page.map(boletimMapper::converteParaDTO).getContent();
     }
 
     @Override
@@ -95,10 +156,13 @@ public class BoletimServiceImpl implements BoletimService {
         Boletim boletim = boletimRepository.findById(id)
                 .orElseThrow(() -> new PetXException("Boletim não encontrado"));
 
-        if (boletim.getAnimal() != null) {
-            boletim.getAnimal().setOng(null);
-            boletim.getAnimal().setBoletim(null);
-            boletim.setAnimal(null);
+        // desvincula/limpa todos os animais da ocorrência
+        if (boletim.getAnimais() != null) {
+            for (Animal a : new HashSet<>(boletim.getAnimais())) {
+                a.setOng(null);
+                a.setBoletim(null);
+                boletim.removeAnimal(a);
+            }
         }
         boletim.setOng(null);
         boletimRepository.delete(boletim);
@@ -127,13 +191,10 @@ public class BoletimServiceImpl implements BoletimService {
 
         if(dto.getAnimal() != null){
             Animal newAnimal = AnimalMapper.converterParaAnimal(dto.getAnimal());
-            newAnimal.setOng(ongRepository.findById(1L).orElse(null));
-            newAnimal = animalRepository.save(newAnimal);
-            boletim.setAnimal(newAnimal);
-            
-            // Set the bidirectional relationship
-            newAnimal.setBoletim(boletim);
-            animalRepository.save(newAnimal);
+            newAnimal.setOng(boletim.getOng() != null ? boletim.getOng() : ongRepository.findById(1L).orElse(null));
+            newAnimal.setAdotado(AdocaoEnum.DISPONIVEL);
+            // aqui, o update passa a anexar mais um animal na mesma ocorrência
+            boletim.addAnimal(newAnimal);
         }
 
         boletim = boletimRepository.save(boletim);
@@ -141,7 +202,7 @@ public class BoletimServiceImpl implements BoletimService {
     }
 
     private void aplicarCamposPresentes(BoletimDTORequisicao dto, Boletim boletim) {
-        Optional.ofNullable(dto.getNumeroOcorrencia()).ifPresent(boletim::setNumeroOcorrencia);
+        // numeroOcorrencia é imutável e gerado automaticamente
         Optional.ofNullable(dto.getDataAtendimento()).ifPresent(boletim::setDataAtendimento);
         Optional.ofNullable(dto.getDestino()).ifPresent(boletim::setDestino);
         Optional.ofNullable(dto.getMotivoRecolhimento()).ifPresent(boletim::setMotivoRecolhimento);
@@ -154,6 +215,33 @@ public class BoletimServiceImpl implements BoletimService {
         Optional.ofNullable(dto.getNomeDenuncianteOuTutor()).ifPresent(boletim::setNomeDenuncianteOuTutor);
         Optional.ofNullable(dto.getCpfDenuncianteOuTutor()).ifPresent(boletim::setCpfDenuncianteOuTutor);
         Optional.ofNullable(dto.getTelefoneDenuncianteOuTutor()).ifPresent(boletim::setTelefoneDenuncianteOuTutor);
+    }
+
+    private Boletim salvarBoletimComNumeroGerado(Boletim boletim) {
+        // padrão: YYYY + 5 dígitos (ex: 202500123)
+        LocalDateTime baseData = boletim.getDataAtendimento() != null ? boletim.getDataAtendimento() : LocalDateTime.now();
+        int year = baseData.getYear();
+        long inicio = year * 100_000L;
+        long fim = inicio + 99_999L;
+
+        for (int attempt = 0; attempt < 5; attempt++) {
+            Long max = boletimRepository.findMaxNumeroOcorrenciaInRange(inicio, fim);
+            long next = (max == null) ? (inicio + 1) : (max + 1);
+            if (next > fim) {
+                throw new PetXException("Limite anual de números de ocorrência atingido para " + year);
+            }
+
+            boletim.setNumeroOcorrencia(next);
+            try {
+                return boletimRepository.save(boletim);
+            } catch (DataIntegrityViolationException e) {
+                // colisão rara por concorrência; tenta novamente
+                if (attempt == 4) {
+                    throw new PetXException("Não foi possível gerar um número de ocorrência único no momento. Tente novamente.");
+                }
+            }
+        }
+        throw new PetXException("Não foi possível gerar número de ocorrência");
     }
 
     @Override

@@ -202,10 +202,10 @@
     color: #fff;
 }
 .btn-group .btn-success:hover {
-    background: #0aa856;
-    border-color: #0aa856;
+    background: var(--petx-primary-dark, #6D28D9);
+    border-color: var(--petx-primary-dark, #6D28D9);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(12, 206, 107, 0.3);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
 }
 
 /* ===== Stats ===== */
