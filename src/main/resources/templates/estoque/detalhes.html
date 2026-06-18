@@ -265,11 +265,11 @@
                                     </td>
                                     <td class="pe-3 py-2 text-end">
                                         <div class="d-flex gap-1 justify-content-end">
-                                            <a th:href="@{/estoque/{estoqueId}/produtos/{id}/editar(estoqueId=${estoque.id}, id=${produto.id})}"
+                                            <a th:href="@{/estoque/{estoqueId}/produtos/{id}/editar(estoqueId=${estoque.id}, id=${produto.produtoId})}"
                                                class="btn btn-outline-primary btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a th:href="@{/estoque/{estoqueId}/produtos/{id}/movimentar(estoqueId=${estoque.id}, id=${produto.id})}"
+                                            <a th:href="@{/estoque/{estoqueId}/produtos/{id}/movimentar(estoqueId=${estoque.id}, id=${produto.produtoId})}"
                                                class="btn btn-outline-secondary btn-sm" title="Movimentar">
                                                 <i class="fas fa-exchange-alt"></i>
                                             </a>
