@@ -1,6 +1,9 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
+import org.hibernate.Session;
 import org.ong.pet.pex.backendpetx.controller.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
@@ -54,6 +57,9 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Value("${minio.bucket:petx}")
     private String animalBucketName;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
         public AnimalServiceImpl(AnimalRepository animalRepository, OngRepository ongRepository, AnimalConjuntoRepository animalConjuntoRepository, TutorRepository tutorRepository, ObitoRepository obitoRepository, AnimalUtils animalUtils, Minio minioService, LogAtividadeService logAtividadeService, MediaService mediaService) {
         this.animalRepository = animalRepository;
@@ -301,9 +307,6 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public Long contarQuantidadeAnimais() {
-
-        System.out.println("qunatiadeeeeeeeeeeee" + animalRepository.count());
-
         return animalRepository.count();
     }
 
@@ -407,12 +410,24 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
 
+    /**
+     * Enriquece os animais da página com a URL presigned da foto de perfil.
+     * - Busca todas as URLs em lote (1 query) para evitar N+1.
+     * - Marca cada entidade como read-only na sessão: a URL é dado transiente de
+     *   exibição e NÃO deve ser persistida (evita UPDATE espúrio / coluna estourada).
+     */
     private void getImagemPerfilAnimal(Page<Animal> pageContent) {
-         pageContent.getContent().forEach(animal -> {
-            String imgUrl = mediaService.getProfilePresignedUrl(MediaTargetType.ANIMAL, animal.getId());
-            animal.setImagemPrincipalPerfil(imgUrl != null ? imgUrl : "");
-        });
+        var animais = pageContent.getContent();
+        if (animais.isEmpty()) return;
 
+        var ids = animais.stream().map(Animal::getId).toList();
+        var urlPorAnimal = mediaService.getProfilePresignedUrls(MediaTargetType.ANIMAL, ids);
+
+        Session session = entityManager.unwrap(Session.class);
+        animais.forEach(animal -> {
+            session.setReadOnly(animal, true);
+            animal.setImagemPrincipalPerfil(urlPorAnimal.getOrDefault(animal.getId(), ""));
+        });
     }
 
 }

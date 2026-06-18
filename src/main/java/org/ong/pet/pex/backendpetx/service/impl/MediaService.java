@@ -126,6 +126,20 @@ public class MediaService {
                 .map(storage::presignGetUrl)
                 .orElse(null);
     }
+
+    /**
+     * Versão em lote: retorna um mapa targetId -> URL presigned da foto de PERFIL,
+     * em uma única query (evita N+1 ao enriquecer listagens).
+     */
+    @Transactional(readOnly = true)
+    public java.util.Map<Long, String> getProfilePresignedUrls(MediaTargetType targetType, java.util.Collection<Long> targetIds) {
+        if (targetIds == null || targetIds.isEmpty()) return java.util.Map.of();
+        return linkRepo.findByTargetTypeAndUsageForIds(targetType, targetIds, MediaUsage.PERFIL).stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        MediaLink::getTargetId,
+                        l -> storage.presignGetUrl(l.getMediaFile().getObjectKey()),
+                        (a, b) -> a));
+    }
     // MediaService.listWithUrls(...)
     @Transactional(readOnly = true)
     public List<MediaItemDTO> listWithUrls(MediaTargetType type, Long id) {

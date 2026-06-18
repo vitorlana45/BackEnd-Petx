@@ -22,4 +22,12 @@ public interface MediaLinkRepository extends JpaRepository<MediaLink, Long> {
 
     Optional<MediaLink> findByTargetTypeAndTargetIdInAndUsage (String targetType, Collection<Long> targetId, MediaUsage usage);
 
+    /**
+     * Busca em lote os links de um uso (ex.: PERFIL) para vários alvos de uma vez,
+     * já trazendo o MediaFile (join fetch) para evitar N+1.
+     */
+    @Query("select l from MediaLink l join fetch l.mediaFile " +
+           "where l.targetType = :#{#type.name()} and l.targetId in :ids and l.usage = :usage")
+    List<MediaLink> findByTargetTypeAndUsageForIds(MediaTargetType type, Collection<Long> ids, MediaUsage usage);
+
 }
