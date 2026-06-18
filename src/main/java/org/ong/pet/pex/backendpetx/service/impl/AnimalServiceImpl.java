@@ -11,6 +11,7 @@ import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
 import org.ong.pet.pex.backendpetx.entity.*;
 import org.ong.pet.pex.backendpetx.entity.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entity.media.MediaUsage;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.repository.*;
 import org.ong.pet.pex.backendpetx.repository.specs.AnimalSpecs;
@@ -157,20 +158,12 @@ public class AnimalServiceImpl implements AnimalService {
             entidade.setComportamento(animalSemConjuntoDTO.getComportamento());
             entidade.setDoencas(animalSemConjuntoDTO.getDoencas());
 
-            // Upload da imagem para o MinIO (se enviada)
+            // Foto enviada (se houver): usa o mesmo mecanismo de mídia da listagem/perfil
+            // (MediaLink + URL presigned gerada na leitura). Evita persistir URL que expira.
             if (animalSemConjuntoDTO.getImagemPrincipalPerfil() != null && !animalSemConjuntoDTO.getImagemPrincipalPerfil().isEmpty()) {
-                var arquivo = animalSemConjuntoDTO.getImagemPrincipalPerfil();
-                String original = arquivo.getOriginalFilename() != null ? arquivo.getOriginalFilename() : "imagem.jpg";
-                String sanitized = original.replaceAll("[^a-zA-Z0-9._-]", "_");
-                String objectName = "animals/" + id + "/" + UUID.randomUUID() + "_" + sanitized;
-                try {
-                    minioService.upload(animalBucketName, objectName, arquivo.getInputStream(), arquivo.getSize(), arquivo.getContentType());
-                    String url = minioService.getFileUrl(animalBucketName, objectName);
-                    entidade.setImagemPrincipalPerfil(url != null ? url : objectName);
-                } catch (IOException e) {
-                    logger.error("Falha ao ler o arquivo para upload: {}", e.getMessage());
-                    throw new PetXException("Não foi possível processar a imagem enviada.");
-                }
+                mediaService.uploadAndLink(
+                        animalSemConjuntoDTO.getImagemPrincipalPerfil(),
+                        MediaTargetType.ANIMAL, id, MediaUsage.PERFIL, 0);
             }
 
             entidade = animalRepository.save(entidade);
