@@ -66,6 +66,7 @@ public class Boletim extends EntidadeBase {
     private String estado;
 
     @Column(nullable = false)
+    @lombok.Builder.Default
     private boolean arquivado = false;
 
     @Column(name = "arquivado_em")

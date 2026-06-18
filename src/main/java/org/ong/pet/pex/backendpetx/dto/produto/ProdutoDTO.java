@@ -45,5 +45,6 @@ public class ProdutoDTO {
 
     private Long estoqueId;
 
+    @lombok.Builder.Default
     private Map<String, String> atributosEspecificos = new HashMap<>();
 }

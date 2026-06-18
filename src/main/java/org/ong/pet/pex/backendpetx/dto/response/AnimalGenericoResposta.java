@@ -31,6 +31,7 @@ public class AnimalGenericoResposta {
     private String condicaoAnimal;
     private String imagemPrincipalPerfil;
     private MaezinhaComFilhotesDTO maezinhaComFilhotes;
+    @lombok.Builder.Default
     private List<AnimalGenericoResposta> listaAnimaisConjunto = new ArrayList<>();
     private LocalDateTime dataCadastro;
 

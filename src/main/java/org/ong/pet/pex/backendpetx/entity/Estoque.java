@@ -27,6 +27,7 @@ public class Estoque extends EntidadeBase {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)
+    @lombok.Builder.Default
     private List<CategoriaEstoque> categorias = new ArrayList<>();
 
     @OneToMany(mappedBy = "estoque",

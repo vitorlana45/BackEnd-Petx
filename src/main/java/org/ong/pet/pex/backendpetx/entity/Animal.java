@@ -82,9 +82,11 @@ public class Animal extends EntidadeBase {
 
     @Column(name = "adotado", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private AdocaoEnum adotado = AdocaoEnum.DISPONIVEL;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean arquivado = false;
 
     @Column(name = "arquivado_em")
@@ -128,6 +130,7 @@ public class Animal extends EntidadeBase {
             joinColumns = @JoinColumn(name = "animal_id"),
             inverseJoinColumns = @JoinColumn(name = "tutor_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) // <- se Tutor NÃO for @Audited
+    @Builder.Default
     private Set<Tutor> tutores = new HashSet<>();
 
     public void setChipId(String chipId) {
