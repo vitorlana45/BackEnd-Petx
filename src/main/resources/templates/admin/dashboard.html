@@ -12,40 +12,60 @@
     </div>
 
     <!-- Cards de estatísticas administrativas -->
-    <div class="row mb-4">
+    <div class="row mb-4 g-3">
         <div class="col-md-3">
-            <div class="card text-center bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Usuários</h5>
-                    <h2 th:text="${totalUsuarios}">0</h2>
-                    <small>Total no sistema</small>
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="d-flex align-items-center justify-content-center"
+                          style="width:44px;height:44px;border-radius:.5rem;background:rgba(109,40,217,.12);color:var(--petx-primary);">
+                        <i class="fas fa-users"></i>
+                    </span>
+                    <div>
+                        <div class="text-muted small">Usuários</div>
+                        <div class="h4 mb-0" th:text="${totalUsuarios}">0</div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Ativos</h5>
-                    <h2 th:text="${usuariosAtivos}">0</h2>
-                    <small>Usuários ativos</small>
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="d-flex align-items-center justify-content-center"
+                          style="width:44px;height:44px;border-radius:.5rem;background:rgba(5,150,105,.12);color:var(--petx-success);">
+                        <i class="fas fa-user-check"></i>
+                    </span>
+                    <div>
+                        <div class="text-muted small">Ativos</div>
+                        <div class="h4 mb-0" th:text="${usuariosAtivos}">0</div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Inativos</h5>
-                    <h2 th:text="${usuariosInativos}">0</h2>
-                    <small>Usuários inativos</small>
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="d-flex align-items-center justify-content-center"
+                          style="width:44px;height:44px;border-radius:.5rem;background:rgba(217,119,6,.12);color:var(--petx-warning);">
+                        <i class="fas fa-user-slash"></i>
+                    </span>
+                    <div>
+                        <div class="text-muted small">Inativos</div>
+                        <div class="h4 mb-0" th:text="${usuariosInativos}">0</div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title">ONGs</h5>
-                    <h2>5</h2>
-                    <small>ONGs cadastradas</small>
+            <div class="card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <span class="d-flex align-items-center justify-content-center"
+                          style="width:44px;height:44px;border-radius:.5rem;background:rgba(79,70,229,.12);color:var(--petx-secondary);">
+                        <i class="fas fa-building-ngo"></i>
+                    </span>
+                    <div>
+                        <div class="text-muted small">ONGs</div>
+                        <div class="h4 mb-0">5</div>
+                    </div>
                 </div>
             </div>
         </div>

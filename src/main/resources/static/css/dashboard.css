@@ -4,7 +4,7 @@
 /* Stats Cards */
 .stats-card {
     background: var(--card-bg);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 1.25rem;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
@@ -48,7 +48,7 @@
 .stats-icon {
     width: 50px;
     height: 50px;
-    border-radius: 10px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,7 +107,7 @@
 /* Cards Padrão */
 .card {
     border: none;
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
 }
@@ -120,7 +120,7 @@
     background: transparent;
     border-bottom: 1px solid var(--border-color);
     padding: 1.25rem;
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
 }
 
 .card-title {
@@ -447,6 +447,6 @@
 .dashboard-row { row-gap: 1rem; }
 
 /* cards de “Ações rápidas / Navegação rápida” */
-.action-card{ border-radius: 12px; transition: transform .15s ease, box-shadow .15s ease; }
+.action-card{ border-radius: 8px; transition: transform .15s ease, box-shadow .15s ease; }
 .action-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-lg, 0 12px 24px -6px rgba(0,0,0,.12)); }
-.action-icon{ width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+.action-icon{ width:48px; height:48px; border-radius:8px; display:flex; align-items:center; justify-content:center; }

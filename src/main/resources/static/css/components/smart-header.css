@@ -30,7 +30,7 @@
     background: var(--hdr-bg);
     color: var(--hdr-text);
     border: var(--hdr-border);
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 1.5rem 2rem;
     margin-bottom: 1.5rem;
     box-shadow: var(--hdr-shadow);
@@ -123,7 +123,7 @@
     --hdr-subtext: rgba(255,255,255,.9);
     --hdr-accent:  #fff;
     --hdr-border:  0; /* sem borda */
-    --hdr-shadow:  0 8px 32px rgba(67, 97, 238, 0.15);
+    --hdr-shadow:  0 8px 32px rgba(109,40,217, 0.15);
 }
 
 /* Animais (verde) */
@@ -183,7 +183,7 @@
     background: var(--petx-primary-dark);
     border-color: var(--petx-primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 2px 8px rgba(109,40,217, 0.3);
 }
 .btn-group .btn-secondary {
     background: var(--bg-secondary);
@@ -205,7 +205,7 @@
     background: var(--petx-primary-dark, #6D28D9);
     border-color: var(--petx-primary-dark, #6D28D9);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+    box-shadow: 0 2px 8px rgba(109,40,217, 0.35);
 }
 
 /* ===== Stats ===== */
@@ -231,7 +231,7 @@
 
 /* ===== Responsividade ===== */
 @media (max-width: 768px) {
-    .page-header { padding: 1.25rem 1.5rem; border-radius: 10px; }
+    .page-header { padding: 1.25rem 1.5rem; border-radius: 6px; }
     .page-title  { flex-direction: column; align-items: flex-start; gap: .5rem; }
     .btn-group   { flex-direction: column; width: 100%; margin-top: 1rem; }
     .btn-group .btn { width: 100%; justify-content: center; }

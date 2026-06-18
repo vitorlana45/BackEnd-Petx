@@ -1,7 +1,7 @@
 /* ===== LOGIN PAGE — PetX ===== */
 
 .login-body {
-    background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 50%, #6D28D9 100%);
+    background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -16,18 +16,16 @@
 }
 
 .login-card {
-    background: rgba(255, 255, 255, 0.97);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: none;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 4px 16px rgba(0, 0, 0, 0.12);
+    background: #FFFFFF;
+    border: 1px solid #E7E5E4;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     overflow: hidden;
-    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.3s ease;
 }
 
 .login-header {
-    background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+    background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
     color: white;
     text-align: center;
     padding: 2.25rem 1.75rem 1.75rem;
@@ -57,7 +55,7 @@
 
 .form-floating input {
     border: 1.5px solid #E7E5E4;
-    border-radius: 10px;
+    border-radius: 6px;
     background-color: #FAFAF9;
     color: #1C1917;
     transition: all 0.25s ease;
@@ -65,9 +63,9 @@
 }
 
 .form-floating input:focus {
-    border-color: #7C3AED;
+    border-color: #6D28D9;
     background-color: #FFFFFF;
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.12);
 }
 
 .form-floating label {
@@ -76,9 +74,9 @@
 }
 
 .btn-login {
-    background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+    background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 6px;
     padding: 0.8125rem 1.5rem;
     font-weight: 600;
     font-size: 0.9375rem;
@@ -89,8 +87,7 @@
 }
 
 .btn-login:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.3);
     color: #fff;
 }
 
@@ -99,7 +96,7 @@
 }
 
 .alert {
-    border-radius: 10px;
+    border-radius: 6px;
     border: none;
     font-size: 0.875rem;
     padding: 0.75rem 1rem;
@@ -133,11 +130,11 @@
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(24px) scale(0.98);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
 

@@ -26,32 +26,6 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        /* Animação de fundo com ícones flutuantes */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background-image:
-                url('/images/icon-cat.svg'),
-                url('/images/icon-dog.svg');
-            background-size: 60px 60px, 50px 50px;
-            background-position: 20% 30%, 80% 70%;
-            background-repeat: no-repeat, no-repeat;
-            opacity: 0.1;
-            animation: float 20s ease-in-out infinite;
-            z-index: 1;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-20px) rotate(2deg); }
-            66% { transform: translateY(10px) rotate(-1deg); }
         }
 
         .login-container {
@@ -64,31 +38,19 @@
 
         .login-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 2rem;
+            border-radius: .5rem;
             box-shadow: var(--shadow-lg);
             overflow: hidden;
-            animation: fadeInUp 0.8s ease-out;
+            animation: fadeInUp 0.3s ease;
         }
 
         .login-header {
             background: linear-gradient(135deg, var(--petx-primary), var(--petx-secondary));
             color: white;
             text-align: center;
-            padding: 3rem 2rem 2rem;
+            padding: 2.25rem 2rem 1.75rem;
             position: relative;
-        }
-
-        .login-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 20px;
-            background: var(--card-bg);
-            border-radius: 20px 20px 0 0;
         }
 
         .logo-container {
@@ -117,6 +79,11 @@
 
         .login-body {
             padding: 2rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

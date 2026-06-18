@@ -97,7 +97,7 @@
   background-color: var(--input-bg);
   border-color: var(--petx-primary);
   color: var(--text-primary);
-  box-shadow: 0 0 0 0.25rem rgba(124, 58, 237, 0.2);
+  box-shadow: 0 0 0 0.25rem rgba(109,40,217, 0.2);
 }
 
 .form-label {
@@ -192,7 +192,7 @@
 }
 
 .pagination .page-link:focus {
-  box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.2);
+  box-shadow: 0 0 0 0.2rem rgba(109,40,217, 0.2);
   z-index: 3;
 }
 
@@ -311,7 +311,7 @@ label {
   display: inline-block;
 }
 /* botões coerentes com as cores PETX */
-.btn{ border-radius: 10px; font-weight: 600; }
+.btn{ border-radius: 6px; font-weight: 600; }
 .btn-primary{ background: var(--petx-primary); border-color: var(--petx-primary); }
 .btn-primary:hover{ background: var(--petx-primary-dark, #3a56d4); border-color: var(--petx-primary-dark, #3a56d4); }
 .btn-outline-primary{ color: var(--petx-primary); border-color: var(--petx-primary); }
