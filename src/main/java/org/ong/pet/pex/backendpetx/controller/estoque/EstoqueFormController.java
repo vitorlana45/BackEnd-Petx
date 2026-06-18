@@ -1,14 +1,15 @@
-package org.ong.pet.pex.backendpetx.controllers.estoque;
+package org.ong.pet.pex.backendpetx.controller.estoque;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ong.pet.pex.backendpetx.dto.produto.ProdutoDTO;
-import org.ong.pet.pex.backendpetx.entities.Estoque;
-import org.ong.pet.pex.backendpetx.entities.Ong;
+import org.ong.pet.pex.backendpetx.dto.EstoqueDTO;
+import org.ong.pet.pex.backendpetx.entity.Estoque;
+import org.ong.pet.pex.backendpetx.entity.Ong;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
-import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
-import org.ong.pet.pex.backendpetx.repositories.OngRepository;
+import org.ong.pet.pex.backendpetx.repository.EstoqueRepository;
+import org.ong.pet.pex.backendpetx.repository.OngRepository;
 import org.ong.pet.pex.backendpetx.service.CategoriaEstoqueService;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
 import org.springframework.data.domain.PageRequest;

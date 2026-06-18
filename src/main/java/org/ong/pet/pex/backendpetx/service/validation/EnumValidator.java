@@ -2,7 +2,7 @@ package org.ong.pet.pex.backendpetx.service.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.FieldMessage;
+import org.ong.pet.pex.backendpetx.controller.exceptions.FieldMessage;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;

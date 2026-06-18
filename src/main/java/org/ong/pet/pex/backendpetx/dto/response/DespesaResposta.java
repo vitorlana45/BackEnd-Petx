@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
-public record DespesaDTORespota(
+public record DespesaResposta(
         Long id,
         CategoriaDespesaEnum categoria,
         String descricao,

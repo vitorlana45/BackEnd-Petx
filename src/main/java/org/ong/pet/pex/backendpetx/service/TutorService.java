@@ -2,7 +2,7 @@ package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.TutorResposta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +10,7 @@ public interface TutorService {
 
     Long cadastrarTutor(CadastrarTutorRequisicao cadastrarTutorRequisicao);
 
-    TutorDTOResposta buscarTutorPorCpf(String cpf);
+    TutorResposta buscarTutorPorCpf(String cpf);
 
     String atualizarDadosTutor(String cpfAntigo, AtualizarTutorRequisicao cadastrarTutorRequisicao);
 
@@ -18,7 +18,7 @@ public interface TutorService {
 
     void deletarTutorPorId(Long id);
 
-    Page<TutorDTOResposta> findAllTutorPaginacao(String nome, String cep, String cidade,String estado, Integer idade, Pageable pageable);
+    Page<TutorResposta> findAllTutorPaginacao(String nome, String cep, String cidade,String estado, Integer idade, Pageable pageable);
 
     Long getTotalTutores();
 }

@@ -1,5 +1,5 @@
 // RevisionRow.java
-package org.ong.pet.pex.backendpetx.entities.revision;
+package org.ong.pet.pex.backendpetx.dto;
 
 import org.hibernate.envers.RevisionType;
 import java.time.Instant;

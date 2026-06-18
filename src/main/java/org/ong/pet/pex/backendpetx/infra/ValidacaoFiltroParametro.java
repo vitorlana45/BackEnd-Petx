@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.StandardError;
+import org.ong.pet.pex.backendpetx.controller.exceptions.StandardError;
 import org.ong.pet.pex.backendpetx.service.exceptions.ValidacaoFiltroParametroException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,9 +2,9 @@ package org.ong.pet.pex.backendpetx.service.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.FieldMessage;
+import org.ong.pet.pex.backendpetx.controller.exceptions.FieldMessage;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
-import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
+import org.ong.pet.pex.backendpetx.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 

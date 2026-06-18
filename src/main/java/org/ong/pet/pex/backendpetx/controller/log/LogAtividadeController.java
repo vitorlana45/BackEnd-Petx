@@ -1,7 +1,7 @@
-package org.ong.pet.pex.backendpetx.controllers.log;
+package org.ong.pet.pex.backendpetx.controller.log;
 
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.entities.LogAtividade;
+import org.ong.pet.pex.backendpetx.entity.LogAtividade;
 import org.ong.pet.pex.backendpetx.service.impl.LogAtividadeService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

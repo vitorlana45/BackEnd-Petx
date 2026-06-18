@@ -2,15 +2,15 @@ package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
-import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.entities.Tutor;
-import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
+import org.ong.pet.pex.backendpetx.dto.response.TutorResposta;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.entity.Tutor;
+import org.ong.pet.pex.backendpetx.entity.embutidas.Endereco;
 import org.ong.pet.pex.backendpetx.enums.AdocaoEnum;
 import org.ong.pet.pex.backendpetx.enums.SaudeEnum;
-import org.ong.pet.pex.backendpetx.repositories.AnimalConjuntoRepository;
-import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
-import org.ong.pet.pex.backendpetx.repositories.TutorRepository;
+import org.ong.pet.pex.backendpetx.repository.AnimalConjuntoRepository;
+import org.ong.pet.pex.backendpetx.repository.AnimalRepository;
+import org.ong.pet.pex.backendpetx.repository.TutorRepository;
 import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.TutorException;
@@ -44,11 +44,11 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Transactional(readOnly = true)
-    public TutorDTOResposta buscarTutorPorCpf(String cpf) {
+    public TutorResposta buscarTutorPorCpf(String cpf) {
         var tutor = tutorRepository.findTutorByCpf(cpf).orElseThrow(() -> TutorException.tutorNaoEncontrado(cpf));
         var animais = AnimalMapper.converterParaListaDeAnimaisComConjuntoDTO(tutor.getAnimais());
 
-        return TutorDTOResposta.builder()
+        return TutorResposta.builder()
                 .id(tutor.getId())
                 .cpf(tutor.getCpf())
                 .nome(tutor.getNome())
@@ -160,7 +160,7 @@ public class TutorServiceImpl implements TutorService {
 
 //    @Override
 //    @Transactional(readOnly = true)
-//    public Page<TutorDTOResposta> paginarTutor(String nome, String cpf, String cidade, String bairro,
+//    public Page<TutorResposta> paginarTutor(String nome, String cpf, String cidade, String bairro,
 //                                               String rua, String telefone, String cep, Pageable pageable) {
 //
 ////        // Construção da Specification usando o builder dinâmico
@@ -178,7 +178,7 @@ public class TutorServiceImpl implements TutorService {
 //        // Mapeamento dos resultados para DTOs
 //
 ////        var dtos = page.stream()
-////                .map(tutor -> TutorDTOResposta.builder()
+////                .map(tutor -> TutorResposta.builder()
 ////                        .id(tutor.getId())
 ////                        .cpf(tutor.getCpf())
 ////                        .nome(tutor.getNome())
@@ -202,11 +202,11 @@ public class TutorServiceImpl implements TutorService {
 //    }
 
     @Override
-    public Page<TutorDTOResposta> findAllTutorPaginacao(String nome, String cep, String cidade, String estado, Integer idade, Pageable pageable) {
+    public Page<TutorResposta> findAllTutorPaginacao(String nome, String cep, String cidade, String estado, Integer idade, Pageable pageable) {
 
         var tutores = tutorRepository.findAllTutorPorFiltro(nome, cep, cidade, estado, idade, pageable);
 
-        return new PageImpl<>(tutores.stream().map(tutor -> TutorDTOResposta.builder()
+        return new PageImpl<>(tutores.stream().map(tutor -> TutorResposta.builder()
                 .id(tutor.getId())
                 .cpf(tutor.getCpf())
                 .nome(tutor.getNome())

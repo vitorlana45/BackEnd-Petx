@@ -1,25 +1,25 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
-import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.BoletimRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.ResgateRapidoDTO;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 
 /**
- * Classe utilitária para conversão do ResgateRapidoDTO para BoletimDTORequisicao
+ * Classe utilitária para conversão do ResgateRapidoDTO para BoletimRequisicao
  */
 public class ResgateRapidoMapper {
     
     /**
-     * Converte um ResgateRapidoDTO para um BoletimDTORequisicao
+     * Converte um ResgateRapidoDTO para um BoletimRequisicao
      * permitindo um fluxo simplificado de cadastro
      * 
      * @param resgateRapido DTO com informações básicas do resgate
-     * @return BoletimDTORequisicao preenchido para salvar
+     * @return BoletimRequisicao preenchido para salvar
      */
-    public static BoletimDTORequisicao converterParaBoletimDTO(ResgateRapidoDTO resgateRapido) {
+    public static BoletimRequisicao converterParaBoletimDTO(ResgateRapidoDTO resgateRapido) {
         // Criar o DTO de boletim
-        BoletimDTORequisicao boletimDTO = new BoletimDTORequisicao();
+        BoletimRequisicao boletimDTO = new BoletimRequisicao();
         
         // Preencher dados do resgate
         boletimDTO.setDataAtendimento(resgateRapido.getDataResgate());

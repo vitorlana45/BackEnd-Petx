@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
-public record NovaSenhaRequisicaoDTO (
+public record NovaSenhaRequisicao (
 
         @NotBlank(message = "campo senha é obrigatório")
         String token,

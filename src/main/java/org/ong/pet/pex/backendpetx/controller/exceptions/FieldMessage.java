@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.exceptions;
+package org.ong.pet.pex.backendpetx.controller.exceptions;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListCategoriaEstoqueRequest {
+public class ListarCategoriaEstoqueRequisicao {
 
     private String nome;
     private Long estoqueId;

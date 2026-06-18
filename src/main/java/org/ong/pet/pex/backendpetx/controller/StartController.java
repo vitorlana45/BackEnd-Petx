@@ -1,11 +1,11 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.ong.pet.pex.backendpetx.controllers.bean.StatsDTO;
-import org.ong.pet.pex.backendpetx.controllers.bean.PageInfoBean;
-import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
-import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
-import org.ong.pet.pex.backendpetx.entities.revision.AuditService;
+import org.ong.pet.pex.backendpetx.controller.bean.StatsDTO;
+import org.ong.pet.pex.backendpetx.controller.bean.PageInfoBean;
+import org.ong.pet.pex.backendpetx.controller.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controller.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.service.AuditService;
 import org.ong.pet.pex.backendpetx.service.StatisticService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,6 +1,6 @@
-package org.ong.pet.pex.backendpetx.repositories;
+package org.ong.pet.pex.backendpetx.repository;
 
-import org.ong.pet.pex.backendpetx.entities.LogAtividade;
+import org.ong.pet.pex.backendpetx.entity.LogAtividade;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;

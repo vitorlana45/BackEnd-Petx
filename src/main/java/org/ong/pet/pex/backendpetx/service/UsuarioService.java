@@ -1,22 +1,22 @@
 package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarTodosUsuarios;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarTodosUsuariosResposta;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarUsuarioPadraoResposta;
+import org.ong.pet.pex.backendpetx.dto.response.CriacaoUsuarioResposta;
 
 import java.util.List;
 
 public interface UsuarioService {
 
-    RespostaCricaoUsuario inserirUsuario(UsuarioDTO usuarioDTO);
+    CriacaoUsuarioResposta inserirUsuario(UsuarioDTO usuarioDTO);
 
     void deletarUsuario(Long id);
 
-    RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id);
+    BuscarUsuarioPadraoResposta buscarUsuarioPorId(Long id);
 
-    List<RespostaBuscarTodosUsuarios> buscarTodosUsuarios();
+    List<BuscarTodosUsuariosResposta> buscarTodosUsuarios();
 
-    RespostaBuscarUsuarioPadrao buscarUsuarioPorEmail(String email);
+    BuscarUsuarioPadraoResposta buscarUsuarioPorEmail(String email);
 
 }

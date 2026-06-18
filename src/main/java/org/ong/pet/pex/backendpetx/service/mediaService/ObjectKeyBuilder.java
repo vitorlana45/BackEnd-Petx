@@ -1,6 +1,6 @@
 package org.ong.pet.pex.backendpetx.service.mediaService;
 
-import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
+import org.ong.pet.pex.backendpetx.entity.media.MediaUsage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

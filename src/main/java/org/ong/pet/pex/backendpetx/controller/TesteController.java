@@ -1,8 +1,8 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
+import org.ong.pet.pex.backendpetx.controller.exceptions.setup.AppException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

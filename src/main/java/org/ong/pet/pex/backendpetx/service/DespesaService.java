@@ -1,10 +1,10 @@
 package org.ong.pet.pex.backendpetx.service;
 
-import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamicaDTO;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
+import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamica;
+import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.DespesaResposta;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
-import org.ong.pet.pex.backendpetx.entities.Despesa;
+import org.ong.pet.pex.backendpetx.entity.Despesa;
 import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
 import org.ong.pet.pex.backendpetx.enums.FormaPagamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.StatusDespesaEnum;
@@ -16,11 +16,11 @@ import java.time.LocalDate;
 
 public interface DespesaService {
 
-    DespesaDTORespota cadastrarDespesa(final DespesaRequisicaoDTO despesaRequestDTO);
+    DespesaResposta cadastrarDespesa(final DespesaRequisicao despesaRequestDTO);
 
     void deletarDespesa(final Long id);
 
-    DespesaDTORespota atualizarDespesa(final Long id, final DespesaRequisicaoDTO despesaRequestDTO);
+    DespesaResposta atualizarDespesa(final Long id, final DespesaRequisicao despesaRequestDTO);
 
     Page<ListarDespesaResposta> paginarDespesa(
             String descricao,
@@ -33,7 +33,7 @@ public interface DespesaService {
             Pageable pageable
     );
 
-    DespesaDTORespota atualizarDespesaDinamicamente(Long id, DespesaRequisicaoDinamicaDTO dto);
+    DespesaResposta atualizarDespesaDinamicamente(Long id, DespesaRequisicaoDinamica dto);
 
     Despesa buscarDespesaPorId(Long id);
 }

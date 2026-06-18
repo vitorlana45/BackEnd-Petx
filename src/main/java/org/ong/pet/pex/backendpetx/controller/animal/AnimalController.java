@@ -1,20 +1,20 @@
-package org.ong.pet.pex.backendpetx.controllers.animal;
+package org.ong.pet.pex.backendpetx.controller.animal;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.bean.StatsCardBean;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
+import org.ong.pet.pex.backendpetx.controller.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
-import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
+import org.ong.pet.pex.backendpetx.entity.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entity.media.MediaUsage;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
-import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
-import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.controller.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controller.helper.SmartPageHelper;
 import org.ong.pet.pex.backendpetx.service.StatisticService;
 import org.ong.pet.pex.backendpetx.service.TutorService;
 import org.ong.pet.pex.backendpetx.service.impl.MediaService;

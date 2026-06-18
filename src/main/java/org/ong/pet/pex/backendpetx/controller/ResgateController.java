@@ -1,10 +1,10 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.BoletimRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.ResgateRapidoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.BoletimResposta;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.SaudeEnum;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
@@ -51,7 +51,7 @@ public class ResgateController {
                         @org.springframework.web.bind.annotation.RequestParam(value = "meses", required = false, defaultValue = "6") Integer meses) {
     // Página de recentes fixa (não paginada pelo usuário) - últimos 10
     // Ajuste: usar nome de propriedade da entidade (dataAtendimento) em vez de snake_case
-    Page<BoletimDTOResposta> resgatesRecentes = boletimService.findAllBoletins(null, null,
+    Page<BoletimResposta> resgatesRecentes = boletimService.findAllBoletins(null, null,
         PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "dataAtendimento")));
 
         // Determina sort solicitado (whitelist para evitar campos inválidos / injection)
@@ -65,7 +65,7 @@ public class ResgateController {
 
         Pageable effectivePageable = PageRequest.of(pageNumber, pageSize, sort);
 
-    Page<BoletimDTOResposta> todosResgatesPage = boletimService.findAllBoletins(numeroOcorrencia, destino, effectivePageable);
+    Page<BoletimResposta> todosResgatesPage = boletimService.findAllBoletins(numeroOcorrencia, destino, effectivePageable);
 
     model.addAttribute("resgatesRecentes", resgatesRecentes.getContent());
     model.addAttribute("todosResgatesPage", todosResgatesPage);
@@ -170,11 +170,11 @@ public class ResgateController {
         }
         
         try {
-            // Converter para BoletimDTORequisicao
-            BoletimDTORequisicao boletimDTO = ResgateRapidoMapper.converterParaBoletimDTO(dto);
+            // Converter para BoletimRequisicao
+            BoletimRequisicao boletimDTO = ResgateRapidoMapper.converterParaBoletimDTO(dto);
             
             // Salvar o boletim
-            BoletimDTOResposta boletimSalvo = boletimService.createBoletim(boletimDTO);
+            BoletimResposta boletimSalvo = boletimService.createBoletim(boletimDTO);
             
             redirectAttributes.addFlashAttribute("mensagemSucesso", 
                     "Resgate cadastrado com sucesso! Número do boletim: " + boletimSalvo.getNumeroOcorrencia());

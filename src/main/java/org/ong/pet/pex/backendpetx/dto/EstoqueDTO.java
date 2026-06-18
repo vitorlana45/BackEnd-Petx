@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.estoque;
+package org.ong.pet.pex.backendpetx.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

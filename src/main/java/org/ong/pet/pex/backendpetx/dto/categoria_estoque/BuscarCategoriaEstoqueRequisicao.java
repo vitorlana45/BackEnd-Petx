@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetCategoriaEstoqueRequest {
+public class BuscarCategoriaEstoqueRequisicao {
 
     @NotNull(message = "ID é obrigatório")
     private Long id;

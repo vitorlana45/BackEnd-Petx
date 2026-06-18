@@ -3,12 +3,12 @@ package org.ong.pet.pex.backendpetx.service.impl;
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.AuthLoginRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.EmailDTO;
-import org.ong.pet.pex.backendpetx.dto.request.NovaSenhaRequisicaoDTO;
+import org.ong.pet.pex.backendpetx.dto.request.NovaSenhaRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AuthLoginResposta;
-import org.ong.pet.pex.backendpetx.entities.RecuperarSenha;
-import org.ong.pet.pex.backendpetx.entities.Usuario;
-import org.ong.pet.pex.backendpetx.repositories.RecuperarSenhaRepository;
-import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
+import org.ong.pet.pex.backendpetx.entity.RecuperarSenha;
+import org.ong.pet.pex.backendpetx.entity.Usuario;
+import org.ong.pet.pex.backendpetx.repository.RecuperarSenhaRepository;
+import org.ong.pet.pex.backendpetx.repository.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.AuthService;
 import org.ong.pet.pex.backendpetx.service.exceptions.AuthException;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional
-    public void salvarNovaSenha(NovaSenhaRequisicaoDTO dto) {
+    public void salvarNovaSenha(NovaSenhaRequisicao dto) {
 
         List<RecuperarSenha> resultado = recuperarSenhaRepository.procurarTokensValidos(dto.token(), Instant.now());
 

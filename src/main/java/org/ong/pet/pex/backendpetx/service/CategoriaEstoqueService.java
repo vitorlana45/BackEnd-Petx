@@ -1,6 +1,6 @@
 package org.ong.pet.pex.backendpetx.service;
 
-import org.ong.pet.pex.backendpetx.controllers.estoque.EstoqueDTO;
+import org.ong.pet.pex.backendpetx.dto.EstoqueDTO;
 import org.springframework.data.domain.Page;
 import org.ong.pet.pex.backendpetx.dto.categoria_estoque.*;
 
@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface CategoriaEstoqueService {
 
-    CreateCategoriaEstoqueResponse createCategoriaEstoque(CreateCategoriaEstoqueRequest request);
-    GetCategoriaEstoqueResponse getCategoriaEstoque(GetCategoriaEstoqueRequest request);
-    UpdateCategoriaEstoqueResponse updateCategoriaEstoque(UpdateCategoriaEstoqueRequest request);
-    DeleteCategoriaEstoqueResponse deleteCategoriaEstoque(DeleteCategoriaEstoqueRequest request);
-    Page<ListCategoriaEstoqueResponse> listCategoriaEstoque(ListCategoriaEstoqueRequest request);
+    CriarCategoriaEstoqueResposta createCategoriaEstoque(CriarCategoriaEstoqueRequisicao request);
+    BuscarCategoriaEstoqueResposta getCategoriaEstoque(BuscarCategoriaEstoqueRequisicao request);
+    AtualizarCategoriaEstoqueResposta updateCategoriaEstoque(AtualizarCategoriaEstoqueRequisicao request);
+    ExcluirCategoriaEstoqueResposta deleteCategoriaEstoque(ExcluirCategoriaEstoqueRequisicao request);
+    Page<ListarCategoriaEstoqueResposta> listCategoriaEstoque(ListarCategoriaEstoqueRequisicao request);
 
     List<EstoqueDTO> listAllEstoques();
 }

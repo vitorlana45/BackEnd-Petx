@@ -1,7 +1,7 @@
-package org.ong.pet.pex.backendpetx.controllers.auth;
+package org.ong.pet.pex.backendpetx.controller.auth;
 
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarUsuarioPadraoResposta;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
 //import org.petx.dto.SmartPageBuilder;
 import org.springframework.security.core.Authentication;
@@ -96,7 +96,7 @@ public class AuthWebController {
     @GetMapping(value = "/dashboard")
     public String dashboard(Model model, Principal principal) {
         try {
-            RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
+            BuscarUsuarioPadraoResposta usuario = usuarioService.buscarUsuarioPorEmail(principal.getName());
             model.addAttribute("username", usuario.nome());
             model.addAttribute("currentPage", "/Home");
 

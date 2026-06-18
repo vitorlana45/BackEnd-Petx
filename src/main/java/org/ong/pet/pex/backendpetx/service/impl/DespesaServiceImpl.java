@@ -1,14 +1,14 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamicaDTO;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
+import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamica;
+import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.DespesaResposta;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
-import org.ong.pet.pex.backendpetx.entities.Despesa;
+import org.ong.pet.pex.backendpetx.entity.Despesa;
 import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
 import org.ong.pet.pex.backendpetx.enums.FormaPagamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.StatusDespesaEnum;
-import org.ong.pet.pex.backendpetx.repositories.DespesaRepository;
+import org.ong.pet.pex.backendpetx.repository.DespesaRepository;
 import org.ong.pet.pex.backendpetx.service.DespesaService;
 import org.ong.pet.pex.backendpetx.service.exceptions.DespesaException;
 import org.ong.pet.pex.backendpetx.service.mappers.DespesaMapper;
@@ -38,7 +38,7 @@ public class DespesaServiceImpl implements DespesaService {
 
     @Override
     @Transactional
-    public DespesaDTORespota cadastrarDespesa(final DespesaRequisicaoDTO dto) {
+    public DespesaResposta cadastrarDespesa(final DespesaRequisicao dto) {
         Despesa despesa = despesaRepository.save(despesaMapper.mapearParaEntidade(dto));
         return despesaMapper.mapearParaDTO(despesa);
     }
@@ -52,7 +52,7 @@ public class DespesaServiceImpl implements DespesaService {
 
     @Override
     @Transactional
-    public DespesaDTORespota atualizarDespesa(final Long id, final DespesaRequisicaoDTO dto) {
+    public DespesaResposta atualizarDespesa(final Long id, final DespesaRequisicao dto) {
         Despesa despesaBanco = despesaRepository.findById(id)
                 .orElseThrow(() -> new DespesaException("Despesa nao encontrada", HttpStatus.NOT_FOUND));
 
@@ -97,7 +97,7 @@ public class DespesaServiceImpl implements DespesaService {
 
 
     @Transactional
-    public DespesaDTORespota atualizarDespesaDinamicamente(final Long id, final DespesaRequisicaoDinamicaDTO dto) {
+    public DespesaResposta atualizarDespesaDinamicamente(final Long id, final DespesaRequisicaoDinamica dto) {
         var entidade = despesaRepository.findById(id).orElseThrow(DespesaException::despesaNaoEncontrada);
 
 //        if (dto.descricao() != null) entidade.setDescricao(dto.descricao());

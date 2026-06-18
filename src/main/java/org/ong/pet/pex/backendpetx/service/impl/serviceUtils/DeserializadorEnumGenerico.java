@@ -11,12 +11,12 @@ import org.springframework.http.HttpStatus;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class DesserializadorEnumGenerico<T extends Enum<T>> extends JsonDeserializer<T> {
-    private static final Logger logger = LoggerFactory.getLogger(DesserializadorEnumGenerico.class);
+public class DeserializadorEnumGenerico<T extends Enum<T>> extends JsonDeserializer<T> {
+    private static final Logger logger = LoggerFactory.getLogger(DeserializadorEnumGenerico.class);
 
     private final Class<T> enumClass;
 
-    public DesserializadorEnumGenerico(Class<T> enumClass) {
+    public DeserializadorEnumGenerico(Class<T> enumClass) {
         this.enumClass = enumClass;
     }
 

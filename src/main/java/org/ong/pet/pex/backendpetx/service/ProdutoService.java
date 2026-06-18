@@ -1,16 +1,16 @@
 package org.ong.pet.pex.backendpetx.service;
 
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoResposta;
 
 
 public interface ProdutoService {
 
     Long cadastrarProduto(ProdutoDTO dto);
 
-    ProdutoDTOResposta buscarProdutoPorId(Long id);
+    ProdutoResposta buscarProdutoPorId(Long id);
 
-    ProdutoDTOResposta atualizarProduto(Long id, ProdutoDTO dto);
+    ProdutoResposta atualizarProduto(Long id, ProdutoDTO dto);
 
     void deletarProduto(Long id);
 }

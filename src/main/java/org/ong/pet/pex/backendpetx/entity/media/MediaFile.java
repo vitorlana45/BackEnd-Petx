@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.entities.media;
+package org.ong.pet.pex.backendpetx.entity.media;
 
 import jakarta.persistence.*;
 import lombok.Getter;

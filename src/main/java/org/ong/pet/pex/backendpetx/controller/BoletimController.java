@@ -1,18 +1,18 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.file.FotosBean;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalDTO;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
-import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.BoletimRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
-import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
-import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
-import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
-import org.ong.pet.pex.backendpetx.entities.Usuario;
+import org.ong.pet.pex.backendpetx.dto.response.BoletimResposta;
+import org.ong.pet.pex.backendpetx.entity.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entity.media.MediaUsage;
+import org.ong.pet.pex.backendpetx.entity.Usuario;
 import org.ong.pet.pex.backendpetx.enums.*;
-import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
-import org.ong.pet.pex.backendpetx.controllers.bean.PageInfoBean;
+import org.ong.pet.pex.backendpetx.controller.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controller.bean.PageInfoBean;
 import org.ong.pet.pex.backendpetx.security.utils.SecurityUtils;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.ong.pet.pex.backendpetx.service.impl.MediaService;
@@ -49,7 +49,7 @@ public class BoletimController {
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping(value = "/form")
     public String novo(Model model) {
-        BoletimDTORequisicao req = new BoletimDTORequisicao();
+        BoletimRequisicao req = new BoletimRequisicao();
 
         // evita NPE no
         // binding aninhado
@@ -70,7 +70,7 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping(value = "/salvar", params = "nav=tab1")
-    public String voltarParaOcorrencia(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+    public String voltarParaOcorrencia(@ModelAttribute("boletim") BoletimRequisicao dto,
                                       BindingResult br,
                                       @ModelAttribute("fotos") FotosBean fotos,
                                       Model model,
@@ -81,7 +81,7 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping(value = "/salvar", params = "nav=tab2")
-    public String irParaAnimal(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+    public String irParaAnimal(@ModelAttribute("boletim") BoletimRequisicao dto,
                               BindingResult br,
                               @ModelAttribute("fotos") FotosBean fotos,
                               Model model,
@@ -94,7 +94,7 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping(value = "/salvar", params = "acao=buscarOcorrencias")
-    public String buscarOcorrencias(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+    public String buscarOcorrencias(@ModelAttribute("boletim") BoletimRequisicao dto,
                                    BindingResult br,
                                    @ModelAttribute("fotos") FotosBean fotos,
                                    Model model,
@@ -140,7 +140,7 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping(value = "/salvar", params = "acao=selecionarOcorrencia")
-    public String selecionarOcorrencia(@ModelAttribute("boletim") BoletimDTORequisicao dto,
+    public String selecionarOcorrencia(@ModelAttribute("boletim") BoletimRequisicao dto,
                                       BindingResult br,
                                       @ModelAttribute("fotos") FotosBean fotos,
                                       Model model,
@@ -176,7 +176,7 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping(value = "/salvar", params = {"!nav", "!acao"})
-    public String createBoletim(@Valid @ModelAttribute("boletim") BoletimDTORequisicao dto,
+    public String createBoletim(@Valid @ModelAttribute("boletim") BoletimRequisicao dto,
                                 BindingResult br,
                                 RedirectAttributes redirectAttrs,
                                 @ModelAttribute("fotos") FotosBean fotos,
@@ -211,7 +211,7 @@ public class BoletimController {
             return "boletim/cadastro";
         }
 
-        BoletimDTOResposta boletim;
+        BoletimResposta boletim;
         try {
             if (vincularExistente) {
                 boletim = boletimService.adicionarAnimalEmOcorrencia(dto.getNumeroOcorrencia(), dto.getAnimal());
@@ -243,7 +243,7 @@ public class BoletimController {
     }
 
     private void prepararTelaCadastro(Model model,
-                                     BoletimDTORequisicao dto,
+                                     BoletimRequisicao dto,
                                      FotosBean fotos,
                                      String modoOcorrencia,
                                      String activeTab) {
@@ -256,7 +256,7 @@ public class BoletimController {
         carregarCombos(model);
     }
 
-    private void validarTab1(BoletimDTORequisicao dto, BindingResult br, String modoOcorrencia, Long ongId) {
+    private void validarTab1(BoletimRequisicao dto, BindingResult br, String modoOcorrencia, Long ongId) {
         boolean vincularExistente = "existente".equalsIgnoreCase(modoOcorrencia);
         if (vincularExistente) {
             if (dto.getNumeroOcorrencia() == null) {
@@ -297,7 +297,7 @@ public class BoletimController {
         return (u.getOng() != null) ? u.getOng().getId() : null;
     }
 
-    private void garantirBindingAninhado(BoletimDTORequisicao req) {
+    private void garantirBindingAninhado(BoletimRequisicao req) {
         if (req == null) return;
         if (req.getAnimal() == null) req.setAnimal(new AnimalDTO());
         if (req.getAnimal().getMaezinhaComFilhotes() == null) {
@@ -311,7 +311,7 @@ public class BoletimController {
      */
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PostMapping(value = "/{numeroOcorrencia}/animais")
-    public ResponseEntity<BoletimDTOResposta> adicionarAnimal(@PathVariable Long numeroOcorrencia,
+    public ResponseEntity<BoletimResposta> adicionarAnimal(@PathVariable Long numeroOcorrencia,
                                                              @RequestBody AnimalGenericoRequisicao animal) {
         Long ongId = getOngIdLogada();
         if (ongId != null && !boletimService.existsNumeroOcorrenciaNaOng(numeroOcorrencia, ongId)) {
@@ -322,14 +322,14 @@ public class BoletimController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<BoletimDTOResposta> getBoletim(@PathVariable Long id) {
+    public ResponseEntity<BoletimResposta> getBoletim(@PathVariable Long id) {
         return ResponseEntity.ok(boletimService.getBoletim(id));
     }
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<BoletimDTOResposta> updateBoletim(@PathVariable Long id,
-                                                            @RequestBody BoletimDTORequisicao dto) {
+    public ResponseEntity<BoletimResposta> updateBoletim(@PathVariable Long id,
+                                                            @RequestBody BoletimRequisicao dto) {
         return ResponseEntity.ok(boletimService.updateBoletim(id, dto));
     }
 
@@ -345,7 +345,7 @@ public class BoletimController {
         Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size,
                 org.springframework.data.domain.Sort.by("dataAtendimento").descending());
 
-        Page<BoletimDTOResposta> boletins = boletimService.findAllBoletins(
+        Page<BoletimResposta> boletins = boletimService.findAllBoletins(
                 numeroOcorrencia, destino, pageable);
 
         model.addAttribute("boletins", boletins);

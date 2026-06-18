@@ -1,3 +1,3 @@
-package org.ong.pet.pex.backendpetx.entities.media;
+package org.ong.pet.pex.backendpetx.entity.media;
 
 public enum MediaUsage { RESGATE, GALERIA, PERFIL, EXAME, LAUDO, DOCUMENTO }

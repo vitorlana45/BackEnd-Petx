@@ -1,8 +1,8 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoResposta;
 import org.ong.pet.pex.backendpetx.service.ProdutoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,14 +31,14 @@ public class ProdutoController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoDTOResposta> buscarProdutoPorId(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<ProdutoResposta> buscarProdutoPorId(@PathVariable(value = "id") Long id) {
         return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
     }
 
   //TODO: Implementar validação de campos dinâmicos, ainda exige mais informações
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PatchMapping("/{id}")
-    public ResponseEntity<ProdutoDTOResposta> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody  ProdutoDTO produtoAtualizado) {
+    public ResponseEntity<ProdutoResposta> atualizarProduto(@PathVariable(value = "id") Long id, @RequestBody  ProdutoDTO produtoAtualizado) {
         return ResponseEntity.ok(produtoService.atualizarProduto(id, produtoAtualizado));
     }
 

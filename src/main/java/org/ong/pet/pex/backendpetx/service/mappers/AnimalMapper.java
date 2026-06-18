@@ -5,9 +5,9 @@ import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaAnimalSemConjunto;
-import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.MaezinhaComFilhotes;
+import org.ong.pet.pex.backendpetx.dto.response.AnimalSemConjuntoResposta;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.entity.embutidas.MaezinhaComFilhotes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -91,8 +91,8 @@ public class AnimalMapper {
 
     }
 
-    public static RespostaAnimalSemConjunto converterParaAnimalSemConjunto(Animal animal) {
-        return new RespostaAnimalSemConjunto(
+    public static AnimalSemConjuntoResposta converterParaAnimalSemConjunto(Animal animal) {
+        return new AnimalSemConjuntoResposta(
                 animal.getId(),
                 animal.getChipId(),
                 animal.getNome(),

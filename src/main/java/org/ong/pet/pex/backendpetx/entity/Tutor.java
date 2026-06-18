@@ -1,8 +1,8 @@
-package org.ong.pet.pex.backendpetx.entities;
+package org.ong.pet.pex.backendpetx.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.ong.pet.pex.backendpetx.entities.incorporarEntidades.Endereco;
+import org.ong.pet.pex.backendpetx.entity.embutidas.Endereco;
 
 import java.util.Objects;
 import java.util.Set;

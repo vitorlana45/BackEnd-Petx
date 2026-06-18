@@ -1,10 +1,10 @@
-//package org.ong.pet.pex.backendpetx.controllers.exceptions;
+//package org.ong.pet.pex.backendpetx.controller.exceptions;
 //
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
-//import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.BaseApplicationError;
+//import org.ong.pet.pex.backendpetx.controller.exceptions.setup.BaseApplicationError;
 //import org.ong.pet.pex.backendpetx.service.exceptions.*;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;

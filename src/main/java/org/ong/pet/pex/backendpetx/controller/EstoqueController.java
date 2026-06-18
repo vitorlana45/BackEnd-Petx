@@ -1,6 +1,6 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
-import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
 import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
@@ -33,7 +33,7 @@ public class EstoqueController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @GetMapping()
-    public ResponseEntity<Page<ProdutoDTOResposta>> paginarProdutos(
+    public ResponseEntity<Page<ProdutoResposta>> paginarProdutos(
             @RequestParam(value = "tipo", required = false) TipoProduto tipoProduto,
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "quantidade", required = false) Double quantidade,

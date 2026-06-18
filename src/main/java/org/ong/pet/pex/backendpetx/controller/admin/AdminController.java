@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.admin;
+package org.ong.pet.pex.backendpetx.controller.admin;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

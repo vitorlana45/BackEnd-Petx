@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.exceptions.setup;
+package org.ong.pet.pex.backendpetx.controller.exceptions.setup;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

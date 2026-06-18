@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @NoArgsConstructor
-public class ConfiguracaoFiltro {
+public class FiltroConfig {
 
     @Bean
     public ValidacaoFiltroParametro validacaoFiltroParametro(ObjectMapper objectMapper) {

@@ -1,10 +1,10 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
 import lombok.AllArgsConstructor;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
+import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.DespesaResposta;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
-import org.ong.pet.pex.backendpetx.entities.Despesa;
+import org.ong.pet.pex.backendpetx.entity.Despesa;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class DespesaMapper {
 
-    public DespesaDTORespota mapearParaDTO(Despesa despesa) {
-        return DespesaDTORespota.builder()
+    public DespesaResposta mapearParaDTO(Despesa despesa) {
+        return DespesaResposta.builder()
                 .id(despesa.getId())
                 .descricao(despesa.getDescricao())
                 .valor(despesa.getValor())
@@ -26,7 +26,7 @@ public class DespesaMapper {
                 .build();
     }
 
-    public Despesa mapearParaEntidade(DespesaRequisicaoDTO dto) {
+    public Despesa mapearParaEntidade(DespesaRequisicao dto) {
         return Despesa.builder()
                 .descricao(dto.descricao())
                 .valor(dto.valor())

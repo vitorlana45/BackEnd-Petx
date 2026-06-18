@@ -1,9 +1,9 @@
-package org.ong.pet.pex.backendpetx.controllers.helper;
+package org.ong.pet.pex.backendpetx.controller.helper;
 
-import org.ong.pet.pex.backendpetx.controllers.bean.PageInfoBean;
-import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
-import org.ong.pet.pex.backendpetx.controllers.bean.StatsDTO;
-import org.ong.pet.pex.backendpetx.controllers.bean.SmartHeaderConfig;
+import org.ong.pet.pex.backendpetx.controller.bean.PageInfoBean;
+import org.ong.pet.pex.backendpetx.controller.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controller.bean.StatsDTO;
+import org.ong.pet.pex.backendpetx.controller.bean.SmartHeaderConfig;
 import org.springframework.ui.Model;
 import java.util.Arrays;
 import java.util.List;

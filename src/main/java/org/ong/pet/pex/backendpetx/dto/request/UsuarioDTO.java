@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
-import org.ong.pet.pex.backendpetx.entities.Usuario;
+import org.ong.pet.pex.backendpetx.entity.Usuario;
 import org.ong.pet.pex.backendpetx.service.validation.InserirUsuarioValido;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

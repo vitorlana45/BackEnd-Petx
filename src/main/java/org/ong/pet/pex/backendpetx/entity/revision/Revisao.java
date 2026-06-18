@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.entities.revision;
+package org.ong.pet.pex.backendpetx.entity.revision;
 
 import jakarta.persistence.Entity;
 import org.hibernate.envers.DefaultRevisionEntity;

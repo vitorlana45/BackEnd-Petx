@@ -5,7 +5,7 @@ import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import java.util.Set;
 
 @Builder
-public record RespostaAnimalSemConjunto (
+public record AnimalSemConjuntoResposta (
          Long id,
          String chipId,
          String nome,

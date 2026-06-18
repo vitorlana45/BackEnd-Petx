@@ -1,12 +1,12 @@
-package org.ong.pet.pex.backendpetx.controllers.estoque;
+package org.ong.pet.pex.backendpetx.controller.estoque;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ong.pet.pex.backendpetx.dto.categoria_estoque.CreateCategoriaEstoqueRequest;
-import org.ong.pet.pex.backendpetx.dto.categoria_estoque.ListCategoriaEstoqueRequest;
-import org.ong.pet.pex.backendpetx.entities.Estoque;
-import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
-import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
+import org.ong.pet.pex.backendpetx.dto.categoria_estoque.CriarCategoriaEstoqueRequisicao;
+import org.ong.pet.pex.backendpetx.dto.categoria_estoque.ListarCategoriaEstoqueRequisicao;
+import org.ong.pet.pex.backendpetx.entity.Estoque;
+import org.ong.pet.pex.backendpetx.repository.EstoqueRepository;
+import org.ong.pet.pex.backendpetx.repository.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.CategoriaEstoqueService;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -96,7 +96,7 @@ public class EstoqueWebController {
 
         try {
             // Buscar categorias
-            var request = new ListCategoriaEstoqueRequest(
+            var request = new ListarCategoriaEstoqueRequisicao(
                 nome, null, page, size, "nome", "asc");
             var categorias = categoriaEstoqueService.listCategoriaEstoque(request);
 
@@ -114,7 +114,7 @@ public class EstoqueWebController {
 
     @GetMapping("/nova-categoria")
     public String novaCategoria(Model model) {
-        model.addAttribute("categoria", new CreateCategoriaEstoqueRequest());
+        model.addAttribute("categoria", new CriarCategoriaEstoqueRequisicao());
         return "categoria/formulario";
     }
 

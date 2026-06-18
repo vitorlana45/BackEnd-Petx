@@ -1,8 +1,8 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.repositories.DespesaRepository;
-import org.ong.pet.pex.backendpetx.repositories.ReceitaRepository;
+import org.ong.pet.pex.backendpetx.repository.DespesaRepository;
+import org.ong.pet.pex.backendpetx.repository.ReceitaRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

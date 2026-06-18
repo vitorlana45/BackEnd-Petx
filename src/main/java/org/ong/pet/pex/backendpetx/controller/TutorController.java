@@ -1,13 +1,13 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.controllers.bean.ActionButtonDTO;
-import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.controller.bean.ActionButtonDTO;
+import org.ong.pet.pex.backendpetx.controller.helper.SmartPageHelper;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AtualizarTutorRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.CadastrarTutorRequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.TutorDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.TutorResposta;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.TutorService;
@@ -79,7 +79,7 @@ public class TutorController {
         model.addAttribute("campos", "clientes/campos :: campos"); // aponta para templates/clientes/campos.html, fragmento "campos"
 
 
-        Page<TutorDTOResposta> page = tutorService.findAllTutorPaginacao(
+        Page<TutorResposta> page = tutorService.findAllTutorPaginacao(
                 nome, cep, cidade, estado, idade, pageable);
 
         model.addAttribute("page", page);
@@ -192,7 +192,7 @@ public class TutorController {
         }
 
         // DTO para exibição
-        TutorDTOResposta dto = tutorService.buscarTutorPorCpf(cpf);
+        TutorResposta dto = tutorService.buscarTutorPorCpf(cpf);
         model.addAttribute("tutor", dto);
 
         // Preenche o form com os dados atuais (mapeie conforme seu DTO/Requisicao)
@@ -224,7 +224,7 @@ public class TutorController {
      */
     @GetMapping(value = "/{cpf}/editar")
     public String formEditarTutor(@PathVariable String cpf, Model model) {
-        TutorDTOResposta tutor = tutorService.buscarTutorPorCpf(cpf);
+        TutorResposta tutor = tutorService.buscarTutorPorCpf(cpf);
         model.addAttribute("tutor", tutor);
         model.addAttribute("cpf", cpf);
         return "tutores/editar";
@@ -244,7 +244,7 @@ public class TutorController {
             model.addAttribute("tutorForm", tutorForm);
 
             // Recarrega DTO de exibição
-            TutorDTOResposta dto = tutorService.buscarTutorPorCpf(cpf);
+            TutorResposta dto = tutorService.buscarTutorPorCpf(cpf);
             model.addAttribute("tutor", dto);
 
             // Reabre modal na renderização completa
@@ -264,7 +264,7 @@ public class TutorController {
             model.addAttribute("tutorForm", tutorForm);
             model.addAttribute("openEditModal", true);
 
-            TutorDTOResposta dto = tutorService.buscarTutorPorCpf(cpf);
+            TutorResposta dto = tutorService.buscarTutorPorCpf(cpf);
             model.addAttribute("tutor", dto);
 
             return "tutores/detalhes";

@@ -1,10 +1,10 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarTodosUsuarios;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarTodosUsuariosResposta;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarUsuarioPadraoResposta;
+import org.ong.pet.pex.backendpetx.dto.response.CriacaoUsuarioResposta;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,9 +28,9 @@ public class UsuarioController {
 
 
     @PostMapping("/registrar")
-    public ResponseEntity<RespostaCricaoUsuario> inserirUsuario(@RequestBody @Valid final UsuarioDTO usuarioDTO) {
+    public ResponseEntity<CriacaoUsuarioResposta> inserirUsuario(@RequestBody @Valid final UsuarioDTO usuarioDTO) {
 
-        RespostaCricaoUsuario usuarioCriado = usuarioService.inserirUsuario(usuarioDTO);
+        CriacaoUsuarioResposta usuarioCriado = usuarioService.inserirUsuario(usuarioDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usuarioCriado.id()).toUri();
         return ResponseEntity.created(uri).body(usuarioCriado);
     }
@@ -38,17 +38,17 @@ public class UsuarioController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorId(@PathVariable final Long id) {
-        RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorId(id);
+    public ResponseEntity<BuscarUsuarioPadraoResposta> buscarUsuarioPorId(@PathVariable final Long id) {
+        BuscarUsuarioPadraoResposta usuario = usuarioService.buscarUsuarioPorId(id);
         return ResponseEntity.ok(usuario);
     }
 
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/buscar/{email}")
-    public ResponseEntity<RespostaBuscarUsuarioPadrao> buscarUsuarioPorEmail(@PathVariable(name = "email") final String email) {
+    public ResponseEntity<BuscarUsuarioPadraoResposta> buscarUsuarioPorEmail(@PathVariable(name = "email") final String email) {
 
-        RespostaBuscarUsuarioPadrao usuario = usuarioService.buscarUsuarioPorEmail(email);
+        BuscarUsuarioPadraoResposta usuario = usuarioService.buscarUsuarioPorEmail(email);
 
         return ResponseEntity.ok().body(usuario);
     }
@@ -56,7 +56,7 @@ public class UsuarioController {
 
     @PreAuthorize("hasAnyRole('COLABORADOR','ADMIN')")
     @GetMapping("/listar")
-    public ResponseEntity<List<RespostaBuscarTodosUsuarios>> buscarTodosUsuarios() {
+    public ResponseEntity<List<BuscarTodosUsuariosResposta>> buscarTodosUsuarios() {
         return ResponseEntity.ok(usuarioService.buscarTodosUsuarios());
     }
 

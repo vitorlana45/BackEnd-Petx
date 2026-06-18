@@ -1,8 +1,8 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.entities.Receita;
+import org.ong.pet.pex.backendpetx.entity.Receita;
 import org.ong.pet.pex.backendpetx.service.ReceitaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,11 +1,11 @@
-// ConsumoAlimentacaoServiceImpl.java
+// ConsumoAlimentoServiceImpl.java
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.ConsumoAlimentoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.response.ConsumoAlimentoResposta;
-import org.ong.pet.pex.backendpetx.entities.ConsumoAlimento;
+import org.ong.pet.pex.backendpetx.entity.ConsumoAlimento;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
-import org.ong.pet.pex.backendpetx.repositories.ConsumoAlimentoRepository;
+import org.ong.pet.pex.backendpetx.repository.ConsumoAlimentoRepository;
 import org.ong.pet.pex.backendpetx.service.ConsumoAlimentoService;
 import org.ong.pet.pex.backendpetx.service.exceptions.ConsumoAlimentoException;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ConsumoAlimentacaoServiceImpl implements ConsumoAlimentoService {
+public class ConsumoAlimentoServiceImpl implements ConsumoAlimentoService {
 
     private final ConsumoAlimentoRepository repository;
     private final ConsumoAlimentoRepository consumoAlimentoRepository;
 
-    public ConsumoAlimentacaoServiceImpl(ConsumoAlimentoRepository repository, ConsumoAlimentoRepository consumoAlimentoRepository) {
+    public ConsumoAlimentoServiceImpl(ConsumoAlimentoRepository repository, ConsumoAlimentoRepository consumoAlimentoRepository) {
         this.repository = repository;
         this.consumoAlimentoRepository = consumoAlimentoRepository;
     }

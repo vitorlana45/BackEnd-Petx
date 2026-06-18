@@ -1,7 +1,7 @@
 package org.ong.pet.pex.backendpetx.service;
 
-import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.request.BoletimRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.BoletimResposta;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.springframework.data.domain.Page;
@@ -15,15 +15,15 @@ import java.util.List;
 
 public interface BoletimService {
 
-    BoletimDTOResposta createBoletim(BoletimDTORequisicao dto);
-    BoletimDTOResposta getBoletim(Long id);
+    BoletimResposta createBoletim(BoletimRequisicao dto);
+    BoletimResposta getBoletim(Long id);
     void deleteBoletim(Long id);
-    BoletimDTOResposta updateBoletim(Long id, BoletimDTORequisicao dto);
+    BoletimResposta updateBoletim(Long id, BoletimRequisicao dto);
 
     /**
      * Adiciona um novo animal a um boletim/ocorrência existente sem duplicar o número.
      */
-    BoletimDTOResposta adicionarAnimalEmOcorrencia(Long numeroOcorrencia, AnimalGenericoRequisicao animal);
+    BoletimResposta adicionarAnimalEmOcorrencia(Long numeroOcorrencia, AnimalGenericoRequisicao animal);
 
     /**
      * Verifica se uma ocorrência existe e pertence à ONG informada.
@@ -33,13 +33,13 @@ public interface BoletimService {
     /**
      * Busca ocorrências da ONG para facilitar o vínculo (filtros opcionais).
      */
-    List<BoletimDTOResposta> buscarOcorrenciasParaVinculo(Long ongId,
+    List<BoletimResposta> buscarOcorrenciasParaVinculo(Long ongId,
                                                          LocalDateTime inicio,
                                                          LocalDateTime fim,
                                                          OrigemAnimalEnum origem,
                                                          Destino destino,
                                                          int limit);
-    Page<BoletimDTOResposta> findAllBoletins(
+    Page<BoletimResposta> findAllBoletins(
             Long numeroOcorrencia,
 //            LocalDateTime dataInicio,
 //            LocalDateTime dataFim,

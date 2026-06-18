@@ -3,14 +3,14 @@ package org.ong.pet.pex.backendpetx.service.impl;
 import lombok.AllArgsConstructor;
 import org.ong.pet.pex.backendpetx.dto.request.InfoProdutoDTO;
 import org.ong.pet.pex.backendpetx.dto.request.ProdutoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
-import org.ong.pet.pex.backendpetx.entities.Estoque;
-import org.ong.pet.pex.backendpetx.entities.Ong;
-import org.ong.pet.pex.backendpetx.entities.Produto;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoResposta;
+import org.ong.pet.pex.backendpetx.entity.Estoque;
+import org.ong.pet.pex.backendpetx.entity.Ong;
+import org.ong.pet.pex.backendpetx.entity.Produto;
 import org.ong.pet.pex.backendpetx.enums.TipoProduto;
-import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
-import org.ong.pet.pex.backendpetx.repositories.OngRepository;
-import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
+import org.ong.pet.pex.backendpetx.repository.EstoqueRepository;
+import org.ong.pet.pex.backendpetx.repository.OngRepository;
+import org.ong.pet.pex.backendpetx.repository.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.ProdutoService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.exceptions.ProdutoException;
@@ -59,7 +59,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProdutoDTOResposta buscarProdutoPorId(final Long id) {
+    public ProdutoResposta buscarProdutoPorId(final Long id) {
         var produto = produtoRepository.findById(id)
                 .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
         return produtoMapper.mapearParaDto(produto);
@@ -67,7 +67,7 @@ public class ProdutoServiceImpl implements ProdutoService {
 
     @Override
     @Transactional
-    public ProdutoDTOResposta atualizarProduto(final Long id, final ProdutoDTO dto) {
+    public ProdutoResposta atualizarProduto(final Long id, final ProdutoDTO dto) {
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> ProdutoException.produtoNaoEncontrado(id.toString()));
 

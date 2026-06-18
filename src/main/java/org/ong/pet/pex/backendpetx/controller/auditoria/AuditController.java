@@ -1,9 +1,11 @@
 // AuditController.java
-package org.ong.pet.pex.backendpetx.entities.revision;
+package org.ong.pet.pex.backendpetx.controller.auditoria;
 
 import lombok.RequiredArgsConstructor;
 
-import org.ong.pet.pex.backendpetx.controllers.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.controller.helper.SmartPageHelper;
+import org.ong.pet.pex.backendpetx.service.AuditService;
+import org.ong.pet.pex.backendpetx.dto.RevisaoLinhaDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCategoriaEstoqueResponse {
+public class AtualizarCategoriaEstoqueResposta {
 
     private Long id;
     private String nome;

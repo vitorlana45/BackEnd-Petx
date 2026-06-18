@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCategoriaEstoqueRequest {
+public class AtualizarCategoriaEstoqueRequisicao {
 
     @NotNull(message = "ID é obrigatório")
     private Long id;

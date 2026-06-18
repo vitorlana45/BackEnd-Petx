@@ -1,8 +1,8 @@
-package org.ong.pet.pex.backendpetx.repositories.media;
+package org.ong.pet.pex.backendpetx.repository.media;
 
-import org.ong.pet.pex.backendpetx.entities.media.MediaLink;
-import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
-import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
+import org.ong.pet.pex.backendpetx.entity.media.MediaLink;
+import org.ong.pet.pex.backendpetx.entity.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entity.media.MediaUsage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

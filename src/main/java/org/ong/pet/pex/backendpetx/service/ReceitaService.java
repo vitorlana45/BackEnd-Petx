@@ -2,8 +2,8 @@ package org.ong.pet.pex.backendpetx.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ong.pet.pex.backendpetx.entities.Receita;
-import org.ong.pet.pex.backendpetx.repositories.ReceitaRepository;
+import org.ong.pet.pex.backendpetx.entity.Receita;
+import org.ong.pet.pex.backendpetx.repository.ReceitaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

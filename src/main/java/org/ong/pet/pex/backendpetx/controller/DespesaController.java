@@ -1,9 +1,9 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.validation.Valid;
-import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamicaDTO;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
+import org.ong.pet.pex.backendpetx.dto.DespesaRequisicaoDinamica;
+import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.DespesaResposta;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
 import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
 import org.ong.pet.pex.backendpetx.enums.FormaPagamentoEnum;
@@ -30,7 +30,7 @@ public class DespesaController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PostMapping
-    ResponseEntity<DespesaDTORespota> cadastrarDespesa(@RequestBody @Valid final DespesaRequisicaoDTO dto) {
+    ResponseEntity<DespesaResposta> cadastrarDespesa(@RequestBody @Valid final DespesaRequisicao dto) {
         return ResponseEntity.ok().body(despesaService.cadastrarDespesa(dto));
     }
 
@@ -68,14 +68,14 @@ public class DespesaController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PatchMapping("/{id}")
-    ResponseEntity<DespesaDTORespota> atualizarDespesaDinamicamente(@PathVariable(value = "id") final Long id,
-                                                       @RequestBody final DespesaRequisicaoDinamicaDTO dto) {
+    ResponseEntity<DespesaResposta> atualizarDespesaDinamicamente(@PathVariable(value = "id") final Long id,
+                                                       @RequestBody final DespesaRequisicaoDinamica dto) {
         return ResponseEntity.ok().body(despesaService.atualizarDespesaDinamicamente(id, dto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLABORADOR')")
     @PostMapping("/{id}")
-    ResponseEntity<DespesaDTORespota> atualizarDespesa(@PathVariable(value = "id") final Long id, @RequestBody @Valid final DespesaRequisicaoDTO dto) {
+    ResponseEntity<DespesaResposta> atualizarDespesa(@PathVariable(value = "id") final Long id, @RequestBody @Valid final DespesaRequisicao dto) {
         return ResponseEntity.ok().body(despesaService.atualizarDespesa(id, dto));
     }
 

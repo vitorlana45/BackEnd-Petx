@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCategoriaEstoqueResponse {
+public class ExcluirCategoriaEstoqueResposta {
 
     private Long id;
     private String nome;

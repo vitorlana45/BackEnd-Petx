@@ -1,12 +1,12 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import org.ong.pet.pex.backendpetx.dto.request.UsuarioDTO;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarTodosUsuarios;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaBuscarUsuarioPadrao;
-import org.ong.pet.pex.backendpetx.dto.response.RespostaCricaoUsuario;
-import org.ong.pet.pex.backendpetx.entities.UserRole;
-import org.ong.pet.pex.backendpetx.entities.Usuario;
-import org.ong.pet.pex.backendpetx.repositories.UsuarioRepository;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarTodosUsuariosResposta;
+import org.ong.pet.pex.backendpetx.dto.response.BuscarUsuarioPadraoResposta;
+import org.ong.pet.pex.backendpetx.dto.response.CriacaoUsuarioResposta;
+import org.ong.pet.pex.backendpetx.entity.UserRole;
+import org.ong.pet.pex.backendpetx.entity.Usuario;
+import org.ong.pet.pex.backendpetx.repository.UsuarioRepository;
 import org.ong.pet.pex.backendpetx.service.UsuarioService;
 import org.ong.pet.pex.backendpetx.service.exceptions.UsuarioException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,7 +32,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public RespostaCricaoUsuario inserirUsuario(UsuarioDTO usuarioDTO) {
+    public CriacaoUsuarioResposta inserirUsuario(UsuarioDTO usuarioDTO) {
 
         if (usuarioRepository.findByEmail(usuarioDTO.email()) != null) {
             throw UsuarioException.usuarioJaCadastrado(usuarioDTO.email());
@@ -47,7 +47,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         entidade = usuarioRepository.save(entidade);
 
-        return new RespostaCricaoUsuario(entidade.getId(),entidade.getNome(), entidade.getEmail(), entidade.getRole());
+        return new CriacaoUsuarioResposta(entidade.getId(),entidade.getNome(), entidade.getEmail(), entidade.getRole());
     }
 
 
@@ -66,19 +66,19 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Transactional(readOnly = true)
     @Override
-    public RespostaBuscarUsuarioPadrao buscarUsuarioPorId(Long id) {
+    public BuscarUsuarioPadraoResposta buscarUsuarioPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> UsuarioException.usuarioNaoEncontrado(id.toString()));
-        return new RespostaBuscarUsuarioPadrao(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getRole().toString());
+        return new BuscarUsuarioPadraoResposta(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getRole().toString());
     }
 
 
 // FORMA PROVISORIA, VER DEPOIS QUAIS DADOS RETORNAR
     @Transactional(readOnly = true)
     @Override
-    public List<RespostaBuscarTodosUsuarios> buscarTodosUsuarios() {
+    public List<BuscarTodosUsuariosResposta> buscarTodosUsuarios() {
         var list = usuarioRepository.findAll();
 
-        return  list.stream().map(usuario -> new RespostaBuscarTodosUsuarios
+        return  list.stream().map(usuario -> new BuscarTodosUsuariosResposta
                 (usuario.getId(), usuario.getNome(),usuario.getEmail(), usuario.getRole().toString())).toList();
     }
 
@@ -86,10 +86,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Transactional(readOnly = true)
     @Override
-    public RespostaBuscarUsuarioPadrao buscarUsuarioPorEmail(String email) {
+    public BuscarUsuarioPadraoResposta buscarUsuarioPorEmail(String email) {
 
       Usuario usuario = usuarioRepository.findUsuarioByEmail(email).orElseThrow(() -> UsuarioException.usuarioNaoEncontrado(email));
 
-        return new RespostaBuscarUsuarioPadrao(usuario.getId(),usuario.getNome(), usuario.getEmail(), usuario.getRole().toString());
+        return new BuscarUsuarioPadraoResposta(usuario.getId(),usuario.getNome(), usuario.getEmail(), usuario.getRole().toString());
     }
 }

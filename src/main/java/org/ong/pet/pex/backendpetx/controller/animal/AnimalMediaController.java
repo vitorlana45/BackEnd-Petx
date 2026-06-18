@@ -1,11 +1,11 @@
-package org.ong.pet.pex.backendpetx.controllers.animal;
+package org.ong.pet.pex.backendpetx.controller.animal;
 
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.entities.media.MediaFile;
-import org.ong.pet.pex.backendpetx.entities.media.MediaItemDTO;
-import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
-import org.ong.pet.pex.backendpetx.entities.media.MediaUsage;
-import org.ong.pet.pex.backendpetx.repositories.media.MediaLinkRepository;
+import org.ong.pet.pex.backendpetx.entity.media.MediaFile;
+import org.ong.pet.pex.backendpetx.dto.MediaItemDTO;
+import org.ong.pet.pex.backendpetx.entity.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entity.media.MediaUsage;
+import org.ong.pet.pex.backendpetx.repository.media.MediaLinkRepository;
 import org.ong.pet.pex.backendpetx.service.impl.MediaService;
 import org.ong.pet.pex.backendpetx.service.mediaService.MediaStorageService;
 import org.springframework.stereotype.Controller;

@@ -21,10 +21,10 @@ public class CategoriaEstoqueRestController {
 
     @PostMapping
     @Operation(summary = "Criar nova categoria de estoque")
-    public ResponseEntity<CreateCategoriaEstoqueResponse> createCategoriaEstoque(
-            @Valid @RequestBody CreateCategoriaEstoqueRequest request) {
+    public ResponseEntity<CriarCategoriaEstoqueResposta> createCategoriaEstoque(
+            @Valid @RequestBody CriarCategoriaEstoqueRequisicao request) {
         try {
-            CreateCategoriaEstoqueResponse response = categoriaEstoqueService.createCategoriaEstoque(request);
+            CriarCategoriaEstoqueResposta response = categoriaEstoqueService.createCategoriaEstoque(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
             throw new RuntimeException("Erro ao criar categoria de estoque: " + e.getMessage());
@@ -33,10 +33,10 @@ public class CategoriaEstoqueRestController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar categoria de estoque por ID")
-    public ResponseEntity<GetCategoriaEstoqueResponse> getCategoriaEstoque(@PathVariable Long id) {
+    public ResponseEntity<BuscarCategoriaEstoqueResposta> getCategoriaEstoque(@PathVariable Long id) {
         try {
-            GetCategoriaEstoqueRequest request = new GetCategoriaEstoqueRequest(id);
-            GetCategoriaEstoqueResponse response = categoriaEstoqueService.getCategoriaEstoque(request);
+            BuscarCategoriaEstoqueRequisicao request = new BuscarCategoriaEstoqueRequisicao(id);
+            BuscarCategoriaEstoqueResposta response = categoriaEstoqueService.getCategoriaEstoque(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -45,12 +45,12 @@ public class CategoriaEstoqueRestController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar categoria de estoque")
-    public ResponseEntity<UpdateCategoriaEstoqueResponse> updateCategoriaEstoque(
+    public ResponseEntity<AtualizarCategoriaEstoqueResposta> updateCategoriaEstoque(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateCategoriaEstoqueRequest request) {
+            @Valid @RequestBody AtualizarCategoriaEstoqueRequisicao request) {
         try {
             request.setId(id);
-            UpdateCategoriaEstoqueResponse response = categoriaEstoqueService.updateCategoriaEstoque(request);
+            AtualizarCategoriaEstoqueResposta response = categoriaEstoqueService.updateCategoriaEstoque(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             throw new RuntimeException("Erro ao atualizar categoria de estoque: " + e.getMessage());
@@ -59,10 +59,10 @@ public class CategoriaEstoqueRestController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Excluir categoria de estoque")
-    public ResponseEntity<DeleteCategoriaEstoqueResponse> deleteCategoriaEstoque(@PathVariable Long id) {
+    public ResponseEntity<ExcluirCategoriaEstoqueResposta> deleteCategoriaEstoque(@PathVariable Long id) {
         try {
-            DeleteCategoriaEstoqueRequest request = new DeleteCategoriaEstoqueRequest(id);
-            DeleteCategoriaEstoqueResponse response = categoriaEstoqueService.deleteCategoriaEstoque(request);
+            ExcluirCategoriaEstoqueRequisicao request = new ExcluirCategoriaEstoqueRequisicao(id);
+            ExcluirCategoriaEstoqueResposta response = categoriaEstoqueService.deleteCategoriaEstoque(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -71,7 +71,7 @@ public class CategoriaEstoqueRestController {
 
     @GetMapping
     @Operation(summary = "Listar categorias de estoque com filtros e paginação")
-    public ResponseEntity<Page<ListCategoriaEstoqueResponse>> listCategoriaEstoque(
+    public ResponseEntity<Page<ListarCategoriaEstoqueResposta>> listCategoriaEstoque(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) Long estoqueId,
             @RequestParam(defaultValue = "0") int page,
@@ -79,26 +79,26 @@ public class CategoriaEstoqueRestController {
             @RequestParam(defaultValue = "nome") String sort,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        ListCategoriaEstoqueRequest request = new ListCategoriaEstoqueRequest(
+        ListarCategoriaEstoqueRequisicao request = new ListarCategoriaEstoqueRequisicao(
                 nome, estoqueId, page, size, sort, direction);
 
-        Page<ListCategoriaEstoqueResponse> response = categoriaEstoqueService.listCategoriaEstoque(request);
+        Page<ListarCategoriaEstoqueResposta> response = categoriaEstoqueService.listCategoriaEstoque(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/estoque/{estoqueId}")
     @Operation(summary = "Listar categorias por estoque específico")
-    public ResponseEntity<Page<ListCategoriaEstoqueResponse>> listCategoriasByEstoque(
+    public ResponseEntity<Page<ListarCategoriaEstoqueResposta>> listCategoriasByEstoque(
             @PathVariable Long estoqueId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "nome") String sort,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        ListCategoriaEstoqueRequest request = new ListCategoriaEstoqueRequest(
+        ListarCategoriaEstoqueRequisicao request = new ListarCategoriaEstoqueRequisicao(
                 null, estoqueId, page, size, sort, direction);
 
-        Page<ListCategoriaEstoqueResponse> response = categoriaEstoqueService.listCategoriaEstoque(request);
+        Page<ListarCategoriaEstoqueResposta> response = categoriaEstoqueService.listCategoriaEstoque(request);
         return ResponseEntity.ok(response);
     }
 }

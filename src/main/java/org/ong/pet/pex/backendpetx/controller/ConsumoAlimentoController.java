@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import jakarta.validation.Valid;
 import org.ong.pet.pex.backendpetx.dto.request.ConsumoAlimentoRequisicao;

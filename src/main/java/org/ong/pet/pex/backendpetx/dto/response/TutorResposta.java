@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Builder
-public record TutorDTOResposta(
+public record TutorResposta(
 
         Long id,
         String cpf,

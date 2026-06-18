@@ -1,11 +1,11 @@
 package org.ong.pet.pex.backendpetx.service.mappers;
 
 import lombok.AllArgsConstructor;
-import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.BoletimRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.MaezinhaComFilhotesDTO;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
-import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
-import org.ong.pet.pex.backendpetx.entities.Boletim;
+import org.ong.pet.pex.backendpetx.dto.response.BoletimResposta;
+import org.ong.pet.pex.backendpetx.entity.Boletim;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,10 +17,10 @@ public class BoletimMapper {
 
     private final AnimalMapper animalMapper;
 
-    public BoletimDTOResposta converteParaDTO(Boletim entidade) {
+    public BoletimResposta converteParaDTO(Boletim entidade) {
         new AnimalGenericoResposta();
         var animal = entidade.getAnimal();
-        return BoletimDTOResposta.builder()
+        return BoletimResposta.builder()
                 .id(entidade.getId())
                 .bairro(entidade.getBairro())
                 .cidade(entidade.getCidade())
@@ -61,7 +61,7 @@ public class BoletimMapper {
                 .build();
     }
 
-    public Boletim converteParaEntidade(BoletimDTORequisicao dto) {
+    public Boletim converteParaEntidade(BoletimRequisicao dto) {
         return Boletim.builder()
                 .numeroOcorrencia(dto.getNumeroOcorrencia())
                 .dataAtendimento(dto.getDataAtendimento())
@@ -80,7 +80,7 @@ public class BoletimMapper {
                 .build();
     }
 
-    public List<BoletimDTOResposta> converteParaDTO(List<Boletim> boletins) {
+    public List<BoletimResposta> converteParaDTO(List<Boletim> boletins) {
         return boletins.stream()
                 .map(this::converteParaDTO)
                 .collect(Collectors.toList());

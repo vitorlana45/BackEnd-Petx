@@ -1,4 +1,4 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
-public record RespostaUsuarioCriado (Long id, String email) {
+public record UsuarioCriadoResposta (Long id, String email) {
 }

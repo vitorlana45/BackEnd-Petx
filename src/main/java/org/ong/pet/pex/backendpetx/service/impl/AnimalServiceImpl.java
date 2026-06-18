@@ -1,16 +1,16 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.AppException;
+import org.ong.pet.pex.backendpetx.controller.exceptions.setup.AppException;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalObituarioResquisicao;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.AnimalPaginadoResposta;
-import org.ong.pet.pex.backendpetx.entities.*;
-import org.ong.pet.pex.backendpetx.entities.media.MediaTargetType;
+import org.ong.pet.pex.backendpetx.entity.*;
+import org.ong.pet.pex.backendpetx.entity.media.MediaTargetType;
 import org.ong.pet.pex.backendpetx.enums.*;
-import org.ong.pet.pex.backendpetx.repositories.*;
-import org.ong.pet.pex.backendpetx.repositories.specifcs.AnimalSpecs;
+import org.ong.pet.pex.backendpetx.repository.*;
+import org.ong.pet.pex.backendpetx.repository.specs.AnimalSpecs;
 import org.ong.pet.pex.backendpetx.security.utils.SecurityUtils;
 import org.ong.pet.pex.backendpetx.service.AnimalService;
 import org.ong.pet.pex.backendpetx.service.Minio;

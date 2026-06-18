@@ -1,19 +1,19 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicaoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.DespesaDTORespota;
+import org.ong.pet.pex.backendpetx.dto.request.DespesaRequisicao;
+import org.ong.pet.pex.backendpetx.dto.response.DespesaResposta;
 import org.ong.pet.pex.backendpetx.dto.response.ListarDespesaResposta;
-import org.ong.pet.pex.backendpetx.entities.Despesa;
+import org.ong.pet.pex.backendpetx.entity.Despesa;
 import org.ong.pet.pex.backendpetx.enums.CategoriaDespesaEnum;
 import org.ong.pet.pex.backendpetx.enums.FormaPagamentoEnum;
 import org.ong.pet.pex.backendpetx.enums.StatusDespesaEnum;
-import org.ong.pet.pex.backendpetx.repositories.DespesaRepository;
-import org.ong.pet.pex.backendpetx.repositories.OngRepository;
+import org.ong.pet.pex.backendpetx.repository.DespesaRepository;
+import org.ong.pet.pex.backendpetx.repository.OngRepository;
 import org.ong.pet.pex.backendpetx.service.DespesaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -108,7 +108,7 @@ public class FinanceiroWebController {
         }
 
         try {
-            DespesaRequisicaoDTO dto = new DespesaRequisicaoDTO(
+            DespesaRequisicao dto = new DespesaRequisicao(
                 despesa.getDescricao(),
                 despesa.getValor(),
                 despesa.getCategoria(),
@@ -129,7 +129,7 @@ public class FinanceiroWebController {
                 redirectAttributes.addFlashAttribute("sucesso", "Despesa atualizada com sucesso!");
             } else {
                 // Criação
-                DespesaDTORespota resposta = despesaService.cadastrarDespesa(dto);
+                DespesaResposta resposta = despesaService.cadastrarDespesa(dto);
                 // Salvar observações
                 if (despesa.getObservacoes() != null && !despesa.getObservacoes().isEmpty()) {
                    Despesa d = despesaRepository.findById(resposta.id()).orElseThrow();

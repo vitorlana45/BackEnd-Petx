@@ -1,9 +1,10 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.entities.media.*;
-import org.ong.pet.pex.backendpetx.repositories.media.MediaFileRepository;
-import org.ong.pet.pex.backendpetx.repositories.media.MediaLinkRepository;
+import org.ong.pet.pex.backendpetx.entity.media.*;
+import org.ong.pet.pex.backendpetx.dto.MediaItemDTO;
+import org.ong.pet.pex.backendpetx.repository.media.MediaFileRepository;
+import org.ong.pet.pex.backendpetx.repository.media.MediaLinkRepository;
 import org.ong.pet.pex.backendpetx.service.mediaService.MediaStorageService;
 import org.ong.pet.pex.backendpetx.service.mediaService.ObjectKeyBuilder;
 import org.springframework.stereotype.Service;

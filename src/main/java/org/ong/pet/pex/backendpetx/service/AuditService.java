@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.entities.revision;
+package org.ong.pet.pex.backendpetx.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -8,7 +8,11 @@ import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.entity.revision.DiferencaCampo;
+import org.ong.pet.pex.backendpetx.entity.revision.DiferencasUtil;
+import org.ong.pet.pex.backendpetx.entity.revision.Revisao;
+import org.ong.pet.pex.backendpetx.dto.RevisaoLinhaDTO;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.entities.revision;
+package org.ong.pet.pex.backendpetx.entity.revision;
 
 import org.hibernate.envers.RevisionListener;
 import org.springframework.security.core.Authentication;

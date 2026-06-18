@@ -1,17 +1,17 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import org.ong.pet.pex.backendpetx.controllers.estoque.EstoqueDTO;
+import org.ong.pet.pex.backendpetx.dto.EstoqueDTO;
 import org.ong.pet.pex.backendpetx.dto.produto.ProdutoDTO;
-import org.ong.pet.pex.backendpetx.dto.response.ProdutoDTOResposta;
+import org.ong.pet.pex.backendpetx.dto.response.ProdutoResposta;
 import org.ong.pet.pex.backendpetx.dto.response.RacaoDisponivelResposta;
-import org.ong.pet.pex.backendpetx.entities.*;
+import org.ong.pet.pex.backendpetx.entity.*;
 import org.ong.pet.pex.backendpetx.enums.PorteEnum;
 import org.ong.pet.pex.backendpetx.enums.TipoProduto;
 import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
-import org.ong.pet.pex.backendpetx.repositories.ConsumoAlimentoRepository;
-import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
-import org.ong.pet.pex.backendpetx.repositories.OngRepository;
-import org.ong.pet.pex.backendpetx.repositories.ProdutoRepository;
+import org.ong.pet.pex.backendpetx.repository.ConsumoAlimentoRepository;
+import org.ong.pet.pex.backendpetx.repository.EstoqueRepository;
+import org.ong.pet.pex.backendpetx.repository.OngRepository;
+import org.ong.pet.pex.backendpetx.repository.ProdutoRepository;
 import org.ong.pet.pex.backendpetx.service.EstoqueService;
 import org.ong.pet.pex.backendpetx.service.mappers.EstoqueMapper;
 import org.ong.pet.pex.backendpetx.service.mappers.ProdutoMapper;
@@ -113,7 +113,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProdutoDTOResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome,
+    public Page<ProdutoResposta> paginarProdutoEstoque(TipoProduto tipoProduto, String nome,
                                                           Double quantidade, UnidadeDeMedidaEnum medida,
                                                           String chave,
                                                           Pageable pageable) {
@@ -122,7 +122,7 @@ public class EstoqueServiceImpl implements EstoqueService {
                 nome, quantidade, medida != null ? medida.name() : null, pageable);
 
 
-        List<ProdutoDTOResposta> listaProdutosDto = produtoMapper.mapearListaProdutoParaDto(listaProdutos.getContent());
+        List<ProdutoResposta> listaProdutosDto = produtoMapper.mapearListaProdutoParaDto(listaProdutos.getContent());
 
         return new PageImpl<>(listaProdutosDto, pageable, listaProdutos.getTotalElements());
     }
@@ -180,7 +180,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ProdutoDTOResposta> listarProdutosPorEstoque(Long estoqueId, String nome, Pageable pageable) {
+    public Page<ProdutoResposta> listarProdutosPorEstoque(Long estoqueId, String nome, Pageable pageable) {
         logger.info("Listando produtos do estoque ID: {}", estoqueId);
 
         // Aqui você pode criar uma consulta específica no repositório para filtrar por estoqueId
@@ -190,7 +190,7 @@ public class EstoqueServiceImpl implements EstoqueService {
 
         // Filtrar apenas produtos do estoque especificado
         // Em uma implementação real, isso seria feito diretamente na consulta SQL
-        List<ProdutoDTOResposta> produtosDoEstoque = produtoMapper.mapearListaProdutoParaDto(
+        List<ProdutoResposta> produtosDoEstoque = produtoMapper.mapearListaProdutoParaDto(
                 produtos.getContent().stream()
                         .filter(p -> p.getEstoque() != null && p.getEstoque().getId().equals(estoqueId))
                         .toList()

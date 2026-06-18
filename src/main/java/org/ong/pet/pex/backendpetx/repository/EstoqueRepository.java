@@ -1,6 +1,6 @@
-package org.ong.pet.pex.backendpetx.repositories;
+package org.ong.pet.pex.backendpetx.repository;
 
-import org.ong.pet.pex.backendpetx.entities.Estoque;
+import org.ong.pet.pex.backendpetx.entity.Estoque;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

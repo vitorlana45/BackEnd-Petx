@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.api;
+package org.ong.pet.pex.backendpetx.controller.api;
 
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
 import org.ong.pet.pex.backendpetx.service.AnimalService;

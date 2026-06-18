@@ -1,7 +1,7 @@
 package org.ong.pet.pex.backendpetx.service.exceptions;
 
 import lombok.Getter;
-import org.ong.pet.pex.backendpetx.controllers.exceptions.setup.BaseApplicationError;
+import org.ong.pet.pex.backendpetx.controller.exceptions.setup.BaseApplicationError;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;

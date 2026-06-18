@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.entities;
+package org.ong.pet.pex.backendpetx.entity;
 
 import lombok.Getter;
 

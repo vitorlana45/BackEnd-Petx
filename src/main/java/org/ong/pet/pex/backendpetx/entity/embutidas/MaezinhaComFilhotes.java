@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.entities.incorporarEntidades;
+package org.ong.pet.pex.backendpetx.entity.embutidas;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.bean;
+package org.ong.pet.pex.backendpetx.controller.bean;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,12 +6,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.ong.pet.pex.backendpetx.enums.*;
-import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.DesserializadorEnumGenerico;
+import org.ong.pet.pex.backendpetx.service.impl.serviceUtils.DeserializadorEnumGenerico;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ConfiguracaoJackson {
+public class JacksonConfig {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
@@ -44,6 +44,6 @@ public class ConfiguracaoJackson {
     }
 
     private <T extends Enum<T>> void registerEnumDeserializer(SimpleModule module, Class<T> enumClass) {
-        module.addDeserializer(enumClass, new DesserializadorEnumGenerico<>(enumClass));
+        module.addDeserializer(enumClass, new DeserializadorEnumGenerico<>(enumClass));
     }
 }

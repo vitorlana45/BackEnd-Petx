@@ -1,6 +1,6 @@
 package org.ong.pet.pex.backendpetx.dto.response;
 
-import org.ong.pet.pex.backendpetx.entities.UserRole;
+import org.ong.pet.pex.backendpetx.entity.UserRole;
 
-public record RespostaCricaoUsuario(Long id, String nome, String email, UserRole role) {
+public record CriacaoUsuarioResposta(Long id, String nome, String email, UserRole role) {
 }

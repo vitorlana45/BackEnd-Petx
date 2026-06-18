@@ -1,12 +1,12 @@
 package org.ong.pet.pex.backendpetx;
 
-import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.entities.Boletim;
-import org.ong.pet.pex.backendpetx.entities.Ong;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.entity.Boletim;
+import org.ong.pet.pex.backendpetx.entity.Ong;
 import org.ong.pet.pex.backendpetx.enums.*;
-import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
-import org.ong.pet.pex.backendpetx.repositories.BoletimRepository;
-import org.ong.pet.pex.backendpetx.repositories.OngRepository;
+import org.ong.pet.pex.backendpetx.repository.AnimalRepository;
+import org.ong.pet.pex.backendpetx.repository.BoletimRepository;
+import org.ong.pet.pex.backendpetx.repository.OngRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

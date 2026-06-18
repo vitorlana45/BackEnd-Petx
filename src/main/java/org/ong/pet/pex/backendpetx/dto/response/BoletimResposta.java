@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BoletimDTOResposta {
+public class BoletimResposta {
 
     private Long id;
     private Long numeroOcorrencia;

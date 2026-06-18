@@ -9,7 +9,7 @@ import org.ong.pet.pex.backendpetx.enums.UnidadeDeMedidaEnum;
 import java.util.List;
 
 @Builder
-public record ProdutoDTOResposta (
+public record ProdutoResposta (
 
         Long produtoId,
 

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCategoriaEstoqueRequest {
+public class ExcluirCategoriaEstoqueRequisicao {
 
     @NotNull(message = "ID é obrigatório")
     private Long id;

@@ -1,8 +1,8 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.entities.LogAtividade;
-import org.ong.pet.pex.backendpetx.repositories.LogAtividadeRepository;
+import org.ong.pet.pex.backendpetx.entity.LogAtividade;
+import org.ong.pet.pex.backendpetx.repository.LogAtividadeRepository;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

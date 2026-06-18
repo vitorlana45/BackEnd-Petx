@@ -1,9 +1,9 @@
 package org.ong.pet.pex.backendpetx.service.impl.serviceUtils;
 
 import org.ong.pet.pex.backendpetx.dto.response.AnimalGenericoResposta;
-import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.repositories.AnimalConjuntoRepository;
-import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.repository.AnimalConjuntoRepository;
+import org.ong.pet.pex.backendpetx.repository.AnimalRepository;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

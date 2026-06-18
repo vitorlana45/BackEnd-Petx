@@ -1,6 +1,6 @@
-package org.ong.pet.pex.backendpetx.repositories;
+package org.ong.pet.pex.backendpetx.repository;
 
-import org.ong.pet.pex.backendpetx.entities.RecuperarSenha;
+import org.ong.pet.pex.backendpetx.entity.RecuperarSenha;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

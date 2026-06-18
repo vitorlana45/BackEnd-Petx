@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
-public record DespesaRequisicaoDTO(
+public record DespesaRequisicao(
 
         String descricao,
 

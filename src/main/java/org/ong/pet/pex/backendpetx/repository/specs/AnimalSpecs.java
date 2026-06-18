@@ -1,6 +1,6 @@
-package org.ong.pet.pex.backendpetx.repositories.specifcs;
+package org.ong.pet.pex.backendpetx.repository.specs;
 
-import org.ong.pet.pex.backendpetx.entities.Animal;
+import org.ong.pet.pex.backendpetx.entity.Animal;
 import org.ong.pet.pex.backendpetx.enums.*;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;

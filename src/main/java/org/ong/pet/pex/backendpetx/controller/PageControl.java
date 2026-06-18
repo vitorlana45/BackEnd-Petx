@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers;
+package org.ong.pet.pex.backendpetx.controller;
 
 
 public abstract class PageControl {

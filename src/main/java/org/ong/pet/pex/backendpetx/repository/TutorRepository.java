@@ -1,7 +1,7 @@
-package org.ong.pet.pex.backendpetx.repositories;
+package org.ong.pet.pex.backendpetx.repository;
 
-import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.entities.Tutor;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.entity.Tutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

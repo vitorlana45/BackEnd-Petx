@@ -1,6 +1,6 @@
-package org.ong.pet.pex.backendpetx.repositories;
+package org.ong.pet.pex.backendpetx.repository;
 
-import org.ong.pet.pex.backendpetx.entities.Despesa;
+import org.ong.pet.pex.backendpetx.entity.Despesa;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

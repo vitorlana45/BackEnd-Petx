@@ -1,4 +1,4 @@
-package org.ong.pet.pex.backendpetx.controllers.bean;
+package org.ong.pet.pex.backendpetx.controller.bean;
 
 import org.springframework.ui.Model;
 import java.util.ArrayList;

@@ -1,17 +1,17 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
-import org.ong.pet.pex.backendpetx.dto.request.BoletimDTORequisicao;
+import org.ong.pet.pex.backendpetx.dto.request.BoletimRequisicao;
 import org.ong.pet.pex.backendpetx.dto.request.AnimalGenericoRequisicao;
-import org.ong.pet.pex.backendpetx.dto.response.BoletimDTOResposta;
-import org.ong.pet.pex.backendpetx.entities.Animal;
-import org.ong.pet.pex.backendpetx.entities.Boletim;
+import org.ong.pet.pex.backendpetx.dto.response.BoletimResposta;
+import org.ong.pet.pex.backendpetx.entity.Animal;
+import org.ong.pet.pex.backendpetx.entity.Boletim;
 import org.ong.pet.pex.backendpetx.enums.AdocaoEnum;
 import org.ong.pet.pex.backendpetx.enums.Destino;
 import org.ong.pet.pex.backendpetx.enums.OrigemAnimalEnum;
 import org.ong.pet.pex.backendpetx.enums.SexoEnum;
-import org.ong.pet.pex.backendpetx.repositories.AnimalRepository;
-import org.ong.pet.pex.backendpetx.repositories.BoletimRepository;
-import org.ong.pet.pex.backendpetx.repositories.OngRepository;
+import org.ong.pet.pex.backendpetx.repository.AnimalRepository;
+import org.ong.pet.pex.backendpetx.repository.BoletimRepository;
+import org.ong.pet.pex.backendpetx.repository.OngRepository;
 import org.ong.pet.pex.backendpetx.service.BoletimService;
 import org.ong.pet.pex.backendpetx.service.exceptions.PetXException;
 import org.ong.pet.pex.backendpetx.service.mappers.AnimalMapper;
@@ -50,7 +50,7 @@ public class BoletimServiceImpl implements BoletimService {
     @Override
     @Transactional
     @CacheEvict(cacheNames = {"stats"}, key = "'TOTAL_ANIMAIS'", allEntries = false)
-    public BoletimDTOResposta createBoletim(BoletimDTORequisicao boletimDTO) {
+    public BoletimResposta createBoletim(BoletimRequisicao boletimDTO) {
 
         if (boletimDTO == null || boletimDTO.getAnimal() == null) {
             throw new PetXException("Animal não pode ser nulo");
@@ -82,7 +82,7 @@ public class BoletimServiceImpl implements BoletimService {
 
     @Override
     @Transactional
-    public BoletimDTOResposta adicionarAnimalEmOcorrencia(Long numeroOcorrencia, AnimalGenericoRequisicao animalDto) {
+    public BoletimResposta adicionarAnimalEmOcorrencia(Long numeroOcorrencia, AnimalGenericoRequisicao animalDto) {
         if (numeroOcorrencia == null) throw new PetXException("Número da ocorrência é obrigatório");
         if (animalDto == null) throw new PetXException("Animal não pode ser nulo");
 
@@ -108,7 +108,7 @@ public class BoletimServiceImpl implements BoletimService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BoletimDTOResposta> buscarOcorrenciasParaVinculo(Long ongId,
+    public List<BoletimResposta> buscarOcorrenciasParaVinculo(Long ongId,
                                                                 LocalDateTime inicio,
                                                                 LocalDateTime fim,
                                                                 OrigemAnimalEnum origem,
@@ -144,7 +144,7 @@ public class BoletimServiceImpl implements BoletimService {
 
     @Override
     @Transactional(readOnly = true)
-    public BoletimDTOResposta getBoletim(Long id) {
+    public BoletimResposta getBoletim(Long id) {
         Boletim boletim = boletimRepository.findById(id)
                 .orElseThrow(() -> new PetXException("Boletim não encontrado"));
         return boletimMapper.converteParaDTO(boletim);
@@ -170,7 +170,7 @@ public class BoletimServiceImpl implements BoletimService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<BoletimDTOResposta> findAllBoletins(
+    public Page<BoletimResposta> findAllBoletins(
                                                     Long numeroOcorrencia,
 //                                                    LocalDateTime dataInicio,
 //                                                    LocalDateTime dataFim,
@@ -183,7 +183,7 @@ public class BoletimServiceImpl implements BoletimService {
 
     @Override
     @Transactional
-    public BoletimDTOResposta updateBoletim(Long id, BoletimDTORequisicao dto) {
+    public BoletimResposta updateBoletim(Long id, BoletimRequisicao dto) {
         Boletim boletim = boletimRepository.findById(id)
                 .orElseThrow(() -> new PetXException("Boletim não encontrado"));
 
@@ -201,7 +201,7 @@ public class BoletimServiceImpl implements BoletimService {
         return boletimMapper.converteParaDTO(boletim);
     }
 
-    private void aplicarCamposPresentes(BoletimDTORequisicao dto, Boletim boletim) {
+    private void aplicarCamposPresentes(BoletimRequisicao dto, Boletim boletim) {
         // numeroOcorrencia é imutável e gerado automaticamente
         Optional.ofNullable(dto.getDataAtendimento()).ifPresent(boletim::setDataAtendimento);
         Optional.ofNullable(dto.getDestino()).ifPresent(boletim::setDestino);

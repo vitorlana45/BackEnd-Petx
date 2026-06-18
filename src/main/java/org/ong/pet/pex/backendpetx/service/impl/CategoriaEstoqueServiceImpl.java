@@ -1,12 +1,12 @@
 package org.ong.pet.pex.backendpetx.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ong.pet.pex.backendpetx.controllers.estoque.EstoqueDTO;
+import org.ong.pet.pex.backendpetx.dto.EstoqueDTO;
 import org.ong.pet.pex.backendpetx.dto.categoria_estoque.*;
-import org.ong.pet.pex.backendpetx.entities.CategoriaEstoque;
-import org.ong.pet.pex.backendpetx.entities.Estoque;
-import org.ong.pet.pex.backendpetx.repositories.CategoriaEstoqueRepository;
-import org.ong.pet.pex.backendpetx.repositories.EstoqueRepository;
+import org.ong.pet.pex.backendpetx.entity.CategoriaEstoque;
+import org.ong.pet.pex.backendpetx.entity.Estoque;
+import org.ong.pet.pex.backendpetx.repository.CategoriaEstoqueRepository;
+import org.ong.pet.pex.backendpetx.repository.EstoqueRepository;
 import org.ong.pet.pex.backendpetx.service.CategoriaEstoqueService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
     private final EstoqueRepository estoqueRepository;
 
     @Override
-    public CreateCategoriaEstoqueResponse createCategoriaEstoque(CreateCategoriaEstoqueRequest request) {
+    public CriarCategoriaEstoqueResposta createCategoriaEstoque(CriarCategoriaEstoqueRequisicao request) {
         // Verificar se o estoque existe
         Estoque estoque = estoqueRepository.findById(request.getEstoqueId())
                 .orElseThrow(() -> new RuntimeException("Estoque não encontrado"));
@@ -45,7 +45,7 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
 
         categoria = categoriaEstoqueRepository.save(categoria);
 
-        return new CreateCategoriaEstoqueResponse(
+        return new CriarCategoriaEstoqueResposta(
                 categoria.getId(),
                 categoria.getNome(),
                 categoria.getDescricao(),
@@ -58,11 +58,11 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetCategoriaEstoqueResponse getCategoriaEstoque(GetCategoriaEstoqueRequest request) {
+    public BuscarCategoriaEstoqueResposta getCategoriaEstoque(BuscarCategoriaEstoqueRequisicao request) {
         CategoriaEstoque categoria = categoriaEstoqueRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
-        return new GetCategoriaEstoqueResponse(
+        return new BuscarCategoriaEstoqueResposta(
                 categoria.getId(),
                 categoria.getNome(),
                 categoria.getDescricao(),
@@ -74,7 +74,7 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
     }
 
     @Override
-    public UpdateCategoriaEstoqueResponse updateCategoriaEstoque(UpdateCategoriaEstoqueRequest request) {
+    public AtualizarCategoriaEstoqueResposta updateCategoriaEstoque(AtualizarCategoriaEstoqueRequisicao request) {
         CategoriaEstoque categoria = categoriaEstoqueRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
@@ -92,7 +92,7 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
 
         categoria = categoriaEstoqueRepository.save(categoria);
 
-        return new UpdateCategoriaEstoqueResponse(
+        return new AtualizarCategoriaEstoqueResposta(
                 categoria.getId(),
                 categoria.getNome(),
                 categoria.getDescricao(),
@@ -104,14 +104,14 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
     }
 
     @Override
-    public DeleteCategoriaEstoqueResponse deleteCategoriaEstoque(DeleteCategoriaEstoqueRequest request) {
+    public ExcluirCategoriaEstoqueResposta deleteCategoriaEstoque(ExcluirCategoriaEstoqueRequisicao request) {
         CategoriaEstoque categoria = categoriaEstoqueRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
 
         String nome = categoria.getNome();
         categoriaEstoqueRepository.delete(categoria);
 
-        return new DeleteCategoriaEstoqueResponse(
+        return new ExcluirCategoriaEstoqueResposta(
                 request.getId(),
                 nome,
                 "Categoria excluída com sucesso",
@@ -121,7 +121,7 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ListCategoriaEstoqueResponse> listCategoriaEstoque(ListCategoriaEstoqueRequest request) {
+    public Page<ListarCategoriaEstoqueResposta> listCategoriaEstoque(ListarCategoriaEstoqueRequisicao request) {
         Sort.Direction direction = request.getDirection().equalsIgnoreCase("desc") ?
                 Sort.Direction.DESC : Sort.Direction.ASC;
 
@@ -137,7 +137,7 @@ public class CategoriaEstoqueServiceImpl implements CategoriaEstoqueService {
                 pageable
         );
 
-        return categorias.map(categoria -> new ListCategoriaEstoqueResponse(
+        return categorias.map(categoria -> new ListarCategoriaEstoqueResposta(
                 categoria.getId(),
                 categoria.getNome(),
                 categoria.getDescricao(),

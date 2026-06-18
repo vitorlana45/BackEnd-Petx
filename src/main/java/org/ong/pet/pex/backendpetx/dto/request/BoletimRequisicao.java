@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoletimDTORequisicao{
+public class BoletimRequisicao{
 
     private Long numeroOcorrencia;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
