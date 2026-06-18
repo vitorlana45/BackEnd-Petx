@@ -10,7 +10,7 @@
     display: flex; align-items: center; gap: .75rem;
     transition: transform .12s ease, box-shadow .12s ease;
 }
-.stats-card:hover{ transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.stats-card:hover{ box-shadow: 0 4px 12px rgba(0,0,0,.08); }
 
 .stats-card.primary{ border-left: 4px solid var(--petx-primary, #6D28D9); }
 .stats-card.success{ border-left: 4px solid var(--petx-success, #0cce6b); }

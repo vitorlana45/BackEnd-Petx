@@ -144,8 +144,8 @@ body {
   width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center;
   border-radius: 50%; color: var(--navbar-text); background: rgba(255,255,255,.1); border: none; cursor: pointer; transition: all .2s;
 }
-.theme-toggle:hover{ background: rgba(255,255,255,.2); transform: scale(1.05); }
-.theme-toggle:active, .theme-toggle-active{ transform: scale(.95); background: rgba(255,255,255,.3); }
+.theme-toggle:hover{ background: rgba(255,255,255,.2); }
+.theme-toggle:active, .theme-toggle-active{ background: rgba(255,255,255,.3); }
 
 /* ===== DROPDOWNS ===== */
 .dropdown-menu{
@@ -173,7 +173,6 @@ body {
 }
 .card:hover{
   box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
 }
 [data-theme="dark"] .card{ border-color: var(--border-color); box-shadow: var(--shadow); background-color: var(--card-bg); }
 [data-theme="dark"] .card.border-0{ background-color: var(--bg-secondary); border: 1px solid var(--border-color) !important; }
@@ -202,11 +201,9 @@ body {
   left: 100%;
 }
 .btn:hover {
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
 .btn:active {
-  transform: translateY(0);
 }
 .btn-primary{ background-color: var(--petx-primary); border-color: var(--petx-primary); }
 .btn-primary:hover{ background-color: var(--petx-primary-dark); border-color: var(--petx-primary-dark); }
@@ -308,7 +305,7 @@ body {
 
 /* ===== DASHBOARD CARDS ===== */
 .stat-card{ border-radius:.5rem; padding:1.5rem; height:100%; transition: transform .2s; }
-.stat-card:hover{ transform: translateY(-5px); }
+.stat-card:hover{ }
 .stat-icon{
   width:48px; height:48px; border-radius:8px; display:flex; align-items:center; justify-content:center;
   font-size:1.5rem; margin-bottom:1rem;
@@ -355,7 +352,7 @@ footer{ background-color: var(--bg-secondary); color: var(--text-secondary); pad
 .dropdown-item.active{ background-color: var(--petx-primary); color:#fff; }
 
 .action-card{ transition: transform .2s; }
-.action-card:hover{ transform: translateY(-5px); }
+.action-card:hover{ }
 .action-icon, .pet-avatar, .stat-icon { display:flex; align-items:center; justify-content:center; }
 .action-icon, .pet-avatar{ width:48px; height:48px; border-radius:8px; font-size:1.25rem; }
 .action-icon{ background-color: var(--petx-primary); color:#fff; }
@@ -558,7 +555,6 @@ footer{ background-color: var(--bg-secondary); color: var(--text-secondary); pad
 }
 
 [data-theme="dark"] .stats-card:hover {
-    transform: translateY(-4px);
     box-shadow: 0 12px 40px -6px rgba(109,40,217,.2);
 }
 
@@ -612,7 +608,6 @@ body.px-collapsed .px-footer{ justify-content:center; }
 }
 
 .animal-selector-card:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 

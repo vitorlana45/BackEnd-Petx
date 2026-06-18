@@ -100,7 +100,6 @@
     color: var(--petx-primary);
     text-decoration: none;
     background: var(--bg-secondary);
-    transform: translateY(-1px);
 }
 .breadcrumb-item.active {
     color: var(--hdr-text);
@@ -182,7 +181,6 @@
 .btn-group .btn-primary:hover {
     background: var(--petx-primary-dark);
     border-color: var(--petx-primary-dark);
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(109,40,217, 0.3);
 }
 .btn-group .btn-secondary {
@@ -194,7 +192,6 @@
     background: var(--hover-bg);
     border-color: var(--petx-primary);
     color: var(--petx-primary);
-    transform: translateY(-1px);
 }
 .btn-group .btn-success {
     background: var(--petx-success);
@@ -204,7 +201,6 @@
 .btn-group .btn-success:hover {
     background: var(--petx-primary-dark, #6D28D9);
     border-color: var(--petx-primary-dark, #6D28D9);
-    transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(109,40,217, 0.35);
 }
 
@@ -221,7 +217,6 @@
     height: 100%;
 }
 .stats-card:hover {
-    transform: translateY(-1px);
     box-shadow: var(--shadow);
     border-color: var(--petx-primary);
 }

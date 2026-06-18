@@ -92,7 +92,6 @@
 }
 
 .btn-login:active {
-    transform: translateY(0);
 }
 
 .alert {
