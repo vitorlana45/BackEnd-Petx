@@ -45,6 +45,7 @@ public class Animal extends EntidadeBase {
     @Column(name = "chip_id")
     private String chipId;
 
+    @Column(name = "imagem_principal_perfil", columnDefinition = "TEXT")
     private String imagemPrincipalPerfil;
 
     @Column(name = "nome")
@@ -69,7 +70,7 @@ public class Animal extends EntidadeBase {
     @Column(name = "porte")
     private PorteEnum porteEnum;
 
-    @Column(name = "comportamento")
+    @Column(name = "comportamento", columnDefinition = "TEXT")
     private String comportamento;
 
     @Enumerated(EnumType.STRING)
@@ -106,7 +107,7 @@ public class Animal extends EntidadeBase {
     @Column(name = "saude")
     private SaudeEnum saudeEnum;
 
-    @Column(name = "condicao_animal")
+    @Column(name = "condicao_animal", columnDefinition = "TEXT")
     private String condicaoAnimal;
 
     private MaezinhaComFilhotes maezinhaComFilhotes;
